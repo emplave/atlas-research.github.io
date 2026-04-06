@@ -4,33 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Atlas Research Institute</title>
-    <meta name="description" content="A cross-national research initiative studying AI, education, and knowledge access across 15+ countries. Apply to represent your school.">
+    <meta name="description" content="A cross-national research fellowship recruiting high school student researchers to study AI, education, and knowledge access across 15+ countries. 100% free.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
     <style>
-        *, *::before, *::after {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
-            --bg-primary: #0a0a14;
-            --bg-secondary: #0f0f1e;
-            --bg-card: #13132a;
+            --bg-primary: #07070f;
+            --bg-secondary: #0c0c1a;
+            --bg-card: #101025;
             --text-primary: #e8e8f0;
             --text-secondary: #8a8aa3;
             --text-dim: #5a5a75;
-            --accent: #c4c4ff;
-            --accent-glow: rgba(196, 196, 255, 0.08);
-            --border: rgba(255, 255, 255, 0.06);
-            --border-hover: rgba(255, 255, 255, 0.12);
+            --accent: #b8b8ff;
+            --accent-soft: rgba(184, 184, 255, 0.07);
+            --border: rgba(255, 255, 255, 0.055);
+            --border-hover: rgba(184, 184, 255, 0.2);
         }
 
-        html {
-            scroll-behavior: smooth;
-        }
+        html { scroll-behavior: smooth; }
 
         body {
             font-family: 'DM Sans', sans-serif;
@@ -38,542 +32,459 @@
             color: var(--text-primary);
             line-height: 1.6;
             overflow-x: hidden;
+            position: relative;
         }
+
+        /* DOT GRID BACKGROUND */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 32px 32px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body > * { position: relative; z-index: 1; }
 
         /* NAV */
         nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            padding: 1.25rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(10, 10, 20, 0.8);
-            backdrop-filter: blur(20px);
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            padding: 1.25rem 2.5rem;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(7, 7, 15, 0.75);
+            backdrop-filter: blur(24px);
             border-bottom: 1px solid var(--border);
+            transform: translateY(-100%);
+            animation: slideDown 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
         }
+
+        @keyframes slideDown { to { transform: translateY(0); } }
 
         .nav-logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
             text-decoration: none;
             color: var(--text-primary);
-        }
-
-        .nav-logo svg {
-            width: 28px;
-            height: 28px;
-        }
-
-        .nav-logo span {
-            font-family: 'DM Sans', sans-serif;
-            font-weight: 600;
-            font-size: 1rem;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
-        }
-
-        .nav-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.85rem;
+            font-family: 'Instrument Serif', serif;
             font-weight: 400;
-            letter-spacing: 0.02em;
+            font-size: 1.35rem;
+            letter-spacing: 0.01em;
             transition: color 0.3s;
         }
 
-        .nav-links a:hover {
-            color: var(--text-primary);
+        .nav-logo:hover { color: var(--accent); }
+
+        .nav-links { display: flex; gap: 2.25rem; list-style: none; }
+
+        .nav-links a {
+            color: var(--text-secondary); text-decoration: none;
+            font-size: 0.82rem; font-weight: 400; letter-spacing: 0.03em;
+            transition: color 0.3s; position: relative;
         }
+
+        .nav-links a::after {
+            content: ''; position: absolute; bottom: -4px; left: 0;
+            width: 0; height: 1px; background: var(--accent);
+            transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .nav-links a:hover { color: var(--text-primary); }
+        .nav-links a:hover::after { width: 100%; }
 
         /* HERO */
         .hero {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 8rem 2rem 6rem;
-            position: relative;
-            overflow: hidden;
+            min-height: 100vh; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center;
+            padding: 8rem 2rem 6rem; position: relative; overflow: hidden;
         }
 
-        .hero::before {
-            content: '';
+        /* ANIMATED GRADIENT MESH */
+        .hero-bg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            overflow: hidden; pointer-events: none;
+        }
+
+        .hero-bg .orb {
             position: absolute;
-            top: -30%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 800px;
-            height: 800px;
-            background: radial-gradient(circle, rgba(140, 140, 255, 0.04) 0%, transparent 70%);
-            pointer-events: none;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
         }
 
-        .hero-orb {
-            width: 80px;
-            height: 80px;
-            margin-bottom: 2.5rem;
-            opacity: 0;
-            animation: fadeUp 1s ease 0.2s forwards;
+        .hero-bg .orb-1 {
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(120, 120, 255, 0.08), transparent 70%);
+            top: -10%; left: 30%;
+            animation: float1 12s ease-in-out infinite;
         }
+
+        .hero-bg .orb-2 {
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(180, 160, 255, 0.06), transparent 70%);
+            top: 20%; right: 10%;
+            animation: float2 15s ease-in-out infinite;
+        }
+
+        .hero-bg .orb-3 {
+            width: 350px; height: 350px;
+            background: radial-gradient(circle, rgba(140, 200, 255, 0.05), transparent 70%);
+            bottom: 10%; left: 15%;
+            animation: float3 18s ease-in-out infinite;
+        }
+
+        @keyframes float1 {
+            0%, 100% { transform: translate(0, 0); }
+            33% { transform: translate(40px, 30px); }
+            66% { transform: translate(-20px, 50px); }
+        }
+
+        @keyframes float2 {
+            0%, 100% { transform: translate(0, 0); }
+            33% { transform: translate(-30px, -40px); }
+            66% { transform: translate(30px, 20px); }
+        }
+
+        @keyframes float3 {
+            0%, 100% { transform: translate(0, 0); }
+            33% { transform: translate(50px, -20px); }
+            66% { transform: translate(-40px, -30px); }
+        }
+
+        .hero-content { position: relative; z-index: 2; }
 
         .hero-tag {
-            font-size: 0.75rem;
-            font-weight: 500;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            color: var(--accent);
-            margin-bottom: 1.5rem;
-            opacity: 0;
-            animation: fadeUp 1s ease 0.4s forwards;
+            font-size: 0.72rem; font-weight: 500; letter-spacing: 0.18em;
+            text-transform: uppercase; color: var(--accent); margin-bottom: 1.75rem;
+            opacity: 0; animation: fadeUp 0.8s ease 0.6s forwards;
         }
 
         .hero h1 {
-            font-family: 'Instrument Serif', serif;
-            font-weight: 400;
-            font-size: clamp(2.5rem, 6vw, 4.5rem);
-            line-height: 1.1;
-            max-width: 800px;
-            margin-bottom: 1.5rem;
-            opacity: 0;
-            animation: fadeUp 1s ease 0.6s forwards;
+            font-family: 'Instrument Serif', serif; font-weight: 400;
+            font-size: clamp(2.5rem, 5.5vw, 4.2rem); line-height: 1.12;
+            max-width: 780px; margin-bottom: 1.5rem;
+            opacity: 0; animation: fadeUp 0.8s ease 0.8s forwards;
         }
 
-        .hero h1 em {
-            font-style: italic;
-            color: var(--accent);
-        }
+        .hero h1 em { font-style: italic; color: var(--accent); }
 
-        .hero p {
-            font-size: 1.05rem;
-            color: var(--text-secondary);
-            max-width: 520px;
-            line-height: 1.7;
-            margin-bottom: 2.5rem;
-            opacity: 0;
-            animation: fadeUp 1s ease 0.8s forwards;
+        .hero-sub {
+            font-size: 1.05rem; color: var(--text-secondary);
+            max-width: 530px; line-height: 1.75; margin-bottom: 2.75rem;
+            opacity: 0; animation: fadeUp 0.8s ease 1s forwards;
         }
 
         .hero-cta {
-            display: inline-block;
-            padding: 0.9rem 2.2rem;
-            background: var(--text-primary);
-            color: var(--bg-primary);
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.85rem;
-            font-weight: 600;
-            letter-spacing: 0.04em;
-            text-decoration: none;
-            border-radius: 2px;
-            transition: all 0.3s;
-            opacity: 0;
-            animation: fadeUp 1s ease 1s forwards;
+            display: inline-block; padding: 0.95rem 2.4rem;
+            background: var(--text-primary); color: var(--bg-primary);
+            font-family: 'DM Sans', sans-serif; font-size: 0.85rem;
+            font-weight: 600; letter-spacing: 0.04em; text-decoration: none;
+            border-radius: 3px; position: relative; overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            opacity: 0; animation: fadeUp 0.8s ease 1.2s forwards;
+        }
+
+        .hero-cta::after {
+            content: ''; position: absolute; top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(184,184,255,0.25), transparent);
+            transition: left 0.6s;
         }
 
         .hero-cta:hover {
-            background: var(--accent);
-            color: var(--bg-primary);
-            transform: translateY(-1px);
+            background: var(--accent); color: var(--bg-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 35px rgba(184, 184, 255, 0.18);
         }
+
+        .hero-cta:hover::after { left: 100%; }
 
         .hero-stats {
-            display: flex;
-            gap: 3rem;
-            margin-top: 4rem;
-            padding-top: 3rem;
+            display: flex; gap: 3.5rem; margin-top: 4.5rem; padding-top: 3rem;
             border-top: 1px solid var(--border);
-            opacity: 0;
-            animation: fadeUp 1s ease 1.2s forwards;
+            opacity: 0; animation: fadeUp 0.8s ease 1.4s forwards;
         }
 
-        .stat {
-            text-align: center;
-        }
+        .stat { text-align: center; }
 
         .stat-number {
-            font-family: 'Instrument Serif', serif;
-            font-size: 2rem;
+            font-family: 'Instrument Serif', serif; font-size: 2.2rem;
             color: var(--text-primary);
         }
 
+        .stat-number .count { display: inline-block; }
+
         .stat-label {
-            font-size: 0.75rem;
-            color: var(--text-dim);
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            margin-top: 0.25rem;
+            font-size: 0.72rem; color: var(--text-dim);
+            letter-spacing: 0.1em; text-transform: uppercase; margin-top: 0.3rem;
         }
+
+        .stat-free .stat-number { color: var(--accent); }
 
         /* SECTIONS */
-        section {
-            padding: 6rem 2rem;
-            max-width: 1100px;
-            margin: 0 auto;
-        }
+        section { padding: 7rem 2rem; max-width: 1100px; margin: 0 auto; }
 
         .section-label {
-            font-size: 0.7rem;
-            font-weight: 600;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            color: var(--text-dim);
-            margin-bottom: 1rem;
+            font-size: 0.68rem; font-weight: 600; letter-spacing: 0.2em;
+            text-transform: uppercase; color: var(--text-dim); margin-bottom: 1.25rem;
+            display: inline-flex; align-items: center; gap: 12px;
+        }
+
+        .section-label::after {
+            content: ''; display: block; width: 40px; height: 1px;
+            background: var(--text-dim);
         }
 
         .section-title {
-            font-family: 'Instrument Serif', serif;
-            font-weight: 400;
-            font-size: clamp(1.8rem, 4vw, 2.8rem);
-            line-height: 1.15;
-            margin-bottom: 1.5rem;
+            font-family: 'Instrument Serif', serif; font-weight: 400;
+            font-size: clamp(1.8rem, 3.5vw, 2.6rem); line-height: 1.15;
+            margin-bottom: 1.25rem;
         }
 
         .section-text {
-            font-size: 1rem;
-            color: var(--text-secondary);
-            max-width: 640px;
-            line-height: 1.75;
+            font-size: 1rem; color: var(--text-secondary);
+            max-width: 620px; line-height: 1.75;
         }
 
-        /* THE STUDY */
-        #study {
-            padding-top: 4rem;
-        }
-
+        /* STUDY */
         .study-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-            margin-top: 3rem;
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 1.25rem; margin-top: 3rem;
         }
 
         .study-card {
-            padding: 2rem;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 3px;
-            transition: border-color 0.3s;
+            padding: 2rem; background: var(--bg-secondary);
+            border: 1px solid var(--border); border-radius: 4px;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .study-card:hover {
-            border-color: var(--border-hover);
+            border-color: var(--border-hover); transform: translateY(-4px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.35);
         }
 
         .study-card h3 {
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.95rem;
-            font-weight: 600;
-            margin-bottom: 0.75rem;
+            font-size: 0.92rem; font-weight: 600; margin-bottom: 0.75rem;
+            transition: color 0.3s;
         }
 
-        .study-card p {
-            font-size: 0.88rem;
-            color: var(--text-secondary);
-            line-height: 1.65;
-        }
+        .study-card:hover h3 { color: var(--accent); }
+        .study-card p { font-size: 0.86rem; color: var(--text-secondary); line-height: 1.7; }
 
-        /* WHAT YOU GET */
-        #value {
-            padding-top: 6rem;
-        }
-
+        /* VALUE */
         .value-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
-            margin-top: 3rem;
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 1.25rem; margin-top: 3rem;
         }
 
         .value-card {
-            padding: 2.5rem 2rem;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 3px;
-            transition: all 0.3s;
+            padding: 2.5rem 2rem; background: var(--bg-secondary);
+            border: 1px solid var(--border); border-radius: 4px;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative; overflow: hidden;
+        }
+
+        .value-card::before {
+            content: ''; position: absolute; top: 0; left: 0;
+            width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            opacity: 0; transition: opacity 0.5s;
         }
 
         .value-card:hover {
-            border-color: var(--border-hover);
-            background: var(--bg-card);
+            border-color: var(--border-hover); background: var(--bg-card);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
         }
+
+        .value-card:hover::before { opacity: 1; }
 
         .value-number {
-            font-family: 'Instrument Serif', serif;
-            font-size: 2.5rem;
-            color: var(--accent);
-            margin-bottom: 1rem;
-            line-height: 1;
+            font-family: 'Instrument Serif', serif; font-size: 2.2rem;
+            color: var(--accent); margin-bottom: 1rem; line-height: 1;
+            opacity: 0.5; transition: all 0.4s;
         }
 
-        .value-card h3 {
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 0.75rem;
-        }
+        .value-card:hover .value-number { opacity: 1; transform: translateX(4px); }
+        .value-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.75rem; }
+        .value-card p { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.7; }
 
-        .value-card p {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            line-height: 1.65;
-        }
-
-        /* HOW IT WORKS */
-        #process {
-            padding-top: 6rem;
-        }
-
-        .process-steps {
-            margin-top: 3rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0;
-        }
+        /* PROCESS */
+        .process-steps { margin-top: 3rem; }
 
         .step {
-            display: grid;
-            grid-template-columns: 80px 1fr;
-            gap: 2rem;
-            padding: 2rem 0;
-            border-bottom: 1px solid var(--border);
+            display: grid; grid-template-columns: 80px 1fr; gap: 2rem;
+            padding: 2.25rem 0; border-bottom: 1px solid var(--border);
             align-items: start;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .step:first-child {
-            border-top: 1px solid var(--border);
+        .step:first-child { border-top: 1px solid var(--border); }
+
+        .step:hover {
+            padding-left: 1.5rem;
+            background: linear-gradient(90deg, var(--accent-soft), transparent 60%);
         }
 
         .step-number {
-            font-family: 'Instrument Serif', serif;
-            font-size: 1.5rem;
-            color: var(--text-dim);
+            font-family: 'Instrument Serif', serif; font-size: 1.4rem;
+            color: var(--text-dim); transition: all 0.3s;
         }
 
-        .step h3 {
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
+        .step:hover .step-number { color: var(--accent); transform: scale(1.1); }
+        .step h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .step p { font-size: 0.86rem; color: var(--text-secondary); line-height: 1.7; }
 
-        .step p {
-            font-size: 0.88rem;
-            color: var(--text-secondary);
-            line-height: 1.65;
-        }
-
-        /* COUNTRIES */
-        #reach {
-            padding-top: 6rem;
-            text-align: center;
-        }
+        /* REACH */
+        #reach { text-align: center; }
 
         .countries {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 0.5rem;
-            margin-top: 2.5rem;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
+            display: flex; flex-wrap: wrap; justify-content: center;
+            gap: 0.5rem; margin-top: 2.5rem;
+            max-width: 700px; margin-left: auto; margin-right: auto;
         }
 
         .country-tag {
-            padding: 0.5rem 1rem;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 2px;
-            font-size: 0.78rem;
-            color: var(--text-secondary);
-            letter-spacing: 0.03em;
+            padding: 0.5rem 1.1rem; background: var(--bg-secondary);
+            border: 1px solid var(--border); border-radius: 3px;
+            font-size: 0.78rem; color: var(--text-secondary);
+            letter-spacing: 0.03em; cursor: default;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .country-tag:hover {
+            border-color: var(--accent); color: var(--text-primary);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(184,184,255,0.08);
         }
 
         /* CTA */
         .cta-section {
-            padding: 8rem 2rem;
-            text-align: center;
-            position: relative;
+            padding: 8rem 2rem; text-align: center; position: relative;
         }
 
         .cta-section::before {
-            content: '';
-            position: absolute;
-            bottom: 20%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(140, 140, 255, 0.03) 0%, transparent 70%);
+            content: ''; position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 700px; height: 700px;
+            background: radial-gradient(circle, rgba(140,140,255,0.04) 0%, transparent 65%);
             pointer-events: none;
+            animation: pulseGlow 8s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulseGlow {
+            0% { opacity: 0.4; transform: translate(-50%,-50%) scale(0.95); }
+            100% { opacity: 1; transform: translate(-50%,-50%) scale(1.05); }
         }
 
         .cta-section .section-title {
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            margin-bottom: 1rem;
+            max-width: 600px; margin-left: auto; margin-right: auto; margin-bottom: 1rem;
         }
 
         .cta-section p {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            margin-bottom: 2.5rem;
+            color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 2.5rem;
         }
 
         .cta-button {
-            display: inline-block;
-            padding: 1rem 2.5rem;
-            background: var(--text-primary);
-            color: var(--bg-primary);
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.9rem;
-            font-weight: 600;
-            letter-spacing: 0.04em;
-            text-decoration: none;
-            border-radius: 2px;
-            transition: all 0.3s;
+            display: inline-block; padding: 1rem 2.5rem;
+            background: var(--text-primary); color: var(--bg-primary);
+            font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+            font-weight: 600; letter-spacing: 0.04em; text-decoration: none;
+            border-radius: 3px; position: relative; overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .cta-button:hover {
-            background: var(--accent);
-            color: var(--bg-primary);
-            transform: translateY(-1px);
+            background: var(--accent); color: var(--bg-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 35px rgba(184,184,255,0.18);
         }
 
         /* FOOTER */
         footer {
-            padding: 3rem 2rem;
-            border-top: 1px solid var(--border);
-            max-width: 1100px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            padding: 3rem 2rem; border-top: 1px solid var(--border);
+            max-width: 1100px; margin: 0 auto; text-align: center;
         }
 
-        .footer-left {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .footer-left svg {
-            width: 20px;
-            height: 20px;
-        }
-
-        .footer-left span {
-            font-size: 0.8rem;
-            color: var(--text-dim);
-        }
-
-        .footer-right {
-            font-size: 0.75rem;
-            color: var(--text-dim);
-        }
-
-        .footer-right a {
-            color: var(--text-secondary);
-            text-decoration: none;
-        }
-
-        .footer-right a:hover {
-            color: var(--text-primary);
-        }
+        footer span { font-size: 0.78rem; color: var(--text-dim); }
 
         /* ANIMATIONS */
         @keyframes fadeUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeLeft {
+            from { opacity: 0; transform: translateX(-40px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes fadeRight {
+            from { opacity: 0; transform: translateX(40px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
         .reveal {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.8s ease, transform 0.8s ease;
+            opacity: 0; transform: translateY(50px);
+            transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 1s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .reveal.visible {
-            opacity: 1;
-            transform: translateY(0);
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+
+        .reveal-left {
+            opacity: 0; transform: translateX(-50px);
+            transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 1s cubic-bezier(0.16, 1, 0.3, 1);
         }
+
+        .reveal-left.visible { opacity: 1; transform: translateX(0); }
+
+        .reveal.visible .study-card,
+        .reveal.visible .value-card,
+        .reveal.visible .step,
+        .reveal.visible .country-tag {
+            opacity: 0; animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .reveal.visible .study-card:nth-child(1), .reveal.visible .value-card:nth-child(1), .reveal.visible .step:nth-child(1) { animation-delay: 0.08s; }
+        .reveal.visible .study-card:nth-child(2), .reveal.visible .value-card:nth-child(2), .reveal.visible .step:nth-child(2) { animation-delay: 0.16s; }
+        .reveal.visible .study-card:nth-child(3), .reveal.visible .value-card:nth-child(3), .reveal.visible .step:nth-child(3) { animation-delay: 0.24s; }
+        .reveal.visible .study-card:nth-child(4), .reveal.visible .value-card:nth-child(4), .reveal.visible .step:nth-child(4) { animation-delay: 0.32s; }
+
+        .reveal.visible .country-tag:nth-child(1) { animation-delay: 0.03s; }
+        .reveal.visible .country-tag:nth-child(2) { animation-delay: 0.06s; }
+        .reveal.visible .country-tag:nth-child(3) { animation-delay: 0.09s; }
+        .reveal.visible .country-tag:nth-child(4) { animation-delay: 0.12s; }
+        .reveal.visible .country-tag:nth-child(5) { animation-delay: 0.15s; }
+        .reveal.visible .country-tag:nth-child(6) { animation-delay: 0.18s; }
+        .reveal.visible .country-tag:nth-child(7) { animation-delay: 0.21s; }
+        .reveal.visible .country-tag:nth-child(8) { animation-delay: 0.24s; }
+        .reveal.visible .country-tag:nth-child(9) { animation-delay: 0.27s; }
+        .reveal.visible .country-tag:nth-child(10) { animation-delay: 0.30s; }
+        .reveal.visible .country-tag:nth-child(11) { animation-delay: 0.33s; }
+        .reveal.visible .country-tag:nth-child(12) { animation-delay: 0.36s; }
+        .reveal.visible .country-tag:nth-child(13) { animation-delay: 0.39s; }
+        .reveal.visible .country-tag:nth-child(14) { animation-delay: 0.42s; }
+        .reveal.visible .country-tag:nth-child(15) { animation-delay: 0.45s; }
 
         /* RESPONSIVE */
         @media (max-width: 768px) {
-            nav {
-                padding: 1rem 1.25rem;
-            }
-
-            .nav-links {
-                display: none;
-            }
-
-            .hero {
-                padding: 7rem 1.5rem 4rem;
-            }
-
-            .hero-stats {
-                gap: 1.5rem;
-            }
-
-            .stat-number {
-                font-size: 1.5rem;
-            }
-
-            section {
-                padding: 4rem 1.5rem;
-            }
-
-            .study-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .value-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .step {
-                grid-template-columns: 50px 1fr;
-                gap: 1rem;
-            }
-
-            footer {
-                flex-direction: column;
-                gap: 1rem;
-                text-align: center;
-            }
+            nav { padding: 1rem 1.25rem; }
+            .nav-links { display: none; }
+            .hero { padding: 7rem 1.5rem 4rem; }
+            .hero-stats { gap: 1.5rem; flex-wrap: wrap; justify-content: center; }
+            .stat-number { font-size: 1.6rem; }
+            section { padding: 4.5rem 1.5rem; }
+            .study-grid, .value-grid { grid-template-columns: 1fr; }
+            .step { grid-template-columns: 50px 1fr; gap: 1rem; }
+            .step:hover { padding-left: 0.75rem; }
         }
     </style>
 </head>
 <body>
 
-    <!-- NAV -->
     <nav>
-        <a href="#" class="nav-logo">
-            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="50" cy="50" r="22" fill="#e8e8f0"/>
-                <path d="M50 8 A42 42 0 0 1 92 50" stroke="#e8e8f0" stroke-width="5" fill="none" stroke-linecap="round"/>
-                <path d="M50 8 A42 42 0 0 0 8 50 A42 42 0 0 0 50 92 A42 42 0 0 0 92 50" stroke="#e8e8f0" stroke-width="3" fill="none" opacity="0.3" stroke-linecap="round"/>
-            </svg>
-            <span>Atlas</span>
-        </a>
+        <a href="#" class="nav-logo">Atlas</a>
         <ul class="nav-links">
             <li><a href="#study">The Study</a></li>
             <li><a href="#value">What You Get</a></li>
@@ -582,34 +493,34 @@
         </ul>
     </nav>
 
-    <!-- HERO -->
     <div class="hero">
-        <svg class="hero-orb" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="50" cy="50" r="22" fill="#e8e8f0"/>
-            <path d="M50 5 A45 45 0 0 1 95 50" stroke="#e8e8f0" stroke-width="4" fill="none" stroke-linecap="round"/>
-            <path d="M50 5 A45 45 0 0 0 5 50 A45 45 0 0 0 50 95 A45 45 0 0 0 95 50" stroke="#e8e8f0" stroke-width="2.5" fill="none" opacity="0.25" stroke-linecap="round"/>
-        </svg>
-        <div class="hero-tag">Atlas Research Institute</div>
-        <h1>A global study on who gets access to <em>knowledge</em></h1>
-        <p>We're recruiting student researchers across 15+ countries to investigate how AI is reshaping education access. Selected representatives lead data collection at their school and co-author published research.</p>
-        <a href="#apply" class="hero-cta">Applications Open September 2026</a>
-        <div class="hero-stats">
-            <div class="stat">
-                <div class="stat-number">15+</div>
-                <div class="stat-label">Countries</div>
-            </div>
-            <div class="stat">
-                <div class="stat-number">50+</div>
-                <div class="stat-label">Schools</div>
-            </div>
-            <div class="stat">
-                <div class="stat-number">2026</div>
-                <div class="stat-label">AAA Annual Meeting</div>
+        <div class="hero-bg">
+            <div class="orb orb-1"></div>
+            <div class="orb orb-2"></div>
+            <div class="orb orb-3"></div>
+        </div>
+        <div class="hero-content">
+            <div class="hero-tag">Atlas Research Institute</div>
+            <h1>A global study on who gets access to <em>knowledge</em></h1>
+            <p class="hero-sub">We're selecting high school student researchers across 15+ countries to investigate how AI is reshaping education access. Selected fellows lead primary research at their school, co-author published work, and contribute to real policy impact.</p>
+            <a href="#apply" class="hero-cta">Applications Open September 2026</a>
+            <div class="hero-stats">
+                <div class="stat">
+                    <div class="stat-number"><span class="count" data-target="15">0</span>+</div>
+                    <div class="stat-label">Countries</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number"><span class="count" data-target="50">0</span>+</div>
+                    <div class="stat-label">Schools</div>
+                </div>
+                <div class="stat stat-free">
+                    <div class="stat-number">100% Free</div>
+                    <div class="stat-label">No cost to participate</div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- THE STUDY -->
     <section id="study" class="reveal">
         <div class="section-label">The Study</div>
         <h2 class="section-title">AI, Education, and Knowledge Access</h2>
@@ -628,78 +539,80 @@
                 <p>A cross-national dataset, a synthesis analysis authored by Atlas leadership, and student-authored policy briefs published in the Atlas Journal of Education Policy.</p>
             </div>
             <div class="study-card">
-                <h3>Academic Credibility</h3>
-                <p>Findings from Atlas research have been submitted for presentation at the American Anthropological Association 2026 Annual Meeting. The study is grounded in real methodology, not performative research.</p>
+                <h3>Built for Rigor</h3>
+                <p>Atlas uses a standardized instrument across every school. The methodology is designed for real academic credibility. This is primary data collection at a global scale, led by high school researchers.</p>
             </div>
         </div>
     </section>
 
-    <!-- WHAT YOU GET -->
     <section id="value" class="reveal">
-        <div class="section-label">For Student Researchers</div>
+        <div class="section-label">For High School Researchers</div>
         <h2 class="section-title">What you get</h2>
-        <p class="section-text">Atlas is a research position, not a club. Representatives are selected to lead data collection at their school and join a global network of student researchers.</p>
+        <p class="section-text">Atlas is a research fellowship, not a club. High school fellows are selected to lead primary research at their school and join a global network of student researchers.</p>
         <div class="value-grid">
             <div class="value-card">
                 <div class="value-number">01</div>
                 <h3>Published Research</h3>
-                <p>Co-contributor credit on the cross-national dataset. Students who write a policy brief are published in the Atlas Journal of Education Policy. "Published researcher in an international education policy journal" on your application.</p>
+                <p>Co-author credit on the cross-national dataset. Fellows who write a policy brief are published in the Atlas Journal of Education Policy. "Published researcher in an international education journal" on your application.</p>
             </div>
             <div class="value-card">
                 <div class="value-number">02</div>
                 <h3>Access to Researchers</h3>
-                <p>Monthly webinars with university professors and policy professionals. Direct exposure to people and institutions most students can't reach on their own.</p>
+                <p>Monthly webinars with university professors and policy professionals. Direct exposure to people and institutions most high school students can't reach on their own.</p>
             </div>
             <div class="value-card">
                 <div class="value-number">03</div>
                 <h3>A Global Network</h3>
-                <p>Work alongside student researchers in 15+ countries. Atlas representatives aren't doing a school project. They're contributing to an international study with real academic output.</p>
+                <p>Work alongside student researchers in 15+ countries. Atlas fellows aren't doing a school project. They're contributing to an international study with real academic and policy output.</p>
+            </div>
+            <div class="value-card">
+                <div class="value-number">04</div>
+                <h3>Real Policy Impact</h3>
+                <p>Your research doesn't sit in a folder. Atlas connects student work to advocacy organizations and education policy conversations, turning local findings into global impact reaching thousands of students.</p>
             </div>
         </div>
     </section>
 
-    <!-- HOW IT WORKS -->
     <section id="process" class="reveal">
-        <div class="section-label">The Process</div>
-        <h2 class="section-title">Six weeks. One study. Real output.</h2>
-        <p class="section-text">Every representative follows the same structured program. No prior research experience required. We teach you the methodology.</p>
+        <div class="section-label">The Fellowship</div>
+        <h2 class="section-title">A six-week research fellowship</h2>
+        <p class="section-text">Every high school fellow follows the same structured program. No prior research experience required. We train you in the methodology.</p>
         <div class="process-steps">
             <div class="step">
                 <div class="step-number">01</div>
                 <div>
-                    <h3>Apply and onboard</h3>
-                    <p>Submit your application to represent your school. Selected representatives receive orientation materials and a recorded training webinar from a university researcher.</p>
+                    <h3>Selected as a school research lead</h3>
+                    <p>Submit your application to represent your school. Selected fellows receive orientation materials and a recorded training webinar from a university researcher.</p>
                 </div>
             </div>
             <div class="step">
                 <div class="step-number">02</div>
                 <div>
-                    <h3>Learn the instrument</h3>
-                    <p>Understand the survey methodology, practice administering it, and recruit at least five club members at your school to participate in data collection.</p>
+                    <h3>Train in research methodology</h3>
+                    <p>Learn how to administer a standardized research instrument, practice the methodology, and recruit at least five team members at your school to participate in data collection.</p>
                 </div>
             </div>
             <div class="step">
                 <div class="step-number">03</div>
                 <div>
-                    <h3>Deploy the survey</h3>
-                    <p>Distribute the standardized Atlas survey at your school. The same questions asked in Bangladesh, Canada, Saudi Arabia, and Indonesia. Your school's data joins a global dataset.</p>
+                    <h3>Lead data collection at your school</h3>
+                    <p>Deploy the Atlas survey across your school community. The same instrument used in Bangladesh, Canada, Saudi Arabia, and Indonesia. Your school's data joins a global dataset.</p>
                 </div>
             </div>
             <div class="step">
                 <div class="step-number">04</div>
                 <div>
-                    <h3>Submit and publish</h3>
-                    <p>Submit your data to Atlas. Students who want to go further can write a policy brief comparing their school's findings to the global dataset and submit it for publication in the Atlas Journal.</p>
+                    <h3>Publish your findings</h3>
+                    <p>Submit your data to Atlas. Take it further by authoring a policy brief that compares your school's findings to the global dataset and submitting it for publication in the Atlas Journal.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- REACH -->
     <section id="reach" class="reveal">
         <div class="section-label">Our Reach</div>
         <h2 class="section-title">Fifteen countries. One instrument.</h2>
-        <p class="section-text" style="margin-left: auto; margin-right: auto;">Atlas operates across the Global South and Global North, collecting data that reveals how context shapes access.</p>
+        <p class="section-text" style="margin-left:auto;margin-right:auto;">Atlas operates across the Global South and Global North, collecting data that reveals how context shapes access to knowledge.</p>
         <div class="countries">
             <span class="country-tag">Bangladesh</span>
             <span class="country-tag">Bolivia</span>
@@ -719,7 +632,6 @@
         </div>
     </section>
 
-    <!-- CTA -->
     <div class="cta-section reveal" id="apply">
         <div class="section-label">Fall 2026</div>
         <h2 class="section-title">Represent your school in a global research initiative</h2>
@@ -727,32 +639,62 @@
         <a href="#" class="cta-button">Applications Open September 2026</a>
     </div>
 
-    <!-- FOOTER -->
-    <footer>
-        <div class="footer-left">
-            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="50" cy="50" r="22" fill="#5a5a75"/>
-                <path d="M50 8 A42 42 0 0 1 92 50" stroke="#5a5a75" stroke-width="5" fill="none" stroke-linecap="round"/>
-                <path d="M50 8 A42 42 0 0 0 8 50 A42 42 0 0 0 50 92 A42 42 0 0 0 92 50" stroke="#5a5a75" stroke-width="3" fill="none" opacity="0.3" stroke-linecap="round"/>
-            </svg>
-            <span>Atlas Research Institute &copy; 2026</span>
-        </div>
-        <div class="footer-right">
-            <a href="mailto:contact@atlas-research.org">contact@atlas-research.org</a>
-        </div>
-    </footer>
+    <footer><span>Atlas Research Institute &copy; 2026</span></footer>
 
     <script>
         // Scroll reveal
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('visible');
+            });
+        }, { threshold: 0.06, rootMargin: '0px 0px -50px 0px' });
+
+        document.querySelectorAll('.reveal, .reveal-left').forEach(el => observer.observe(el));
+
+        // Count up animation for stats
+        const countObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
+                    const counters = entry.target.querySelectorAll('.count');
+                    counters.forEach(counter => {
+                        const target = +counter.getAttribute('data-target');
+                        const duration = 1500;
+                        const start = performance.now();
+                        const animate = (now) => {
+                            const elapsed = now - start;
+                            const progress = Math.min(elapsed / duration, 1);
+                            const eased = 1 - Math.pow(1 - progress, 3);
+                            counter.textContent = Math.floor(eased * target);
+                            if (progress < 1) requestAnimationFrame(animate);
+                            else counter.textContent = target;
+                        };
+                        requestAnimationFrame(animate);
+                    });
+                    countObserver.unobserve(entry.target);
                 }
             });
-        }, { threshold: 0.1 });
+        }, { threshold: 0.5 });
 
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        const statsEl = document.querySelector('.hero-stats');
+        if (statsEl) countObserver.observe(statsEl);
+
+        // Hero parallax fade
+        let ticking = false;
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(() => {
+                    const scrolled = window.pageYOffset;
+                    const heroContent = document.querySelector('.hero-content');
+                    if (heroContent && scrolled < window.innerHeight) {
+                        const progress = scrolled / (window.innerHeight * 0.6);
+                        heroContent.style.opacity = Math.max(0, 1 - progress);
+                        heroContent.style.transform = `translateY(${scrolled * 0.15}px)`;
+                    }
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        });
     </script>
 
 </body>
