@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atlas Research Institute</title>
+    <meta name="description" content="A cross-national research initiative studying AI, education, and knowledge access across 15+ countries. Apply to represent your school.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0a14;
+            --bg-secondary: #0f0f1e;
+            --bg-card: #13132a;
+            --text-primary: #e8e8f0;
+            --text-secondary: #8a8aa3;
+            --text-dim: #5a5a75;
+            --accent: #c4c4ff;
+            --accent-glow: rgba(196, 196, 255, 0.08);
+            --border: rgba(255, 255, 255, 0.06);
+            --border-hover: rgba(255, 255, 255, 0.12);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* NAV */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 1.25rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 10, 20, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        .nav-logo svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        .nav-logo span {
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 400;
+            letter-spacing: 0.02em;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+
+        /* HERO */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 8rem 2rem 6rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -30%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(140, 140, 255, 0.04) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-orb {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 2.5rem;
+            opacity: 0;
+            animation: fadeUp 1s ease 0.2s forwards;
+        }
+
+        .hero-tag {
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: fadeUp 1s ease 0.4s forwards;
+        }
+
+        .hero h1 {
+            font-family: 'Instrument Serif', serif;
+            font-weight: 400;
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            line-height: 1.1;
+            max-width: 800px;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: fadeUp 1s ease 0.6s forwards;
+        }
+
+        .hero h1 em {
+            font-style: italic;
+            color: var(--accent);
+        }
+
+        .hero p {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            max-width: 520px;
+            line-height: 1.7;
+            margin-bottom: 2.5rem;
+            opacity: 0;
+            animation: fadeUp 1s ease 0.8s forwards;
+        }
+
+        .hero-cta {
+            display: inline-block;
+            padding: 0.9rem 2.2rem;
+            background: var(--text-primary);
+            color: var(--bg-primary);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-decoration: none;
+            border-radius: 2px;
+            transition: all 0.3s;
+            opacity: 0;
+            animation: fadeUp 1s ease 1s forwards;
+        }
+
+        .hero-cta:hover {
+            background: var(--accent);
+            color: var(--bg-primary);
+            transform: translateY(-1px);
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 3rem;
+            margin-top: 4rem;
+            padding-top: 3rem;
+            border-top: 1px solid var(--border);
+            opacity: 0;
+            animation: fadeUp 1s ease 1.2s forwards;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-family: 'Instrument Serif', serif;
+            font-size: 2rem;
+            color: var(--text-primary);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-top: 0.25rem;
+        }
+
+        /* SECTIONS */
+        section {
+            padding: 6rem 2rem;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .section-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-family: 'Instrument Serif', serif;
+            font-weight: 400;
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            line-height: 1.15;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-text {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            max-width: 640px;
+            line-height: 1.75;
+        }
+
+        /* THE STUDY */
+        #study {
+            padding-top: 4rem;
+        }
+
+        .study-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .study-card {
+            padding: 2rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            transition: border-color 0.3s;
+        }
+
+        .study-card:hover {
+            border-color: var(--border-hover);
+        }
+
+        .study-card h3 {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .study-card p {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            line-height: 1.65;
+        }
+
+        /* WHAT YOU GET */
+        #value {
+            padding-top: 6rem;
+        }
+
+        .value-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .value-card {
+            padding: 2.5rem 2rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            transition: all 0.3s;
+        }
+
+        .value-card:hover {
+            border-color: var(--border-hover);
+            background: var(--bg-card);
+        }
+
+        .value-number {
+            font-family: 'Instrument Serif', serif;
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+            line-height: 1;
+        }
+
+        .value-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .value-card p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.65;
+        }
+
+        /* HOW IT WORKS */
+        #process {
+            padding-top: 6rem;
+        }
+
+        .process-steps {
+            margin-top: 3rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .step {
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: 2rem;
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--border);
+            align-items: start;
+        }
+
+        .step:first-child {
+            border-top: 1px solid var(--border);
+        }
+
+        .step-number {
+            font-family: 'Instrument Serif', serif;
+            font-size: 1.5rem;
+            color: var(--text-dim);
+        }
+
+        .step h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .step p {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            line-height: 1.65;
+        }
+
+        /* COUNTRIES */
+        #reach {
+            padding-top: 6rem;
+            text-align: center;
+        }
+
+        .countries {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 2.5rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .country-tag {
+            padding: 0.5rem 1rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.03em;
+        }
+
+        /* CTA */
+        .cta-section {
+            padding: 8rem 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            bottom: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(140, 140, 255, 0.03) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .cta-section .section-title {
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: var(--text-primary);
+            color: var(--bg-primary);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-decoration: none;
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+
+        .cta-button:hover {
+            background: var(--accent);
+            color: var(--bg-primary);
+            transform: translateY(-1px);
+        }
+
+        /* FOOTER */
+        footer {
+            padding: 3rem 2rem;
+            border-top: 1px solid var(--border);
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .footer-left svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .footer-left span {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+        }
+
+        .footer-right {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+        }
+
+        .footer-right a {
+            color: var(--text-secondary);
+            text-decoration: none;
+        }
+
+        .footer-right a:hover {
+            color: var(--text-primary);
+        }
+
+        /* ANIMATIONS */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem 1.25rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero {
+                padding: 7rem 1.5rem 4rem;
+            }
+
+            .hero-stats {
+                gap: 1.5rem;
+            }
+
+            .stat-number {
+                font-size: 1.5rem;
+            }
+
+            section {
+                padding: 4rem 1.5rem;
+            }
+
+            .study-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .value-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .step {
+                grid-template-columns: 50px 1fr;
+                gap: 1rem;
+            }
+
+            footer {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAV -->
+    <nav>
+        <a href="#" class="nav-logo">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="50" r="22" fill="#e8e8f0"/>
+                <path d="M50 8 A42 42 0 0 1 92 50" stroke="#e8e8f0" stroke-width="5" fill="none" stroke-linecap="round"/>
+                <path d="M50 8 A42 42 0 0 0 8 50 A42 42 0 0 0 50 92 A42 42 0 0 0 92 50" stroke="#e8e8f0" stroke-width="3" fill="none" opacity="0.3" stroke-linecap="round"/>
+            </svg>
+            <span>Atlas</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="#study">The Study</a></li>
+            <li><a href="#value">What You Get</a></li>
+            <li><a href="#process">How It Works</a></li>
+            <li><a href="#reach">Reach</a></li>
+        </ul>
+    </nav>
+
+    <!-- HERO -->
+    <div class="hero">
+        <svg class="hero-orb" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="50" r="22" fill="#e8e8f0"/>
+            <path d="M50 5 A45 45 0 0 1 95 50" stroke="#e8e8f0" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <path d="M50 5 A45 45 0 0 0 5 50 A45 45 0 0 0 50 95 A45 45 0 0 0 95 50" stroke="#e8e8f0" stroke-width="2.5" fill="none" opacity="0.25" stroke-linecap="round"/>
+        </svg>
+        <div class="hero-tag">Atlas Research Institute</div>
+        <h1>A global study on who gets access to <em>knowledge</em></h1>
+        <p>We're recruiting student researchers across 15+ countries to investigate how AI is reshaping education access. Selected representatives lead data collection at their school and co-author published research.</p>
+        <a href="#apply" class="hero-cta">Applications Open September 2026</a>
+        <div class="hero-stats">
+            <div class="stat">
+                <div class="stat-number">15+</div>
+                <div class="stat-label">Countries</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">50+</div>
+                <div class="stat-label">Schools</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">2026</div>
+                <div class="stat-label">AAA Annual Meeting</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- THE STUDY -->
+    <section id="study" class="reveal">
+        <div class="section-label">The Study</div>
+        <h2 class="section-title">AI, Education, and Knowledge Access</h2>
+        <p class="section-text">A cross-national survey examining how artificial intelligence is reorganizing who gets to access, produce, and share knowledge. The same instrument deployed in Dhaka, Danville, and Jakarta reveals how cultural context shapes the impact of technology on learning.</p>
+        <div class="study-grid">
+            <div class="study-card">
+                <h3>What We're Measuring</h3>
+                <p>How students access AI tools, who introduces them to new technologies, whether their schools and families support AI-assisted learning, and how trust in AI-generated knowledge differs across cultures.</p>
+            </div>
+            <div class="study-card">
+                <h3>Why It Matters</h3>
+                <p>AI is often framed as a universal equalizer. Our data shows the reality is more complex. Structural access, cultural attitudes, and institutional support shape whether AI opens doors or widens gaps.</p>
+            </div>
+            <div class="study-card">
+                <h3>The Output</h3>
+                <p>A cross-national dataset, a synthesis analysis authored by Atlas leadership, and student-authored policy briefs published in the Atlas Journal of Education Policy.</p>
+            </div>
+            <div class="study-card">
+                <h3>Academic Credibility</h3>
+                <p>Findings from Atlas research have been submitted for presentation at the American Anthropological Association 2026 Annual Meeting. The study is grounded in real methodology, not performative research.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- WHAT YOU GET -->
+    <section id="value" class="reveal">
+        <div class="section-label">For Student Researchers</div>
+        <h2 class="section-title">What you get</h2>
+        <p class="section-text">Atlas is a research position, not a club. Representatives are selected to lead data collection at their school and join a global network of student researchers.</p>
+        <div class="value-grid">
+            <div class="value-card">
+                <div class="value-number">01</div>
+                <h3>Published Research</h3>
+                <p>Co-contributor credit on the cross-national dataset. Students who write a policy brief are published in the Atlas Journal of Education Policy. "Published researcher in an international education policy journal" on your application.</p>
+            </div>
+            <div class="value-card">
+                <div class="value-number">02</div>
+                <h3>Access to Researchers</h3>
+                <p>Monthly webinars with university professors and policy professionals. Direct exposure to people and institutions most students can't reach on their own.</p>
+            </div>
+            <div class="value-card">
+                <div class="value-number">03</div>
+                <h3>A Global Network</h3>
+                <p>Work alongside student researchers in 15+ countries. Atlas representatives aren't doing a school project. They're contributing to an international study with real academic output.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section id="process" class="reveal">
+        <div class="section-label">The Process</div>
+        <h2 class="section-title">Six weeks. One study. Real output.</h2>
+        <p class="section-text">Every representative follows the same structured program. No prior research experience required. We teach you the methodology.</p>
+        <div class="process-steps">
+            <div class="step">
+                <div class="step-number">01</div>
+                <div>
+                    <h3>Apply and onboard</h3>
+                    <p>Submit your application to represent your school. Selected representatives receive orientation materials and a recorded training webinar from a university researcher.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">02</div>
+                <div>
+                    <h3>Learn the instrument</h3>
+                    <p>Understand the survey methodology, practice administering it, and recruit at least five club members at your school to participate in data collection.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">03</div>
+                <div>
+                    <h3>Deploy the survey</h3>
+                    <p>Distribute the standardized Atlas survey at your school. The same questions asked in Bangladesh, Canada, Saudi Arabia, and Indonesia. Your school's data joins a global dataset.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">04</div>
+                <div>
+                    <h3>Submit and publish</h3>
+                    <p>Submit your data to Atlas. Students who want to go further can write a policy brief comparing their school's findings to the global dataset and submit it for publication in the Atlas Journal.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- REACH -->
+    <section id="reach" class="reveal">
+        <div class="section-label">Our Reach</div>
+        <h2 class="section-title">Fifteen countries. One instrument.</h2>
+        <p class="section-text" style="margin-left: auto; margin-right: auto;">Atlas operates across the Global South and Global North, collecting data that reveals how context shapes access.</p>
+        <div class="countries">
+            <span class="country-tag">Bangladesh</span>
+            <span class="country-tag">Bolivia</span>
+            <span class="country-tag">Canada</span>
+            <span class="country-tag">China</span>
+            <span class="country-tag">India</span>
+            <span class="country-tag">Indonesia</span>
+            <span class="country-tag">Malaysia</span>
+            <span class="country-tag">Nepal</span>
+            <span class="country-tag">Pakistan</span>
+            <span class="country-tag">Saudi Arabia</span>
+            <span class="country-tag">Syria</span>
+            <span class="country-tag">Taiwan</span>
+            <span class="country-tag">Thailand</span>
+            <span class="country-tag">UAE</span>
+            <span class="country-tag">USA</span>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <div class="cta-section reveal" id="apply">
+        <div class="section-label">Fall 2026</div>
+        <h2 class="section-title">Represent your school in a global research initiative</h2>
+        <p>Applications open September 2026. Limited positions per country.</p>
+        <a href="#" class="cta-button">Applications Open September 2026</a>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-left">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="50" r="22" fill="#5a5a75"/>
+                <path d="M50 8 A42 42 0 0 1 92 50" stroke="#5a5a75" stroke-width="5" fill="none" stroke-linecap="round"/>
+                <path d="M50 8 A42 42 0 0 0 8 50 A42 42 0 0 0 50 92 A42 42 0 0 0 92 50" stroke="#5a5a75" stroke-width="3" fill="none" opacity="0.3" stroke-linecap="round"/>
+            </svg>
+            <span>Atlas Research Institute &copy; 2026</span>
+        </div>
+        <div class="footer-right">
+            <a href="mailto:contact@atlas-research.org">contact@atlas-research.org</a>
+        </div>
+    </footer>
+
+    <script>
+        // Scroll reveal
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    </script>
+
+</body>
+</html>
