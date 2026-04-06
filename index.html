@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Atlas Research Institute</title>
-    <meta name="description" content="A cross-national research fellowship recruiting high school student researchers to study AI, education, and knowledge access across 15+ countries. 100% free.">
+    <meta name="description" content="A cross-national research fellowship for high school student researchers studying AI, education, and knowledge access. 100% free.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
@@ -35,7 +35,7 @@
             position: relative;
         }
 
-        /* DOT GRID BACKGROUND */
+        /* DOT GRID */
         body::before {
             content: '';
             position: fixed;
@@ -63,13 +63,10 @@
         @keyframes slideDown { to { transform: translateY(0); } }
 
         .nav-logo {
-            text-decoration: none;
-            color: var(--text-primary);
+            text-decoration: none; color: var(--text-primary);
             font-family: 'Instrument Serif', serif;
-            font-weight: 400;
-            font-size: 1.35rem;
-            letter-spacing: 0.01em;
-            transition: color 0.3s;
+            font-weight: 400; font-size: 1.35rem;
+            letter-spacing: 0.01em; transition: color 0.3s;
         }
 
         .nav-logo:hover { color: var(--accent); }
@@ -93,22 +90,25 @@
 
         /* HERO */
         .hero {
-            min-height: 100vh; display: flex; flex-direction: column;
-            justify-content: center; align-items: center; text-align: center;
-            padding: 8rem 2rem 6rem; position: relative; overflow: hidden;
+            min-height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 8rem 2rem 6rem;
+            position: relative;
+            overflow: hidden;
         }
 
-        /* ANIMATED GRADIENT MESH */
         .hero-bg {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             overflow: hidden; pointer-events: none;
         }
 
         .hero-bg .orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.4;
+            position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.4;
         }
 
         .hero-bg .orb-1 {
@@ -150,7 +150,15 @@
             66% { transform: translate(-40px, -30px); }
         }
 
-        .hero-content { position: relative; z-index: 2; }
+        .hero-content {
+            position: relative; z-index: 2;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
         .hero-tag {
             font-size: 0.72rem; font-weight: 500; letter-spacing: 0.18em;
@@ -161,7 +169,7 @@
         .hero h1 {
             font-family: 'Instrument Serif', serif; font-weight: 400;
             font-size: clamp(2.5rem, 5.5vw, 4.2rem); line-height: 1.12;
-            max-width: 780px; margin-bottom: 1.5rem;
+            max-width: 780px; margin-bottom: 1.5rem; width: 100%;
             opacity: 0; animation: fadeUp 0.8s ease 0.8s forwards;
         }
 
@@ -202,6 +210,7 @@
             display: flex; gap: 3.5rem; margin-top: 4.5rem; padding-top: 3rem;
             border-top: 1px solid var(--border);
             opacity: 0; animation: fadeUp 0.8s ease 1.4s forwards;
+            justify-content: center; width: 100%;
         }
 
         .stat { text-align: center; }
@@ -211,8 +220,6 @@
             color: var(--text-primary);
         }
 
-        .stat-number .count { display: inline-block; }
-
         .stat-label {
             font-size: 0.72rem; color: var(--text-dim);
             letter-spacing: 0.1em; text-transform: uppercase; margin-top: 0.3rem;
@@ -221,7 +228,12 @@
         .stat-free .stat-number { color: var(--accent); }
 
         /* SECTIONS */
-        section { padding: 7rem 2rem; max-width: 1100px; margin: 0 auto; }
+        section {
+            padding: 7rem 2rem;
+            max-width: 1100px;
+            margin: 0 auto;
+            width: 100%;
+        }
 
         .section-label {
             font-size: 0.68rem; font-weight: 600; letter-spacing: 0.2em;
@@ -270,7 +282,7 @@
         .study-card:hover h3 { color: var(--accent); }
         .study-card p { font-size: 0.86rem; color: var(--text-secondary); line-height: 1.7; }
 
-        /* VALUE */
+        /* FELLOWSHIP */
         .value-grid {
             display: grid; grid-template-columns: 1fr 1fr;
             gap: 1.25rem; margin-top: 3rem;
@@ -360,6 +372,7 @@
         /* CTA */
         .cta-section {
             padding: 8rem 2rem; text-align: center; position: relative;
+            max-width: 1100px; margin: 0 auto;
         }
 
         .cta-section::before {
@@ -413,16 +426,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        @keyframes fadeLeft {
-            from { opacity: 0; transform: translateX(-40px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        @keyframes fadeRight {
-            from { opacity: 0; transform: translateX(40px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
         .reveal {
             opacity: 0; transform: translateY(50px);
             transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
@@ -430,14 +433,6 @@
         }
 
         .reveal.visible { opacity: 1; transform: translateY(0); }
-
-        .reveal-left {
-            opacity: 0; transform: translateX(-50px);
-            transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
-                        transform 1s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .reveal-left.visible { opacity: 1; transform: translateX(0); }
 
         .reveal.visible .study-card,
         .reveal.visible .value-card,
@@ -472,7 +467,7 @@
             nav { padding: 1rem 1.25rem; }
             .nav-links { display: none; }
             .hero { padding: 7rem 1.5rem 4rem; }
-            .hero-stats { gap: 1.5rem; flex-wrap: wrap; justify-content: center; }
+            .hero-stats { gap: 1.5rem; flex-wrap: wrap; }
             .stat-number { font-size: 1.6rem; }
             section { padding: 4.5rem 1.5rem; }
             .study-grid, .value-grid { grid-template-columns: 1fr; }
@@ -487,9 +482,9 @@
         <a href="#" class="nav-logo">Atlas</a>
         <ul class="nav-links">
             <li><a href="#study">The Study</a></li>
-            <li><a href="#value">What You Get</a></li>
+            <li><a href="#fellowship">The Fellowship</a></li>
             <li><a href="#process">How It Works</a></li>
-            <li><a href="#reach">Reach</a></li>
+            <li><a href="#reach">Current Reach</a></li>
         </ul>
     </nav>
 
@@ -502,7 +497,7 @@
         <div class="hero-content">
             <div class="hero-tag">Atlas Research Institute</div>
             <h1>A global study on who gets access to <em>knowledge</em></h1>
-            <p class="hero-sub">We're selecting high school student researchers across 15+ countries to investigate how AI is reshaping education access. Selected fellows lead primary research at their school, co-author published work, and contribute to real policy impact.</p>
+            <p class="hero-sub">Atlas is selecting high school student researchers to investigate how AI is reshaping education access. Selected fellows lead primary research at their school, co-author published work, and contribute to real policy impact.</p>
             <a href="#apply" class="hero-cta">Applications Open September 2026</a>
             <div class="hero-stats">
                 <div class="stat">
@@ -545,51 +540,51 @@
         </div>
     </section>
 
-    <section id="value" class="reveal">
-        <div class="section-label">For High School Researchers</div>
-        <h2 class="section-title">What you get</h2>
-        <p class="section-text">Atlas is a research fellowship, not a club. High school fellows are selected to lead primary research at their school and join a global network of student researchers.</p>
+    <section id="fellowship" class="reveal">
+        <div class="section-label">The Fellowship</div>
+        <h2 class="section-title">Built for high school researchers</h2>
+        <p class="section-text">Atlas is a research fellowship, not a club. Fellows are selected to lead primary research at their school and join a global network of student researchers.</p>
         <div class="value-grid">
             <div class="value-card">
                 <div class="value-number">01</div>
                 <h3>Published Research</h3>
-                <p>Co-author credit on the cross-national dataset. Fellows who write a policy brief are published in the Atlas Journal of Education Policy. "Published researcher in an international education journal" on your application.</p>
+                <p>Co-author credit on the cross-national dataset. Fellows who write a policy brief are published in the Atlas Journal of Education Policy. A real research credential for your application.</p>
             </div>
             <div class="value-card">
                 <div class="value-number">02</div>
                 <h3>Access to Researchers</h3>
-                <p>Monthly webinars with university professors and policy professionals. Direct exposure to people and institutions most high school students can't reach on their own.</p>
+                <p>Monthly webinars with university professors and policy professionals. Direct exposure to people and institutions most high school students don't have access to.</p>
             </div>
             <div class="value-card">
                 <div class="value-number">03</div>
                 <h3>A Global Network</h3>
-                <p>Work alongside student researchers in 15+ countries. Atlas fellows aren't doing a school project. They're contributing to an international study with real academic and policy output.</p>
+                <p>Fellows work alongside student researchers around the world. This isn't a school project. It's an international study producing real academic and policy output.</p>
             </div>
             <div class="value-card">
                 <div class="value-number">04</div>
                 <h3>Real Policy Impact</h3>
-                <p>Your research doesn't sit in a folder. Atlas connects student work to advocacy organizations and education policy conversations, turning local findings into global impact reaching thousands of students.</p>
+                <p>Research from Atlas fellows feeds into advocacy organizations and education policy conversations, turning local findings into global impact reaching thousands of students.</p>
             </div>
         </div>
     </section>
 
     <section id="process" class="reveal">
-        <div class="section-label">The Fellowship</div>
+        <div class="section-label">The Process</div>
         <h2 class="section-title">A six-week research fellowship</h2>
-        <p class="section-text">Every high school fellow follows the same structured program. No prior research experience required. We train you in the methodology.</p>
+        <p class="section-text">Every fellow follows the same structured program. No prior research experience required. Atlas trains you in the methodology.</p>
         <div class="process-steps">
             <div class="step">
                 <div class="step-number">01</div>
                 <div>
                     <h3>Selected as a school research lead</h3>
-                    <p>Submit your application to represent your school. Selected fellows receive orientation materials and a recorded training webinar from a university researcher.</p>
+                    <p>Apply to represent your school. Selected fellows receive orientation materials and a recorded training webinar from a university researcher.</p>
                 </div>
             </div>
             <div class="step">
                 <div class="step-number">02</div>
                 <div>
                     <h3>Train in research methodology</h3>
-                    <p>Learn how to administer a standardized research instrument, practice the methodology, and recruit at least five team members at your school to participate in data collection.</p>
+                    <p>Learn how to administer a standardized research instrument, practice the methodology, and build a team of at least five members at your school for data collection.</p>
                 </div>
             </div>
             <div class="step">
@@ -610,9 +605,9 @@
     </section>
 
     <section id="reach" class="reveal">
-        <div class="section-label">Our Reach</div>
-        <h2 class="section-title">Fifteen countries. One instrument.</h2>
-        <p class="section-text" style="margin-left:auto;margin-right:auto;">Atlas operates across the Global South and Global North, collecting data that reveals how context shapes access to knowledge.</p>
+        <div class="section-label">Current Reach</div>
+        <h2 class="section-title">Active in fifteen countries and growing</h2>
+        <p class="section-text" style="margin-left:auto;margin-right:auto;">Atlas currently operates across the Global South and Global North, with new schools joining regularly.</p>
         <div class="countries">
             <span class="country-tag">Bangladesh</span>
             <span class="country-tag">Bolivia</span>
@@ -642,21 +637,19 @@
     <footer><span>Atlas Research Institute &copy; 2026</span></footer>
 
     <script>
-        // Scroll reveal
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) entry.target.classList.add('visible');
             });
         }, { threshold: 0.06, rootMargin: '0px 0px -50px 0px' });
 
-        document.querySelectorAll('.reveal, .reveal-left').forEach(el => observer.observe(el));
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-        // Count up animation for stats
+        // Count up
         const countObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    const counters = entry.target.querySelectorAll('.count');
-                    counters.forEach(counter => {
+                    entry.target.querySelectorAll('.count').forEach(counter => {
                         const target = +counter.getAttribute('data-target');
                         const duration = 1500;
                         const start = performance.now();
@@ -678,7 +671,7 @@
         const statsEl = document.querySelector('.hero-stats');
         if (statsEl) countObserver.observe(statsEl);
 
-        // Hero parallax fade
+        // Hero parallax
         let ticking = false;
         window.addEventListener('scroll', () => {
             if (!ticking) {
