@@ -82,15 +82,15 @@
 
         /* CONSTELLATION */
         .hero-visual { position: relative; z-index: 2; display: flex; align-items: center; justify-content: center; opacity: 0; animation: fadeUp 0.9s var(--ease-out) 0.8s forwards; }
-        .world-map-bg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 110%; max-width: 540px; height: auto; opacity: 0.15; pointer-events: none; }
-        .constellation { width: 100%; max-width: 480px; height: auto; position: relative; z-index: 2; }
+        .world-map-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.15; pointer-events: none; object-fit: contain; }
+        .constellation { width: 100%; max-width: 520px; height: auto; position: relative; z-index: 2; }
         .constellation .node { fill: var(--accent); opacity: 0; animation: nodeIn 0.5s var(--ease-out) forwards; }
         .constellation .node-dim { fill: var(--text-dim); opacity: 0; animation: nodeIn 0.5s var(--ease-out) forwards; }
-        .constellation .edge { stroke: var(--border-hover); stroke-width: 0.5; opacity: 0; animation: edgeIn 0.8s var(--ease-out) forwards; }
+        .constellation .edge { stroke: var(--border-hover); stroke-width: 1; opacity: 0; animation: edgeIn 0.8s var(--ease-out) forwards; }
         .constellation .pulse { fill: var(--accent); opacity: 0; animation: pulse 3s ease-in-out infinite; }
         @keyframes nodeIn { to { opacity: 0.8; } }
-        @keyframes edgeIn { to { opacity: 0.4; } }
-        @keyframes pulse { 0%,100% { opacity: 0; r: 3; } 50% { opacity: 0.3; r: 8; } }
+        @keyframes edgeIn { to { opacity: 0.35; } }
+        @keyframes pulse { 0%,100% { opacity: 0; r: 5; } 50% { opacity: 0.25; r: 14; } }
 
         /* SECTIONS */
         .container { max-width: 1100px; margin: 0 auto; padding: 0 2.5rem; }
@@ -220,59 +220,52 @@
         <!-- CONSTELLATION NETWORK -->
         <div class="hero-visual">
             <img src="/world-map.svg" class="world-map-bg" alt="">
-            <svg class="constellation" viewBox="0 0 420 380" xmlns="http://www.w3.org/2000/svg">
-                <!-- Edges -->
-                <line class="edge" x1="85" y1="62" x2="175" y2="130" style="animation-delay:0.9s"/>
-                <line class="edge" x1="175" y1="130" x2="260" y2="110" style="animation-delay:1s"/>
-                <line class="edge" x1="260" y1="110" x2="340" y2="85" style="animation-delay:1.1s"/>
-                <line class="edge" x1="340" y1="85" x2="370" y2="155" style="animation-delay:1.15s"/>
-                <line class="edge" x1="175" y1="130" x2="220" y2="195" style="animation-delay:1.05s"/>
-                <line class="edge" x1="220" y1="195" x2="280" y2="175" style="animation-delay:1.1s"/>
-                <line class="edge" x1="280" y1="175" x2="340" y2="200" style="animation-delay:1.2s"/>
-                <line class="edge" x1="340" y1="200" x2="370" y2="155" style="animation-delay:1.15s"/>
-                <line class="edge" x1="220" y1="195" x2="195" y2="260" style="animation-delay:1.15s"/>
-                <line class="edge" x1="195" y1="260" x2="130" y2="285" style="animation-delay:1.2s"/>
-                <line class="edge" x1="280" y1="175" x2="310" y2="250" style="animation-delay:1.2s"/>
-                <line class="edge" x1="310" y1="250" x2="355" y2="230" style="animation-delay:1.25s"/>
-                <line class="edge" x1="85" y1="62" x2="55" y2="145" style="animation-delay:1s"/>
-                <line class="edge" x1="55" y1="145" x2="75" y2="235" style="animation-delay:1.1s"/>
-                <line class="edge" x1="55" y1="145" x2="175" y2="130" style="animation-delay:1.05s"/>
-                <line class="edge" x1="260" y1="110" x2="280" y2="175" style="animation-delay:1.1s"/>
-                <line class="edge" x1="195" y1="260" x2="250" y2="300" style="animation-delay:1.25s"/>
-                <line class="edge" x1="310" y1="250" x2="250" y2="300" style="animation-delay:1.3s"/>
-                <line class="edge" x1="130" y1="285" x2="75" y2="235" style="animation-delay:1.25s"/>
+            <svg class="constellation" viewBox="30.767 241.591 784.077 458.627" xmlns="http://www.w3.org/2000/svg">
+                <!-- Edges connecting countries -->
+                <line class="edge" x1="175" y1="315" x2="155" y2="365" style="animation-delay:0.9s"/>
+                <line class="edge" x1="155" y1="365" x2="205" y2="555" style="animation-delay:0.95s"/>
+                <line class="edge" x1="155" y1="365" x2="475" y2="355" style="animation-delay:1s"/>
+                <line class="edge" x1="175" y1="315" x2="475" y2="355" style="animation-delay:1.05s"/>
+                <line class="edge" x1="475" y1="355" x2="490" y2="405" style="animation-delay:1.05s"/>
+                <line class="edge" x1="490" y1="405" x2="505" y2="415" style="animation-delay:1.1s"/>
+                <line class="edge" x1="490" y1="405" x2="540" y2="380" style="animation-delay:1.1s"/>
+                <line class="edge" x1="540" y1="380" x2="555" y2="410" style="animation-delay:1.12s"/>
+                <line class="edge" x1="555" y1="410" x2="560" y2="390" style="animation-delay:1.14s"/>
+                <line class="edge" x1="555" y1="410" x2="575" y2="405" style="animation-delay:1.16s"/>
+                <line class="edge" x1="560" y1="390" x2="625" y2="345" style="animation-delay:1.15s"/>
+                <line class="edge" x1="625" y1="345" x2="650" y2="395" style="animation-delay:1.2s"/>
+                <line class="edge" x1="625" y1="345" x2="610" y2="440" style="animation-delay:1.2s"/>
+                <line class="edge" x1="610" y1="440" x2="615" y2="465" style="animation-delay:1.22s"/>
+                <line class="edge" x1="615" y1="465" x2="630" y2="490" style="animation-delay:1.25s"/>
+                <line class="edge" x1="575" y1="405" x2="610" y2="440" style="animation-delay:1.2s"/>
+                <line class="edge" x1="505" y1="415" x2="555" y2="410" style="animation-delay:1.15s"/>
 
                 <!-- Pulse rings on key nodes -->
-                <circle class="pulse" cx="175" cy="130" r="3" style="animation-delay:0s"/>
-                <circle class="pulse" cx="280" cy="175" r="3" style="animation-delay:1s"/>
-                <circle class="pulse" cx="85" cy="62" r="3" style="animation-delay:2s"/>
-                <circle class="pulse" cx="310" cy="250" r="3" style="animation-delay:1.5s"/>
-                <circle class="pulse" cx="220" cy="195" r="3" style="animation-delay:0.5s"/>
+                <circle class="pulse" cx="555" cy="410" r="5" style="animation-delay:0s"/>
+                <circle class="pulse" cx="175" cy="315" r="5" style="animation-delay:2s"/>
+                <circle class="pulse" cx="625" cy="345" r="5" style="animation-delay:1s"/>
+                <circle class="pulse" cx="490" cy="405" r="5" style="animation-delay:1.5s"/>
+                <circle class="pulse" cx="630" cy="490" r="5" style="animation-delay:0.5s"/>
 
-                <!-- Nodes: 15 countries abstracted -->
-                <!-- North America -->
-                <circle class="node" cx="85" cy="62" r="3.5" style="animation-delay:0.6s"/><!-- Canada -->
-                <circle class="node" cx="55" cy="145" r="3" style="animation-delay:0.65s"/><!-- USA -->
-                <!-- South America -->
-                <circle class="node-dim" cx="75" cy="235" r="2.5" style="animation-delay:0.7s"/><!-- Bolivia -->
-                <!-- Middle East -->
-                <circle class="node" cx="175" cy="130" r="4" style="animation-delay:0.55s"/><!-- Syria -->
-                <circle class="node" cx="220" cy="195" r="3.5" style="animation-delay:0.6s"/><!-- Saudi Arabia -->
-                <circle class="node-dim" cx="195" cy="260" r="2.5" style="animation-delay:0.75s"/><!-- UAE -->
-                <!-- South Asia -->
-                <circle class="node" cx="260" cy="110" r="3" style="animation-delay:0.5s"/><!-- Pakistan -->
-                <circle class="node" cx="280" cy="175" r="4" style="animation-delay:0.45s"/><!-- India -->
-                <circle class="node-dim" cx="290" cy="140" r="2.5" style="animation-delay:0.55s"/><!-- Nepal -->
-                <circle class="node" cx="310" cy="250" r="3.5" style="animation-delay:0.6s"/><!-- Bangladesh -->
-                <!-- East/SE Asia -->
-                <circle class="node" cx="340" cy="85" r="3" style="animation-delay:0.5s"/><!-- China -->
-                <circle class="node-dim" cx="370" cy="105" r="2" style="animation-delay:0.6s"/><!-- Taiwan -->
-                <circle class="node" cx="370" cy="155" r="3" style="animation-delay:0.55s"/><!-- Thailand -->
-                <circle class="node" cx="355" cy="230" r="3.5" style="animation-delay:0.5s"/><!-- Indonesia -->
-                <circle class="node" cx="340" cy="200" r="2.5" style="animation-delay:0.55s"/><!-- Malaysia -->
+                <!-- Nodes: 15 countries at geographic positions -->
+                <circle class="node" cx="175" cy="315" r="6" style="animation-delay:0.6s"/><!-- Canada -->
+                <circle class="node" cx="155" cy="365" r="5.5" style="animation-delay:0.65s"/><!-- USA -->
+                <circle class="node-dim" cx="205" cy="555" r="4.5" style="animation-delay:0.7s"/><!-- Bolivia -->
+                <circle class="node" cx="475" cy="355" r="6" style="animation-delay:0.55s"/><!-- Syria -->
+                <circle class="node" cx="490" cy="405" r="6" style="animation-delay:0.6s"/><!-- Saudi Arabia -->
+                <circle class="node-dim" cx="505" cy="415" r="4.5" style="animation-delay:0.75s"/><!-- UAE -->
+                <circle class="node" cx="540" cy="380" r="5.5" style="animation-delay:0.5s"/><!-- Pakistan -->
+                <circle class="node" cx="555" cy="410" r="7" style="animation-delay:0.45s"/><!-- India -->
+                <circle class="node-dim" cx="560" cy="390" r="4.5" style="animation-delay:0.55s"/><!-- Nepal -->
+                <circle class="node" cx="575" cy="405" r="6" style="animation-delay:0.6s"/><!-- Bangladesh -->
+                <circle class="node" cx="625" cy="345" r="5.5" style="animation-delay:0.5s"/><!-- China -->
+                <circle class="node-dim" cx="650" cy="395" r="3.5" style="animation-delay:0.6s"/><!-- Taiwan -->
+                <circle class="node" cx="610" cy="440" r="5.5" style="animation-delay:0.55s"/><!-- Thailand -->
+                <circle class="node" cx="630" cy="490" r="6" style="animation-delay:0.5s"/><!-- Indonesia -->
+                <circle class="node" cx="615" cy="465" r="4.5" style="animation-delay:0.55s"/><!-- Malaysia -->
 
-                <!-- Labels (subtle) -->
-                <text x="250" y="305" fill="#4e4e65" font-family="DM Sans, sans-serif" font-size="9" text-anchor="middle" opacity="0.6" style="animation: fadeUp 0.7s var(--ease-out) 1.4s forwards; opacity: 0;">15 countries connected</text>
+                <!-- Label -->
+                <text x="420" y="680" fill="#4e4e65" font-family="DM Sans, sans-serif" font-size="14" text-anchor="middle" opacity="0.6" style="animation: fadeUp 0.7s var(--ease-out) 1.4s forwards; opacity: 0;">15 countries connected</text>
             </svg>
         </div>
     </div>
