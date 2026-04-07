@@ -218,10 +218,10 @@
 
     <footer>
         <span>Atlas Research Institute. 2026.</span>
-        <div class="fl"><a href="/privacy.html">Privacy</a><a href="mailto:atlas.research.institute@gmail.com">Contact</a></div>
+        <div class="fl"><a href="/privacy.html">Privacy</a><a href="/cdn-cgi/l/email-protection#4f2e3b232e3c613d2a3c2a2e3d2c276126213c3b263b3a3b2a0f28222e2623612c2022">Contact</a></div>
     </footer>
 
-    <script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
     /*
      * GOOGLE SHEETS INTEGRATION
      * 
@@ -254,7 +254,7 @@
      * 7. Replace SCRIPT_URL below with your URL
      */
 
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxdnbPraCUon6K10vgI9QSCEQPipqGRU2CBnS5t4BA_XCfIeNXMUgE0JFt9OpoC7cYM/exec'; // Paste your Google Apps Script URL here
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxdnbPraCUon6K10vgI9QSCEQPipqGRU2CBnS5t4BA_XCfIeNXMUgE0JFt9OpoC7cYM/exec'; // Google Apps Script URL
 
     async function submitForm(e) {
         e.preventDefault();
@@ -305,13 +305,4 @@
             form.reset();
         } catch (err) {
             status.className = 'status error';
-            status.textContent = 'Something went wrong. Please try again or email atlas.research.institute@gmail.com.';
-        }
-
-        btn.disabled = false;
-        btn.textContent = 'Submit Application';
-        return false;
-    }
-    </script>
-</body>
-</html>
+            status.textContent = 'Something went wrong. Please try again or email atlas.research.insti
