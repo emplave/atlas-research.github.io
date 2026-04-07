@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apply | Atlas Research Institute</title>
+    <meta name="description" content="Apply to join the Atlas Research Fellowship. Represent your school in a global cross-national study on AI, education, and knowledge access.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='14' fill='%230c0c1a'/><text x='50' y='68' font-family='serif' font-size='58' fill='%23b0b0e8' text-anchor='middle'>A</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+    <style>
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+        :root{--bg:#060610;--bg1:#0a0a16;--bg2:#0e0e1e;--bg3:#111126;--bgi:#0b0b1a;--tx:#e4e4ee;--tx2:#7e7e9a;--tx3:#4e4e6a;--ac:#b0b0e8;--acm:rgba(176,176,232,0.06);--bd:rgba(255,255,255,0.05);--bdh:rgba(176,176,232,0.18);--bdf:rgba(176,176,232,0.3);--err:#e87070;--ok:#70e8a0;--eo:cubic-bezier(0.23,1,0.32,1);--eio:cubic-bezier(0.77,0,0.175,1)}
+        html{scroll-behavior:smooth}
+        body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--tx);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+        body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(rgba(255,255,255,0.025) 1px,transparent 1px);background-size:28px 28px;pointer-events:none;z-index:0}
+        body>*{position:relative;z-index:1}
+        a{color:inherit}
+
+        /* NAV */
+        nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1.1rem 2.5rem;display:flex;justify-content:space-between;align-items:center;background:rgba(6,6,16,0.72);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd)}
+        .nl{text-decoration:none;color:var(--tx);font-family:'Instrument Serif',serif;font-size:1.4rem;transition:color .25s var(--eo)}
+        .nl:hover{color:var(--ac)}
+        .nb{padding:.5rem 1.2rem;background:0;border:1px solid var(--bd);border-radius:4px;color:var(--tx2);font-family:'Outfit',sans-serif;font-size:.8rem;font-weight:400;text-decoration:none;transition:all .25s var(--eo)}
+        .nb:hover{border-color:var(--bdh);color:var(--tx)}
+
+        /* PAGE */
+        .page{max-width:640px;margin:0 auto;padding:9rem 2rem 6rem}
+        .page-label{font-size:.66rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--tx3);margin-bottom:1.25rem;display:inline-flex;align-items:center;gap:12px}
+        .page-label::after{content:'';width:36px;height:1px;background:var(--tx3);display:block}
+        .page h1{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(1.8rem,4vw,2.4rem);line-height:1.15;letter-spacing:-.015em;margin-bottom:.75rem}
+        .page-intro{font-size:.92rem;font-weight:300;color:var(--tx2);line-height:1.8;margin-bottom:3rem;max-width:520px}
+
+        /* FORM */
+        .form-section{margin-bottom:3rem}
+        .form-section-title{font-size:.72rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--ac);margin-bottom:1.5rem;padding-bottom:.75rem;border-bottom:1px solid var(--bd)}
+        .field{margin-bottom:1.5rem}
+        .field label{display:block;font-size:.82rem;font-weight:500;color:var(--tx);margin-bottom:.45rem}
+        .field .hint{display:block;font-size:.72rem;font-weight:300;color:var(--tx3);margin-bottom:.45rem}
+        .field input,.field select,.field textarea{width:100%;padding:.75rem 1rem;background:var(--bgi);border:1px solid var(--bd);border-radius:5px;color:var(--tx);font-family:'Outfit',sans-serif;font-size:.88rem;font-weight:300;transition:border-color .25s var(--eo),box-shadow .25s var(--eo);outline:none}
+        .field input::placeholder,.field textarea::placeholder{color:var(--tx3)}
+        .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--bdf);box-shadow:0 0 0 3px var(--acm)}
+        .field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237e7e9a' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1rem center;padding-right:2.5rem;cursor:pointer}
+        .field select option{background:var(--bg2);color:var(--tx)}
+        .field textarea{resize:vertical;min-height:100px}
+        .row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+        .radio-group{display:flex;gap:1.5rem;margin-top:.35rem}
+        .radio-group label{display:flex;align-items:center;gap:.5rem;font-size:.86rem;font-weight:300;color:var(--tx2);cursor:pointer;transition:color .2s var(--eo)}
+        .radio-group label:hover{color:var(--tx)}
+        .radio-group input[type="radio"]{appearance:none;width:16px;height:16px;border:1px solid var(--bd);border-radius:50%;background:var(--bgi);cursor:pointer;transition:all .2s var(--eo);flex-shrink:0}
+        .radio-group input[type="radio"]:checked{border-color:var(--ac);background:var(--ac);box-shadow:inset 0 0 0 3px var(--bgi)}
+
+        /* SUBMIT */
+        .submit-wrap{margin-top:2.5rem}
+        .btn-submit{display:inline-block;padding:.9rem 2.5rem;background:var(--tx);color:var(--bg);font-family:'Outfit',sans-serif;font-size:.88rem;font-weight:600;letter-spacing:.03em;border:none;border-radius:4px;cursor:pointer;transition:all .25s var(--eo);width:100%}
+        .btn-submit:hover{background:var(--ac);color:var(--bg);box-shadow:0 8px 30px rgba(176,176,232,.12);transform:translateY(-1px)}
+        .btn-submit:active{transform:scale(.98)}
+        .btn-submit:disabled{opacity:.5;cursor:not-allowed;transform:none}
+        .privacy-note{font-size:.72rem;font-weight:300;color:var(--tx3);margin-top:1rem;text-align:center;line-height:1.6}
+        .privacy-note a{color:var(--tx2);text-decoration:underline;text-decoration-color:var(--bd)}
+        .privacy-note a:hover{color:var(--ac)}
+
+        /* STATUS */
+        .status{margin-top:1.5rem;padding:1rem 1.25rem;border-radius:5px;font-size:.86rem;font-weight:400;display:none;animation:ru .4s var(--eo) forwards}
+        .status.error{display:block;background:rgba(232,112,112,.08);border:1px solid rgba(232,112,112,.2);color:var(--err)}
+        .status.success{display:block;background:rgba(112,232,160,.08);border:1px solid rgba(112,232,160,.2);color:var(--ok)}
+
+        @keyframes ru{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+        .reveal{opacity:0;animation:ru .6s var(--eo) .3s forwards}
+
+        /* FOOTER */
+        footer{padding:2.5rem 2rem;border-top:1px solid var(--bd);max-width:640px;margin:0 auto;display:flex;justify-content:space-between;align-items:center}
+        footer span,footer a{font-size:.75rem;color:var(--tx3);text-decoration:none}
+        footer a:hover{color:var(--tx2)}
+        .fl{display:flex;gap:1.5rem}
+
+        @media(max-width:768px){
+            nav{padding:.9rem 1.25rem}
+            .page{padding:7rem 1.5rem 4rem}
+            .row{grid-template-columns:1fr}
+            footer{flex-direction:column;gap:1rem;text-align:center}.fl{justify-content:center}
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/" class="nl">Atlas</a>
+        <a href="/" class="nb">Back to home</a>
+    </nav>
+
+    <div class="page reveal">
+        <div class="page-label">Fellowship Application</div>
+        <h1>Apply to represent your school</h1>
+        <p class="page-intro">Atlas is accepting applications for Fall 2026. One fellow per school. No prior research experience required. All fields required unless marked optional.</p>
+
+        <form id="atlas-form" onsubmit="return submitForm(event)">
+
+            <div class="form-section">
+                <div class="form-section-title">Personal Information</div>
+                <div class="field">
+                    <label for="name">Full name</label>
+                    <input type="text" id="name" name="name" placeholder="Your full name" required>
+                </div>
+                <div class="field">
+                    <label for="email">Email address</label>
+                    <input type="email" id="email" name="email" placeholder="you@email.com" required>
+                </div>
+                <div class="row">
+                    <div class="field">
+                        <label for="school">School name</label>
+                        <input type="text" id="school" name="school" placeholder="Your school" required>
+                    </div>
+                    <div class="field">
+                        <label for="city">City / Region</label>
+                        <input type="text" id="city" name="city" placeholder="Your city" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="field">
+                        <label for="country">Country</label>
+                        <select id="country" name="country" required>
+                            <option value="" disabled selected>Select country</option>
+                            <option>Afghanistan</option><option>Albania</option><option>Algeria</option><option>Argentina</option><option>Australia</option><option>Austria</option><option>Bangladesh</option><option>Belgium</option><option>Bolivia</option><option>Brazil</option><option>Cambodia</option><option>Canada</option><option>Chile</option><option>China</option><option>Colombia</option><option>Czech Republic</option><option>Denmark</option><option>Ecuador</option><option>Egypt</option><option>Ethiopia</option><option>Finland</option><option>France</option><option>Germany</option><option>Ghana</option><option>Greece</option><option>Guatemala</option><option>Hungary</option><option>India</option><option>Indonesia</option><option>Iran</option><option>Iraq</option><option>Ireland</option><option>Israel</option><option>Italy</option><option>Japan</option><option>Jordan</option><option>Kazakhstan</option><option>Kenya</option><option>Kuwait</option><option>Lebanon</option><option>Libya</option><option>Malaysia</option><option>Mexico</option><option>Morocco</option><option>Myanmar</option><option>Nepal</option><option>Netherlands</option><option>New Zealand</option><option>Nigeria</option><option>Norway</option><option>Oman</option><option>Pakistan</option><option>Palestine</option><option>Panama</option><option>Peru</option><option>Philippines</option><option>Poland</option><option>Portugal</option><option>Qatar</option><option>Romania</option><option>Russia</option><option>Saudi Arabia</option><option>Senegal</option><option>Singapore</option><option>Somalia</option><option>South Africa</option><option>South Korea</option><option>Spain</option><option>Sri Lanka</option><option>Sudan</option><option>Sweden</option><option>Switzerland</option><option>Syria</option><option>Taiwan</option><option>Tanzania</option><option>Thailand</option><option>Tunisia</option><option>Turkey</option><option>UAE</option><option>Uganda</option><option>Ukraine</option><option>United Kingdom</option><option>USA</option><option>Uzbekistan</option><option>Venezuela</option><option>Vietnam</option><option>Yemen</option><option>Other</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="grade">Grade / Year</label>
+                        <select id="grade" name="grade" required>
+                            <option value="" disabled selected>Select grade</option>
+                            <option>9th / Freshman</option>
+                            <option>10th / Sophomore</option>
+                            <option>11th / Junior</option>
+                            <option>12th / Senior</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="form-section-title">Academic Profile</div>
+                <div class="row">
+                    <div class="field">
+                        <label for="gpa_uw">GPA (Unweighted)</label>
+                        <input type="text" id="gpa_uw" name="gpa_uw" placeholder="e.g. 3.8" required>
+                    </div>
+                    <div class="field">
+                        <label for="gpa_w">GPA (Weighted)</label>
+                        <input type="text" id="gpa_w" name="gpa_w" placeholder="e.g. 4.2" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="form-section-title">Experience and Motivation</div>
+                <div class="field">
+                    <label for="ecs">Relevant extracurriculars</label>
+                    <span class="hint">Briefly list activities that demonstrate leadership, initiative, or intellectual curiosity.</span>
+                    <textarea id="ecs" name="ecs" placeholder="e.g. Model UN president, school newspaper editor, independent biology research project..." rows="3" required></textarea>
+                </div>
+                <div class="field">
+                    <label>Have you conducted research before?</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="research" value="Yes" required> Yes</label>
+                        <label><input type="radio" name="research" value="No"> No</label>
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="research_desc">If yes, briefly describe (optional)</label>
+                    <input type="text" id="research_desc" name="research_desc" placeholder="Topic, scope, outcome">
+                </div>
+                <div class="field">
+                    <label for="source">How did you hear about Atlas?</label>
+                    <select id="source" name="source" required>
+                        <option value="" disabled selected>Select one</option>
+                        <option>LinkedIn</option>
+                        <option>Discord</option>
+                        <option>Friend / classmate</option>
+                        <option>Teacher / counselor</option>
+                        <option>Social media</option>
+                        <option>Search engine</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="form-section-title">Commitment</div>
+                <div class="field">
+                    <label for="why">Why do you want to join the Atlas Research Fellowship?</label>
+                    <span class="hint">2-4 sentences is enough. Be specific.</span>
+                    <textarea id="why" name="why" placeholder="What draws you to this work? What do you hope to contribute or learn?" rows="4" required></textarea>
+                </div>
+                <div class="field">
+                    <label>Can you commit to the full six-week program?</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="commit" value="Yes" required> Yes</label>
+                        <label><input type="radio" name="commit" value="No"> No</label>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Can you recruit at least 5 team members at your school?</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="recruit" value="Yes" required> Yes</label>
+                        <label><input type="radio" name="recruit" value="No"> No</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="submit-wrap">
+                <button type="submit" class="btn-submit" id="submit-btn">Submit Application</button>
+                <p class="privacy-note">By submitting, you agree to the Atlas <a href="/privacy.html">Privacy Policy</a>. Your data is used only for fellowship administration and research.</p>
+            </div>
+            <div class="status" id="status"></div>
+        </form>
+    </div>
+
+    <footer>
+        <span>Atlas Research Institute. 2026.</span>
+        <div class="fl"><a href="/privacy.html">Privacy</a><a href="/cdn-cgi/l/email-protection#4f2e3b232e3c613d2a3c2a2e3d2c276126213c3b263b3a3b2a0f28222e2623612c2022">Contact</a></div>
+    </footer>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    /*
+     * GOOGLE SHEETS INTEGRATION
+     * 
+     * To connect this form to Google Sheets:
+     * 
+     * 1. Create a new Google Sheet
+     * 2. Name the columns in Row 1:
+     *    Timestamp | Name | Email | School | City | Country | Grade | GPA_UW | GPA_W | ECs | Research | Research_Desc | Source | Why | Commit | Recruit
+     * 3. Go to Extensions > Apps Script
+     * 4. Paste this code:
+     *
+     *    function doPost(e) {
+     *      var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+     *      var data = JSON.parse(e.postData.contents);
+     *      sheet.appendRow([
+     *        new Date(),
+     *        data.name, data.email, data.school, data.city,
+     *        data.country, data.grade, data.gpa_uw, data.gpa_w,
+     *        data.ecs, data.research, data.research_desc,
+     *        data.source, data.why, data.commit, data.recruit
+     *      ]);
+     *      return ContentService.createTextOutput(JSON.stringify({status:'ok'}))
+     *        .setMimeType(ContentService.MimeType.JSON);
+     *    }
+     *
+     * 5. Click Deploy > New deployment > Web app
+     *    - Execute as: Me
+     *    - Who has access: Anyone
+     * 6. Copy the deployment URL
+     * 7. Replace SCRIPT_URL below with your URL
+     */
+
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxdnbPraCUon6K10vgI9QSCEQPipqGRU2CBnS5t4BA_XCfIeNXMUgE0JFt9OpoC7cYM/exec'; // Google Apps Script URL
+
+    async function submitForm(e) {
+        e.preventDefault();
+        const btn = document.getElementById('submit-btn');
+        const status = document.getElementById('status');
+        const form = document.getElementById('atlas-form');
+
+        status.className = 'status';
+        status.style.display = 'none';
+        btn.disabled = true;
+        btn.textContent = 'Submitting...';
+
+        const data = {
+            name: form.name.value,
+            email: form.email.value,
+            school: form.school.value,
+            city: form.city.value,
+            country: form.country.value,
+            grade: form.grade.value,
+            gpa_uw: form.gpa_uw.value,
+            gpa_w: form.gpa_w.value,
+            ecs: form.ecs.value,
+            research: form.research.value,
+            research_desc: form.research_desc.value,
+            source: form.source.value,
+            why: form.why.value,
+            commit: form.commit.value,
+            recruit: form.recruit.value
+        };
+
+        if (!SCRIPT_URL) {
+            status.className = 'status error';
+            status.textContent = 'Applications are not yet open. Check back in September 2026.';
+            btn.disabled = false;
+            btn.textContent = 'Submit Application';
+            return false;
+        }
+
+        try {
+            await fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            status.className = 'status success';
+            status.textContent = 'Application received. We will be in touch via email.';
+            form.reset();
+        } catch (err) {
+            status.className = 'status error';
+            status.textContent = 'Something went wrong. Please try again or email atlas.research.insti
