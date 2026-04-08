@@ -217,6 +217,16 @@
             .step:hover { padding-left: 0.5rem; }
             .hero-stats { gap: 1.5rem; flex-wrap: wrap; }
         }
+
+        /* Partners section */
+        #partners { padding: 5rem 0; }
+        .partner-logos { display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap; margin-top: 2.5rem; }
+        .partner-logo-link { display: flex; flex-direction: column; align-items: center; text-decoration: none; padding: 2rem 2.5rem; border: 1px solid rgba(168,180,255,0.1); border-radius: 12px; background: rgba(168,180,255,0.03); transition: all 0.3s ease; max-width: 280px; }
+        .partner-logo-link:hover { border-color: rgba(168,180,255,0.25); background: rgba(168,180,255,0.06); transform: translateY(-2px); }
+        .partner-logo { height: 40px; width: auto; filter: brightness(0) invert(1); opacity: 0.85; margin-bottom: 1rem; transition: opacity 0.3s; }
+        .partner-logo-link:hover .partner-logo { opacity: 1; }
+        .partner-name { color: #c8cee6; font-size: 0.85rem; font-weight: 600; text-align: center; line-height: 1.3; letter-spacing: 0.02em; }
+        .partner-desc { color: #5a5a78; font-size: 0.72rem; margin-top: 0.4rem; text-align: center; }
     </style>
 </head>
 <body>
@@ -383,6 +393,21 @@
             <p class="section-p" style="margin:0 auto;">Atlas currently operates across the Global South and Global North, with new schools joining regularly.</p>
             <div class="tags">
                 <span class="tag" style="--i:1">Bangladesh</span><span class="tag" style="--i:2">Bolivia</span><span class="tag" style="--i:3">Canada</span><span class="tag" style="--i:4">China</span><span class="tag" style="--i:5">India</span><span class="tag" style="--i:6">Indonesia</span><span class="tag" style="--i:7">Malaysia</span><span class="tag" style="--i:8">Nepal</span><span class="tag" style="--i:9">Pakistan</span><span class="tag" style="--i:10">Saudi Arabia</span><span class="tag" style="--i:11">Syria</span><span class="tag" style="--i:12">Taiwan</span><span class="tag" style="--i:13">Thailand</span><span class="tag" style="--i:14">UAE</span><span class="tag" style="--i:15">USA</span>
+            </div>
+        </div>
+    </section>
+
+    <section id="partners">
+        <div class="container reveal">
+            <div class="label" style="justify-content:center;">Publication Partners</div>
+            <h2 class="section-h" style="text-align:center;">Where your work goes</h2>
+            <p class="section-p" style="margin:0 auto;">Atlas fellows submit their research through established, peer-reviewed journals. Your work gets reviewed by PhD-level researchers and published alongside student research from around the world.</p>
+            <div class="partner-logos">
+                <a href="https://ijhsr.terrajournals.org/" target="_blank" rel="noopener" class="partner-logo-link">
+                    <img src="/ijhsr-logo.png" alt="International Journal of High School Research" class="partner-logo">
+                    <span class="partner-name">International Journal of<br>High School Research</span>
+                    <span class="partner-desc">Indexed by EBSCO & Google Scholar</span>
+                </a>
             </div>
         </div>
     </section>
