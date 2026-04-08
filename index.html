@@ -345,7 +345,7 @@
                     <span class="partner-desc">Indexed by EBSCO & Google Scholar</span>
                 </a>
                 <a href="/journal.html" class="partner-logo-link">
-                    <img src="/atlas-journal-logo.png" alt="Atlas Journal of Education Policy" class="partner-logo" style="filter: brightness(0) invert(0.85);">
+                    <img src="/atlas-journal-logo.png" alt="Atlas Journal of Education Policy" class="partner-logo" style="filter: none; opacity: 0.9;">
                     <span class="partner-name">Atlas Journal of<br>Education Policy</span>
                     <span class="partner-desc">Our in-house journal for student policy briefs. First issue Fall 2026.</span>
                 </a>
@@ -432,25 +432,29 @@
         const io = new IntersectionObserver(es => { es.forEach(e => { if (e.isIntersecting) e.target.classList.add('vis'); }); }, { threshold: 0.06, rootMargin: '0px 0px -40px 0px' });
         document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-        const cio = new IntersectionObserver(es => { es.forEach(e => { if (!e.isIntersecting) return; e.target.querySelectorAll('.count').forEach(c => { 
-            const target = +c.dataset.target;
-            const duration = 2500;
-            const start = performance.now();
-            const easeOutQuart = t => 1 - Math.pow(1 - t, 4);
-            function animate(now) {
-                const elapsed = now - start;
-                const progress = Math.min(elapsed / duration, 1);
-                const eased = easeOutQuart(progress);
-                const current = Math.floor(eased * target);
-                c.textContent = current;
-                if (progress < 1) {
+        const cio = new IntersectionObserver(es => { es.forEach(e => { if (!e.isIntersecting) return; 
+            setTimeout(() => {
+                e.target.querySelectorAll('.count').forEach(c => { 
+                    const target = +c.dataset.target;
+                    const duration = 2500;
+                    const start = performance.now();
+                    const easeOutQuart = t => 1 - Math.pow(1 - t, 4);
+                    function animate(now) {
+                        const elapsed = now - start;
+                        const progress = Math.min(elapsed / duration, 1);
+                        const eased = easeOutQuart(progress);
+                        const current = Math.floor(eased * target);
+                        c.textContent = current;
+                        if (progress < 1) {
+                            requestAnimationFrame(animate);
+                        } else {
+                            c.textContent = target;
+                        }
+                    }
                     requestAnimationFrame(animate);
-                } else {
-                    c.textContent = target;
-                }
-            }
-            requestAnimationFrame(animate);
-        }); cio.unobserve(e.target); }); }, { threshold: 0.2 });
+                });
+            }, 1700);
+            cio.unobserve(e.target); }); }, { threshold: 0.2 });
         const st = document.querySelector('.hero-stats'); if (st) cio.observe(st);
 
         let tk=false;
