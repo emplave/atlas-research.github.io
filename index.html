@@ -222,6 +222,19 @@
 
         /* Partners section */
         #partners { padding: 5rem 0; }
+
+        /* Opportunities section */
+        #opportunities { padding: 4rem 0; }
+        .opps-scroll { margin-top: 2.5rem; overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; scrollbar-width: none; -ms-overflow-style: none; padding-bottom: 1rem; }
+        .opps-scroll::-webkit-scrollbar { display: none; }
+        .opps-track { display: flex; gap: 1rem; width: max-content; animation: scrollOpps 30s linear infinite; }
+        .opps-track:hover { animation-play-state: paused; }
+        @keyframes scrollOpps { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .opp-card { display: flex; flex-direction: column; min-width: 220px; padding: 1.4rem 1.6rem; background: var(--bg-raised); border: 1px solid var(--border); border-radius: 8px; text-decoration: none; transition: all 0.3s var(--ease-out); flex-shrink: 0; }
+        .opp-card:hover { border-color: var(--border-hover); transform: translateY(-3px); background: var(--bg-card); }
+        .opp-org { font-size: 0.92rem; font-weight: 600; color: var(--text); line-height: 1.3; margin-bottom: 0.25rem; }
+        .opp-name { font-size: 0.78rem; color: var(--text-secondary); line-height: 1.4; margin-bottom: 0.6rem; }
+        .opp-type { font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); font-weight: 600; opacity: 0.7; }
         .partner-logos { display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap; margin-top: 2.5rem; }
         .partner-logo-link { display: flex; flex-direction: column; align-items: center; text-decoration: none; padding: 2rem 2.5rem; border: 1px solid rgba(168,180,255,0.1); border-radius: 12px; background: rgba(168,180,255,0.03); transition: all 0.3s ease; max-width: 280px; }
         .partner-logo-link:hover { border-color: rgba(168,180,255,0.25); background: rgba(168,180,255,0.06); transform: translateY(-2px); }
@@ -351,6 +364,99 @@
                     <span class="partner-name">Atlas Journal of<br>Education Policy</span>
                     <span class="partner-desc">Our in-house journal for student policy briefs. First issue Fall 2026.</span>
                 </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="opportunities">
+        <div class="container reveal">
+            <div class="label" style="justify-content:center;">Recommended Opportunities</div>
+            <h2 class="section-h" style="text-align:center;">Where fellows go next</h2>
+            <p class="section-p" style="margin:0 auto;">Atlas fellows leave the program with research training, published work, and connections. These are competitions, courses, and programs we recommend to fellows who want to keep going.</p>
+            <div class="opps-scroll">
+                <div class="opps-track">
+                    <a href="https://hir.harvard.edu/contest/" target="_blank" rel="noopener" class="opp-card">
+                        <span class="opp-org">Harvard International Review</span>
+                        <span class="opp-name">Academic Writing Contest</span>
+                        <span class="opp-type">Competition</span>
+                    </a>
+                    <a href="https://www.johnlocke.org/essay-competition/" target="_blank" rel="noopener" class="opp-card">
+                        <span class="opp-org">John Locke Institute</span>
+                        <span class="opp-name">Essay Competition</span>
+                        <span class="opp-type">Competition</span>
+                    </a>
+                    <a href="https://www.indigoresearch.org/" target="_blank" rel="noopener" class="opp-card">
+                        <span class="opp-org">Indigo Research</span>
+                        <span class="opp-name">Research Mentorship Program</span>
+                        <span class="opp-type">Program</span>
+                    </a>
+                    <a href="https://www.polygence.org/" target="_blank" rel="noopener" class="opp-card">
+                        <span class="opp-org">Polygence</span>
+                        <span class="opp-name">1:1 Research Academy</span>
+                        <span class="opp-type">Program</span>
+                    </a>
+                    <a href="https://internationalresearcholympiad.org/" target="_blank" rel="noopener" class="opp-card">
+                        <span class="opp-org">International Research Olympiad</span>
+                        <span class="opp-name">Research Skills Competition</span>
+                        <span class="opp-type">Competition</span>
+                    </a>
+                    <a href="https://therai.org.uk/online-courses/" target="_blank" rel="noopener" class="opp-card">
+                        <span class="opp-org">Royal Anthropological Institute</span>
+                        <span class="opp-name">Online Courses</span>
+                        <span class="opp-type">Course</span>
+                    </a>
+                    <a href="https://pioneeracademics.com/" target="_blank" rel="noopener" class="opp-card">
+                        <span class="opp-org">Pioneer Academics</span>
+                        <span class="opp-name">Accredited Research Program</span>
+                        <span class="opp-type">Program</span>
+                    </a>
+                    <a href="https://www.lumiere-education.com/" target="_blank" rel="noopener" class="opp-card">
+                        <span class="opp-org">Lumiere Education</span>
+                        <span class="opp-name">Research Scholar Program</span>
+                        <span class="opp-type">Program</span>
+                    </a>
+                    <!-- Duplicated for infinite scroll -->
+                    <a href="https://hir.harvard.edu/contest/" target="_blank" rel="noopener" class="opp-card">
+                        <span class="opp-org">Harvard International Review</span>
+                        <span class="opp-name">Academic Writing Contest</span>
+                        <span class="opp-type">Competition</span>
+                    </a>
+                    <a href="https://www.johnlocke.org/essay-competition/" target="_blank" rel="noopener" class="opp-card">
+                        <span class="opp-org">John Locke Institute</span>
+                        <span class="opp-name">Essay Competition</span>
+                        <span class="opp-type">Competition</span>
+                    </a>
+                    <a href="https://www.indigoresearch.org/" target="_blank" rel="noopener" class="opp-card">
+                        <span class="opp-org">Indigo Research</span>
+                        <span class="opp-name">Research Mentorship Program</span>
+                        <span class="opp-type">Program</span>
+                    </a>
+                    <a href="https://www.polygence.org/" target="_blank" rel="noopener" class="opp-card">
+                        <span class="opp-org">Polygence</span>
+                        <span class="opp-name">1:1 Research Academy</span>
+                        <span class="opp-type">Program</span>
+                    </a>
+                    <a href="https://internationalresearcholympiad.org/" target="_blank" rel="noopener" class="opp-card">
+                        <span class="opp-org">International Research Olympiad</span>
+                        <span class="opp-name">Research Skills Competition</span>
+                        <span class="opp-type">Competition</span>
+                    </a>
+                    <a href="https://therai.org.uk/online-courses/" target="_blank" rel="noopener" class="opp-card">
+                        <span class="opp-org">Royal Anthropological Institute</span>
+                        <span class="opp-name">Online Courses</span>
+                        <span class="opp-type">Course</span>
+                    </a>
+                    <a href="https://pioneeracademics.com/" target="_blank" rel="noopener" class="opp-card">
+                        <span class="opp-org">Pioneer Academics</span>
+                        <span class="opp-name">Accredited Research Program</span>
+                        <span class="opp-type">Program</span>
+                    </a>
+                    <a href="https://www.lumiere-education.com/" target="_blank" rel="noopener" class="opp-card">
+                        <span class="opp-org">Lumiere Education</span>
+                        <span class="opp-name">Research Scholar Program</span>
+                        <span class="opp-type">Program</span>
+                    </a>
+                </div>
             </div>
         </div>
     </section>
