@@ -4,254 +4,151 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Atlas Journal of Education Policy</title>
-    <meta name="description" content="A peer-reviewed student journal publishing policy briefs on AI, education access, and knowledge equity. Published by Atlas Research Institute.">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='12' fill='%230c0c1a'/><text x='50' y='68' font-family='serif' font-size='60' fill='%23a8b4ff' text-anchor='middle'>A</text></svg>">
-    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <meta name="description" content="The Atlas Journal of Education Policy publishes student policy briefs and literature reviews on education access. An in-house journal from Atlas Research Institute. First issue Fall 2026.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='10' fill='%23e8e4d7'/><text x='50' y='70' font-family='Georgia,serif' font-size='64' fill='%231f3a52' text-anchor='middle'>A</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Archivo:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 
-        :root {
-            --bg: #fafaf8;
-            --bg-warm: #f5f4f0;
-            --text: #1a1a1a;
-            --text-muted: #5c5c5c;
-            --text-light: #8a8a8a;
-            --accent: #2c3e6b;
-            --accent-light: #4a6491;
-            --rule: #d4d0c8;
-            --rule-light: #e8e5de;
-        }
-
-        body {
-            font-family: 'Source Sans 3', -apple-system, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.7;
-            -webkit-font-smoothing: antialiased;
+        :root{
+            --paper:#e8e4d7;
+            --paper-deep:#e1dccb;
+            --ink:#1a1c22;
+            --body:#2c2e35;
+            --muted:#6d6a5d;
+            --dim:#8f8b7c;
+            --accent:#1f3a52;
+            --accent-bright:#2b5679;
+            --accent-tint:rgba(31,58,82,0.07);
+            --rule:rgba(26,28,34,0.16);
+            --rule-soft:rgba(26,28,34,0.09);
+            --grid:rgba(31,58,82,0.05);
         }
 
-        /* Header */
-        .journal-header {
-            border-bottom: 3px double var(--rule);
-            padding: 2.5rem 0 2rem;
+        body{
+            font-family:'Archivo',sans-serif;background:var(--paper);color:var(--body);
+            line-height:1.72;font-size:1.02rem;-webkit-font-smoothing:antialiased;position:relative;
         }
-        .journal-header .container {
-            max-width: 780px;
-            margin: 0 auto;
-            padding: 0 2rem;
+        body::before{
+            content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+            background-image:
+                repeating-linear-gradient(to right,var(--grid) 0 1px,transparent 1px 96px),
+                repeating-linear-gradient(to bottom,var(--grid) 0 1px,transparent 1px 96px);
         }
-        .journal-masthead {
-            text-align: center;
-        }
-        .journal-org {
-            font-size: 0.7rem;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            color: var(--text-light);
-            margin-bottom: 0.8rem;
-        }
-        .journal-org a {
-            color: var(--text-light);
-            text-decoration: none;
-        }
-        .journal-org a:hover { color: var(--accent); }
-        .journal-title {
-            font-family: 'Libre Baskerville', Georgia, serif;
-            font-size: 2.2rem;
-            font-weight: 700;
-            color: var(--text);
-            line-height: 1.2;
-            margin-bottom: 0.3rem;
-        }
-        .journal-subtitle {
-            font-family: 'Libre Baskerville', Georgia, serif;
-            font-size: 1rem;
-            font-style: italic;
-            color: var(--text-muted);
-        }
-        .journal-rule {
-            width: 60px;
-            height: 2px;
-            background: var(--accent);
-            margin: 1.2rem auto 0;
-        }
+        body>*{position:relative;z-index:1}
 
-        /* Content */
-        .content {
-            max-width: 620px;
-            margin: 0 auto;
-            padding: 3rem 2rem 5rem;
+        nav{
+            display:flex;justify-content:space-between;align-items:baseline;
+            padding:1.15rem clamp(1.25rem,5vw,3rem);border-bottom:1px solid var(--rule);
         }
+        .nav-logo{font-family:'Fraunces',serif;font-weight:500;font-size:1.4rem;letter-spacing:-0.01em;text-decoration:none;color:var(--ink)}
+        .nav-logo sup{font-family:'IBM Plex Mono',monospace;font-size:0.5rem;font-weight:500;letter-spacing:0.14em;color:var(--accent);vertical-align:super;margin-left:4px}
+        .nav-back{font-family:'IBM Plex Mono',monospace;font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;text-decoration:none;color:var(--muted);border-bottom:1px solid transparent;transition:border-color .2s,color .2s;padding-bottom:2px}
+        .nav-back:hover{color:var(--ink);border-color:var(--accent)}
 
-        .content h2 {
-            font-family: 'Libre Baskerville', Georgia, serif;
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: var(--text);
-            margin-top: 2.5rem;
-            margin-bottom: 0.8rem;
-            padding-bottom: 0.4rem;
-            border-bottom: 1px solid var(--rule-light);
-        }
+        /* masthead */
+        .masthead{border-bottom:3px double var(--rule);padding:3.5rem 0 2.5rem}
+        .masthead-inner{max-width:800px;margin:0 auto;padding:0 2rem;text-align:center}
+        .m-org{font-family:'IBM Plex Mono',monospace;font-size:0.68rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--dim);margin-bottom:1.1rem}
+        .m-org a{color:var(--dim);text-decoration:none}
+        .m-org a:hover{color:var(--accent)}
+        .m-title{font-family:'Fraunces',serif;font-weight:400;font-size:clamp(1.9rem,4.5vw,2.8rem);line-height:1.1;letter-spacing:-0.02em;color:var(--ink);margin-bottom:0.5rem}
+        .m-sub{font-family:'Fraunces',serif;font-style:italic;font-size:1.05rem;color:var(--muted)}
+        .m-rule{width:56px;height:2px;background:var(--accent);margin:1.4rem auto 0}
 
-        .content p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            margin-bottom: 1rem;
-            line-height: 1.8;
-        }
+        /* content */
+        .content{max-width:640px;margin:0 auto;padding:3rem 2rem 5rem}
 
-        .content p strong {
-            color: var(--text);
-            font-weight: 600;
-        }
+        .banner{background:var(--paper-deep);border-left:3px solid var(--accent);padding:1.2rem 1.5rem;margin-bottom:2.5rem}
+        .banner p{margin:0;font-size:0.92rem;color:var(--body)}
+        .banner strong{color:var(--accent);font-weight:600}
 
-        /* Status banner */
-        .status-banner {
-            background: var(--bg-warm);
-            border-left: 3px solid var(--accent);
-            padding: 1.2rem 1.5rem;
-            margin: 2rem 0;
+        .content h2{
+            font-family:'Fraunces',serif;font-weight:400;font-size:1.35rem;color:var(--ink);
+            margin-top:2.6rem;margin-bottom:0.8rem;padding-bottom:0.4rem;border-bottom:1px solid var(--rule-soft);
         }
-        .status-banner p {
-            margin: 0;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-        }
-        .status-banner strong {
-            color: var(--accent);
-        }
+        .content p{color:var(--body);font-size:0.98rem;line-height:1.8;margin-bottom:1rem}
+        .content p strong{color:var(--ink);font-weight:600}
+        .content a.inline{color:var(--accent-bright);text-decoration:none;border-bottom:1px solid var(--rule)}
+        .content a.inline:hover{border-color:var(--accent-bright)}
 
-        /* Scope list */
-        .scope-list {
-            list-style: none;
-            padding: 0;
-            margin: 1rem 0 1.5rem;
+        .scope{list-style:none;margin:1rem 0 0.5rem;border-top:1px solid var(--rule-soft)}
+        .scope li{
+            font-size:0.94rem;color:var(--body);padding:0.7rem 0 0.7rem 1.4rem;
+            border-bottom:1px solid var(--rule-soft);position:relative;line-height:1.5;
         }
-        .scope-list li {
-            position: relative;
-            padding-left: 1.2rem;
-            font-size: 0.92rem;
-            color: var(--text-muted);
-            margin-bottom: 0.5rem;
-            line-height: 1.6;
-        }
-        .scope-list li::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0.55rem;
-            width: 6px;
-            height: 6px;
-            background: var(--accent);
-            border-radius: 50%;
-        }
+        .scope li::before{content:'—';position:absolute;left:0;color:var(--accent)}
 
-        /* CTA */
-        .journal-cta {
-            text-align: center;
-            margin-top: 3rem;
-            padding-top: 2rem;
-            border-top: 1px solid var(--rule-light);
+        .cta{text-align:center;margin-top:3rem;padding-top:2.2rem;border-top:1px solid var(--rule)}
+        .cta p{font-family:'Fraunces',serif;font-style:italic;font-size:1rem;color:var(--muted)}
+        .cta a{
+            display:inline-block;margin-top:1.1rem;padding:0.85rem 1.8rem;background:var(--ink);color:var(--paper);
+            font-family:'IBM Plex Mono',monospace;font-size:0.76rem;letter-spacing:0.08em;text-transform:uppercase;
+            text-decoration:none;transition:background .2s;
         }
-        .journal-cta p {
-            font-family: 'Libre Baskerville', Georgia, serif;
-            font-style: italic;
-            font-size: 0.95rem;
-            color: var(--text-muted);
-        }
-        .journal-cta a {
-            display: inline-block;
-            margin-top: 1rem;
-            padding: 0.7rem 1.8rem;
-            background: var(--accent);
-            color: #fff;
-            text-decoration: none;
-            font-size: 0.85rem;
-            font-weight: 500;
-            letter-spacing: 0.04em;
-            transition: background 0.2s;
-        }
-        .journal-cta a:hover {
-            background: var(--accent-light);
-        }
+        .cta a:hover{background:var(--accent)}
 
-        /* Footer */
-        .journal-footer {
-            border-top: 1px solid var(--rule-light);
-            padding: 1.5rem 0;
-            text-align: center;
-        }
-        .journal-footer span {
-            font-size: 0.75rem;
-            color: var(--text-light);
-        }
-        .journal-footer a {
-            color: var(--text-light);
-            text-decoration: none;
-        }
-        .journal-footer a:hover { color: var(--accent); }
+        footer{border-top:1px solid var(--rule);padding:2rem 0;text-align:center}
+        footer span{font-family:'IBM Plex Mono',monospace;font-size:0.7rem;letter-spacing:0.05em;color:var(--dim)}
+        footer a{color:var(--muted);text-decoration:none}
+        footer a:hover{color:var(--ink)}
 
-        @media (max-width: 600px) {
-            .journal-title { font-size: 1.6rem; }
-            .content { padding: 2rem 1.2rem 3rem; }
-        }
+        @media(max-width:600px){.content{padding:2.2rem 1.3rem 3.5rem}.masthead{padding:2.6rem 0 2rem}}
     </style>
 </head>
 <body>
-    <header class="journal-header">
-        <div class="container">
-            <div class="journal-masthead">
-                <div class="journal-org"><a href="/">Atlas Research Institute</a></div>
-                <h1 class="journal-title">Atlas Journal of Education Policy</h1>
-                <p class="journal-subtitle">Student research on knowledge, access, and equity</p>
-                <div class="journal-rule"></div>
-            </div>
+    <nav>
+        <a href="/" class="nav-logo">Atlas<sup>RESEARCH INST.</sup></a>
+        <a href="/" class="nav-back">← Home</a>
+    </nav>
+
+    <header class="masthead">
+        <div class="masthead-inner">
+            <div class="m-org"><a href="/">Atlas Research Institute</a></div>
+            <h1 class="m-title">Atlas Journal of Education Policy</h1>
+            <p class="m-sub">Student research on education access and equity</p>
+            <div class="m-rule"></div>
         </div>
     </header>
 
     <div class="content">
 
-        <div class="status-banner">
-            <p><strong>First issue: Fall 2026.</strong> The Atlas Journal is currently accepting submissions from Atlas Research Fellows. Submission guidelines will be published when the fellowship cohort launches in September 2026.</p>
+        <div class="banner">
+            <p><strong>First issue: Fall 2026.</strong> The Atlas Journal is preparing to accept submissions from Atlas Fellows. Full submission guidelines will be published when the Fall 2026 fellowship opens.</p>
         </div>
 
         <h2>About the Journal</h2>
-
-        <p>The Atlas Journal of Education Policy publishes student-authored policy briefs analyzing how AI is reshaping education access across cultural contexts. Every piece is based on primary data collected through the Atlas Research Fellowship, where students in multiple countries deploy a standardized survey instrument at their schools.</p>
-
-        <p>The journal exists because student research should go somewhere. Policy briefs published here represent the analysis of real data, collected by real students, in real schools around the world.</p>
+        <p>The Atlas Journal of Education Policy is Atlas's in-house publication for student-authored policy briefs and literature reviews on education access. Every piece comes from work produced in the Atlas Fellowship, built from existing data — UNESCO, the World Bank, PISA, national education records — and analyzed by the fellow.</p>
+        <p>The journal exists because student research should have somewhere to go. It sits alongside the external journals fellows also submit to, including the <a class="inline" href="https://ijhsr.terrajournals.org/" target="_blank" rel="noopener">International Journal of High School Research</a> and Curieux Review, and gives Atlas a venue of its own.</p>
 
         <h2>Scope</h2>
-
-        <p>The journal publishes policy briefs and short analyses at the intersection of:</p>
-
-        <ul class="scope-list">
-            <li>AI adoption and education access across cultural contexts</li>
-            <li>Structural barriers to research literacy and knowledge production</li>
-            <li>The role of families, schools, and institutions in mediating technology access</li>
-            <li>Trust in AI-generated knowledge across the Global South and Global North</li>
-            <li>Policy responses to the intersection of AI and education equity</li>
+        <p>The journal publishes briefs and short analyses on education access, including:</p>
+        <ul class="scope">
+            <li>School funding and resource gaps</li>
+            <li>Teacher shortages and their effects on learning</li>
+            <li>Language of instruction and mother-tongue schooling</li>
+            <li>Refugee and post-conflict education</li>
+            <li>Gender gaps in schooling</li>
+            <li>Rural and urban divides in access</li>
+            <li>Access to technology, including AI, as one factor among many</li>
         </ul>
 
         <h2>Submission</h2>
+        <p>Submissions are open to <strong>Atlas Fellows</strong> who complete the fellowship. Briefs and literature reviews are drawn from a fellow's own research on an education-access question. Full length and format requirements will be set out in the submission guidelines before the first issue.</p>
 
-        <p>Submissions are open to <strong>Atlas Research Fellows</strong> who have completed the fellowship program and collected data using the Atlas survey instrument. All submissions are reviewed by Atlas leadership and, where possible, by external reviewers with relevant expertise.</p>
+        <h2>Review</h2>
+        <p>Each submission is read by the Atlas editorial team, with outside reviewers brought in where relevant expertise is available. Review is formative: work that needs revision comes back with written feedback and a chance to resubmit. Not everything submitted is published.</p>
 
-        <p>Policy briefs should be <strong>500–2,000 words</strong> and should analyze the fellow's school-level data in comparison to the global dataset. Fellows are encouraged to connect their findings to local education policy contexts.</p>
-
-        <h2>Review Process</h2>
-
-        <p>Each submission is reviewed for clarity of argument, quality of data analysis, and relevance to education policy. The review process is designed to be formative. Fellows whose submissions require revisions will receive written feedback and the opportunity to resubmit.</p>
-
-        <div class="journal-cta">
-            <p>Interested in publishing with the Atlas Journal?</p>
+        <div class="cta">
+            <p>Want to publish with the Atlas Journal?</p>
             <a href="/apply.html">Join the Fellowship</a>
         </div>
     </div>
 
-    <footer class="journal-footer">
-        <span>Atlas Journal of Education Policy &middot; Published by <a href="/">Atlas Research Institute</a> &middot; <a href="/privacy.html">Privacy Policy</a></span>
+    <footer>
+        <span>Atlas Journal of Education Policy · Published by <a href="/">Atlas Research Institute</a> · <a href="/privacy.html">Privacy Policy</a></span>
     </footer>
 </body>
 </html>
