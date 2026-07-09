@@ -121,6 +121,30 @@
         .field-warn{display:none;margin-top:0.4rem;font-family:'IBM Plex Mono',monospace;font-size:0.72rem;color:var(--error);letter-spacing:0.02em}
         .field-warn.show{display:block}
 
+        /* consent block: two clearly-distinct checkboxes at the end */
+        .consent-block{border:1px solid var(--rule);background:var(--paper-deep);padding:1.3rem 1.4rem;margin-top:2.4rem}
+        .consent-item{display:flex;gap:0.85rem;align-items:flex-start;cursor:pointer}
+        .consent-item + .consent-item{margin-top:1.15rem;padding-top:1.15rem;border-top:1px solid var(--rule-soft)}
+        .consent-item input[type="checkbox"]{
+            appearance:none;width:22px;height:22px;flex-shrink:0;margin-top:0.1rem;
+            border:1.5px solid var(--dim);background:var(--paper);cursor:pointer;transition:all .15s;position:relative;
+        }
+        .consent-item input[type="checkbox"]:checked{border-color:var(--accent);background:var(--accent)}
+        .consent-item input[type="checkbox"]:checked::after{
+            content:'';position:absolute;left:7px;top:3px;width:5px;height:10px;
+            border:solid var(--paper);border-width:0 2px 2px 0;transform:rotate(45deg);
+        }
+        .consent-item .consent-text{font-size:0.9rem;line-height:1.55;color:var(--body)}
+        .consent-item .consent-text .lead{font-weight:500;color:var(--ink)}
+        .consent-item .consent-text a{color:var(--accent-bright);text-decoration:none;border-bottom:1px solid var(--rule)}
+        .consent-item .consent-text a:hover{color:var(--ink)}
+        .consent-tag{font-family:'IBM Plex Mono',monospace;font-size:0.66rem;letter-spacing:0.1em;text-transform:uppercase;margin-left:0.4rem}
+        .consent-tag.req{color:var(--accent)}
+        .consent-tag.opt{color:var(--dim)}
+        .consent-block.invalid{border-color:var(--error);box-shadow:0 0 0 3px rgba(138,43,34,0.12)}
+        .consent-error{display:none;margin-top:0.7rem;font-family:'Archivo',sans-serif;font-size:0.86rem;font-weight:500;color:var(--error)}
+        .consent-error.show{display:block}
+
         .radio-group{display:flex;gap:1.4rem;margin-top:0.3rem}
         .radio-group label{display:flex;align-items:center;gap:0.5rem;font-size:0.9rem;font-weight:400;color:var(--body);cursor:pointer;margin-bottom:0}
         .radio-group input[type="radio"]{
@@ -293,18 +317,20 @@
                         </div>
                     </div>
 
-                    <div class="section">
-                        <div class="field" style="margin-bottom:0">
-                            <label style="display:flex;gap:0.6rem;align-items:flex-start;cursor:pointer;font-weight:400;color:var(--body)">
-                                <input type="checkbox" id="consent" name="consent" style="width:auto;margin-top:0.3rem;accent-color:var(--accent);cursor:pointer">
-                                <span>Keep me updated on Atlas programs, chapters, and sessions with researchers. <span style="color:var(--dim)">(optional)</span></span>
-                            </label>
-                        </div>
+                    <div class="consent-block" id="consent-block">
+                        <label class="consent-item">
+                            <input type="checkbox" id="agree" name="agree">
+                            <span class="consent-text"><span class="lead">I agree to the Atlas <a href="/privacy.html" target="_blank">Privacy Policy</a>.</span><span class="consent-tag req">Required</span><br>Your information is used only to run the fellowship.</span>
+                        </label>
+                        <label class="consent-item">
+                            <input type="checkbox" id="consent" name="consent">
+                            <span class="consent-text"><span class="lead">Yes, keep me in the loop.</span><span class="consent-tag opt">Optional</span><br>Get early access to chapter applications, invitations to live sessions with researchers, and first notice when the next cohort opens.</span>
+                        </label>
+                        <div class="consent-error" id="consent-error">Please agree to the Privacy Policy to submit your application.</div>
                     </div>
 
                     <div class="submit-wrap">
                         <button type="submit" class="btn" id="submit-btn">Submit application</button>
-                        <p class="privacy-note">By submitting you agree to the Atlas <a href="/privacy.html">Privacy Policy</a>. Your information is used only to run the fellowship.</p>
                     </div>
                     <div class="status" id="status"></div>
                 </form>
@@ -383,6 +409,8 @@
                 });
                 var c = document.getElementById('consent');
                 d.consent = c ? c.checked : false;
+                var a = document.getElementById('agree');
+                d.agree = a ? a.checked : false;
                 localStorage.setItem(DRAFT_KEY, JSON.stringify(d));
             }catch(e){/* storage may be blocked; fail quietly */}
         }
@@ -402,6 +430,7 @@
                     }
                 });
                 if(typeof d.consent !== 'undefined' && document.getElementById('consent')) document.getElementById('consent').checked = !!d.consent;
+                if(typeof d.agree !== 'undefined' && document.getElementById('agree')) document.getElementById('agree').checked = !!d.agree;
                 if(document.getElementById('prompt')) countWords(document.getElementById('prompt'));
                 if(document.getElementById('completion')) countCompletion(document.getElementById('completion'));
             }catch(e){/* ignore malformed draft */}
@@ -451,6 +480,18 @@
             clearMin('datasource');
             if(cWords < 20){ failMin('completion', cWords, 20); return false; }
             clearMin('completion');
+
+            // ---- required: privacy agreement ----
+            var block = document.getElementById('consent-block');
+            var cErr = document.getElementById('consent-error');
+            if(!document.getElementById('agree').checked){
+                cErr.classList.add('show');
+                block.classList.add('invalid');
+                block.scrollIntoView({behavior:'smooth', block:'center'});
+                return false;
+            }
+            cErr.classList.remove('show');
+            block.classList.remove('invalid');
 
             btn.disabled = true; btn.textContent = 'Submitting...';
 
