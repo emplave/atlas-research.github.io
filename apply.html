@@ -229,6 +229,7 @@
                             <span class="hint">About 300 words. Write in your own voice. There is no right answer and no expected vocabulary. We want to see how you notice a problem and how you think about it.</span>
                             <textarea id="prompt" name="prompt" placeholder="Start here..." required oninput="countWords(this)"></textarea>
                             <div class="wordcount" id="wordcount">0 words</div>
+                            <div class="wordcount" style="text-align:left;color:var(--dim);margin-top:0.15rem">A few sentences minimum. Around 300 words is ideal.</div>
                         </div>
 
                         <div class="prompt-box subprompt">
@@ -337,6 +338,56 @@
             wc.className = (words > 400) ? 'wordcount over' : 'wordcount';
         }
 
+        // ---- save-your-work: keep a local draft so a closed tab loses nothing ----
+        var DRAFT_KEY = 'atlas_application_draft_v1';
+        var TEXT_IDS = ['name','email','timezone','prompt','datasource','completion','research_desc'];
+        var SELECT_IDS = ['country','grade','hours'];
+        var RADIO_NAMES = ['research','commit'];
+
+        function saveDraft(){
+            try{
+                var d = {};
+                TEXT_IDS.concat(SELECT_IDS).forEach(function(id){
+                    var el = document.getElementById(id);
+                    if(el) d[id] = el.value;
+                });
+                RADIO_NAMES.forEach(function(nm){
+                    var picked = document.querySelector('input[name="'+nm+'"]:checked');
+                    d[nm] = picked ? picked.value : '';
+                });
+                localStorage.setItem(DRAFT_KEY, JSON.stringify(d));
+            }catch(e){/* storage may be blocked; fail quietly */}
+        }
+
+        function restoreDraft(){
+            try{
+                var raw = localStorage.getItem(DRAFT_KEY);
+                if(!raw) return;
+                var d = JSON.parse(raw);
+                TEXT_IDS.concat(SELECT_IDS).forEach(function(id){
+                    if(d[id] != null && document.getElementById(id)) document.getElementById(id).value = d[id];
+                });
+                RADIO_NAMES.forEach(function(nm){
+                    if(d[nm]){
+                        var el = document.querySelector('input[name="'+nm+'"][value="'+d[nm]+'"]');
+                        if(el) el.checked = true;
+                    }
+                });
+                if(document.getElementById('prompt')) countWords(document.getElementById('prompt'));
+            }catch(e){/* ignore malformed draft */}
+        }
+
+        function clearDraft(){
+            try{ localStorage.removeItem(DRAFT_KEY); }catch(e){}
+        }
+
+        document.addEventListener('DOMContentLoaded', function(){
+            restoreDraft();
+            var form = document.getElementById('atlas-form');
+            form.addEventListener('input', saveDraft);
+            form.addEventListener('change', saveDraft);
+        });
+
         async function submitForm(e){
             e.preventDefault();
             const btn = document.getElementById('submit-btn');
@@ -346,9 +397,10 @@
             status.className = 'status'; status.style.display = 'none';
 
             var words = form.prompt.value.trim() === '' ? 0 : form.prompt.value.trim().split(/\s+/).length;
-            if(words < 100){
+            if(words < 40){
                 status.className = 'status error';
-                status.textContent = 'Your main response is quite short. Aim for around 300 words so we can get a real sense of your thinking.';
+                status.textContent = 'Your main response is too short to review. Please write at least a short paragraph — around 300 words is ideal.';
+                status.style.display = 'block';
                 window.scrollTo({top:0,behavior:'smooth'});
                 return false;
             }
@@ -377,6 +429,7 @@
                     headers:{'Content-Type':'application/json'},
                     body:JSON.stringify(data)
                 });
+                clearDraft();
                 document.getElementById('form-wrap').style.display = 'none';
                 document.getElementById('done').classList.add('show');
                 window.scrollTo({top:0,behavior:'smooth'});
