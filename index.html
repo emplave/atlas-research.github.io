@@ -138,4 +138,168 @@
 
         /* publishing register */
         .pub{border-top:1px solid var(--rule);margin-top:0.5rem}
-        .pub-row{display:flex;justify-content:space-between;align-items:baseline;gap:1.5
+        .pub-row{display:flex;justify-content:space-between;align-items:baseline;gap:1.5rem;padding:1.1rem 0;border-bottom:1px solid var(--rule-soft)}
+        .pub-row .pn{font-family:'Fraunces',serif;font-size:1.1rem;color:var(--ink);line-height:1.2}
+        .pub-row .pd{font-family:'IBM Plex Mono',monospace;font-size:0.68rem;letter-spacing:0.04em;text-transform:uppercase;color:var(--muted);text-align:right;flex-shrink:0;max-width:18rem;line-height:1.5}
+        .pub-row a{color:var(--accent-bright);text-decoration:none;border-bottom:1px solid var(--rule)}
+        .pub-row a:hover{border-color:var(--accent-bright)}
+
+        /* ---- cta ---- */
+        .cta{display:block;padding:4rem 0;border-bottom:none}
+        .cta-inner{border:1px solid var(--ink);padding:3rem clamp(1.5rem,4vw,3rem);display:flex;flex-wrap:wrap;gap:1.5rem;justify-content:space-between;align-items:center}
+        .cta-inner .plate{margin-bottom:0.8rem}
+        .cta-inner h2{font-family:'Fraunces',serif;font-weight:400;font-size:clamp(1.5rem,3vw,2rem);color:var(--ink);line-height:1.1;max-width:20ch}
+        .cta-inner p{font-family:'IBM Plex Mono',monospace;font-size:0.76rem;letter-spacing:0.03em;color:var(--muted);margin-top:0.6rem}
+
+        footer{padding:2.5rem 0 3rem;text-align:center}
+        footer p{font-family:'IBM Plex Mono',monospace;font-size:0.7rem;letter-spacing:0.06em;color:var(--dim)}
+        footer a{color:var(--muted);text-decoration:none}
+        footer a:hover{color:var(--ink)}
+
+        /* gentle reveal, disabled for reduced motion */
+        .reveal{opacity:0;transform:translateY(12px);transition:opacity .7s ease,transform .7s ease}
+        .reveal.vis{opacity:1;transform:none}
+        @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+
+        @media(max-width:860px){
+            .hero{grid-template-columns:1fr;gap:2.5rem;padding:3.5rem 0 2.5rem}
+            .nav-links{display:none}
+        }
+        @media(max-width:720px){
+            section{grid-template-columns:1fr;gap:0.9rem;padding:2.6rem 0}
+            .sec-label{padding-top:0}
+            .cta-inner{flex-direction:column;align-items:flex-start}
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/" class="nav-logo">Atlas<sup>RESEARCH INST.</sup></a>
+        <div class="nav-right">
+            <ul class="nav-links">
+                <li><a href="#programs">Programs</a></li>
+                <li><a href="#method">Fellowship</a></li>
+                <li><a href="#partners">Partners</a></li>
+                <li><a href="/about.html">About</a></li>
+            </ul>
+            <a href="/apply.html" class="nav-cta">Apply Now</a>
+        </div>
+    </nav>
+
+    <div class="wrap">
+
+        <header class="hero">
+            <div>
+                <div class="plate">Atlas Research Institute</div>
+                <h1>Who gets to learn, and who does not</h1>
+                <p class="standfirst">A youth-led research institute on global education access. We train high school students to study education inequality and publish work serious enough to stand on its own.</p>
+                <div class="hero-actions">
+                    <a href="/apply.html" class="btn-primary">Apply to the Fellowship →</a>
+                    <a href="/about.html" class="btn-ghost">Read about Atlas</a>
+                </div>
+            </div>
+            <aside class="index-panel">
+                <div class="index-head"><span>The Programs</span><span>Two</span></div>
+                <div class="index-row">
+                    <div class="rname">Fellowship <span>Depth</span></div>
+                    <p>Selective. Six weeks over the summer. Fellows produce a policy brief or literature review from existing data and submit the strongest work to academic journals.</p>
+                </div>
+                <div class="index-row">
+                    <div class="rname">Chapters <span>Breadth</span></div>
+                    <p>Open to any student, through the school year. Start a chapter at your school and study education access where you are.</p>
+                </div>
+            </aside>
+        </header>
+
+        <main>
+            <section class="reveal">
+                <div class="sec-label">Premise<small>Why Atlas exists</small></div>
+                <div class="sec-body">
+                    <p>Atlas started from a pattern in who arrives ready to do research. Students applying from Nepal, Bangladesh, and Bolivia routinely had no exposure to research methodology at all. Students from the United States, Canada, and China arrived with credentials and support already in place.</p>
+                    <p>The difference was not ability. It was <strong>access</strong>. Atlas exists to close that gap: the same training and the same standards, wherever a student happens to live.</p>
+                </div>
+            </section>
+
+            <section id="programs" class="reveal">
+                <div class="sec-label">Programs<small>Two, by design</small></div>
+                <div class="sec-body">
+                    <p>Atlas runs two programs that do different jobs. One goes deep. One goes wide. Neither substitutes for the other.</p>
+
+                    <div class="prog-name">The Atlas Fellowship <span>Depth</span></div>
+                    <p>Selective, six weeks, over the summer. Fellows choose a question inside education access — school funding, teacher shortages, language of instruction, refugee schooling, gender gaps, rural and urban divides, access to technology, among others — and produce a policy brief or literature review built from existing data: UNESCO, the World Bank, PISA, national education records. The strongest work is submitted to academic journals.</p>
+
+                    <div class="prog-name">Atlas Chapters <span>Breadth</span></div>
+                    <p>Open to any student, running through the school year. A student starts a chapter at their school, and it becomes a place to study education access locally and move members toward research. Chapters are how Atlas reaches students who would otherwise have no way in.</p>
+                </div>
+            </section>
+
+            <section id="method" class="reveal">
+                <div class="sec-label">Method<small>How the fellowship works</small></div>
+                <div class="sec-body">
+                    <p>The Fellowship is built for students with no prior research experience. Fellows work with professors and researchers from universities including <strong>Stanford, USC, and the University of Melbourne</strong>.</p>
+                    <div class="flow">
+                        <div class="flow-step"><div class="fn">01</div><div><h3>Choose a question</h3><p>A specific question inside education access — funding, teacher shortages, language of instruction, refugee schooling, gender gaps, technology access.</p></div></div>
+                        <div class="flow-step"><div class="fn">02</div><div><h3>Build from evidence</h3><p>Existing data does the work: UNESCO, the World Bank, PISA, national education records. No original data collection required.</p></div></div>
+                        <div class="flow-step"><div class="fn">03</div><div><h3>Draft and revise</h3><p>Write to a fixed standard and revise against feedback until the argument holds and the sources hold up.</p></div></div>
+                        <div class="flow-step"><div class="fn">04</div><div><h3>Submit</h3><p>The strongest briefs go to partner journals for peer review and publication. The work has somewhere to go from the first week.</p></div></div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="partners" class="reveal">
+                <div class="sec-label">Partners<small>Who Atlas works with</small></div>
+                <div class="sec-body">
+                    <p>Atlas partners with peer-reviewed journals that publish fellowship work, and with Lumiere Education, which offers Atlas fellows a scholarship. Fellows also publish in Atlas's own in-house journal.</p>
+                    <div class="pub">
+                        <div class="pub-row">
+                            <div class="pn"><a href="https://ijhsr.terrajournals.org/" target="_blank" rel="noopener">International Journal of High School Research</a></div>
+                            <div class="pd">Publication partner · Peer-reviewed · EBSCO &amp; Google Scholar indexed</div>
+                        </div>
+                        <div class="pub-row">
+                            <div class="pn"><a href="https://www.curieuxreview.com/" target="_blank" rel="noopener">Curieux Review</a></div>
+                            <div class="pd">Publication partner · Peer-reviewed</div>
+                        </div>
+                        <div class="pub-row">
+                            <div class="pn"><a href="https://www.lumiere-education.com/" target="_blank" rel="noopener">Lumiere Education</a></div>
+                            <div class="pd">Program partner · Scholarship for fellows</div>
+                        </div>
+                        <div class="pub-row">
+                            <div class="pn"><a href="/journal.html">Atlas Journal of Education Policy</a></div>
+                            <div class="pd">In-house journal · First issue Fall 2026</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="reveal">
+                <div class="sec-label">Difference<small>How Atlas differs</small></div>
+                <div class="sec-body">
+                    <p>Most research programs for high school students cost thousands of dollars, run in a single country, and produce work no one reads. Atlas is <strong>free</strong>, works across borders, and gives student work a path to publication from the start. Where a student lives should not decide whether they get to do research.</p>
+                </div>
+            </section>
+        </main>
+
+        <div class="cta reveal">
+            <div class="cta-inner">
+                <div>
+                    <div class="plate">Summer 2026 Cohort</div>
+                    <h2>Apply to the Summer 2026 Fellowship</h2>
+                    <p>Applications close July 24. The cohort begins July 27.</p>
+                </div>
+                <a href="/apply.html" class="btn-primary">Apply to the Fellowship →</a>
+            </div>
+        </div>
+
+        <footer>
+            <p>Atlas Research Institute · 2026 · <a href="/privacy.html">Privacy Policy</a></p>
+        </footer>
+    </div>
+
+    <script>
+        const io = new IntersectionObserver(function(entries){
+            entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('vis'); io.unobserve(e.target); } });
+        },{threshold:0.08,rootMargin:'0px 0px -40px 0px'});
+        document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+    </script>
+</body>
+</html>
