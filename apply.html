@@ -117,7 +117,7 @@
             color:var(--error);background:rgba(138,43,34,0.08);border:1px solid rgba(138,43,34,0.35);
         }
         .field-error.show{display:block}
-        .field.invalid textarea{border-color:var(--error);box-shadow:0 0 0 3px rgba(138,43,34,0.12)}
+        .field.invalid textarea,.field.invalid input{border-color:var(--error);box-shadow:0 0 0 3px rgba(138,43,34,0.12)}
         .field-warn{display:none;margin-top:0.4rem;font-family:'IBM Plex Mono',monospace;font-size:0.72rem;color:var(--error);letter-spacing:0.02em}
         .field-warn.show{display:block}
 
@@ -227,6 +227,7 @@
                         <div class="field">
                             <label for="email">Email<span class="req">required</span></label>
                             <input type="email" id="email" name="email" placeholder="you@email.com" required>
+                            <div class="field-error" id="email-error"></div>
                         </div>
                         <div class="field">
                             <label for="school">School name<span class="req">required</span></label>
@@ -454,6 +455,22 @@
             const form = document.getElementById('atlas-form');
 
             status.className = 'status'; status.style.display = 'none';
+
+            // ---- email shape check (browser default accepts "x@y" with no domain; require x@y.z) ----
+            var emailField = document.getElementById('email');
+            var emailVal = emailField.value.trim();
+            var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(emailVal);
+            var emailErr = document.getElementById('email-error');
+            if(!emailOk){
+                emailErr.textContent = 'Please enter a complete email address, including the part after the dot (for example, name@gmail.com).';
+                emailErr.classList.add('show');
+                emailField.closest('.field').classList.add('invalid');
+                emailField.scrollIntoView({behavior:'smooth', block:'center'});
+                emailField.focus({preventScroll:true});
+                return false;
+            }
+            emailErr.classList.remove('show');
+            emailField.closest('.field').classList.remove('invalid');
 
             // ---- minimum-length checks (hard floors block submit; caps are soft warnings only) ----
             function failMin(id, count, min, unit){
