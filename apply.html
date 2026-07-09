@@ -118,6 +118,8 @@
         }
         .field-error.show{display:block}
         .field.invalid textarea{border-color:var(--error);box-shadow:0 0 0 3px rgba(138,43,34,0.12)}
+        .field-warn{display:none;margin-top:0.4rem;font-family:'IBM Plex Mono',monospace;font-size:0.72rem;color:var(--error);letter-spacing:0.02em}
+        .field-warn.show{display:block}
 
         .radio-group{display:flex;gap:1.4rem;margin-top:0.3rem}
         .radio-group label{display:flex;align-items:center;gap:0.5rem;font-size:0.9rem;font-weight:400;color:var(--body);cursor:pointer;margin-bottom:0}
@@ -202,6 +204,15 @@
                             <label for="email">Email<span class="req">required</span></label>
                             <input type="email" id="email" name="email" placeholder="you@email.com" required>
                         </div>
+                        <div class="field">
+                            <label for="school">School name<span class="req">required</span></label>
+                            <input type="text" id="school" name="school" placeholder="The name of your school" required>
+                        </div>
+                        <div class="field">
+                            <label for="city">Your school's city<span class="req">required</span></label>
+                            <span class="hint">The city where your school is located, not necessarily where you live.</span>
+                            <input type="text" id="city" name="city" placeholder="e.g. Dhaka, Nairobi, San Jose" required>
+                        </div>
                         <div class="row">
                             <div class="field">
                                 <label for="country">Country<span class="req">required</span></label>
@@ -230,37 +241,6 @@
                     </div>
 
                     <div class="section">
-                        <div class="section-title"><span>How you think and work</span><span class="count">this is what we read most closely</span></div>
-
-                        <div class="prompt-box">
-                            <div class="prompt-q">Name an education-access problem you have seen in your own community or country, and explain what you would want to understand about it.</div>
-                        </div>
-                        <div class="field">
-                            <span class="hint">About 300 words. Write in your own voice. There is no right answer and no expected vocabulary. We want to see how you notice a problem and how you think about it.</span>
-                            <textarea id="prompt" name="prompt" placeholder="Start here..." required oninput="countWords(this)"></textarea>
-                            <div class="wordcount" id="wordcount">0 words</div>
-                            <div class="minnote">Minimum 40 words to submit. Around 300 words is ideal.</div>
-                            <div class="field-error" id="prompt-error"></div>
-                        </div>
-
-                        <div class="prompt-box subprompt">
-                            <div class="prompt-q sm">Where might you look for evidence on that problem?</div>
-                        </div>
-                        <div class="field">
-                            <span class="hint">Name a source of data or information that could help you understand it — a survey, a government or UN dataset, a report, a set of records, anything. You do not need to have used it before. We want to see how you would start looking.</span>
-                            <textarea id="datasource" name="datasource" class="short" placeholder="What you would look at, and why you think it would help." required></textarea>
-                        </div>
-
-                        <div class="prompt-box subprompt">
-                            <div class="prompt-q sm">Tell us about something you started on your own and finished.</div>
-                        </div>
-                        <div class="field">
-                            <span class="hint">Anything counts, in or out of school — a project, a club, a repair, a piece of writing, a thing you taught yourself. Tell us what it took to finish it.</span>
-                            <textarea id="completion" name="completion" class="short" placeholder="What you set out to do, and how you saw it through." required></textarea>
-                        </div>
-                    </div>
-
-                    <div class="section">
                         <div class="section-title"><span>Context</span></div>
                         <div class="field">
                             <label>Have you done research before?</label>
@@ -277,24 +257,48 @@
                     </div>
 
                     <div class="section">
-                        <div class="section-title"><span>Commitment</span></div>
-                        <div class="field">
-                            <label>Can you commit to the full six weeks, Jul 27 to Sep 6?<span class="req">required</span></label>
-                            <div class="radio-group">
-                                <label><input type="radio" name="commit" value="Yes" required> Yes</label>
-                                <label><input type="radio" name="commit" value="No"> No</label>
-                            </div>
+                        <div class="section-title"><span>How you think and work</span><span class="count">this is what we read most closely</span></div>
+
+                        <div class="prompt-box">
+                            <div class="prompt-q">Think about education in your own community or country. Where do you see a gap between who gets a good education and who does not? Describe one specific problem you have noticed, and what you would want to find out about it.</div>
                         </div>
                         <div class="field">
-                            <label for="hours">Roughly how many hours per week can you give this?<span class="req">required</span></label>
-                            <span class="hint">Be honest. We would rather know now. A realistic answer helps us and helps you.</span>
-                            <select id="hours" name="hours" required>
-                                <option value="" disabled selected>Select</option>
-                                <option>Under 3 hours</option>
-                                <option>3 to 5 hours</option>
-                                <option>5 to 8 hours</option>
-                                <option>8+ hours</option>
-                            </select>
+                            <span class="hint">Write in your own voice. There is no right answer and no expected vocabulary. We want to see how you notice a problem and how you think about it.</span>
+                            <textarea id="prompt" name="prompt" placeholder="Start here..." required oninput="countWords(this)"></textarea>
+                            <div class="wordcount" id="wordcount">0 words</div>
+                            <div class="minnote">40 to 350 words.</div>
+                            <div class="field-warn" id="prompt-warn">Over 350 words. Try to tighten it, but you can still submit.</div>
+                            <div class="field-error" id="prompt-error"></div>
+                        </div>
+
+                        <div class="prompt-box subprompt">
+                            <div class="prompt-q sm">Where might you look for evidence on that problem?</div>
+                        </div>
+                        <div class="field">
+                            <span class="hint">Name a source of data or information that could help you understand it — a survey, a government or UN dataset, a report, a set of records, anything. You do not need to have used it before. We want to see how you would start looking.</span>
+                            <textarea id="datasource" name="datasource" class="short" placeholder="What you would look at, and why you think it would help." required></textarea>
+                            <div class="field-error" id="datasource-error"></div>
+                        </div>
+
+                        <div class="prompt-box subprompt">
+                            <div class="prompt-q sm">Tell us about something you started on your own and finished.</div>
+                        </div>
+                        <div class="field">
+                            <span class="hint">We want to know that you finish what you start. Tell us about something you set out to do and saw through to the end — a project, a goal, something you taught yourself, something you built or fixed or organized. What made it hard, and how did you get it done?</span>
+                            <textarea id="completion" name="completion" class="short" placeholder="What you set out to do, and how you saw it through." required oninput="countCompletion(this)"></textarea>
+                            <div class="wordcount" id="completion-count">0 words</div>
+                            <div class="minnote">20 to 300 words.</div>
+                            <div class="field-warn" id="completion-warn">Over 300 words. Try to tighten it, but you can still submit.</div>
+                            <div class="field-error" id="completion-error"></div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="field" style="margin-bottom:0">
+                            <label style="display:flex;gap:0.6rem;align-items:flex-start;cursor:pointer;font-weight:400;color:var(--body)">
+                                <input type="checkbox" id="consent" name="consent" style="width:auto;margin-top:0.3rem;accent-color:var(--accent);cursor:pointer">
+                                <span>Keep me updated on Atlas programs, chapters, and sessions with researchers. <span style="color:var(--dim)">(optional)</span></span>
+                            </label>
                         </div>
                     </div>
 
@@ -319,8 +323,8 @@
 
     <script>
         // ====================================================================
-        // SHEET HEADERS (row 1), in this exact order — 13 columns, A through M:
-        //   Timestamp | Name | Email | Country | Grade | Timezone | Prompt | Data_Source | Completion | Research | Research_Desc | Commit | Hours
+        // SHEET HEADERS (row 1), in this exact order — 16 columns, A through P:
+        //   Timestamp | Name | Email | School | City | Country | Grade | Timezone | Prompt | Data_Source | Completion | Research | Research_Desc | Commit | Hours | Consent
         //
         // UPDATED Apps Script doPost (must match the order above):
         //
@@ -328,9 +332,9 @@
         //   var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
         //   var d = JSON.parse(e.postData.contents);
         //   sheet.appendRow([
-        //     new Date(), d.name, d.email, d.country, d.grade, d.timezone,
+        //     new Date(), d.name, d.email, d.school, d.city, d.country, d.grade, d.timezone,
         //     d.prompt, d.datasource, d.completion,
-        //     d.research, d.research_desc, d.commit, d.hours
+        //     d.research, d.research_desc, d.commit, d.hours, d.consent
         //   ]);
         //   return ContentService.createTextOutput(JSON.stringify({status:'ok'}))
         //     .setMimeType(ContentService.MimeType.JSON);
@@ -342,16 +346,27 @@
 
         const ENDPOINT = 'https://script.google.com/macros/s/AKfycbzoGRSNMoJhYjcbHbqG2NEdIqCZ9DJ5vGVaMBvnXHwnRnoQInQ6RsuwWirb5nb0iwTqlA/exec';
 
+        function wc(str){ return str.trim() === '' ? 0 : str.trim().split(/\s+/).length; }
+
         function countWords(el){
-            var words = el.value.trim() === '' ? 0 : el.value.trim().split(/\s+/).length;
-            var wc = document.getElementById('wordcount');
-            wc.textContent = words + ' words';
-            wc.className = (words > 400) ? 'wordcount over' : 'wordcount';
+            var words = wc(el.value);
+            var box = document.getElementById('wordcount');
+            box.textContent = words + ' words';
+            box.className = (words > 350) ? 'wordcount over' : 'wordcount';
+            document.getElementById('prompt-warn').classList.toggle('show', words > 350);
+        }
+
+        function countCompletion(el){
+            var words = wc(el.value);
+            var box = document.getElementById('completion-count');
+            box.textContent = words + ' words';
+            box.className = (words > 300) ? 'wordcount over' : 'wordcount';
+            document.getElementById('completion-warn').classList.toggle('show', words > 300);
         }
 
         // ---- save-your-work: keep a local draft so a closed tab loses nothing ----
         var DRAFT_KEY = 'atlas_application_draft_v1';
-        var TEXT_IDS = ['name','email','timezone','prompt','datasource','completion','research_desc'];
+        var TEXT_IDS = ['name','email','school','city','timezone','prompt','datasource','completion','research_desc'];
         var SELECT_IDS = ['country','grade','hours'];
         var RADIO_NAMES = ['research','commit'];
 
@@ -366,6 +381,8 @@
                     var picked = document.querySelector('input[name="'+nm+'"]:checked');
                     d[nm] = picked ? picked.value : '';
                 });
+                var c = document.getElementById('consent');
+                d.consent = c ? c.checked : false;
                 localStorage.setItem(DRAFT_KEY, JSON.stringify(d));
             }catch(e){/* storage may be blocked; fail quietly */}
         }
@@ -384,7 +401,9 @@
                         if(el) el.checked = true;
                     }
                 });
+                if(typeof d.consent !== 'undefined' && document.getElementById('consent')) document.getElementById('consent').checked = !!d.consent;
                 if(document.getElementById('prompt')) countWords(document.getElementById('prompt'));
+                if(document.getElementById('completion')) countCompletion(document.getElementById('completion'));
             }catch(e){/* ignore malformed draft */}
         }
 
@@ -407,20 +426,31 @@
 
             status.className = 'status'; status.style.display = 'none';
 
-            var promptField = document.getElementById('prompt').closest('.field');
-            var promptError = document.getElementById('prompt-error');
-            var words = form.prompt.value.trim() === '' ? 0 : form.prompt.value.trim().split(/\s+/).length;
-            if(words < 40){
-                promptError.textContent = 'This response is too short to review. You have written ' + words + ' word' + (words===1?'':'s') + '. Please write at least 40 — around 300 is ideal.';
-                promptError.classList.add('show');
-                promptField.classList.add('invalid');
-                document.getElementById('prompt').scrollIntoView({behavior:'smooth', block:'center'});
-                document.getElementById('prompt').focus({preventScroll:true});
-                return false;
+            // ---- minimum-length checks (hard floors block submit; caps are soft warnings only) ----
+            function failMin(id, count, min, unit){
+                var f = document.getElementById(id).closest('.field');
+                var err = document.getElementById(id + '-error');
+                err.textContent = 'This response is too short to review. You have written ' + count + ' word' + (count===1?'':'s') + '. Please write at least ' + min + '.';
+                err.classList.add('show');
+                f.classList.add('invalid');
+                document.getElementById(id).scrollIntoView({behavior:'smooth', block:'center'});
+                document.getElementById(id).focus({preventScroll:true});
             }
-            // clear any prior prompt error before proceeding
-            promptError.classList.remove('show');
-            promptField.classList.remove('invalid');
+            function clearMin(id){
+                document.getElementById(id + '-error').classList.remove('show');
+                document.getElementById(id).closest('.field').classList.remove('invalid');
+            }
+
+            var pWords = wc(form.prompt.value);
+            var dWords = wc(form.datasource.value);
+            var cWords = wc(form.completion.value);
+
+            if(pWords < 40){ failMin('prompt', pWords, 40); return false; }
+            clearMin('prompt');
+            if(dWords < 5){ failMin('datasource', dWords, 5); return false; }
+            clearMin('datasource');
+            if(cWords < 20){ failMin('completion', cWords, 20); return false; }
+            clearMin('completion');
 
             btn.disabled = true; btn.textContent = 'Submitting...';
 
@@ -428,6 +458,8 @@
                 timestamp: new Date().toISOString(),
                 name: form.name.value.trim(),
                 email: form.email.value.trim(),
+                school: form.school.value.trim(),
+                city: form.city.value.trim(),
                 country: form.country.value,
                 grade: form.grade.value,
                 timezone: form.timezone.value.trim(),
@@ -437,7 +469,8 @@
                 research: form.research.value,
                 research_desc: form.research_desc.value.trim(),
                 commit: form.commit.value,
-                hours: form.hours.value
+                hours: form.hours.value,
+                consent: document.getElementById('consent').checked ? 'Yes' : 'No'
             };
 
             try{
