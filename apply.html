@@ -188,4 +188,175 @@
                                 <label for="country">Country<span class="req">required</span></label>
                                 <select id="country" name="country" required>
                                     <option value="" disabled selected>Select country</option>
-                                    <option>Afghanistan</option><option>Albania</option><option>Algeria</option><option>Argentina</option><option>Australia</option><option>Austria</option><option>Bangladesh</option><option>Belgium</option><option>Bolivia</option><option>Brazil</option><option>Cambodia</option><option>Canada</option><option>Chile</option><option>China</option><option>Colombia</option><option>Czech Republic</option><option>Denmark</option><option>Ecuador</option><option>Egypt</option><option>Ethiopia</option><option>Finland</option><option>France</option><option>Germany</option><option>Ghana</option><option>Greece</option><option>Guatemala</option><option>Hungary</option><option>India</option><option>Indonesia</option><option>Iran</option><option>Iraq</option><option>Ireland</option><option>Israel</option><option>Italy</option><option>Japan</option><option>Jordan</option><option>Kazakhstan</option><option>Kenya</option><option>Kuwait</option><option>Lebanon</option><option>Libya</option><option>Malaysia</option><option>Mexico</option><option>Morocco</option><option>Myanmar</option><option>Nepal</option><option>Netherlands</option><option>New Zealand</option><option>Nigeria</option><option>Norway</option><option>Oman</option><option>Pakistan</option><option>Palestine</option><option>Panama</option><option>Peru</option><option>Philippines</option><option>Poland</option><option>Portugal</option><option>Qatar</option><option>Romania</option><option>Russia</option><option>Saudi Arabia</option><option>Senegal</option><option>Singapore</option><option>Somalia</option><option>South
+                                    <option>Afghanistan</option><option>Albania</option><option>Algeria</option><option>Argentina</option><option>Australia</option><option>Austria</option><option>Bangladesh</option><option>Belgium</option><option>Bolivia</option><option>Brazil</option><option>Cambodia</option><option>Canada</option><option>Chile</option><option>China</option><option>Colombia</option><option>Czech Republic</option><option>Denmark</option><option>Ecuador</option><option>Egypt</option><option>Ethiopia</option><option>Finland</option><option>France</option><option>Germany</option><option>Ghana</option><option>Greece</option><option>Guatemala</option><option>Hungary</option><option>India</option><option>Indonesia</option><option>Iran</option><option>Iraq</option><option>Ireland</option><option>Israel</option><option>Italy</option><option>Japan</option><option>Jordan</option><option>Kazakhstan</option><option>Kenya</option><option>Kuwait</option><option>Lebanon</option><option>Libya</option><option>Malaysia</option><option>Mexico</option><option>Morocco</option><option>Myanmar</option><option>Nepal</option><option>Netherlands</option><option>New Zealand</option><option>Nigeria</option><option>Norway</option><option>Oman</option><option>Pakistan</option><option>Palestine</option><option>Panama</option><option>Peru</option><option>Philippines</option><option>Poland</option><option>Portugal</option><option>Qatar</option><option>Romania</option><option>Russia</option><option>Saudi Arabia</option><option>Senegal</option><option>Singapore</option><option>Somalia</option><option>South Africa</option><option>South Korea</option><option>Spain</option><option>Sri Lanka</option><option>Sudan</option><option>Sweden</option><option>Switzerland</option><option>Syria</option><option>Taiwan</option><option>Tanzania</option><option>Thailand</option><option>Tunisia</option><option>Turkey</option><option>UAE</option><option>Uganda</option><option>Ukraine</option><option>United Kingdom</option><option>USA</option><option>Uzbekistan</option><option>Venezuela</option><option>Vietnam</option><option>Yemen</option><option>Other</option>
+                                </select>
+                            </div>
+                            <div class="field">
+                                <label for="grade">Grade / year<span class="req">required</span></label>
+                                <select id="grade" name="grade" required>
+                                    <option value="" disabled selected>Select grade</option>
+                                    <option>9th / Year 10</option>
+                                    <option>10th / Year 11</option>
+                                    <option>11th / Year 12</option>
+                                    <option>12th / Year 13</option>
+                                    <option>Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="timezone">Your time zone<span class="req">required</span></label>
+                            <span class="hint">Sessions run across many time zones. This helps us schedule mentor and guest sessions you can actually attend.</span>
+                            <input type="text" id="timezone" name="timezone" placeholder="e.g. PST, GMT+5:30, CET" required>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title"><span>The writing prompt</span><span class="count">this is what we read most closely</span></div>
+                        <div class="prompt-box">
+                            <div class="prompt-q">Name an education-access problem you have seen in your own community or country, and explain what you would want to understand about it.</div>
+                        </div>
+                        <div class="field">
+                            <span class="hint">About 300 words. Write in your own voice. There is no right answer and no expected vocabulary. We want to see how you notice a problem and how you think about it.</span>
+                            <textarea id="prompt" name="prompt" placeholder="Start here..." required oninput="countWords(this)"></textarea>
+                            <div class="wordcount" id="wordcount">0 words</div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title"><span>Context</span></div>
+                        <div class="field">
+                            <label>Have you done research before?</label>
+                            <span class="hint">This is context, not a requirement. Most fellows have not. It does not affect your chances.</span>
+                            <div class="radio-group">
+                                <label><input type="radio" name="research" value="Yes" required> Yes</label>
+                                <label><input type="radio" name="research" value="No"> No</label>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="research_desc">If yes, one line on what it was <span style="color:var(--dim);font-weight:400">(optional)</span></label>
+                            <input type="text" id="research_desc" name="research_desc" placeholder="Topic or project, one line">
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title"><span>Commitment</span></div>
+                        <div class="field">
+                            <label>Can you commit to the full six weeks, Jul 27 to Sep 6?<span class="req">required</span></label>
+                            <div class="radio-group">
+                                <label><input type="radio" name="commit" value="Yes" required> Yes</label>
+                                <label><input type="radio" name="commit" value="No"> No</label>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="hours">Roughly how many hours per week can you give this?<span class="req">required</span></label>
+                            <span class="hint">Be honest. We would rather know now. A realistic answer helps us and helps you.</span>
+                            <select id="hours" name="hours" required>
+                                <option value="" disabled selected>Select</option>
+                                <option>Under 3 hours</option>
+                                <option>3 to 5 hours</option>
+                                <option>5 to 8 hours</option>
+                                <option>8+ hours</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="submit-wrap">
+                        <button type="submit" class="btn" id="submit-btn">Submit application</button>
+                        <p class="privacy-note">By submitting you agree to the Atlas <a href="/privacy.html">Privacy Policy</a>. Your information is used only to run the fellowship.</p>
+                    </div>
+                    <div class="status" id="status"></div>
+                </form>
+            </div>
+
+            <div class="done" id="done">
+                <h2>Application received.</h2>
+                <p>Thank you. We read every application ourselves. You will hear from us by email after applications close on July 24, whatever the outcome.</p>
+                <a href="/about.html">About Atlas →</a>
+            </div>
+
+        </div>
+    </main>
+
+    <footer><p>Atlas Research Institute · 2026 · <a href="/privacy.html">Privacy Policy</a></p></footer>
+
+    <script>
+        // ====================================================================
+        // SETUP BEFORE GOING LIVE:
+        // 1. Create a NEW Google Sheet (do NOT reuse the waitlist sheet).
+        // 2. Row 1 headers, in this exact order:
+        //    Timestamp | Name | Email | Country | Grade | Timezone | Prompt | Research | Research_Desc | Commit | Hours
+        // 3. Extensions > Apps Script, paste the doPost below, Deploy > New deployment
+        //    > Web app > Execute as: Me > Who has access: Anyone.
+        // 4. Copy the /exec URL into ENDPOINT below.
+        //
+        // function doPost(e){
+        //   var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+        //   var d = JSON.parse(e.postData.contents);
+        //   sheet.appendRow([
+        //     new Date(), d.name, d.email, d.country, d.grade, d.timezone,
+        //     d.prompt, d.research, d.research_desc, d.commit, d.hours
+        //   ]);
+        //   return ContentService.createTextOutput(JSON.stringify({status:'ok'}))
+        //     .setMimeType(ContentService.MimeType.JSON);
+        // }
+        // ====================================================================
+
+        const ENDPOINT = 'PASTE_NEW_DEPLOYMENT_URL_HERE';
+
+        function countWords(el){
+            var words = el.value.trim() === '' ? 0 : el.value.trim().split(/\s+/).length;
+            var wc = document.getElementById('wordcount');
+            wc.textContent = words + ' words';
+            wc.className = (words > 400) ? 'wordcount over' : 'wordcount';
+        }
+
+        async function submitForm(e){
+            e.preventDefault();
+            const btn = document.getElementById('submit-btn');
+            const status = document.getElementById('status');
+            const form = document.getElementById('atlas-form');
+
+            status.className = 'status'; status.style.display = 'none';
+
+            var words = form.prompt.value.trim() === '' ? 0 : form.prompt.value.trim().split(/\s+/).length;
+            if(words < 100){
+                status.className = 'status error';
+                status.textContent = 'Your response is quite short. Aim for around 300 words so we can get a real sense of your thinking.';
+                return false;
+            }
+
+            btn.disabled = true; btn.textContent = 'Submitting...';
+
+            const data = {
+                timestamp: new Date().toISOString(),
+                name: form.name.value.trim(),
+                email: form.email.value.trim(),
+                country: form.country.value,
+                grade: form.grade.value,
+                timezone: form.timezone.value.trim(),
+                prompt: form.prompt.value.trim(),
+                research: form.research.value,
+                research_desc: form.research_desc.value.trim(),
+                commit: form.commit.value,
+                hours: form.hours.value
+            };
+
+            try{
+                await fetch(ENDPOINT, {
+                    method:'POST', mode:'no-cors',
+                    headers:{'Content-Type':'application/json'},
+                    body:JSON.stringify(data)
+                });
+                document.getElementById('form-wrap').style.display = 'none';
+                document.getElementById('done').classList.add('show');
+                window.scrollTo({top:0,behavior:'smooth'});
+            }catch(err){
+                status.className = 'status error';
+                status.textContent = 'Something went wrong. Please try again, or email atlas.research.org@gmail.com.';
+                btn.disabled = false; btn.textContent = 'Submit application';
+            }
+            return false;
+        }
+    </script>
+</body>
+</html>
