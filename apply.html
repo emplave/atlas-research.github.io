@@ -318,6 +318,26 @@
                         </div>
                     </div>
 
+                    <div class="section">
+                        <div class="section-title"><span>One last thing</span></div>
+                        <div class="field">
+                            <label for="referral">How did you hear about Atlas? <span style="color:var(--dim);font-weight:400">(optional)</span></label>
+                            <select id="referral" name="referral">
+                                <option value="" selected>Select one</option>
+                                <option>Google search</option>
+                                <option>ChatGPT or another AI assistant</option>
+                                <option>Instagram or TikTok</option>
+                                <option>A friend or classmate</option>
+                                <option>A teacher or school</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                        <div class="field" id="referral-other-wrap" style="display:none">
+                            <label for="referral_other">Tell us where <span style="color:var(--dim);font-weight:400">(optional)</span></label>
+                            <input type="text" id="referral_other" name="referral_other" placeholder="Where you heard about us">
+                        </div>
+                    </div>
+
                     <div class="consent-block" id="consent-block">
                         <label class="consent-item">
                             <input type="checkbox" id="agree" name="agree">
@@ -350,8 +370,8 @@
 
     <script>
         // ====================================================================
-        // SHEET HEADERS (row 1), in this exact order — 14 columns, A through N:
-        //   Timestamp | Name | Email | School | City | Country | Grade | Timezone | Prompt | Data_Source | Completion | Research | Research_Desc | Consent
+        // SHEET HEADERS (row 1), in this exact order — 16 columns, A through P:
+        //   Timestamp | Name | Email | School | City | Country | Grade | Timezone | Prompt | Data_Source | Completion | Research | Research_Desc | Consent | Referral | Referral_Other
         //
         // UPDATED Apps Script doPost (must match the order above):
         //
@@ -361,7 +381,7 @@
         //   sheet.appendRow([
         //     new Date(), d.name, d.email, d.school, d.city, d.country, d.grade, d.timezone,
         //     d.prompt, d.datasource, d.completion,
-        //     d.research, d.research_desc, d.consent
+        //     d.research, d.research_desc, d.consent, d.referral, d.referral_other
         //   ]);
         //   return ContentService.createTextOutput(JSON.stringify({status:'ok'}))
         //     .setMimeType(ContentService.MimeType.JSON);
@@ -393,8 +413,8 @@
 
         // ---- save-your-work: keep a local draft so a closed tab loses nothing ----
         var DRAFT_KEY = 'atlas_application_draft_v1';
-        var TEXT_IDS = ['name','email','school','city','timezone','prompt','datasource','completion','research_desc'];
-        var SELECT_IDS = ['country','grade'];
+        var TEXT_IDS = ['name','email','school','city','timezone','prompt','datasource','completion','research_desc','referral_other'];
+        var SELECT_IDS = ['country','grade','referral'];
         var RADIO_NAMES = ['research'];
 
         function saveDraft(){
@@ -434,6 +454,7 @@
                 if(typeof d.agree !== 'undefined' && document.getElementById('agree')) document.getElementById('agree').checked = !!d.agree;
                 if(document.getElementById('prompt')) countWords(document.getElementById('prompt'));
                 if(document.getElementById('completion')) countCompletion(document.getElementById('completion'));
+                if(typeof toggleReferralOther === 'function') toggleReferralOther();
             }catch(e){/* ignore malformed draft */}
         }
 
@@ -441,8 +462,17 @@
             try{ localStorage.removeItem(DRAFT_KEY); }catch(e){}
         }
 
+        function toggleReferralOther(){
+            var sel = document.getElementById('referral');
+            var wrap = document.getElementById('referral-other-wrap');
+            wrap.style.display = (sel && sel.value === 'Other') ? 'block' : 'none';
+        }
+
         document.addEventListener('DOMContentLoaded', function(){
             restoreDraft();
+            toggleReferralOther();
+            var referralSel = document.getElementById('referral');
+            if(referralSel) referralSel.addEventListener('change', toggleReferralOther);
             var form = document.getElementById('atlas-form');
             form.addEventListener('input', saveDraft);
             form.addEventListener('change', saveDraft);
@@ -526,7 +556,9 @@
                 completion: form.completion.value.trim(),
                 research: form.research.value,
                 research_desc: form.research_desc.value.trim(),
-                consent: document.getElementById('consent').checked ? 'Yes' : 'No'
+                consent: document.getElementById('consent').checked ? 'Yes' : 'No',
+                referral: form.referral.value,
+                referral_other: form.referral_other.value.trim()
             };
 
             try{
