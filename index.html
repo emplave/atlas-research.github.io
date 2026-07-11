@@ -4,22 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Atlas Research Institute — Education Access Research for High School Students</title>
-    <meta name="description" content="Atlas is a youth-led research institute on global education access. A selective summer fellowship and an open school-year chapter network for high school students. Free to join.">
+    <meta name="description" content="Atlas is a research institute on global education access. A selective summer fellowship and an open school-year chapter network for high school students. Free to join, with a Lumiere Education scholarship for fellows.">
     <meta name="keywords" content="high school research fellowship, education access research, free research program students, education inequality, student policy brief, high school research opportunities">
     <meta property="og:title" content="Atlas Research Institute">
-    <meta property="og:description" content="A youth-led research institute on global education access. A selective summer fellowship and an open school-year chapter network. Free to join.">
+    <meta property="og:description" content="A research institute on global education access. A selective summer fellowship and an open school-year chapter network. Free to join.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://atlas-research.org">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Atlas Research Institute">
-    <meta name="twitter:description" content="A youth-led research institute on global education access. Free for high school students.">
+    <meta name="twitter:description" content="A research institute on global education access. Free for high school students.">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='10' fill='%23e8e4d7'/><text x='50' y='70' font-family='Georgia,serif' font-size='64' fill='%231f3a52' text-anchor='middle'>A</text></svg>">
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
         "@type": "EducationalOrganization",
         "name": "Atlas Research Institute",
-        "description": "A youth-led research institute focused on global education access, running a selective summer research fellowship and an open school-year chapter network for high school students.",
+        "description": "A research institute focused on global education access, running a selective summer research fellowship and an open school-year chapter network for high school students.",
         "url": "https://atlas-research.org",
         "email": "atlas.research.org@gmail.com",
         "foundingDate": "2024",
@@ -33,7 +33,7 @@
         "offers": {
             "@type": "Offer",
             "name": "Atlas Fellowship",
-            "description": "A selective six-week summer research fellowship for high school students producing policy briefs and literature reviews on education access.",
+            "description": "A selective six-week summer research fellowship for high school students producing policy briefs and literature reviews on questions relating to education.",
             "price": "0",
             "priceCurrency": "USD",
             "availability": "https://schema.org/LimitedAvailability",
@@ -47,7 +47,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Archivo:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-
         :root{
             --paper:#e8e4d7;
             --paper-deep:#e1dccb;
@@ -62,7 +61,6 @@
             --rule-soft:rgba(26,28,34,0.09);
             --grid:rgba(31,58,82,0.05);
         }
-
         html{scroll-behavior:smooth}
         body{
             font-family:'Archivo',sans-serif;background:var(--paper);color:var(--body);
@@ -75,7 +73,6 @@
                 repeating-linear-gradient(to bottom,var(--grid) 0 1px,transparent 1px 96px);
         }
         body>*{position:relative;z-index:1}
-
         /* ---- nav ---- */
         nav{
             position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:baseline;
@@ -90,9 +87,7 @@
         .nav-links a:hover{color:var(--ink)}
         .nav-cta{font-family:'IBM Plex Mono',monospace;font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--paper);background:var(--ink);text-decoration:none;padding:0.5rem 1rem;transition:background .2s}
         .nav-cta:hover{background:var(--accent)}
-
         .wrap{max-width:1080px;margin:0 auto;padding:0 clamp(1.25rem,5vw,3rem)}
-
         /* ---- hero ---- */
         .hero{display:grid;grid-template-columns:1.15fr 0.85fr;gap:3.5rem;align-items:center;padding:5.5rem 0 4rem;border-bottom:2px solid var(--ink)}
         .plate{font-family:'IBM Plex Mono',monospace;font-size:0.72rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--accent);display:flex;gap:0.9rem;align-items:center;margin-bottom:1.5rem}
@@ -104,7 +99,9 @@
         .btn-primary:hover{background:var(--accent)}
         .btn-ghost{font-family:'IBM Plex Mono',monospace;font-size:0.75rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);text-decoration:none;border-bottom:1px solid var(--rule);padding-bottom:3px;transition:color .2s,border-color .2s}
         .btn-ghost:hover{color:var(--ink);border-color:var(--accent)}
-
+        .hero-meta{font-family:'IBM Plex Mono',monospace;font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin-top:1.5rem;display:flex;flex-wrap:wrap;gap:0.55rem;align-items:center}
+        .hero-meta .free{color:var(--paper);background:var(--accent);padding:2px 8px;letter-spacing:0.1em}
+        .hero-meta .sep{color:var(--dim)}
         /* hero index panel — the atlas "plate index" */
         .index-panel{border:1px solid var(--ink)}
         .index-head{font-family:'IBM Plex Mono',monospace;font-size:0.68rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);padding:0.9rem 1.25rem;border-bottom:1px solid var(--rule);display:flex;justify-content:space-between}
@@ -113,7 +110,6 @@
         .index-row .rname{font-family:'Fraunces',serif;font-size:1.35rem;color:var(--ink);display:flex;align-items:baseline;gap:0.6rem;margin-bottom:0.4rem}
         .index-row .rname span{font-family:'IBM Plex Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);border:1px solid var(--rule);padding:2px 7px}
         .index-row p{font-size:0.86rem;color:var(--muted);line-height:1.55}
-
         /* ---- sections (label rail + body) ---- */
         section{display:grid;grid-template-columns:160px 1fr;gap:2.5rem;padding:3.4rem 0;border-bottom:1px solid var(--rule-soft)}
         .sec-label{font-family:'IBM Plex Mono',monospace;font-size:0.72rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);padding-top:0.5rem}
@@ -124,10 +120,8 @@
         .sec-body p:last-child{margin-bottom:0}
         .sec-body strong{color:var(--ink);font-weight:600}
         .sec-body em{font-family:'Fraunces',serif;font-style:italic;font-size:1.05em}
-
         .prog-name{font-family:'Fraunces',serif;font-size:1.25rem;color:var(--ink);display:flex;align-items:baseline;gap:0.6rem;margin:1.8rem 0 0.5rem}
         .prog-name span{font-family:'IBM Plex Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);border:1px solid var(--rule);padding:2px 7px}
-
         /* numbered sequence (a real sequence, so numbering is meaningful) */
         .flow{margin-top:0.5rem}
         .flow-step{display:grid;grid-template-columns:36px 1fr;gap:1.1rem;padding:1.1rem 0;border-top:1px solid var(--rule-soft);align-items:start}
@@ -135,7 +129,6 @@
         .flow-step .fn{font-family:'IBM Plex Mono',monospace;font-size:0.8rem;color:var(--accent);padding-top:0.15rem}
         .flow-step h3{font-family:'Archivo',sans-serif;font-size:0.98rem;font-weight:600;color:var(--ink);margin-bottom:0.25rem}
         .flow-step p{font-size:0.9rem;color:var(--muted);line-height:1.6;margin:0}
-
         /* publishing register */
         .pub{border-top:1px solid var(--rule);margin-top:0.5rem}
         .pub-row{display:flex;justify-content:space-between;align-items:baseline;gap:1.5rem;padding:1.1rem 0;border-bottom:1px solid var(--rule-soft)}
@@ -143,24 +136,20 @@
         .pub-row .pd{font-family:'IBM Plex Mono',monospace;font-size:0.68rem;letter-spacing:0.04em;text-transform:uppercase;color:var(--muted);text-align:right;flex-shrink:0;max-width:18rem;line-height:1.5}
         .pub-row a{color:var(--accent-bright);text-decoration:none;border-bottom:1px solid var(--rule)}
         .pub-row a:hover{border-color:var(--accent-bright)}
-
         /* ---- cta ---- */
         .cta{display:block;padding:4rem 0;border-bottom:none}
         .cta-inner{border:1px solid var(--ink);padding:3rem clamp(1.5rem,4vw,3rem);display:flex;flex-wrap:wrap;gap:1.5rem;justify-content:space-between;align-items:center}
         .cta-inner .plate{margin-bottom:0.8rem}
         .cta-inner h2{font-family:'Fraunces',serif;font-weight:400;font-size:clamp(1.5rem,3vw,2rem);color:var(--ink);line-height:1.1;max-width:20ch}
         .cta-inner p{font-family:'IBM Plex Mono',monospace;font-size:0.76rem;letter-spacing:0.03em;color:var(--muted);margin-top:0.6rem}
-
         footer{padding:2.5rem 0 3rem;text-align:center}
         footer p{font-family:'IBM Plex Mono',monospace;font-size:0.7rem;letter-spacing:0.06em;color:var(--dim)}
         footer a{color:var(--muted);text-decoration:none}
         footer a:hover{color:var(--ink)}
-
         /* gentle reveal, disabled for reduced motion */
         .reveal{opacity:0;transform:translateY(12px);transition:opacity .7s ease,transform .7s ease}
         .reveal.vis{opacity:1;transform:none}
         @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
-
         @media(max-width:860px){
             .hero{grid-template-columns:1fr;gap:2.5rem;padding:3.5rem 0 2.5rem}
             .nav-links{display:none}
@@ -185,32 +174,30 @@
             <a href="/apply.html" class="nav-cta">Apply Now</a>
         </div>
     </nav>
-
     <div class="wrap">
-
         <header class="hero">
             <div>
                 <div class="plate">Atlas Research Institute</div>
                 <h1>Who gets to learn, and who does not</h1>
-                <p class="standfirst">A youth-led research institute on global education access. We train high school students to study education inequality and publish work serious enough to stand on its own.</p>
+                <p class="standfirst">A research institute on global education access. We train high school students to do real research on questions relating to education, and publish work serious enough to stand on its own.</p>
                 <div class="hero-actions">
                     <a href="/apply.html" class="btn-primary">Apply to the Fellowship →</a>
                     <a href="/about.html" class="btn-ghost">Read about Atlas</a>
                 </div>
+                <p class="hero-meta"><span class="free">Free</span><span>Remote</span><span class="sep">·</span><span>Lumiere Education scholarship for fellows</span></p>
             </div>
             <aside class="index-panel">
                 <div class="index-head"><span>The Programs</span><span>Two</span></div>
                 <div class="index-row">
-                    <div class="rname">Fellowship <span>Depth</span></div>
-                    <p>Selective. Six weeks over the summer. Fellows produce a policy brief or literature review from existing data and submit the strongest work to academic journals.</p>
+                    <div class="rname">Fellowship</div>
+                    <p>Selective. Six weeks over the summer. Fellows produce a policy brief or literature review, reviewed and published in Atlas's own journal and partner journals.</p>
                 </div>
                 <div class="index-row">
-                    <div class="rname">Chapters <span>Breadth</span></div>
-                    <p>Open to any student, through the school year. Start a chapter at your school and study education access where you are.</p>
+                    <div class="rname">Chapters</div>
+                    <p>Led by students we invite, through the school year. Chapter heads are chosen from our fellowship applicants to build a research community at their own school.</p>
                 </div>
             </aside>
         </header>
-
         <main>
             <section class="reveal">
                 <div class="sec-label">Premise<small>Why Atlas exists</small></div>
@@ -219,37 +206,32 @@
                     <p>The difference was not ability. It was <strong>access</strong>. Atlas exists to close that gap: the same training and the same standards, wherever a student happens to live.</p>
                 </div>
             </section>
-
             <section id="programs" class="reveal">
                 <div class="sec-label">Programs<small>Two, by design</small></div>
                 <div class="sec-body">
-                    <p>Atlas runs two programs that do different jobs. One goes deep. One goes wide. Neither substitutes for the other.</p>
-
-                    <div class="prog-name">The Atlas Fellowship <span>Depth</span></div>
-                    <p>Selective, six weeks, over the summer. Fellows choose a question inside education access — school funding, teacher shortages, language of instruction, refugee schooling, gender gaps, rural and urban divides, access to technology, among others — and produce a policy brief or literature review built from existing data: UNESCO, the World Bank, PISA, national education records. The strongest work is submitted to academic journals.</p>
-
-                    <div class="prog-name">Atlas Chapters <span>Breadth</span></div>
-                    <p>Open to any student, running through the school year. A student starts a chapter at their school, and it becomes a place to study education access locally and move members toward research. Chapters are how Atlas reaches students who would otherwise have no way in.</p>
+                    <p>Atlas runs two programs. The Fellowship trains students to do real research over the summer. Chapters carry that work into the school year, led by students we select ourselves.</p>
+                    <div class="prog-name">The Atlas Fellowship</div>
+                    <p>Selective, six weeks, over the summer. Fellows choose a question relating to education — from who gets access to school and how it is funded, to how students actually learn, to the effect of technology and AI on learning — and produce a policy brief or literature review backed by real evidence, whether from existing data (UNESCO, the World Bank, PISA, national education records) or their own surveys and interviews. Finished work is reviewed and published, in Atlas's own journal and in our partner journals.</p>
+                    <div class="prog-name">Atlas Chapters</div>
+                    <p>Chapters run through the school year and are led by students we invite. We select chapter heads from our fellowship applicants — exceptional students we ask to build a research community at their own school and bring others into the work. It is how the strongest Atlas work continues past the summer.</p>
                 </div>
             </section>
-
             <section id="method" class="reveal">
                 <div class="sec-label">Method<small>How the fellowship works</small></div>
                 <div class="sec-body">
                     <p>The Fellowship is built for students with no prior research experience. Fellows work with professors and researchers from universities including <strong>Stanford, USC, and the University of Melbourne</strong>.</p>
                     <div class="flow">
-                        <div class="flow-step"><div class="fn">01</div><div><h3>Choose a question</h3><p>A specific question inside education access — funding, teacher shortages, language of instruction, refugee schooling, gender gaps, technology access.</p></div></div>
-                        <div class="flow-step"><div class="fn">02</div><div><h3>Build from evidence</h3><p>Existing data does the work: UNESCO, the World Bank, PISA, national education records. No original data collection required.</p></div></div>
+                        <div class="flow-step"><div class="fn">01</div><div><h3>Choose a question</h3><p>A specific question relating to education — access and funding, how students learn, language in the classroom, refugee schooling, gender gaps, the role of technology and AI.</p></div></div>
+                        <div class="flow-step"><div class="fn">02</div><div><h3>Build from evidence</h3><p>Work from existing data like UNESCO, the World Bank, and PISA, or gather your own through surveys and interviews. Either way works.</p></div></div>
                         <div class="flow-step"><div class="fn">03</div><div><h3>Draft and revise</h3><p>Write to a fixed standard and revise against feedback until the argument holds and the sources hold up.</p></div></div>
-                        <div class="flow-step"><div class="fn">04</div><div><h3>Submit</h3><p>The strongest briefs go to partner journals for peer review and publication. The work has somewhere to go from the first week.</p></div></div>
+                        <div class="flow-step"><div class="fn">04</div><div><h3>Publish</h3><p>Finished briefs are reviewed and published, in Atlas's own journal and in our partner journals. The work has somewhere to go from the first week.</p></div></div>
                     </div>
                 </div>
             </section>
-
             <section id="partners" class="reveal">
                 <div class="sec-label">Partners<small>Who Atlas works with</small></div>
                 <div class="sec-body">
-                    <p>Atlas partners with peer-reviewed journals that publish fellowship work, and with Lumiere Education, which offers Atlas fellows a scholarship. Fellows also publish in Atlas's own in-house journal.</p>
+                    <p>The Atlas Fellowship is <strong>free</strong>. On top of that, fellows receive a scholarship to Lumiere Education, and the strongest work goes to peer-reviewed journals for publication. Any paid services our partners offer are separate and optional. Atlas never charges fellows.</p>
                     <div class="pub">
                         <div class="pub-row">
                             <div class="pn"><a href="https://ijhsr.terrajournals.org/" target="_blank" rel="noopener">International Journal of High School Research</a></div>
@@ -261,7 +243,7 @@
                         </div>
                         <div class="pub-row">
                             <div class="pn"><a href="https://www.lumiere-education.com/" target="_blank" rel="noopener">Lumiere Education</a></div>
-                            <div class="pd">Program partner · Scholarship for fellows</div>
+                            <div class="pd">Program partner · Scholarship awarded to fellows</div>
                         </div>
                         <div class="pub-row">
                             <div class="pn"><a href="/journal.html">Atlas Journal of Education Policy</a></div>
@@ -270,7 +252,6 @@
                     </div>
                 </div>
             </section>
-
             <section class="reveal">
                 <div class="sec-label">Difference<small>How Atlas differs</small></div>
                 <div class="sec-body">
@@ -278,7 +259,6 @@
                 </div>
             </section>
         </main>
-
         <div class="cta reveal">
             <div class="cta-inner">
                 <div>
@@ -289,12 +269,10 @@
                 <a href="/apply.html" class="btn-primary">Apply to the Fellowship →</a>
             </div>
         </div>
-
         <footer>
             <p>Atlas Research Institute · 2026 · <a href="/privacy.html">Privacy Policy</a></p>
         </footer>
     </div>
-
     <script>
         const io = new IntersectionObserver(function(entries){
             entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('vis'); io.unobserve(e.target); } });
