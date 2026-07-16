@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-cream-100 text-navy-800 font-sans antialiased;
+    font-weight: 420;
+    font-variation-settings: "wght" 420;
+  }
+  ::selection {
+    @apply bg-gold-400/40 text-navy-900;
+  }
+}
+
+@layer utilities {
+  /* mono metadata label — the "instrument chrome" register */
+  .meta-label {
+    @apply font-mono text-[11px] tracking-caps uppercase;
+  }
+  /* hairline rules, Antigravity-style elevation without shadows */
+  .rule {
+    @apply border-t border-[rgba(28,46,69,0.12)];
+  }
+  .rule-inverse {
+    @apply border-t border-[rgba(233,229,218,0.14)];
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
