@@ -5,20 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Privacy Policy — Atlas Research Institute</title>
     <meta name="description" content="How Atlas Research Institute collects, uses, and protects the data of applicants, fellows, and waitlist subscribers.">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='10' fill='%23e8e4d7'/><text x='50' y='70' font-family='Georgia,serif' font-size='64' fill='%231f3a52' text-anchor='middle'>A</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='10' fill='%23E9E5DA'/><text x='50' y='70' font-family='Georgia,serif' font-size='64' fill='%2316253A' text-anchor='middle'>A</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500&family=Archivo:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 
         :root{
-            --paper:#e8e4d7;--paper-deep:#e1dccb;--ink:#1a1c22;--body:#2c2e35;
-            --muted:#6d6a5d;--dim:#8f8b7c;--accent:#1f3a52;--accent-bright:#2b5679;
-            --rule:rgba(26,28,34,0.16);--rule-soft:rgba(26,28,34,0.09);--grid:rgba(31,58,82,0.05);
+            --paper:#F5F2E9;--paper-deep:#EEEADD;--ink:#16253A;--body:#22384F;
+            --muted:#5D7089;--dim:#8B9BB4;--accent:#1F3A52;--accent-bright:#2B5679;
+            --rule:rgba(28,46,69,0.14);--rule-soft:rgba(28,46,69,0.08);--grid:rgba(31,58,82,0);
         }
 
-        body{font-family:'Archivo',sans-serif;background:var(--paper);color:var(--body);line-height:1.72;font-size:1.02rem;-webkit-font-smoothing:antialiased;position:relative}
+        body{font-family:'Inter',sans-serif;background:var(--paper);color:var(--body);line-height:1.72;font-size:1.02rem;-webkit-font-smoothing:antialiased;position:relative}
         body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
             background-image:
                 repeating-linear-gradient(to right,var(--grid) 0 1px,transparent 1px 96px),
@@ -26,17 +26,20 @@
         body>*{position:relative;z-index:1}
 
         nav{display:flex;justify-content:space-between;align-items:baseline;padding:1.15rem clamp(1.25rem,5vw,3rem);border-bottom:1px solid var(--rule)}
-        .nav-logo{font-family:'Fraunces',serif;font-weight:500;font-size:1.4rem;letter-spacing:-0.01em;text-decoration:none;color:var(--ink)}
-        .nav-logo sup{font-family:'IBM Plex Mono',monospace;font-size:0.5rem;font-weight:500;letter-spacing:0.14em;color:var(--accent);vertical-align:super;margin-left:4px}
-        .nav-back{font-family:'IBM Plex Mono',monospace;font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;text-decoration:none;color:var(--muted);border-bottom:1px solid transparent;transition:border-color .2s,color .2s;padding-bottom:2px}
+        .nav-logo{display:inline-flex;align-items:center;gap:0.6rem;text-decoration:none}
+        .nav-logo-chip{display:grid;place-items:center;height:2rem;width:2rem;border-radius:0.5rem;background:var(--ink);color:var(--paper);font-family:'Playfair Display',serif;font-size:1.15rem;line-height:1}
+        .nav-logo-text{display:flex;flex-direction:column;line-height:1.15}
+        .nav-logo-name{font-family:'Playfair Display',serif;font-size:0.98rem;letter-spacing:-0.01em;color:var(--ink)}
+        .nav-logo-sub{font-family:'JetBrains Mono',monospace;font-size:0.56rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted)}
+        .nav-back{font-family:'JetBrains Mono',monospace;font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;text-decoration:none;color:var(--muted);border-bottom:1px solid transparent;transition:border-color .2s,color .2s;padding-bottom:2px}
         .nav-back:hover{color:var(--ink);border-color:var(--accent)}
 
         .content{max-width:640px;margin:0 auto;padding:4.5rem 2rem 5rem}
-        .label{font-family:'IBM Plex Mono',monospace;font-size:0.72rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);margin-bottom:1.1rem}
-        h1{font-family:'Fraunces',serif;font-weight:400;font-size:clamp(2rem,4.5vw,2.7rem);line-height:1.08;letter-spacing:-0.02em;color:var(--ink);margin-bottom:0.6rem}
-        .updated{font-family:'IBM Plex Mono',monospace;font-size:0.72rem;letter-spacing:0.04em;color:var(--dim);margin-bottom:3rem}
+        .label{font-family:'JetBrains Mono',monospace;font-size:0.72rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);margin-bottom:1.1rem}
+        h1{font-family:'Playfair Display',serif;font-weight:400;font-size:clamp(2rem,4.5vw,2.7rem);line-height:1.08;letter-spacing:-0.02em;color:var(--ink);margin-bottom:0.6rem}
+        .updated{font-family:'JetBrains Mono',monospace;font-size:0.72rem;letter-spacing:0.04em;color:var(--dim);margin-bottom:3rem}
 
-        h2{font-family:'Fraunces',serif;font-weight:400;font-size:1.3rem;color:var(--ink);margin-top:2.75rem;margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid var(--rule-soft)}
+        h2{font-family:'Playfair Display',serif;font-weight:400;font-size:1.3rem;color:var(--ink);margin-top:2.75rem;margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid var(--rule-soft)}
         p{font-size:0.95rem;color:var(--body);line-height:1.8;margin-bottom:1rem}
         ul{list-style:none;margin:0.5rem 0 1rem;border-top:1px solid var(--rule-soft)}
         ul li{font-size:0.93rem;color:var(--body);line-height:1.55;padding:0.65rem 0 0.65rem 1.4rem;border-bottom:1px solid var(--rule-soft);position:relative}
@@ -46,7 +49,7 @@
         .divider{border:none;border-top:2px solid var(--ink);margin:3rem 0}
 
         footer{border-top:1px solid var(--rule);padding:2rem 0;text-align:center}
-        footer span{font-family:'IBM Plex Mono',monospace;font-size:0.7rem;letter-spacing:0.05em;color:var(--dim)}
+        footer span{font-family:'JetBrains Mono',monospace;font-size:0.7rem;letter-spacing:0.05em;color:var(--dim)}
         footer a{color:var(--muted);border:none}
         footer a:hover{color:var(--ink)}
 
@@ -55,7 +58,7 @@
 </head>
 <body>
     <nav>
-        <a href="/" class="nav-logo">Atlas<sup>RESEARCH INST.</sup></a>
+        <a href="/" class="nav-logo"><span class="nav-logo-chip">A</span><span class="nav-logo-text"><span class="nav-logo-name">Atlas Research Institute</span><span class="nav-logo-sub">Global research access</span></span></a>
         <a href="/" class="nav-back">← Home</a>
     </nav>
 

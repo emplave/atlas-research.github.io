@@ -54,6 +54,12 @@ export function Closing() {
               Fellowship
             </Link>
             <a
+              href="/privacy.html"
+              className="hover:text-cream-200 transition-colors"
+            >
+              Privacy
+            </a>
+            <a
               href={`mailto:${APPLY_EMAIL}`}
               className="hover:text-cream-200 transition-colors"
             >

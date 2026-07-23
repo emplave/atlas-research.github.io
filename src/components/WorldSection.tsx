@@ -2,7 +2,7 @@ import { Globe, GLOBE_LIGHT } from "@/components/ui/globe";
 import { Reveal } from "./Reveal";
 
 const facts = [
-  { n: "Free", label: "Always, for everyone" },
+  { n: "$0", label: "Cost to apply" },
   { n: "4", label: "Weeks, the Fellowship" },
   { n: "9–12", label: "Grades, any school" },
   { n: "15", label: "Countries active" },
@@ -31,8 +31,8 @@ export function WorldSection() {
         </Reveal>
         <Reveal delay={0.22}>
           <p className="mt-6 mx-auto max-w-2xl text-navy-600 leading-relaxed">
-            Atlas is active all across the world. From well-resourced 
-            systems and from places where research training
+            Every gold point is a country where Atlas is active — from
+            well-resourced systems and from places where research training
             barely exists. Closing that gap is the entire point.
           </p>
         </Reveal>
