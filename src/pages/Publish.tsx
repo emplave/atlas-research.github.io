@@ -95,7 +95,7 @@ export function Publish() {
               <div>
                 <p className="text-cream-100 font-medium">Through the programs</p>
                 <p className="mt-2 text-cream-300/70">
-                  Fellowship briefs and strong Chapter projects are developed
+                  Fellowship policy briefs and literature reviews are developed
                   with editorial support and submitted on your behalf.
                 </p>
                 <Link

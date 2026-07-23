@@ -22,9 +22,9 @@ export function Closing() {
         </Reveal>
         <Reveal delay={0.22}>
           <p className="mt-6 mx-auto max-w-xl text-cream-300/75 text-lg">
-            One mission, two doors: the selective summer Fellowship, and
-            Chapters any school can open. Both free. Applications close{" "}
-            {DATES.deadline} — a real deadline, not a manufactured one.
+            The selective summer Fellowship — free, remote, and open to
+            grades 9–12. Applications close {DATES.deadline}, a real deadline,
+            not a manufactured one.
           </p>
         </Reveal>
         <Reveal delay={0.34}>
@@ -35,12 +35,6 @@ export function Closing() {
             >
               Apply to the Fellowship
               <span aria-hidden className="text-gold-600">→</span>
-            </Link>
-            <Link
-              to="/chapters"
-              className="rounded-full border border-hairline-inverse text-cream-200 px-6 py-3.5 text-[15px] hover:border-cream-300/50 transition-colors"
-            >
-              Start a Chapter
             </Link>
           </div>
         </Reveal>
@@ -58,9 +52,6 @@ export function Closing() {
           <div className="flex flex-wrap gap-x-8 gap-y-2 text-sm text-cream-300/60">
             <Link to="/fellowship" className="hover:text-cream-200 transition-colors">
               Fellowship
-            </Link>
-            <Link to="/chapters" className="hover:text-cream-200 transition-colors">
-              Chapters
             </Link>
             <Link to="/publish" className="hover:text-cream-200 transition-colors">
               Publish with us

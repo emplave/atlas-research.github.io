@@ -28,7 +28,7 @@ export function Sequence() {
     <section id="sequence" className="bg-cream-50 border-y border-hairline-soft">
       <div className="mx-auto max-w-6xl px-6 py-20 md:py-28">
         <Reveal>
-          <p className="meta-label text-navy-500">The Fellowship · six weeks</p>
+          <p className="meta-label text-navy-500">The Fellowship · four weeks</p>
           <h2 className="mt-4 font-serif text-3xl md:text-5xl text-navy-900 max-w-2xl leading-tight">
             Each stage exists because the last one worked.
           </h2>

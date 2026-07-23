@@ -6,16 +6,9 @@ const paths = [
   {
     eyebrow: "The Fellowship",
     badge: "Selective · Summer",
-    title: "Six weeks. Real data. Published work.",
+    title: "Four weeks. Real data. Published work.",
     body: "Policy briefs and literature reviews built on UNESCO, World Bank, and PISA datasets, with seminars from researchers at institutions like Stanford.",
     cta: { label: "Apply now", to: "/fellowship" },
-  },
-  {
-    eyebrow: "Chapters",
-    badge: "Open · Any school",
-    title: "A research club you run yourself.",
-    body: "Open enrollment, no gate: the Atlas curriculum, publishing support, and a place in the global network for any school that wants one.",
-    cta: { label: "Start a chapter", to: "/chapters" },
   },
   {
     eyebrow: "Partners",
@@ -31,14 +24,14 @@ export function Pathways() {
     <section className="bg-cream-100">
       <div className="mx-auto max-w-6xl px-6 py-20 md:py-28">
         <Reveal>
-          <p className="meta-label text-navy-500">Two systems, one mission</p>
+          <p className="meta-label text-navy-500">Get involved</p>
           <h2 className="mt-4 font-serif text-3xl md:text-5xl text-navy-900 leading-tight">
-            Selective where it must be.
+            Apply to the Fellowship.
             <br />
-            Open everywhere else.
+            Or help make it possible.
           </h2>
         </Reveal>
-        <div className="mt-12 grid md:grid-cols-3 gap-px bg-[rgba(28,46,69,0.12)] border border-hairline">
+        <div className="mt-12 grid md:grid-cols-2 gap-px bg-[rgba(28,46,69,0.12)] border border-hairline">
           {paths.map((p, i) => (
             <Reveal key={p.eyebrow} delay={i * 0.08} className="h-full">
               <div className="group h-full bg-cream-100 p-7 md:p-8 flex flex-col transition-colors hover:bg-cream-50">

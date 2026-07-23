@@ -4,7 +4,7 @@ import { Reveal } from "./Reveal";
 const criteria = [
   {
     k: "Follow-through",
-    d: "The ability to finish something — including the boring middle. Six weeks is long enough for motivation to run out; that's by design.",
+    d: "The ability to finish something — including the boring middle. Four weeks is long enough for motivation to run out; that's by design.",
   },
   {
     k: "Comfort with ambiguity",
@@ -30,14 +30,8 @@ export function WhoItsFor() {
           <p className="mt-6 text-navy-600 leading-relaxed max-w-md">
             Yes, the Fellowship is selective — mentored cohorts have real
             capacity limits. But we select on how you think, not what's on
-            your résumé. And selection is never the whole story:{" "}
-            <Link
-              to="/chapters"
-              className="underline underline-offset-4 text-navy-800 hover:text-navy-900"
-            >
-              Chapters are open to every school
-            </Link>
-            , no gate, because access is the mission.
+            your résumé, and no prior research is required, because access is
+            the mission.
           </p>
         </Reveal>
         <div className="space-y-8">

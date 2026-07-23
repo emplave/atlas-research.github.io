@@ -30,12 +30,6 @@ export function ApplyBox() {
                 Start your application
                 <span aria-hidden className="text-gold-300">→</span>
               </Link>
-              <Link
-                to="/chapters"
-                className="rounded-full border border-hairline text-navy-700 px-6 py-3 text-[15px] text-center hover:border-navy-400 hover:text-navy-900 transition-colors"
-              >
-                Or start a chapter
-              </Link>
             </div>
           </div>
         </Reveal>

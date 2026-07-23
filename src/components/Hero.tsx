@@ -30,8 +30,8 @@ export function Hero() {
             <em className="font-serif not-italic text-navy-800">
               with real datasets, toward published work
             </em>
-            . Two ways in: a selective summer Fellowship, and Chapters any
-            school can start.
+            . The Fellowship is a selective, six-week summer cohort — free,
+            remote, and open to grades 9–12.
           </motion.p>
           <motion.div {...fade(0.75)} className="flex flex-col items-start gap-4">
             <Link
@@ -41,33 +41,57 @@ export function Hero() {
               Apply to the Fellowship
               <span aria-hidden className="text-gold-300">→</span>
             </Link>
-            <Link
-              to="/chapters"
-              className="rounded-full border border-hairline text-navy-700 px-6 py-3 text-[15px] hover:border-navy-400 hover:text-navy-900 transition-colors"
-            >
-              Start a Chapter at your school
-            </Link>
           </motion.div>
         </div>
         <motion.p {...fade(0.9)} className="meta-label text-navy-500 mt-10">
-          $0 — free, always · Fellowship: 6 weeks, selective · Chapters: open
-          to every school
+          $0 — free, always · Four weeks · Selective · No prior research required
         </motion.p>
       </div>
 
       {/* Credibility strip */}
       <div className="border-y border-hairline-soft bg-cream-50">
-        <div className="mx-auto max-w-6xl px-6 py-4 flex flex-col md:flex-row md:items-center gap-2 md:gap-8">
-          <p className="meta-label text-navy-500">Where the work goes</p>
-          <p className="text-sm text-navy-600">
-            Atlas Journal of Education Policy{" "}
-            <span className="text-navy-400">(first issue Fall 2026)</span> ·
-            partner journals incl. IJHSR{" "}
-            <span className="text-navy-400">
-              (indexed in EBSCO &amp; Google Scholar)
-            </span>{" "}
-            · seminars with researchers from institutions like Stanford
-          </p>
+        <div className="mx-auto max-w-6xl px-6 py-6 flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p className="meta-label text-navy-500">Where fellows publish</p>
+            <p className="mt-1.5 text-sm text-navy-600 max-w-md">
+              The Atlas Journal of Education Policy{" "}
+              <span className="text-navy-400">(first issue Fall 2026)</span>, and
+              peer-reviewed partner journals.
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="inline-flex items-center rounded-md bg-white border border-hairline px-3 py-2">
+              <img
+                src="/partners/ijhsr.png"
+                alt="International Journal of High School Research"
+                className="h-6 w-auto"
+              />
+            </span>
+            <span className="inline-flex items-center rounded-md bg-white border border-hairline px-3 py-2">
+              <img
+                src="/partners/curieux.png"
+                alt="The Curieux Review"
+                className="h-8 w-auto"
+              />
+            </span>
+            <span className="inline-flex items-center rounded-md bg-white border border-hairline px-3 py-2">
+              <img
+                src="/partners/lumiere.png"
+                alt="Lumiere Education"
+                className="h-6 w-auto"
+              />
+            </span>
+          </div>
+        </div>
+        <div className="border-t border-hairline-soft">
+          <div className="mx-auto max-w-6xl px-6 py-4">
+            <p className="text-sm text-navy-600">
+              Fellows and research leads receive thousands of dollars in
+              scholarships through our partnership with{" "}
+              <span className="text-navy-800">Lumiere Education</span>. Seminars
+              feature researchers from institutions like Stanford.
+            </p>
+          </div>
         </div>
       </div>
     </section>

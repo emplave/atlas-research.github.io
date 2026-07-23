@@ -2,8 +2,8 @@ import { Globe, GLOBE_LIGHT } from "@/components/ui/globe";
 import { Reveal } from "./Reveal";
 
 const facts = [
-  { n: "$0", label: "Cost, both programs" },
-  { n: "6", label: "Weeks, the Fellowship" },
+  { n: "$0", label: "Cost to apply" },
+  { n: "4", label: "Weeks, the Fellowship" },
   { n: "9–12", label: "Grades, any school" },
   { n: "15+", label: "Countries, north & south" },
 ];
@@ -31,9 +31,9 @@ export function WorldSection() {
         </Reveal>
         <Reveal delay={0.22}>
           <p className="mt-6 mx-auto max-w-2xl text-navy-600 leading-relaxed">
-            Every gold point is a school whose students applied. The Fellowship
-            is selective — but the network isn't: Chapters keep the door open
-            to every school, because access is the entire point.
+            Every gold point is a school whose students applied — from
+            well-resourced districts and from places where research training
+            barely exists. Closing that gap is the entire point.
           </p>
         </Reveal>
         <Reveal delay={0.3}>
