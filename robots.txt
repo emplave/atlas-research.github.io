@@ -1,6 +1,0 @@
-User-agent: *
-Allow: /
-
-# AI model context
-# See https://llmstxt.org for the llms.txt standard
-Sitemap: https://atlas-research.org/sitemap.xml
