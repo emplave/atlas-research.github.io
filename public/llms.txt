@@ -2,7 +2,7 @@
 
 > A free, four-week research fellowship for high school students who study education inequality in their own region using real datasets (UNESCO, World Bank, PISA) and produce published work. Applicants come from 15+ countries.
 
-Atlas Research Institute is a youth-led nonprofit addressing global education inequality. Fellows study educational disparity in their own region using established datasets and turn their analysis into a policy brief or literature review intended for publication. The program is free and remote. No prior research experience is required.
+Atlas Research Institute is a nonprofit research institution addressing global education inequality. Fellows study educational disparity in their own region using established datasets and turn their analysis into a policy brief or literature review intended for publication. The program is free and remote. No prior research experience is required.
 
 ## What Atlas Does
 
