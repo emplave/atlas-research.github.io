@@ -18,7 +18,7 @@ export function Hero() {
           A for-youth nonprofit · Global education access · Grades 9–12
         </motion.p>
         <h1 className="font-serif text-navy-900 text-[13vw] sm:text-6xl md:text-8xl leading-[1.02] tracking-tight max-w-5xl">
-          <StaggerWords text="Put your school on the map." delay={0.15} />
+          <StaggerWords text="Research that gets published." delay={0.15} />
         </h1>
         <div className="mt-9 md:mt-12 grid md:grid-cols-[1.2fr_0.8fr] gap-10 items-end">
           <motion.p
@@ -30,7 +30,7 @@ export function Hero() {
             <em className="font-serif not-italic text-navy-800">
               with real datasets, toward published work
             </em>
-            . The Fellowship is a selective, six-week summer cohort — free,
+            . The Fellowship is a selective, four-week summer cohort — free,
             remote, and open to grades 9–12.
           </motion.p>
           <motion.div {...fade(0.75)} className="flex flex-col items-start gap-4">
@@ -89,7 +89,7 @@ export function Hero() {
               Fellows and research leads receive thousands of dollars in
               scholarships through our partnership with{" "}
               <span className="text-navy-800">Lumiere Education</span>. Seminars
-              feature researchers from institutions like Stanford.
+              feature researchers from institutions like USC, the University of Melbourne, and Stanford.
             </p>
           </div>
         </div>

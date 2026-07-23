@@ -5,12 +5,12 @@ const facts = [
   { n: "$0", label: "Cost to apply" },
   { n: "4", label: "Weeks, the Fellowship" },
   { n: "9–12", label: "Grades, any school" },
-  { n: "15+", label: "Countries, north & south" },
+  { n: "15", label: "Countries active" },
 ];
 
 /**
  * The network — full-screen moment. Light editorial globe rising from the
- * bottom half; gold dots are applicant schools, animated arcs connect them.
+ * bottom half; gold dots are active countries, animated arcs connect them.
  */
 export function WorldSection() {
   return (
@@ -24,15 +24,15 @@ export function WorldSection() {
         </Reveal>
         <Reveal delay={0.1}>
           <h2 className="mt-4 font-serif text-3xl md:text-5xl text-navy-900 leading-tight">
-            Applications are already arriving
+            Active in 15 countries,
             <br />
-            <span className="italic">from both sides of the access gap.</span>
+            <span className="italic">on both sides of the access gap.</span>
           </h2>
         </Reveal>
         <Reveal delay={0.22}>
           <p className="mt-6 mx-auto max-w-2xl text-navy-600 leading-relaxed">
-            Every gold point is a school whose students applied — from
-            well-resourced districts and from places where research training
+            Every gold point is a country where Atlas is active — from
+            well-resourced systems and from places where research training
             barely exists. Closing that gap is the entire point.
           </p>
         </Reveal>
@@ -63,7 +63,7 @@ export function WorldSection() {
           className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-cream-50 via-cream-50/70 to-transparent"
         />
         <p className="pointer-events-none absolute bottom-5 left-1/2 -translate-x-1/2 meta-label text-navy-400 whitespace-nowrap">
-          Drag to explore · Gold marks applicant schools
+          Active in 15 countries
         </p>
       </div>
     </section>

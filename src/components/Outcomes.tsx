@@ -11,11 +11,11 @@ const outcomes = [
   },
   {
     title: "Real methodology",
-    body: "Survey design, sampling, analysis — taught straight, through guest seminars from university researchers, including faculty from Stanford.",
+    body: "Survey design, sampling, analysis — taught straight, through guest seminars from university researchers, including faculty from USC, the University of Melbourne, and Stanford.",
   },
   {
     title: "A global peer network",
-    body: "The people you compare data with are running the same study on the other side of the world, the same week you are.",
+    body: "The people in your cohort are researching the same access gap from their own regions, the same weeks you are.",
   },
 ];
 

@@ -294,7 +294,7 @@ export function Globe({
           "size-full opacity-0 transition-opacity duration-700 [contain:layout_paint_size]"
         )}
         ref={canvasRef}
-        aria-label="Rotating globe showing applicant schools across the world, connected by animated arcs"
+        aria-label="Rotating globe showing countries where Atlas is active, connected by animated arcs"
         onPointerDown={(e) =>
           updatePointerInteraction(
             e.clientX - pointerInteractionMovement.current

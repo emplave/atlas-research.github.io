@@ -5,7 +5,7 @@ import { DATES } from "@/lib/dates";
 const faqs = [
   {
     q: "Is this legitimate?",
-    a: "Fair question — ask it of every program. Atlas is a for-youth nonprofit founded by a high school student, running its founding cohort: there are no alumni statistics yet and we won't invent any. What's real today: the Fellowship is free, fellows work with real datasets (UNESCO, World Bank, PISA), seminars feature researchers from institutions like Stanford, and output is developed toward the Atlas Journal of Education Policy and partner journals including IJHSR (indexed in EBSCO and Google Scholar). Judge us on the work once it's published.",
+    a: "Fair question — ask it of every program. Atlas is a for-youth nonprofit running its founding cohort: there are no alumni statistics yet and we won't invent any. What's real today: the Fellowship is free, fellows work with real datasets (UNESCO, World Bank, PISA), seminars feature researchers from institutions like USC, the University of Melbourne, and Stanford, and output is developed toward the Atlas Journal of Education Policy and partner journals including IJHSR (indexed in EBSCO and Google Scholar). Judge us on the work once it's published.",
   },
   {
     q: "Why is it free?",
@@ -14,10 +14,6 @@ const faqs = [
   {
     q: "Is the Fellowship selective?",
     a: `Yes — mentored cohorts have real capacity limits — but selection is based on your thinking in three short essays, not your résumé, and there's no invented acceptance-rate theater. Applications are open now, due ${DATES.deadline}, reviewed on a rolling basis.`,
-  },
-  {
-    q: "What exactly is the Stanford connection?",
-    a: "Fellows learn from researchers at institutions like Stanford who speak at training seminars. That's the whole claim. Atlas is not partnered with, run by, or accredited by Stanford — and any program that words it more strongly deserves your skepticism.",
   },
   {
     q: "What do fellows actually produce?",

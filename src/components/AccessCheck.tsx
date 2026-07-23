@@ -29,19 +29,19 @@ const questions = [
 const readings: Record<number, { label: string; body: string }> = {
   0: {
     label: "No scaffolding",
-    body: "That's not a verdict on you — it's precisely the structural gap Atlas exists to document. Fellows from schools like yours carry the study's most important data.",
+    body: "That's not a verdict on you — it's precisely the structural gap Atlas exists to close. Students from schools like yours are exactly who the Fellowship is built for.",
   },
   1: {
     label: "Thin scaffolding",
-    body: "One support out of three. Most of the world's schools live here — and the middle of the access gap is where the dataset is thinnest.",
+    body: "One support out of three. Most of the world's schools live here — squarely inside the access gap the Fellowship works on.",
   },
   2: {
     label: "Partial scaffolding",
-    body: "Two supports out of three. Your school sits near the line the study is trying to draw — your data helps locate it.",
+    body: "Two supports out of three. Your school sits right on the line the Fellowship is built around.",
   },
   3: {
     label: "Full scaffolding",
-    body: "You're on the resourced side of the gap. The comparison needs you too — a baseline only exists if someone measures it.",
+    body: "You're on the resourced side of the gap — and there is real research to do from here too. The Fellowship is open to you.",
   },
 };
 
@@ -57,7 +57,7 @@ export function AccessCheck() {
         <Reveal>
           <p className="meta-label text-navy-500">Try the instrument</p>
           <h2 className="mt-4 font-serif text-3xl md:text-5xl text-navy-900 max-w-2xl leading-tight">
-            Three questions from the survey.
+            Three questions about access.
             <br />
             <span className="italic">Answer them for your school.</span>
           </h2>
@@ -131,8 +131,8 @@ export function AccessCheck() {
                         — / 3
                       </p>
                       <p className="mt-4 text-cream-300/70 leading-relaxed text-[15px]">
-                        Answer the three items and see where your school sits in
-                        the question Atlas is asking the world.
+                        Answer the three items and see where your school sits on
+                        the access gap.
                       </p>
                     </>
                   ) : (
@@ -152,9 +152,9 @@ export function AccessCheck() {
               </AnimatePresence>
               <div className="mt-8 pt-6 border-t border-hairline-inverse-soft">
                 <p className="text-[13px] text-cream-300/50 leading-relaxed">
-                  Whatever you answered: the study needs your school. The
-                  dataset's value comes from the full spread — that's why the
-                  fellowship is free.
+                  Whatever you answered: the Fellowship is free, because
+                  access to research should not depend on which school you
+                  attend.
                 </p>
               </div>
             </div>

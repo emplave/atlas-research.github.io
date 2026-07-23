@@ -22,7 +22,6 @@ export function AnnouncementBar() {
 const links = [
   { to: "/#study", label: "The Mission" },
   { to: "/#sequence", label: "Fellowship" },
-  { to: "/publish", label: "Publish With Us" },
   { to: "/#faq", label: "FAQ" },
 ];
 

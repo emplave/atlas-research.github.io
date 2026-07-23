@@ -5,7 +5,6 @@ import { IntroSplash } from "./components/IntroSplash";
 import { Closing } from "./components/Closing";
 import { Landing } from "./pages/Landing";
 import { Fellowship } from "./pages/Fellowship";
-import { Publish } from "./pages/Publish";
 import { Partners } from "./pages/Partners";
 
 /** Scroll to top on route change; honor #hash targets on the landing page. */
@@ -36,7 +35,6 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/fellowship" element={<Fellowship />} />
-            <Route path="/publish" element={<Publish />} />
             <Route path="/partners" element={<Partners />} />
             <Route path="*" element={<Landing />} />
           </Routes>

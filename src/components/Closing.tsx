@@ -15,9 +15,9 @@ export function Closing() {
         </Reveal>
         <Reveal delay={0.1}>
           <h2 className="mt-6 font-serif text-4xl md:text-6xl leading-[1.08] text-cream-100">
-            Put your school
+            Do research that
             <br />
-            on the map.
+            gets published.
           </h2>
         </Reveal>
         <Reveal delay={0.22}>
@@ -52,9 +52,6 @@ export function Closing() {
           <div className="flex flex-wrap gap-x-8 gap-y-2 text-sm text-cream-300/60">
             <Link to="/fellowship" className="hover:text-cream-200 transition-colors">
               Fellowship
-            </Link>
-            <Link to="/publish" className="hover:text-cream-200 transition-colors">
-              Publish with us
             </Link>
             <a
               href={`mailto:${APPLY_EMAIL}`}

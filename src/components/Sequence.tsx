@@ -4,7 +4,7 @@ const steps = [
   {
     n: "01",
     title: "Train",
-    body: "Real survey and policy methodology through a live seminar series — fellows learn from researchers at institutions like Stanford. Not a watered-down teen curriculum.",
+    body: "Real survey and policy methodology through a live seminar series — fellows learn from researchers at institutions like USC, the University of Melbourne, and Stanford. Not a watered-down teen curriculum.",
   },
   {
     n: "02",
