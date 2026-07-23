@@ -2,7 +2,7 @@ import { Globe, GLOBE_LIGHT } from "@/components/ui/globe";
 import { Reveal } from "./Reveal";
 
 const facts = [
-  { n: "$0", label: "Cost to apply" },
+  { n: "Free", label: "Always, for everyone" },
   { n: "4", label: "Weeks, the Fellowship" },
   { n: "9–12", label: "Grades, any school" },
   { n: "15", label: "Countries active" },
