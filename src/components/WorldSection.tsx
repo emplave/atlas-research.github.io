@@ -31,8 +31,8 @@ export function WorldSection() {
         </Reveal>
         <Reveal delay={0.22}>
           <p className="mt-6 mx-auto max-w-2xl text-navy-600 leading-relaxed">
-            Every gold point is a country where Atlas is active — from
-            well-resourced systems and from places where research training
+            Atlas is active all across the world. From well-resourced 
+            systems and from places where research training
             barely exists. Closing that gap is the entire point.
           </p>
         </Reveal>
