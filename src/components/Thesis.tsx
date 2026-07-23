@@ -19,8 +19,9 @@ export function Thesis() {
             A student in Kathmandu, La Paz, or Dhaka rarely meets research
             methodology before university. A student in Toronto or Beijing
             often gets it built in. That gap is structural — not a talent gap.
-            Atlas exists to close it: one real study, run by fellows in every
-            school we can reach, published where researchers actually look.
+            Atlas exists to close it: fellows study education inequality in
+            their own region, using real data, and publish where researchers
+            actually look.
           </p>
         </Reveal>
       </div>
