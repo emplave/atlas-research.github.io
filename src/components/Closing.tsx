@@ -10,7 +10,7 @@ export function Closing() {
       <div className="mx-auto max-w-4xl px-6 py-24 md:py-32 text-center">
         <Reveal>
           <p className="meta-label text-cream-300/60">
-            Founding cohort · Applications open now
+            Applications open now
           </p>
         </Reveal>
         <Reveal delay={0.1}>

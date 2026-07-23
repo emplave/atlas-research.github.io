@@ -15,7 +15,7 @@ export function ApplyBox() {
                 Applications open now
               </p>
               <h2 className="mt-3 font-serif text-2xl md:text-3xl text-navy-900">
-                Founding cohort · Due {DATES.deadline}
+                Applications open · Due {DATES.deadline}
               </h2>
               <p className="mt-2 text-[15px] text-navy-600 max-w-lg">
                 Reviewed {DATES.review}. Free, remote, no prior research

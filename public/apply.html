@@ -48,8 +48,11 @@
             padding:1.15rem clamp(1.25rem,5vw,3rem);background:rgba(232,228,215,0.9);
             backdrop-filter:blur(6px);border-bottom:1px solid var(--rule);
         }
-        .nav-logo{font-family:'Playfair Display',serif;font-weight:500;font-size:1.4rem;letter-spacing:-0.01em;text-decoration:none;color:var(--ink)}
-        .nav-logo sup{font-family:'JetBrains Mono',monospace;font-size:0.5rem;font-weight:500;letter-spacing:0.14em;color:var(--accent);vertical-align:super;margin-left:4px}
+        .nav-logo{display:inline-flex;align-items:center;gap:0.6rem;text-decoration:none}
+        .nav-logo-chip{display:grid;place-items:center;height:2rem;width:2rem;border-radius:0.5rem;background:var(--ink);color:var(--paper);font-family:'Playfair Display',serif;font-size:1.15rem;line-height:1}
+        .nav-logo-text{display:flex;flex-direction:column;line-height:1.15}
+        .nav-logo-name{font-family:'Playfair Display',serif;font-size:0.98rem;letter-spacing:-0.01em;color:var(--ink)}
+        .nav-logo-sub{font-family:'JetBrains Mono',monospace;font-size:0.56rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted)}
         .nav-back{font-family:'JetBrains Mono',monospace;font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;text-decoration:none;color:var(--muted);border-bottom:1px solid transparent;transition:border-color .2s,color .2s;padding-bottom:2px}
         .nav-back:hover{color:var(--ink);border-color:var(--accent)}
 
@@ -196,7 +199,7 @@
 </head>
 <body>
     <nav>
-        <a href="/" class="nav-logo">Atlas<sup>RESEARCH INST.</sup></a>
+        <a href="/" class="nav-logo"><span class="nav-logo-chip">A</span><span class="nav-logo-text"><span class="nav-logo-name">Atlas Research Institute</span><span class="nav-logo-sub">Global research access</span></span></a>
         <a href="/" class="nav-back">← Home</a>
     </nav>
 

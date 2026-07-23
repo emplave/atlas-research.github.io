@@ -44,9 +44,8 @@ export function Outcomes() {
         <Reveal delay={0.2}>
           <p className="mt-14 text-sm text-navy-500 max-w-2xl">
             What we don't promise: college admission. No single program can,
-            and we'd rather earn your trust than borrow it. This is the
-            founding cohort — there are no alumni yet, and we won't invent
-            them.
+            and we'd rather earn your trust than borrow it — so we point you to
+            verifiable work, not invented numbers.
           </p>
         </Reveal>
       </div>

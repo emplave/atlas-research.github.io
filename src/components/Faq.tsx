@@ -5,7 +5,7 @@ import { DATES } from "@/lib/dates";
 const faqs = [
   {
     q: "Is this legitimate?",
-    a: "Fair question — ask it of every program. Atlas is a for-youth nonprofit running its founding cohort: there are no alumni statistics yet and we won't invent any. What's real today: the Fellowship is free, fellows work with real datasets (UNESCO, World Bank, PISA), seminars feature researchers from institutions like USC, the University of Melbourne, and Stanford, and output is developed toward the Atlas Journal of Education Policy and partner journals including IJHSR (indexed in EBSCO and Google Scholar). Judge us on the work once it's published.",
+    a: "Fair question — ask it of every program. Here's what's real and checkable: the Fellowship is free, fellows work with real datasets (UNESCO, World Bank, PISA), seminars feature researchers from institutions like USC, the University of Melbourne, and Stanford, and work is developed toward publication in the Atlas Journal of Education Policy and partner journals including IJHSR, which is indexed in EBSCO and Google Scholar.",
   },
   {
     q: "Why is it free?",
