@@ -14,7 +14,7 @@ export function Fellowship() {
   );
 
   async function submit() {
-    if (!email.trim() || !email.includes("@")) {
+    if (!name.trim() || !email.trim() || !email.includes("@")) {
       setState("error");
       return;
     }
@@ -63,7 +63,7 @@ export function Fellowship() {
         ) : (
           <div className="mt-8 flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
-              <label className="meta-label text-navy-500">Name (optional)</label>
+              <label className="meta-label text-navy-500">Name</label>
               <input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -83,7 +83,7 @@ export function Fellowship() {
             </div>
             {state === "error" && (
               <p className="text-sm text-[#8a2b22]">
-                Please enter a valid email, or write to{" "}
+                Please enter your name and a valid email, or write to{" "}
                 <a className="underline" href="mailto:info@atlas-research.org">
                   info@atlas-research.org
                 </a>
