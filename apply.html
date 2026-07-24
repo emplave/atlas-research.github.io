@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apply — Atlas Fellowship</title>
+    <meta name="description" content="Apply to the Atlas Research Fellowship. A four-week mentored research program on global education access. 2026 cohort.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='10' fill='%23e8e4d7'/><text x='50' y='70' font-family='Georgia,serif' font-size='64' fill='%231f3a52' text-anchor='middle'>A</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Archivo:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+        :root{
+            --paper:#e8e4d7;
+            --paper-deep:#e1dccb;
+            --ink:#1a1c22;
+            --body:#2c2e35;
+            --muted:#6d6a5d;
+            --dim:#8f8b7c;
+            --accent:#1f3a52;
+            --accent-bright:#2b5679;
+            --accent-tint:rgba(31,58,82,0.07);
+            --rule:rgba(26,28,34,0.16);
+            --rule-soft:rgba(26,28,34,0.09);
+            --grid:rgba(31,58,82,0.05);
+            --error:#8a2b22;
+            --ok:#2f5d3a;
+        }
+
+        html{scroll-behavior:smooth}
+        body{
+            font-family:'Archivo',sans-serif;background:var(--paper);color:var(--body);
+            line-height:1.68;font-size:1.02rem;-webkit-font-smoothing:antialiased;
+            min-height:100vh;display:flex;flex-direction:column;position:relative;
+        }
+        body::before{
+            content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+            background-image:
+                repeating-linear-gradient(to right,var(--grid) 0 1px,transparent 1px 96px),
+                repeating-linear-gradient(to bottom,var(--grid) 0 1px,transparent 1px 96px);
+        }
+        body>*{position:relative;z-index:1}
+
+        nav{
+            position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:baseline;
+            padding:1.15rem clamp(1.25rem,5vw,3rem);background:rgba(232,228,215,0.9);
+            backdrop-filter:blur(6px);border-bottom:1px solid var(--rule);
+        }
+        .nav-logo{font-family:'Fraunces',serif;font-weight:500;font-size:1.4rem;letter-spacing:-0.01em;text-decoration:none;color:var(--ink)}
+        .nav-logo sup{font-family:'IBM Plex Mono',monospace;font-size:0.5rem;font-weight:500;letter-spacing:0.14em;color:var(--accent);vertical-align:super;margin-left:4px}
+        .nav-back{font-family:'IBM Plex Mono',monospace;font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;text-decoration:none;color:var(--muted);border-bottom:1px solid transparent;transition:border-color .2s,color .2s;padding-bottom:2px}
+        .nav-back:hover{color:var(--ink);border-color:var(--accent)}
+
+        main{flex:1;padding:4rem 1.5rem 4rem}
+        .panel{max-width:600px;width:100%;margin:0 auto}
+
+        .plate{
+            font-family:'IBM Plex Mono',monospace;font-size:0.72rem;letter-spacing:0.2em;text-transform:uppercase;
+            color:var(--accent);display:flex;gap:0.9rem;align-items:center;margin-bottom:1.4rem;
+        }
+        .plate::after{content:'';flex:1;height:1px;background:var(--rule)}
+
+        h1{font-family:'Fraunces',serif;font-weight:400;font-size:clamp(2rem,5vw,2.9rem);line-height:1.06;letter-spacing:-0.02em;color:var(--ink);margin-bottom:1rem}
+        .intro{font-size:0.98rem;color:var(--muted);line-height:1.75;margin-bottom:1rem;max-width:52ch}
+        .intro strong{color:var(--body);font-weight:500}
+        .meta-row{
+            font-family:'IBM Plex Mono',monospace;font-size:0.72rem;letter-spacing:0.06em;text-transform:uppercase;
+            color:var(--dim);display:flex;flex-wrap:wrap;gap:0.5rem 1.4rem;margin-bottom:1.4rem;
+            padding-top:1.1rem;border-top:1px solid var(--rule-soft);
+        }
+        .meta-row span{white-space:nowrap}
+        .meta-row b{color:var(--accent);font-weight:500}
+        .rolling-note{
+            font-family:'IBM Plex Mono',monospace;font-size:0.72rem;letter-spacing:0.03em;color:var(--muted);
+            line-height:1.6;margin-bottom:2.8rem;
+        }
+
+        .section{margin-bottom:2.6rem}
+        .section-title{
+            font-family:'IBM Plex Mono',monospace;font-size:0.72rem;letter-spacing:0.14em;text-transform:uppercase;
+            color:var(--accent);margin-bottom:1.4rem;padding-bottom:0.7rem;border-bottom:1px solid var(--rule);
+            display:flex;justify-content:space-between;align-items:baseline;
+        }
+        .section-title .count{color:var(--dim);letter-spacing:0.1em}
+
+        .field{margin-bottom:1.4rem}
+        .field label{display:block;font-size:0.9rem;font-weight:500;color:var(--ink);margin-bottom:0.4rem}
+        .field .hint{display:block;font-size:0.8rem;font-weight:400;color:var(--muted);margin-bottom:0.55rem;line-height:1.55}
+        .req{color:var(--accent);font-family:'IBM Plex Mono',monospace;font-size:0.7rem;margin-left:0.3rem}
+
+        .field input,.field select,.field textarea{
+            width:100%;padding:0.8rem 1rem;background:var(--paper-deep);border:1px solid var(--rule);
+            color:var(--ink);font-family:'Archivo',sans-serif;font-size:0.94rem;outline:none;
+            transition:border-color .2s,box-shadow .2s;
+        }
+        .field input::placeholder,.field textarea::placeholder{color:var(--dim)}
+        .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-tint)}
+        .field select{
+            appearance:none;cursor:pointer;padding-right:2.5rem;
+            background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236d6a5d' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+            background-repeat:no-repeat;background-position:right 1rem center;
+        }
+        .field textarea{resize:vertical;min-height:150px;line-height:1.7}
+        .field textarea.short{min-height:90px}
+        .row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+
+        .wordcount{font-family:'IBM Plex Mono',monospace;font-size:0.7rem;color:var(--dim);text-align:right;margin-top:0.4rem;letter-spacing:0.04em}
+        .wordcount.over{color:var(--error)}
+        .minnote{font-family:'IBM Plex Mono',monospace;font-size:0.72rem;color:var(--body);margin-top:0.35rem;letter-spacing:0.02em}
+
+        /* inline field-level error shown directly under a prompt */
+        .field-error{
+            display:none;margin-top:0.55rem;padding:0.65rem 0.85rem;
+            font-family:'Archivo',sans-serif;font-size:0.86rem;font-weight:500;line-height:1.5;
+            color:var(--error);background:rgba(138,43,34,0.08);border:1px solid rgba(138,43,34,0.35);
+        }
+        .field-error.show{display:block}
+        .field.invalid textarea,.field.invalid input{border-color:var(--error);box-shadow:0 0 0 3px rgba(138,43,34,0.12)}
+        .field-warn{display:none;margin-top:0.4rem;font-family:'IBM Plex Mono',monospace;font-size:0.72rem;color:var(--error);letter-spacing:0.02em}
+        .field-warn.show{display:block}
+
+        /* consent block: two clearly-distinct checkboxes at the end */
+        .consent-block{border:1px solid var(--rule);background:var(--paper-deep);padding:1.3rem 1.4rem;margin-top:2.4rem}
+        .consent-item{display:flex;gap:0.85rem;align-items:flex-start;cursor:pointer}
+        .consent-item + .consent-item{margin-top:1.15rem;padding-top:1.15rem;border-top:1px solid var(--rule-soft)}
+        .consent-item input[type="checkbox"]{
+            appearance:none;width:22px;height:22px;flex-shrink:0;margin-top:0.1rem;
+            border:1.5px solid var(--dim);background:var(--paper);cursor:pointer;transition:all .15s;position:relative;
+        }
+        .consent-item input[type="checkbox"]:checked{border-color:var(--accent);background:var(--accent)}
+        .consent-item input[type="checkbox"]:checked::after{
+            content:'';position:absolute;left:7px;top:3px;width:5px;height:10px;
+            border:solid var(--paper);border-width:0 2px 2px 0;transform:rotate(45deg);
+        }
+        .consent-item .consent-text{font-size:0.9rem;line-height:1.55;color:var(--body)}
+        .consent-item .consent-text .lead{font-weight:500;color:var(--ink)}
+        .consent-item .consent-text a{color:var(--accent-bright);text-decoration:none;border-bottom:1px solid var(--rule)}
+        .consent-item .consent-text a:hover{color:var(--ink)}
+        .consent-tag{font-family:'IBM Plex Mono',monospace;font-size:0.66rem;letter-spacing:0.1em;text-transform:uppercase;margin-left:0.4rem}
+        .consent-tag.req{color:var(--accent)}
+        .consent-tag.opt{color:var(--dim)}
+        .consent-block.invalid{border-color:var(--error);box-shadow:0 0 0 3px rgba(138,43,34,0.12)}
+        .consent-error{display:none;margin-top:0.7rem;font-family:'Archivo',sans-serif;font-size:0.86rem;font-weight:500;color:var(--error)}
+        .consent-error.show{display:block}
+
+        .radio-group{display:flex;gap:1.4rem;margin-top:0.3rem}
+        .radio-group label{display:flex;align-items:center;gap:0.5rem;font-size:0.9rem;font-weight:400;color:var(--body);cursor:pointer;margin-bottom:0}
+        .radio-group input[type="radio"]{
+            appearance:none;width:15px;height:15px;border:1px solid var(--dim);border-radius:50%;
+            background:var(--paper-deep);cursor:pointer;transition:all .15s;flex-shrink:0;
+        }
+        .radio-group input[type="radio"]:checked{border-color:var(--accent);background:var(--accent);box-shadow:inset 0 0 0 3px var(--paper-deep)}
+
+        .prompt-box{
+            background:var(--accent-tint);border-left:2px solid var(--accent);padding:1.1rem 1.25rem;margin-bottom:0.9rem;
+        }
+        .prompt-box .prompt-q{font-family:'Fraunces',serif;font-size:1.15rem;color:var(--ink);line-height:1.35;font-style:italic}
+        .prompt-box .prompt-q.sm{font-size:1.02rem}
+
+        .subprompt{margin-top:2rem}
+
+        .submit-wrap{margin-top:2.4rem}
+        .btn{
+            font-family:'IBM Plex Mono',monospace;font-size:0.8rem;letter-spacing:0.08em;text-transform:uppercase;
+            background:var(--ink);color:var(--paper);padding:0.95rem 1.5rem;border:none;cursor:pointer;
+            width:100%;transition:background .2s;
+        }
+        .btn:hover{background:var(--accent)}
+        .btn:disabled{opacity:0.45;cursor:not-allowed;background:var(--ink)}
+        .privacy-note{font-family:'IBM Plex Mono',monospace;font-size:0.7rem;letter-spacing:0.03em;color:var(--dim);margin-top:0.9rem;text-align:center;line-height:1.6}
+        .privacy-note a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--rule)}
+        .privacy-note a:hover{color:var(--ink)}
+
+        .status{margin-top:1.3rem;padding:1rem 1.15rem;font-size:0.95rem;font-family:'Archivo',sans-serif;font-weight:500;letter-spacing:0.01em;display:none;line-height:1.6}
+        .status.error{display:block;color:var(--error);border:1px solid rgba(138,43,34,0.3);background:rgba(138,43,34,0.05)}
+        .status.success{display:block;color:var(--ok);border:1px solid rgba(47,93,58,0.3);background:rgba(47,93,58,0.05)}
+
+        .done{display:none;text-align:center;padding:3rem 0}
+        .done.show{display:block}
+        .done h2{font-family:'Fraunces',serif;font-weight:400;font-size:2.1rem;color:var(--ink);margin-bottom:0.9rem}
+        .done p{color:var(--muted);font-size:0.95rem;line-height:1.75;max-width:44ch;margin:0 auto 1.6rem}
+        .done a{font-family:'IBM Plex Mono',monospace;font-size:0.76rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent-bright);text-decoration:none;border-bottom:1px solid var(--rule)}
+
+        footer{padding:2rem 1.5rem;border-top:1px solid var(--rule);text-align:center}
+        footer p{font-family:'IBM Plex Mono',monospace;font-size:0.7rem;letter-spacing:0.06em;color:var(--dim)}
+        footer a{color:var(--muted);text-decoration:none}
+        footer a:hover{color:var(--ink)}
+
+        @media(max-width:560px){
+            .row{grid-template-columns:1fr}
+            .radio-group{gap:1rem}
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/" class="nav-logo">Atlas<sup>RESEARCH INST.</sup></a>
+        <a href="/" class="nav-back">← Home</a>
+    </nav>
+
+    <main>
+        <div class="panel">
+
+            <div id="form-wrap">
+                <div class="plate">Summer 2026 Fellowship</div>
+                <h1>Apply to the Atlas Fellowship</h1>
+                <p class="intro">A four-week mentored research program on global education access. You will work with a mentor to research a specific question about who gets access to education and why, and turn it into <strong>a literature review written to the standard of a peer-reviewed journal</strong>, with a path to submission for publication.</p>
+                <p class="intro">No prior research experience is required. We care about how you think, not what you have already done.</p>
+                <div class="meta-row">
+                    <span>Duration <b>4 weeks</b></span>
+                    <span>Format <b>Remote</b></span>
+                    <span>Cost <b>Free</b></span>
+                    <span>Deadline <b>Jul 24</b></span>
+                </div>
+                <p class="rolling-note">Applications are reviewed as they arrive, and decisions go out on a rolling basis. The cohort begins August 3, 2026. Applying earlier is better than applying late.</p>
+
+                <form id="atlas-form" onsubmit="return submitForm(event)">
+
+                    <div class="section">
+                        <div class="section-title"><span>Who you are</span></div>
+                        <div class="field">
+                            <label for="name">Full name<span class="req">required</span></label>
+                            <input type="text" id="name" name="name" placeholder="Your full name" required>
+                        </div>
+                        <div class="field">
+                            <label for="email">Email<span class="req">required</span></label>
+                            <input type="email" id="email" name="email" placeholder="you@email.com" required>
+                            <div class="field-error" id="email-error"></div>
+                        </div>
+                        <div class="field">
+                            <label for="school">School name<span class="req">required</span></label>
+                            <input type="text" id="school" name="school" placeholder="The name of your school" required>
+                        </div>
+                        <div class="field">
+                            <label for="city">Your school's city<span class="req">required</span></label>
+                            <span class="hint">The city where your school is located, not necessarily where you live.</span>
+                            <input type="text" id="city" name="city" placeholder="e.g. Dhaka, Nairobi, San Jose" required>
+                        </div>
+                        <div class="row">
+                            <div class="field">
+                                <label for="country">Country<span class="req">required</span></label>
+                                <select id="country" name="country" required>
+                                    <option value="" disabled selected>Select country</option>
+                                    <option>Afghanistan</option><option>Albania</option><option>Algeria</option><option>Argentina</option><option>Australia</option><option>Austria</option><option>Bangladesh</option><option>Belgium</option><option>Bolivia</option><option>Brazil</option><option>Cambodia</option><option>Canada</option><option>Chile</option><option>China</option><option>Colombia</option><option>Czech Republic</option><option>Denmark</option><option>Ecuador</option><option>Egypt</option><option>Ethiopia</option><option>Finland</option><option>France</option><option>Germany</option><option>Ghana</option><option>Greece</option><option>Guatemala</option><option>Hungary</option><option>India</option><option>Indonesia</option><option>Iran</option><option>Iraq</option><option>Ireland</option><option>Israel</option><option>Italy</option><option>Japan</option><option>Jordan</option><option>Kazakhstan</option><option>Kenya</option><option>Kuwait</option><option>Lebanon</option><option>Libya</option><option>Malaysia</option><option>Mexico</option><option>Morocco</option><option>Myanmar</option><option>Nepal</option><option>Netherlands</option><option>New Zealand</option><option>Nigeria</option><option>Norway</option><option>Oman</option><option>Pakistan</option><option>Palestine</option><option>Panama</option><option>Peru</option><option>Philippines</option><option>Poland</option><option>Portugal</option><option>Qatar</option><option>Romania</option><option>Russia</option><option>Saudi Arabia</option><option>Senegal</option><option>Singapore</option><option>Somalia</option><option>South Africa</option><option>South Korea</option><option>Spain</option><option>Sri Lanka</option><option>Sudan</option><option>Sweden</option><option>Switzerland</option><option>Syria</option><option>Taiwan</option><option>Tanzania</option><option>Thailand</option><option>Tunisia</option><option>Turkey</option><option>UAE</option><option>Uganda</option><option>Ukraine</option><option>United Kingdom</option><option>USA</option><option>Uzbekistan</option><option>Venezuela</option><option>Vietnam</option><option>Yemen</option><option>Other</option>
+                                </select>
+                            </div>
+                            <div class="field">
+                                <label for="grade">Grade / year<span class="req">required</span></label>
+                                <select id="grade" name="grade" required>
+                                    <option value="" disabled selected>Select grade</option>
+                                    <option>9th / Year 10</option>
+                                    <option>10th / Year 11</option>
+                                    <option>11th / Year 12</option>
+                                    <option>12th / Year 13</option>
+                                    <option>Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="timezone">Your time zone<span class="req">required</span></label>
+                            <span class="hint">Sessions run across many time zones. This helps us schedule mentor and guest sessions you can actually attend.</span>
+                            <input type="text" id="timezone" name="timezone" placeholder="e.g. PST, GMT+5:30, CET" required>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title"><span>Context</span></div>
+                        <div class="field">
+                            <label>Have you done research before?</label>
+                            <span class="hint">This is context, not a requirement. Most fellows have not. It does not affect your chances.</span>
+                            <div class="radio-group">
+                                <label><input type="radio" name="research" value="Yes" required> Yes</label>
+                                <label><input type="radio" name="research" value="No"> No</label>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="research_desc">If yes, one line on what it was <span style="color:var(--dim);font-weight:400">(optional)</span></label>
+                            <input type="text" id="research_desc" name="research_desc" placeholder="Topic or project, one line">
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title"><span>How you think and work</span><span class="count">this is what we read most closely</span></div>
+
+                        <div class="prompt-box">
+                            <div class="prompt-q">Where you live, who gets a good education and who gets left behind? Describe one specific problem like this that you have noticed.</div>
+                        </div>
+                        <div class="field">
+                            <span class="hint">This could be about who can afford school, who lives too far from a good one, who has to work instead, who speaks the wrong language in class, or anything else you have seen. Write in your own voice. There is no right answer and no expected vocabulary. We want to see how you notice a problem and how you think about it.</span>
+                            <textarea id="prompt" name="prompt" placeholder="Start here..." required oninput="countWords(this)"></textarea>
+                            <div class="wordcount" id="wordcount">0 words</div>
+                            <div class="minnote">40 to 350 words.</div>
+                            <div class="field-warn" id="prompt-warn">Over 350 words. Try to tighten it, but you can still submit.</div>
+                            <div class="field-error" id="prompt-error"></div>
+                        </div>
+
+                        <div class="prompt-box subprompt">
+                            <div class="prompt-q sm">How would you try to find out if this is really happening, and how big it is?</div>
+                        </div>
+                        <div class="field">
+                            <span class="hint">You might look for numbers someone has already collected, like government or school data or a UN report. Or you might describe how you would gather your own, like a survey or interviews. There is no single right source. We want to see how you would start looking.</span>
+                            <textarea id="datasource" name="datasource" class="short" placeholder="What you would look at, and why you think it would help." required></textarea>
+                            <div class="field-error" id="datasource-error"></div>
+                        </div>
+
+                        <div class="prompt-box subprompt">
+                            <div class="prompt-q sm">Tell us about something you started on your own and finished.</div>
+                        </div>
+                        <div class="field">
+                            <span class="hint">We want to know that you finish what you start. Tell us about something you set out to do and saw through to the end — a project, a goal, something you taught yourself, something you built or fixed or organized. What made it hard, and how did you get it done?</span>
+                            <textarea id="completion" name="completion" class="short" placeholder="What you set out to do, and how you saw it through." required oninput="countCompletion(this)"></textarea>
+                            <div class="wordcount" id="completion-count">0 words</div>
+                            <div class="minnote">20 to 300 words.</div>
+                            <div class="field-warn" id="completion-warn">Over 300 words. Try to tighten it, but you can still submit.</div>
+                            <div class="field-error" id="completion-error"></div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title"><span>One last thing</span></div>
+                        <div class="field">
+                            <label for="referral">How did you hear about Atlas? <span style="color:var(--dim);font-weight:400">(optional)</span></label>
+                            <select id="referral" name="referral">
+                                <option value="" selected>Select one</option>
+                                <option>Google search</option>
+                                <option>ChatGPT or another AI assistant</option>
+                                <option>Instagram or TikTok</option>
+                                <option>A friend or classmate</option>
+                                <option>A teacher or school</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                        <div class="field" id="referral-other-wrap" style="display:none">
+                            <label for="referral_other">Tell us where <span style="color:var(--dim);font-weight:400">(optional)</span></label>
+                            <input type="text" id="referral_other" name="referral_other" placeholder="Where you heard about us">
+                        </div>
+                    </div>
+
+                    <div class="consent-block" id="consent-block">
+                        <label class="consent-item">
+                            <input type="checkbox" id="agree" name="agree">
+                            <span class="consent-text"><span class="lead">I agree to the Atlas <a href="/privacy.html" target="_blank">Privacy Policy</a>.</span><span class="consent-tag req">Required</span><br>Your information is used only to run the fellowship.</span>
+                        </label>
+                        <label class="consent-item">
+                            <input type="checkbox" id="consent" name="consent">
+                            <span class="consent-text"><span class="lead">Yes, keep me in the loop.</span><span class="consent-tag opt">Optional</span><br>Get early access to chapter applications, invitations to live sessions with researchers, and first notice when the next cohort opens.</span>
+                        </label>
+                        <div class="consent-error" id="consent-error">Please agree to the Privacy Policy to submit your application.</div>
+                    </div>
+
+                    <div class="submit-wrap">
+                        <button type="submit" class="btn" id="submit-btn">Submit application</button>
+                    </div>
+                    <div class="status" id="status"></div>
+                </form>
+            </div>
+
+            <div class="done" id="done">
+                <h2>Application received.</h2>
+                <p>Thank you. We read every application ourselves. Because we review on a rolling basis, you may hear from us before the July 24 deadline — but no later than shortly after it, whatever the outcome.</p>
+                <a href="/">← Back to Atlas</a>
+            </div>
+
+        </div>
+    </main>
+
+    <footer><p>Atlas Research Institute · 2026 · <a href="/privacy.html">Privacy Policy</a></p></footer>
+
+    <script>
+        // ====================================================================
+        // SHEET HEADERS (row 1), in this exact order — 16 columns, A through P:
+        //   Timestamp | Name | Email | School | City | Country | Grade | Timezone | Prompt | Data_Source | Completion | Research | Research_Desc | Consent | Referral | Referral_Other
+        //
+        // UPDATED Apps Script doPost (must match the order above):
+        //
+        // function doPost(e){
+        //   var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+        //   var d = JSON.parse(e.postData.contents);
+        //   sheet.appendRow([
+        //     new Date(), d.name, d.email, d.school, d.city, d.country, d.grade, d.timezone,
+        //     d.prompt, d.datasource, d.completion,
+        //     d.research, d.research_desc, d.consent, d.referral, d.referral_other
+        //   ]);
+        //   return ContentService.createTextOutput(JSON.stringify({status:'ok'}))
+        //     .setMimeType(ContentService.MimeType.JSON);
+        // }
+        //
+        // After editing the script you must RE-DEPLOY: Deploy > Manage deployments
+        // > edit (pencil) > Version: New version > Deploy. Same URL stays valid.
+        // ====================================================================
+
+        const ENDPOINT = 'https://script.google.com/macros/s/AKfycbzoGRSNMoJhYjcbHbqG2NEdIqCZ9DJ5vGVaMBvnXHwnRnoQInQ6RsuwWirb5nb0iwTqlA/exec';
+
+        function wc(str){ return str.trim() === '' ? 0 : str.trim().split(/\s+/).length; }
+
+        function countWords(el){
+            var words = wc(el.value);
+            var box = document.getElementById('wordcount');
+            box.textContent = words + ' words';
+            box.className = (words > 350) ? 'wordcount over' : 'wordcount';
+            document.getElementById('prompt-warn').classList.toggle('show', words > 350);
+        }
+
+        function countCompletion(el){
+            var words = wc(el.value);
+            var box = document.getElementById('completion-count');
+            box.textContent = words + ' words';
+            box.className = (words > 300) ? 'wordcount over' : 'wordcount';
+            document.getElementById('completion-warn').classList.toggle('show', words > 300);
+        }
+
+        // ---- save-your-work: keep a local draft so a closed tab loses nothing ----
+        var DRAFT_KEY = 'atlas_application_draft_v1';
+        var TEXT_IDS = ['name','email','school','city','timezone','prompt','datasource','completion','research_desc','referral_other'];
+        var SELECT_IDS = ['country','grade','referral'];
+        var RADIO_NAMES = ['research'];
+
+        function saveDraft(){
+            try{
+                var d = {};
+                TEXT_IDS.concat(SELECT_IDS).forEach(function(id){
+                    var el = document.getElementById(id);
+                    if(el) d[id] = el.value;
+                });
+                RADIO_NAMES.forEach(function(nm){
+                    var picked = document.querySelector('input[name="'+nm+'"]:checked');
+                    d[nm] = picked ? picked.value : '';
+                });
+                var c = document.getElementById('consent');
+                d.consent = c ? c.checked : false;
+                var a = document.getElementById('agree');
+                d.agree = a ? a.checked : false;
+                localStorage.setItem(DRAFT_KEY, JSON.stringify(d));
+            }catch(e){/* storage may be blocked; fail quietly */}
+        }
+
+        function restoreDraft(){
+            try{
+                var raw = localStorage.getItem(DRAFT_KEY);
+                if(!raw) return;
+                var d = JSON.parse(raw);
+                TEXT_IDS.concat(SELECT_IDS).forEach(function(id){
+                    if(d[id] != null && document.getElementById(id)) document.getElementById(id).value = d[id];
+                });
+                RADIO_NAMES.forEach(function(nm){
+                    if(d[nm]){
+                        var el = document.querySelector('input[name="'+nm+'"][value="'+d[nm]+'"]');
+                        if(el) el.checked = true;
+                    }
+                });
+                if(typeof d.consent !== 'undefined' && document.getElementById('consent')) document.getElementById('consent').checked = !!d.consent;
+                if(typeof d.agree !== 'undefined' && document.getElementById('agree')) document.getElementById('agree').checked = !!d.agree;
+                if(document.getElementById('prompt')) countWords(document.getElementById('prompt'));
+                if(document.getElementById('completion')) countCompletion(document.getElementById('completion'));
+                if(typeof toggleReferralOther === 'function') toggleReferralOther();
+            }catch(e){/* ignore malformed draft */}
+        }
+
+        function clearDraft(){
+            try{ localStorage.removeItem(DRAFT_KEY); }catch(e){}
+        }
+
+        function toggleReferralOther(){
+            var sel = document.getElementById('referral');
+            var wrap = document.getElementById('referral-other-wrap');
+            wrap.style.display = (sel && sel.value === 'Other') ? 'block' : 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', function(){
+            restoreDraft();
+            toggleReferralOther();
+            var referralSel = document.getElementById('referral');
+            if(referralSel) referralSel.addEventListener('change', toggleReferralOther);
+            var form = document.getElementById('atlas-form');
+            form.addEventListener('input', saveDraft);
+            form.addEventListener('change', saveDraft);
+        });
+
+        async function submitForm(e){
+            e.preventDefault();
+            const btn = document.getElementById('submit-btn');
+            const status = document.getElementById('status');
+            const form = document.getElementById('atlas-form');
+
+            status.className = 'status'; status.style.display = 'none';
+
+            // ---- email shape check (browser default accepts "x@y" with no domain; require x@y.z) ----
+            var emailField = document.getElementById('email');
+            var emailVal = emailField.value.trim();
+            var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(emailVal);
+            var emailErr = document.getElementById('email-error');
+            if(!emailOk){
+                emailErr.textContent = 'Please enter a complete email address, including the part after the dot (for example, name@gmail.com).';
+                emailErr.classList.add('show');
+                emailField.closest('.field').classList.add('invalid');
+                emailField.scrollIntoView({behavior:'smooth', block:'center'});
+                emailField.focus({preventScroll:true});
+                return false;
+            }
+            emailErr.classList.remove('show');
+            emailField.closest('.field').classList.remove('invalid');
+
+            // ---- minimum-length checks (hard floors block submit; caps are soft warnings only) ----
+            function failMin(id, count, min, unit){
+                var f = document.getElementById(id).closest('.field');
+                var err = document.getElementById(id + '-error');
+                err.textContent = 'This response is too short to review. You have written ' + count + ' word' + (count===1?'':'s') + '. Please write at least ' + min + '.';
+                err.classList.add('show');
+                f.classList.add('invalid');
+                document.getElementById(id).scrollIntoView({behavior:'smooth', block:'center'});
+                document.getElementById(id).focus({preventScroll:true});
+            }
+            function clearMin(id){
+                document.getElementById(id + '-error').classList.remove('show');
+                document.getElementById(id).closest('.field').classList.remove('invalid');
+            }
+
+            var pWords = wc(form.prompt.value);
+            var dWords = wc(form.datasource.value);
+            var cWords = wc(form.completion.value);
+
+            if(pWords < 40){ failMin('prompt', pWords, 40); return false; }
+            clearMin('prompt');
+            if(dWords < 5){ failMin('datasource', dWords, 5); return false; }
+            clearMin('datasource');
+            if(cWords < 20){ failMin('completion', cWords, 20); return false; }
+            clearMin('completion');
+
+            // ---- required: privacy agreement ----
+            var block = document.getElementById('consent-block');
+            var cErr = document.getElementById('consent-error');
+            if(!document.getElementById('agree').checked){
+                cErr.classList.add('show');
+                block.classList.add('invalid');
+                block.scrollIntoView({behavior:'smooth', block:'center'});
+                return false;
+            }
+            cErr.classList.remove('show');
+            block.classList.remove('invalid');
+
+            btn.disabled = true; btn.textContent = 'Submitting...';
+
+            const data = {
+                timestamp: new Date().toISOString(),
+                name: form.name.value.trim(),
+                email: form.email.value.trim(),
+                school: form.school.value.trim(),
+                city: form.city.value.trim(),
+                country: form.country.value,
+                grade: form.grade.value,
+                timezone: form.timezone.value.trim(),
+                prompt: form.prompt.value.trim(),
+                datasource: form.datasource.value.trim(),
+                completion: form.completion.value.trim(),
+                research: form.research.value,
+                research_desc: form.research_desc.value.trim(),
+                consent: document.getElementById('consent').checked ? 'Yes' : 'No',
+                referral: form.referral.value,
+                referral_other: form.referral_other.value.trim()
+            };
+
+            try{
+                await fetch(ENDPOINT, {
+                    method:'POST', mode:'no-cors',
+                    headers:{'Content-Type':'application/json'},
+                    body:JSON.stringify(data)
+                });
+                clearDraft();
+                document.getElementById('form-wrap').style.display = 'none';
+                document.getElementById('done').classList.add('show');
+                window.scrollTo({top:0,behavior:'smooth'});
+            }catch(err){
+                status.className = 'status error';
+                status.textContent = 'Something went wrong. Please try again, or email admin@atlas-research.org.';
+                btn.disabled = false; btn.textContent = 'Submit application';
+            }
+            return false;
+        }
+    </script>
+</body>
+</html>

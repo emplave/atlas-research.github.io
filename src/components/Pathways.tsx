@@ -8,7 +8,7 @@ const paths = [
     badge: "Selective · Summer",
     title: "Four weeks. Real data. Published work.",
     body: "Policy briefs and literature reviews built on UNESCO, World Bank, and PISA datasets, with seminars from researchers at institutions like Stanford.",
-    cta: { label: "Apply now", to: "/fellowship" },
+    cta: { label: "Stay involved", to: "/fellowship" },
   },
   {
     eyebrow: "Partners",
@@ -26,7 +26,7 @@ export function Pathways() {
         <Reveal>
           <p className="meta-label text-navy-500">Get involved</p>
           <h2 className="mt-4 font-serif text-3xl md:text-5xl text-navy-900 leading-tight">
-            Apply to the Fellowship.
+            Join what comes next.
             <br />
             Or help make it possible.
           </h2>

@@ -11,8 +11,8 @@ export function AnnouncementBar() {
           aria-hidden
         />
         <p className="meta-label text-cream-200/90">
-          Applications are open · Due {DATES.deadline} · Reviewed on a rolling
-          basis
+          Applications for this cohort are closed · Join the list for what's
+          next
         </p>
       </div>
     </div>
@@ -47,7 +47,7 @@ export function Nav() {
           to="/fellowship"
           className="rounded-full bg-navy-800 text-cream-100 text-sm pl-5 pr-4 py-2 inline-flex items-center gap-2 hover:bg-navy-700 transition-colors"
         >
-          Apply
+          Stay involved
           <span aria-hidden className="text-gold-300">
             →
           </span>

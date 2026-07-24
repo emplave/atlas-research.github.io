@@ -4,7 +4,7 @@
  * Cohort runs four weeks, starting August 3, 2026.
  */
 export const DATES = {
-  status: "open" as const,
+  status: "closed" as const,
   deadline: "July 24, 2026",
   review: "rolling — decisions within days of submission",
   programStart: "August 3, 2026",

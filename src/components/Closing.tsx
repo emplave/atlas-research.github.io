@@ -10,7 +10,7 @@ export function Closing() {
       <div className="mx-auto max-w-4xl px-6 py-24 md:py-32 text-center">
         <Reveal>
           <p className="meta-label text-cream-300/60">
-            Applications open now
+            Applications closed for this cohort
           </p>
         </Reveal>
         <Reveal delay={0.1}>
@@ -22,9 +22,9 @@ export function Closing() {
         </Reveal>
         <Reveal delay={0.22}>
           <p className="mt-6 mx-auto max-w-xl text-cream-300/75 text-lg">
-            The selective summer Fellowship — free, remote, and open to
-            grades 9–12. Applications close {DATES.deadline}, a real deadline,
-            not a manufactured one.
+            The selective summer Fellowship is free and remote. Applications
+            for this cohort are now closed — leave your email to hear when the
+            next opportunity opens.
           </p>
         </Reveal>
         <Reveal delay={0.34}>
@@ -33,15 +33,14 @@ export function Closing() {
               to="/fellowship"
               className="rounded-full bg-cream-100 text-navy-900 pl-7 pr-6 py-3.5 text-[15px] inline-flex items-center gap-2.5 hover:bg-cream-200 transition-all hover:gap-3.5"
             >
-              Apply to the Fellowship
+              Stay involved
               <span aria-hidden className="text-gold-600">→</span>
             </Link>
           </div>
         </Reveal>
         <Reveal delay={0.45}>
           <p className="mt-8 meta-label text-cream-300/40">
-            Due {DATES.deadline} · Review {DATES.review} · Program{" "}
-            {DATES.programStart}
+            The next opportunity will be announced here.
           </p>
         </Reveal>
       </div>

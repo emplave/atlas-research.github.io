@@ -38,7 +38,7 @@ export function Hero() {
               to="/fellowship"
               className="rounded-full bg-navy-800 text-cream-100 pl-6 pr-5 py-3 text-[15px] inline-flex items-center gap-2.5 hover:bg-navy-700 transition-all hover:gap-3.5"
             >
-              Apply to the Fellowship
+              Stay involved
               <span aria-hidden className="text-gold-300">→</span>
             </Link>
           </motion.div>

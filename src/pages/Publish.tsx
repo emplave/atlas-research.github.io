@@ -102,7 +102,7 @@ export function Publish() {
                   to="/fellowship"
                   className="mt-4 inline-flex items-center gap-2 rounded-full bg-cream-100 text-navy-900 pl-5 pr-4 py-2.5 text-sm hover:bg-cream-200 transition-all hover:gap-3"
                 >
-                  Apply to the Fellowship
+                  Stay involved
                   <span aria-hidden className="text-gold-600">→</span>
                 </Link>
               </div>
