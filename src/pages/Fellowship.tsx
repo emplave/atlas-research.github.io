@@ -18,11 +18,11 @@ export function Fellowship() {
     window.location.replace(WAITLIST_FORM_PATH);
   }, []);
   return (
-    <div className="bg-cream-100 min-h-[60vh] grid place-items-center px-6">
-      <p className="text-navy-600 text-center">
+    <div className="bg-ground min-h-[60vh] grid place-items-center px-6">
+      <p className="text-muted text-center">
         Taking you to the application…{" "}
         <a
-          className="underline underline-offset-4 text-navy-800"
+          className="underline underline-offset-4 text-text"
           href={WAITLIST_FORM_PATH}
         >
           Continue

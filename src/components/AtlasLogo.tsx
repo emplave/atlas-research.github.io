@@ -1,25 +1,24 @@
 import { cn } from "@/lib/utils";
+import type { Mode } from "@/lib/theme";
 
 /**
- * Top-left brand lockup (NSRI-informed institutional presence):
- * navy chip with the serif A + stacked institution name.
+ * Brand lockup — brass chip with the display A, plus the stacked institution
+ * name and tagline. Renders correctly in both modes.
+ *
+ * The tagline "Global Research Access" is fixed brand copy. Do not reword it.
  */
 export function AtlasLogo({
   className,
-  inverse = false,
+  mode = "dark",
 }: {
   className?: string;
-  inverse?: boolean;
+  mode?: Mode;
 }) {
+  const light = mode === "light";
   return (
     <span className={cn("inline-flex items-center gap-2.5 select-none", className)}>
       <span
-        className={cn(
-          "grid place-items-center h-8 w-8 rounded-lg font-serif text-lg leading-none",
-          inverse
-            ? "bg-cream-200 text-navy-900"
-            : "bg-navy-800 text-cream-100"
-        )}
+        className="grid place-items-center h-8 w-8 rounded-control font-display font-medium text-lg leading-none bg-brass text-ground"
         aria-hidden
       >
         A
@@ -27,19 +26,19 @@ export function AtlasLogo({
       <span className="flex flex-col leading-tight">
         <span
           className={cn(
-            "font-serif text-[15px] tracking-tight",
-            inverse ? "text-cream-100" : "text-navy-900"
+            "font-display text-[15px] tracking-tight",
+            light ? "text-ink" : "text-text"
           )}
         >
           Atlas Research Institute
         </span>
         <span
           className={cn(
-            "font-mono text-[9px] tracking-caps uppercase",
-            inverse ? "text-cream-300/60" : "text-navy-500"
+            "meta-label text-[9px]",
+            light ? "text-ink/55" : "text-muted"
           )}
         >
-          Global research access
+          Global Research Access
         </span>
       </span>
     </span>

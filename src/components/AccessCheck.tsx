@@ -52,11 +52,11 @@ export function AccessCheck() {
   const reading = readings[yesCount];
 
   return (
-    <section className="bg-cream-50 border-y border-hairline-soft">
+    <section className="bg-ground border-y border-line/50">
       <div className="mx-auto max-w-6xl px-6 py-20 md:py-28">
         <Reveal>
-          <p className="meta-label text-navy-500">Try the instrument</p>
-          <h2 className="mt-4 font-serif text-3xl md:text-5xl text-navy-900 max-w-2xl leading-tight">
+          <p className="meta-label text-muted">Try the instrument</p>
+          <h2 className="mt-4 font-display text-3xl md:text-5xl text-text max-w-2xl leading-tight">
             Three questions about access.
             <br />
             <span className="italic">Answer them for your school.</span>
@@ -68,12 +68,12 @@ export function AccessCheck() {
           <div className="space-y-4">
             {questions.map((q, i) => (
               <Reveal key={q.id} delay={i * 0.07}>
-                <div className="border border-hairline rounded-2xl bg-cream-100 p-5 md:p-6 flex flex-col sm:flex-row sm:items-center gap-4 justify-between">
+                <div className="border border-line rounded-card bg-ground p-5 md:p-6 flex flex-col sm:flex-row sm:items-center gap-4 justify-between">
                   <div className="flex gap-4 items-start">
-                    <span className="meta-label text-gold-600 mt-1">
+                    <span className="meta-label text-brass mt-1">
                       {q.tag}
                     </span>
-                    <p className="text-[15px] md:text-base text-navy-800 leading-snug max-w-md">
+                    <p className="text-[15px] md:text-base text-text leading-snug max-w-md">
                       {q.text}
                     </p>
                   </div>
@@ -89,10 +89,10 @@ export function AccessCheck() {
                             setAnswers((a) => ({ ...a, [q.id]: val }))
                           }
                           className={
-                            "rounded-full px-5 py-2 text-sm transition-all border " +
+                            "rounded-control px-5 py-2 text-sm transition-all border " +
                             (active
-                              ? "bg-navy-800 text-cream-100 border-navy-800"
-                              : "bg-transparent text-navy-600 border-hairline hover:border-navy-400")
+                              ? "bg-panel text-text border-panel"
+                              : "bg-transparent text-muted border-line hover:border-brass")
                           }
                         >
                           {val ? "Yes" : "No"}
@@ -104,7 +104,7 @@ export function AccessCheck() {
               </Reveal>
             ))}
             <Reveal delay={0.25}>
-              <p className="meta-label text-navy-400 pt-2">
+              <p className="meta-label text-muted pt-2">
                 Adapted from the Atlas access framework · Nothing you click
                 here is recorded
               </p>
@@ -113,8 +113,8 @@ export function AccessCheck() {
 
           {/* Reading — dark result card, HealthSync inversion */}
           <Reveal delay={0.15}>
-            <div className="rounded-3xl bg-navy-950 text-cream-200 p-7 md:p-9 lg:sticky lg:top-24 overflow-hidden">
-              <p className="meta-label text-cream-300/50">
+            <div className="rounded-card bg-ground text-text p-7 md:p-9 lg:sticky lg:top-24 overflow-hidden">
+              <p className="meta-label text-muted/50">
                 Structural access reading
               </p>
               <AnimatePresence mode="wait">
@@ -127,31 +127,31 @@ export function AccessCheck() {
                 >
                   {answered === 0 ? (
                     <>
-                      <p className="mt-6 font-serif text-4xl md:text-5xl text-cream-100">
+                      <p className="mt-6 font-display text-4xl md:text-5xl text-text">
                         — / 3
                       </p>
-                      <p className="mt-4 text-cream-300/70 leading-relaxed text-[15px]">
+                      <p className="mt-4 text-muted/70 leading-relaxed text-[15px]">
                         Answer the three items and see where your school sits on
                         the access gap.
                       </p>
                     </>
                   ) : (
                     <>
-                      <p className="mt-6 font-serif text-4xl md:text-5xl text-gold-300">
+                      <p className="mt-6 font-display text-4xl md:text-5xl text-brass">
                         {yesCount} / 3
                       </p>
-                      <p className="mt-2 font-serif text-xl text-cream-100">
+                      <p className="mt-2 font-display text-xl text-text">
                         {reading.label}
                       </p>
-                      <p className="mt-4 text-cream-300/70 leading-relaxed text-[15px]">
+                      <p className="mt-4 text-muted/70 leading-relaxed text-[15px]">
                         {reading.body}
                       </p>
                     </>
                   )}
                 </motion.div>
               </AnimatePresence>
-              <div className="mt-8 pt-6 border-t border-hairline-inverse-soft">
-                <p className="text-[13px] text-cream-300/50 leading-relaxed">
+              <div className="mt-8 pt-6 border-t border-line/50">
+                <p className="text-[13px] text-muted/50 leading-relaxed">
                   Whatever you answered: the Fellowship is free, because
                   access to research should not depend on which school you
                   attend.

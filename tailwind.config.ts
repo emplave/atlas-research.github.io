@@ -1,69 +1,67 @@
 import type { Config } from "tailwindcss";
 
 /**
- * Atlas design tokens — derived from the Antigravity identity extraction
- * (research/ANTIGRAVITY-IDENTITY-EXTRACTION.md): same grammar, different soul.
- * Ink = Atlas navy (not black). Surface = warm cream (not white).
- * One accent = signal gold, used with extreme restraint.
+ * Atlas design tokens — semantic names only, no numeric ramps.
+ *
+ * A token is named for the job it does, not for its hue. There is no
+ * cream-200 / navy-700 to pick from, which is the point: the site has two
+ * modes and each surface in them has exactly one correct color.
+ *
+ *   DARK CHROME (default)   ground / panel / line / text / muted
+ *   LIGHT READING           paper / ink
+ *   ACCENT (both modes)     brass / brass-hi
+ *
+ * BRASS IS ACCENT-ONLY, BY RULE. Links and buttons. Never a background wash,
+ * never body text. If a block of prose is brass, it is wrong.
  */
 export default {
   content: ["./index.html", "./src/**/*.{ts,tsx}"],
   theme: {
     extend: {
       colors: {
-        // warm cream ramp (surfaces)
-        cream: {
-          50: "#FBFAF5",
-          100: "#F5F2E9",
-          200: "#EEEADD",
-          300: "#E9E5DA",
-          400: "#DDD7C4",
-        },
-        // navy ramp (ink + dark surfaces)
-        navy: {
-          300: "#8B9BB4",
-          400: "#5D7089",
-          500: "#3C5068",
-          600: "#2C405A",
-          700: "#22384F",
-          800: "#1C2E45",
-          900: "#16253A",
-          950: "#101B2C",
-        },
-        gold: {
-          300: "#E3C87F",
-          400: "#D4B562",
-          500: "#C9A54E",
-          600: "#A98A3C",
-        },
+        /** dark page background */
+        ground: "#17181A",
+        /** cards, raised surfaces */
+        panel: "#1F2022",
+        /** hairline borders */
+        line: "#34342F",
+        /** primary text on dark */
+        text: "#E9E4DA",
+        /** secondary text on dark */
+        muted: "#98948B",
+        /** links and buttons only */
+        brass: "#C08A3E",
+        /** link and button hover */
+        "brass-hi": "#D2A254",
+        /** light reading background */
+        paper: "#F2EBDD",
+        /** light reading text */
+        ink: "#241B10",
       },
       fontFamily: {
-        serif: ['"Playfair Display"', "Didot", "Bodoni MT", "Georgia", "serif"],
+        /**
+         * Headings. Weights 400 and 500 ONLY — never 600+. Headings are
+         * deliberately light and thin; a bold Spectral heading is off-brand.
+         */
+        display: ["Spectral", "Georgia", "serif"],
+        /**
+         * Alias of `display`, kept so the ~35 existing `font-serif` call
+         * sites keep rendering correctly without a mid-flight sweep.
+         * Prefer `font-display` in new code.
+         */
+        serif: ["Spectral", "Georgia", "serif"],
         sans: ["Inter", "system-ui", "sans-serif"],
-        mono: ['"JetBrains Mono"', "Consolas", "monospace"],
+        // font-mono removed — no monospace anywhere in the system.
       },
       letterSpacing: {
         caps: "0.18em",
+        meta: "0.14em",
       },
-      borderColor: {
-        hairline: "rgba(28, 46, 69, 0.12)",
-        "hairline-soft": "rgba(28, 46, 69, 0.06)",
-        "hairline-inverse": "rgba(233, 229, 218, 0.14)",
-        "hairline-inverse-soft": "rgba(233, 229, 218, 0.07)",
-      },
-      animation: {
-        "fade-up": "fadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) both",
-        "pulse-node": "pulseNode 2.6s ease-in-out infinite",
-      },
-      keyframes: {
-        fadeUp: {
-          "0%": { opacity: "0", transform: "translateY(24px)" },
-          "100%": { opacity: "1", transform: "translateY(0)" },
-        },
-        pulseNode: {
-          "0%, 100%": { opacity: "0.5", transform: "scale(1)" },
-          "50%": { opacity: "1", transform: "scale(1.35)" },
-        },
+      borderRadius: {
+        /** cards and panels */
+        card: "10px",
+        /** buttons, inputs, selects */
+        control: "6px",
       },
     },
   },

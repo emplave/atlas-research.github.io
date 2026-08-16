@@ -1,5 +1,5 @@
 import { ReactNode, useState } from "react";
-import { FORM_ENDPOINT, APPLY_EMAIL } from "@/lib/dates";
+import { FORM_ENDPOINT, CONTACT_EMAIL } from "@/lib/dates";
 
 export function Field({
   label,
@@ -15,23 +15,23 @@ export function Field({
   return (
     <label className="block">
       <span className="flex items-baseline gap-2">
-        <span className="text-sm text-navy-800">{label}</span>
+        <span className="text-sm text-text">{label}</span>
         {required ? (
-          <span className="text-gold-600 text-xs" aria-hidden>
+          <span className="text-brass text-xs" aria-hidden>
             required
           </span>
         ) : (
-          <span className="text-navy-400 text-xs">optional</span>
+          <span className="text-muted text-xs">optional</span>
         )}
       </span>
-      {hint && <span className="block mt-0.5 text-xs text-navy-500">{hint}</span>}
+      {hint && <span className="block mt-0.5 text-xs text-muted">{hint}</span>}
       <span className="block mt-2">{children}</span>
     </label>
   );
 }
 
 export const inputCls =
-  "w-full rounded-xl border border-hairline bg-cream-50 px-4 py-2.5 text-[15px] text-navy-900 placeholder:text-navy-400 focus:outline-none focus:border-navy-400 transition-colors";
+  "w-full rounded-control border border-line bg-ground px-4 py-2.5 text-[15px] text-text placeholder:text-muted focus:outline-none focus:border-panel transition-colors";
 
 export function WordCountArea({
   name,
@@ -62,8 +62,8 @@ export function WordCountArea({
       />
       <p
         className={
-          "mt-1 text-right font-mono text-[11px] " +
-          (bad ? "text-gold-600" : "text-navy-400")
+          "mt-1 text-right font-sans text-[11px] " +
+          (bad ? "text-brass" : "text-muted")
         }
       >
         {words} words · target {min}–{max}
@@ -101,7 +101,7 @@ export async function submitApplication(
   const body = Object.entries(data)
     .map(([k, v]) => `${k}:\n${v}`)
     .join("\n\n");
-  window.location.href = `mailto:${APPLY_EMAIL}?subject=${encodeURIComponent(
+  window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
     `${kind} submission`
   )}&body=${encodeURIComponent(body.slice(0, 1800))}`;
   setState("sent");

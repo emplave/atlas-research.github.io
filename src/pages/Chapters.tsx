@@ -9,7 +9,7 @@ const gets = [
   },
   {
     t: "A place on the map",
-    d: "Your school joins the Atlas network — the same globe on our front page. Chapters are where the access mission actually scales.",
+    d: "Your Chapter joins the Atlas directory alongside every other active research group. Chapters are where research access actually scales.",
   },
   {
     t: "A pathway to the Fellowship",
@@ -37,17 +37,17 @@ export function Chapters() {
   };
 
   return (
-    <div className="bg-cream-100">
-      <section className="border-b border-hairline-soft">
+    <div className="bg-ground">
+      <section className="border-b border-line/50">
         <div className="mx-auto max-w-3xl px-6 pt-16 md:pt-24 pb-12">
           <Reveal>
-            <p className="meta-label text-navy-500">
+            <p className="meta-label text-muted">
               Chapters · Open enrollment · Any school, any country
             </p>
-            <h1 className="mt-4 font-serif text-4xl md:text-6xl text-navy-900 leading-[1.05]">
+            <h1 className="mt-4 font-display text-4xl md:text-6xl text-text leading-[1.05]">
               Start a research club at your school.
             </h1>
-            <p className="mt-6 text-lg text-navy-600 leading-relaxed">
+            <p className="mt-6 text-lg text-muted leading-relaxed">
               The Fellowship is selective. Chapters are deliberately not —
               because the whole point of Atlas is that research access
               shouldn't depend on winning a gate. If you have a school and the
@@ -58,12 +58,12 @@ export function Chapters() {
       </section>
 
       <section className="mx-auto max-w-5xl px-6 py-14 md:py-20">
-        <div className="grid md:grid-cols-2 gap-px bg-[rgba(28,46,69,0.12)] border border-hairline">
+        <div className="grid md:grid-cols-2 gap-px bg-line border border-line">
           {gets.map((g, i) => (
             <Reveal key={g.t} delay={i * 0.06} className="h-full">
-              <div className="h-full bg-cream-100 p-7">
-                <h3 className="font-serif text-2xl text-navy-900">{g.t}</h3>
-                <p className="mt-3 text-[15px] text-navy-600 leading-relaxed">{g.d}</p>
+              <div className="h-full bg-ground p-7">
+                <h3 className="font-display text-2xl text-text">{g.t}</h3>
+                <p className="mt-3 text-[15px] text-muted leading-relaxed">{g.d}</p>
               </div>
             </Reveal>
           ))}
@@ -72,16 +72,16 @@ export function Chapters() {
 
       <section className="mx-auto max-w-3xl px-6 pb-20">
         <Reveal>
-          <h2 className="font-serif text-3xl text-navy-900">Register your chapter</h2>
-          <p className="mt-3 text-navy-600 text-[15px]">
+          <h2 className="font-display text-3xl text-text">Register your chapter</h2>
+          <p className="mt-3 text-muted text-[15px]">
             Takes two minutes. We'll send the starter kit and add your school
             to the network.
           </p>
         </Reveal>
         {state === "sent" ? (
-          <div className="mt-8 border border-hairline bg-cream-50 rounded-2xl p-10 text-center">
-            <p className="font-serif text-3xl text-navy-900">Welcome to the network.</p>
-            <p className="mt-4 text-navy-600">
+          <div className="mt-8 border border-line bg-ground rounded-card p-10 text-center">
+            <p className="font-display text-3xl text-text">Welcome to the network.</p>
+            <p className="mt-4 text-muted">
               Starter kit is on its way. (If your email client opened, hit
               send there to finish.)
             </p>
@@ -105,20 +105,20 @@ export function Chapters() {
             <Field label="Why a chapter, in one or two lines?" hint="No essay. We just want to know you're real.">
               <textarea name="why" rows={3} className={inputCls + " resize-y"} />
             </Field>
-            <label className="flex items-start gap-3 text-sm text-navy-600">
+            <label className="flex items-start gap-3 text-sm text-muted">
               <input type="checkbox" name="privacy" required className="mt-1" />
               <span>I agree to the privacy policy.</span>
             </label>
             <button
               type="submit"
               disabled={state === "sending"}
-              className="rounded-full bg-navy-800 text-cream-100 pl-7 pr-6 py-3.5 text-[15px] inline-flex items-center gap-2.5 hover:bg-navy-700 transition-all hover:gap-3.5 disabled:opacity-60"
+              className="rounded-control bg-brass text-ground pl-7 pr-6 py-3.5 text-[15px] inline-flex items-center gap-2.5 hover:bg-brass-hi transition-all hover:gap-3.5 disabled:opacity-60"
             >
               {state === "sending" ? "Registering…" : "Register chapter"}
-              <span aria-hidden className="text-gold-300">→</span>
+              <span aria-hidden>→</span>
             </button>
             {state === "error" && (
-              <p className="text-sm text-gold-600">
+              <p className="text-sm text-text border-l-2 border-brass pl-3">
                 Something failed — please retry, or email us directly.
               </p>
             )}

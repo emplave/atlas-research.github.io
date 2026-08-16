@@ -3,33 +3,59 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
-    color-scheme: light;
-  }
+  /*
+   * No hardcoded color-scheme and no global background. The shell sets both
+   * per route (see src/lib/theme.ts) so dark chrome and light reading stay
+   * cleanly separated.
+   */
   html {
     scroll-behavior: smooth;
   }
   body {
-    @apply bg-cream-100 text-navy-800 font-sans antialiased;
+    @apply font-sans antialiased;
     font-weight: 420;
     font-variation-settings: "wght" 420;
   }
-  ::selection {
-    @apply bg-gold-400/40 text-navy-900;
+
+  /* Mode surfaces — applied by the shell to <html>. */
+  .mode-dark {
+    color-scheme: dark;
+    @apply bg-ground text-text;
+  }
+  .mode-light {
+    color-scheme: light;
+    @apply bg-paper text-ink;
+  }
+  .mode-dark ::selection {
+    @apply bg-brass/30 text-text;
+  }
+  .mode-light ::selection {
+    @apply bg-brass/25 text-ink;
+  }
+
+  /* Headings stay light. Spectral above 500 is off-brand. */
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-weight: 400;
   }
 }
 
 @layer utilities {
-  /* mono metadata label — the "instrument chrome" register */
+  /*
+   * Metadata label — the small-caps chrome register. Redefined from mono to
+   * Inter so the ~33 existing call sites keep working with no edits.
+   */
   .meta-label {
-    @apply font-mono text-[11px] tracking-caps uppercase;
+    @apply font-sans text-[11px] tracking-meta uppercase;
   }
-  /* hairline rules, Antigravity-style elevation without shadows */
+  /* hairline rules — elevation without shadows */
   .rule {
-    @apply border-t border-[rgba(28,46,69,0.12)];
+    @apply border-t border-line;
   }
   .rule-inverse {
-    @apply border-t border-[rgba(233,229,218,0.14)];
+    @apply border-t border-line;
   }
 }
 

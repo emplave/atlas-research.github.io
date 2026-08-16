@@ -1,5 +1,5 @@
 import { Reveal } from "@/components/Reveal";
-import { APPLY_EMAIL } from "@/lib/dates";
+import { CONTACT_EMAIL } from "@/lib/dates";
 import { Link } from "react-router-dom";
 
 /**
@@ -11,7 +11,7 @@ const standards = [
     n: "1",
     t: "Formatting",
     d: "Submit in Word or LaTeX. Standard fonts, double spacing, continuous line numbering. Use the Atlas template where you can — if you can't, our editorial team will format with you.",
-    link: { label: "Request the template", href: `mailto:${APPLY_EMAIL}?subject=${encodeURIComponent("Template request")}` },
+    link: { label: "Request the template", href: `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("Template request")}` },
   },
   {
     n: "2",
@@ -35,20 +35,20 @@ const standards = [
 
 export function Publish() {
   return (
-    <div className="bg-cream-100">
-      <section className="border-b border-hairline-soft">
+    <div className="bg-ground">
+      <section className="border-b border-line/50">
         <div className="mx-auto max-w-3xl px-6 pt-16 md:pt-24 pb-12">
           <Reveal>
-            <p className="meta-label text-navy-500">Publish with us</p>
-            <h1 className="mt-4 font-serif text-4xl md:text-6xl text-navy-900 leading-[1.05]">
+            <p className="meta-label text-muted">Publish with us</p>
+            <h1 className="mt-4 font-display text-4xl md:text-6xl text-text leading-[1.05]">
               Student research,
               <br />
               reviewed like it matters.
             </h1>
-            <p className="mt-6 text-lg text-navy-600 leading-relaxed">
+            <p className="mt-6 text-lg text-muted leading-relaxed">
               Atlas publishes policy briefs and literature reviews on education
               access through the{" "}
-              <strong className="font-medium text-navy-800">
+              <strong className="font-medium text-text">
                 Atlas Journal of Education Policy
               </strong>{" "}
               (first issue Fall 2026) and submission to partner journals
@@ -60,20 +60,20 @@ export function Publish() {
       </section>
 
       <section className="mx-auto max-w-3xl px-6 py-14 md:py-20">
-        <div className="space-y-0 border-t border-hairline">
+        <div className="space-y-0 border-t border-line">
           {standards.map((s, i) => (
             <Reveal key={s.n} delay={i * 0.05}>
-              <div className="border-b border-hairline py-8 flex gap-6">
-                <span className="meta-label text-gold-600 mt-1.5 w-6 shrink-0">
+              <div className="border-b border-line py-8 flex gap-6">
+                <span className="meta-label text-brass mt-1.5 w-6 shrink-0">
                   {s.n.padStart(2, "0")}
                 </span>
                 <div>
-                  <h2 className="font-serif text-2xl text-navy-900">{s.t}</h2>
-                  <p className="mt-3 text-[15px] text-navy-600 leading-relaxed">{s.d}</p>
+                  <h2 className="font-display text-2xl text-text">{s.t}</h2>
+                  <p className="mt-3 text-[15px] text-muted leading-relaxed">{s.d}</p>
                   {s.link && (
                     <a
                       href={s.link.href}
-                      className="mt-3 inline-block text-sm text-navy-700 underline underline-offset-4 hover:text-navy-900"
+                      className="mt-3 inline-block text-sm text-text underline underline-offset-4 hover:text-text"
                     >
                       {s.link.label}
                     </a>
@@ -86,36 +86,36 @@ export function Publish() {
 
         {/* submission box */}
         <Reveal delay={0.1}>
-          <div className="mt-12 rounded-2xl bg-navy-950 text-cream-200 p-8 md:p-10">
-            <p className="meta-label text-cream-300/50">Start a submission</p>
-            <h2 className="mt-3 font-serif text-3xl text-cream-100">
+          <div className="mt-12 rounded-card bg-ground text-text p-8 md:p-10">
+            <p className="meta-label text-muted/50">Start a submission</p>
+            <h2 className="mt-3 font-display text-3xl text-text">
               Two ways to publish with Atlas.
             </h2>
             <div className="mt-6 grid md:grid-cols-2 gap-6 text-[15px] leading-relaxed">
               <div>
-                <p className="text-cream-100 font-medium">Through the programs</p>
-                <p className="mt-2 text-cream-300/70">
+                <p className="text-text font-medium">Through the programs</p>
+                <p className="mt-2 text-muted/70">
                   Fellowship policy briefs and literature reviews are developed
                   with editorial support and submitted on your behalf.
                 </p>
                 <Link
                   to="/fellowship"
-                  className="mt-4 inline-flex items-center gap-2 rounded-full bg-cream-100 text-navy-900 pl-5 pr-4 py-2.5 text-sm hover:bg-cream-200 transition-all hover:gap-3"
+                  className="mt-4 inline-flex items-center gap-2 rounded-control bg-brass text-ground pl-5 pr-4 py-2.5 text-sm hover:bg-brass-hi transition-all hover:gap-3"
                 >
                   Apply to the Fellowship
-                  <span aria-hidden className="text-gold-600">→</span>
+                  <span aria-hidden>→</span>
                 </Link>
               </div>
               <div>
-                <p className="text-cream-100 font-medium">Direct manuscript</p>
-                <p className="mt-2 text-cream-300/70">
+                <p className="text-text font-medium">Direct manuscript</p>
+                <p className="mt-2 text-muted/70">
                   Finished work on education access? Send it with "Manuscript"
                   in the subject line — every submission gets a real read and a
                   real reply.
                 </p>
                 <a
-                  href={`mailto:${APPLY_EMAIL}?subject=${encodeURIComponent("Manuscript submission")}`}
-                  className="mt-4 inline-flex items-center gap-2 rounded-full border border-hairline-inverse px-5 py-2.5 text-sm text-cream-200 hover:border-cream-300/50 transition-colors"
+                  href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("Manuscript submission")}`}
+                  className="mt-4 inline-flex items-center gap-2 rounded-control border border-line px-5 py-2.5 text-sm text-text hover:border-brass transition-colors"
                 >
                   Submit a manuscript
                 </a>

@@ -1,56 +1,70 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { AtlasLogo } from "./AtlasLogo";
-import { DATES } from "@/lib/dates";
+import { modeForPath } from "@/lib/theme";
+import { cn } from "@/lib/utils";
 
-export function AnnouncementBar() {
-  return (
-    <div className="bg-navy-900 text-cream-200">
-      <div className="mx-auto max-w-6xl px-6 py-2 flex items-center justify-center gap-3">
-        <span
-          className="h-1.5 w-1.5 rounded-full bg-gold-400 animate-pulse-node"
-          aria-hidden
-        />
-        <p className="meta-label text-cream-200/90">
-          Applications are open · Due {DATES.deadline} · Reviewed on a rolling
-          basis
-        </p>
-      </div>
-    </div>
-  );
-}
-
-const links = [
-  { to: "/#study", label: "The Mission" },
-  { to: "/#sequence", label: "Fellowship" },
-  { to: "/#faq", label: "FAQ" },
+/**
+ * Sitewide navigation. Works in both modes — it reads the route's mode from
+ * src/lib/theme.ts rather than taking a prop, so no page can put it in the
+ * wrong one.
+ *
+ * Links point at real routes. The previous /#study and /#sequence anchors are
+ * gone; those section ids do not survive the rebuild.
+ */
+const LINKS = [
+  { to: "/chapters", label: "Chapters" },
+  { to: "/fellowship", label: "Fellowship" },
+  { to: "/journal", label: "Journal" },
+  { to: "/partners", label: "Partners" },
 ];
 
 export function Nav() {
+  const { pathname } = useLocation();
+  const light = modeForPath(pathname) === "light";
+
   return (
-    <header className="sticky top-0 z-50 bg-cream-100/90 backdrop-blur border-b border-hairline">
-      <nav className="mx-auto max-w-6xl px-6 h-16 flex items-center justify-between">
+    <header
+      className={cn(
+        "sticky top-0 z-50 backdrop-blur border-b",
+        light ? "bg-paper/90 border-ink/10" : "bg-ground/90 border-line"
+      )}
+    >
+      <nav className="mx-auto max-w-6xl px-6 h-16 flex items-center justify-between gap-6">
         <Link to="/" aria-label="Atlas Research Institute — home">
-          <AtlasLogo />
+          <AtlasLogo mode={light ? "light" : "dark"} />
         </Link>
+
         <div className="hidden md:flex items-center gap-7">
-          {links.map((l) => (
-            <Link
-              key={l.to}
-              to={l.to}
-              className="text-sm text-navy-600 hover:text-navy-900 transition-colors"
-            >
-              {l.label}
-            </Link>
-          ))}
+          {LINKS.map((l) => {
+            const active = pathname === l.to || pathname.startsWith(`${l.to}/`);
+            return (
+              <Link
+                key={l.to}
+                to={l.to}
+                aria-current={active ? "page" : undefined}
+                className={cn(
+                  "text-sm transition-colors",
+                  light
+                    ? active
+                      ? "text-ink"
+                      : "text-ink/65 hover:text-ink"
+                    : active
+                      ? "text-text"
+                      : "text-muted hover:text-text"
+                )}
+              >
+                {l.label}
+              </Link>
+            );
+          })}
         </div>
+
         <Link
-          to="/fellowship"
-          className="rounded-full bg-navy-800 text-cream-100 text-sm pl-5 pr-4 py-2 inline-flex items-center gap-2 hover:bg-navy-700 transition-colors"
+          to="/apply"
+          className="rounded-control bg-brass text-ground text-sm pl-5 pr-4 py-2 inline-flex items-center gap-2 hover:bg-brass-hi transition-colors"
         >
           Apply
-          <span aria-hidden className="text-gold-300">
-            →
-          </span>
+          <span aria-hidden>→</span>
         </Link>
       </nav>
     </header>

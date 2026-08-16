@@ -10,7 +10,12 @@ export const DATES = {
   programStart: "August 3, 2026",
 } as const;
 
-export const APPLY_EMAIL = "info@atlas-research.org";
+/**
+ * The contact address, everywhere. There is no second address — do not
+ * reintroduce info@ or any personal mailbox.
+ */
+export const CONTACT_EMAIL = "admin@atlas-research.org";
+
 export const LEGACY_PORTAL = "https://atlas-research.org/apply.html";
 
 /**

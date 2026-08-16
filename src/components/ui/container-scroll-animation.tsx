@@ -3,7 +3,7 @@ import { useScroll, useTransform, motion, MotionValue } from "framer-motion";
 
 /**
  * Atlas container scroll — adapted from the 21st.dev framer-motion component.
- * Frame restyled from generic gray to navy ink + hairline; used to present
+ * Frame styled with the panel + line tokens; used to present
  * the survey instrument as a physical artifact you scroll into.
  */
 export const ContainerScroll = ({
@@ -95,9 +95,9 @@ export const Card = ({
         boxShadow:
           "0 0 rgba(16,27,44,0.3), 0 9px 20px rgba(16,27,44,0.29), 0 37px 37px rgba(16,27,44,0.26), 0 84px 50px rgba(16,27,44,0.15), 0 149px 60px rgba(16,27,44,0.04)",
       }}
-      className="max-w-5xl -mt-12 mx-auto h-[28rem] md:h-[38rem] w-full border border-[rgba(233,229,218,0.18)] p-2 md:p-4 bg-navy-900 rounded-[24px]"
+      className="max-w-5xl -mt-12 mx-auto h-[28rem] md:h-[38rem] w-full border border-[rgba(233,229,218,0.18)] p-2 md:p-4 bg-ground rounded-card"
     >
-      <div className="h-full w-full overflow-hidden rounded-2xl bg-navy-950 md:rounded-xl">
+      <div className="h-full w-full overflow-hidden rounded-card bg-ground md:rounded-control">
         {children}
       </div>
     </motion.div>

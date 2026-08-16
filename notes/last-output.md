@@ -1,308 +1,217 @@
-# Chapters rebuild — Phase 0 + Phase 1
+# Chapters rebuild — Phase 2
 
-Branch: `chapters-rebuild`. Typecheck (`npx tsc --noEmit`) passes clean. Nothing committed.
+Branch: `chapters-rebuild`. Phases 0 and 1 committed separately beforehand
+(`548b701`, `f5c156c`).
 
-Phases 0 and 1 only. No page or component code written. Q1–Q7 changes (dates.ts status,
-globe removal, Partners.tsx mailto fix, root-file cleanup, footer line) are later phases
-and were deliberately not started.
-
----
-
-## Phase 0 — waitlist backend extracted
-
-`src/lib/dates.ts` now holds the live Apps Script endpoint as a named constant:
-
-```ts
-/**
- * DO NOT DELETE — LIVE WAITLIST BACKEND.
- *
- * This is the deployed Google Apps Script that receives every waitlist /
- * fellowship application submitted from public/apply.html. It is a real,
- * in-production endpoint writing to a live Google Sheet. Deleting, renaming,
- * or pointing this elsewhere silently drops applicant submissions on the
- * floor with no error surface.
- *
- * The same literal is currently inlined in public/apply.html (that file is a
- * standalone static page, intentionally untouched). If this URL ever changes,
- * it must be updated in BOTH places.
- */
-export const WAITLIST_ENDPOINT = "https://script.google.com/macros/s/AKfycbz…/exec";
-
-/** The static page that posts to WAITLIST_ENDPOINT. */
-export const WAITLIST_FORM_PATH = "/apply.html";
-```
-
-`src/pages/Fellowship.tsx` imports both.
-
-**Judgment call to be aware of:** that route is currently only a redirect to `/apply.html`,
-so it has no natural *use* for the raw endpoint — importing it alone would be dead weight a
-linter strips. `WAITLIST_FORM_PATH` drives the actual redirect; `WAITLIST_ENDPOINT` is
-referenced via an explicit `void` + comment so the live backend stays statically linked to
-the route through the rebuild.
-
-`public/apply.html` untouched, as instructed. `FORM_ENDPOINT` left alone — that is the
-Partners/Chapters form path and rewiring it is Q2's job in a later phase.
+Verification: `npx tsc --noEmit` clean, `npx vite build` succeeds, all 8 routes render.
 
 ---
 
-## Phase 1 — data layer, three files
+## Tokens — `tailwind.config.ts`
 
-### FILE 1 — `src/data/chapters.ts`
+The `cream.*`, `navy.*`, and `gold.*` ramps are gone, along with the `fade-up` and
+`pulse-node` keyframes. Nine semantic tokens replace them:
 
-Types: `Field` (the 8 specified, exactly), `Status`, `Setting`, `OutputType`, `ReviewStatus`,
-`ResearchGroup`.
-
-The two directory rules live in the data layer, not in a page:
-
-- `isVisibleByDefault(group)` — excludes `Archived` from the default view.
-- `canApply(group)` — true for `Recruiting` only.
-
-`ReviewStatus` is documented as a review state carrying no publication expectation:
-work may be submitted, the Atlas research and editorial team decides, and `"published"`
-is only ever set after the fact.
-
-```ts
-export type Field =
-  | "Computer Science & AI"
-  | "Health & Life Sciences"
-  | "Engineering & Technology"
-  | "Physical Sciences & Mathematics"
-  | "Social Sciences"
-  | "Humanities"
-  | "Economics & Business"
-  | "Environment & Sustainability";
-
-export type Status = "Recruiting" | "Full" | "In Progress" | "Completed" | "Archived";
-
-export type Setting = "school" | "community" | "hybrid" | "online";
-
-export type OutputType =
-  | "Policy brief"
-  | "Literature review"
-  | "Survey or interview study"
-  | "Regional data profile"
-  | "Community presentation"
-  | "Access initiative";
-
-export type ReviewStatus = "none" | "submitted" | "in review" | "published";
-
-export type ResearchGroup = {
-  slug: string;
-  projectTitle: string;
-  field: Field;
-  status: Status;
-  setting: Setting;
-  oneLine: string;               // ~140 chars, directory cards
-  leadName: string;
-  schoolOrCommunityName?: string;
-  location?: string;
-  memberCount: number;
-  abstract: string;              // 2–3 paragraphs
-  outputType: OutputType;
-  methods: string[];
-  milestones: string[];
-  startedAt: string;             // ISO
-  reviewStatus: ReviewStatus;
-};
-```
-
-**Seed coverage** — 6 groups, all marked PLACEHOLDER DATA with a comment saying Hamaad
-replaces them with real groups before launch:
-
-| Field | Status | Setting |
+| Token | Value | Job |
 | --- | --- | --- |
-| Social Sciences | Recruiting | school |
-| Health & Life Sciences | In Progress | community |
-| Environment & Sustainability | Full | hybrid |
-| Computer Science & AI | Recruiting | online |
-| Economics & Business | Completed | community |
-| Humanities | Archived | school |
+| `ground` | `#17181A` | dark page background |
+| `panel` | `#1F2022` | cards, raised surfaces |
+| `line` | `#34342F` | hairline borders |
+| `text` | `#E9E4DA` | primary text on dark |
+| `muted` | `#98948B` | secondary text on dark |
+| `brass` | `#C08A3E` | links and buttons only |
+| `brass-hi` | `#D2A254` | link and button hover |
+| `paper` | `#F2EBDD` | light reading background |
+| `ink` | `#241B10` | light reading text |
 
-Six fields, all five statuses represented (incl. the required Archived and Completed), all
-four settings. Every group is topic-agnostic; none is education-framed.
+The file comment states the accent rule directly: brass is links and buttons, never a
+background wash, never body text.
 
-**Seeded example:**
+**~270 token occurrences across 23 files** were swept to the new names. The mapping was
+prefix-sensitive, because the old palette was light-first and the new default is dark —
+`text-cream-100` was light text *on* a dark section and became `text-text`, while
+`bg-cream-100` was a light surface and became `bg-ground`. A naive find-and-replace would
+have inverted half the site.
+
+## Fonts
+
+- `font-display` → Spectral, Georgia, serif. A base rule pins `h1`–`h4` to weight 400, so
+  Spectral cannot render at 600+. Audited: no `font-bold` / `font-semibold` anywhere.
+- `font-serif` was kept as an alias during the sweep, then all 35 call sites were converted
+  to `font-display`. The alias remains in the config as a safety net.
+- `font-sans` → Inter, system-ui, sans-serif.
+- `font-mono` removed from the config; the 5 usages were rewritten.
+- `.meta-label` redefined as Inter / 11px / uppercase / `0.14em`, so all 33 existing call
+  sites keep working with no edits.
+- `index.html` fonts → `Spectral:300;400;500` + `Inter:300..600`. Playfair Display and
+  JetBrains Mono dropped.
+- `theme-color` → `#17181A`. Favicon recolored to brass-on-ground.
+
+## Radius
+
+`rounded-card` 10px, `rounded-control` 6px. All 15 `rounded-full` CTAs converted to
+`rounded-control`; the loose `rounded-2xl` / `xl` / `lg` / `md` / `[24px]` mix was
+normalized into the two tokens. `rounded-full` survives on exactly 4 elements — three
+`h-1.5 w-1.5` status dots and one uppercase tag pill, all small status chips.
+
+## Dual-mode shell
+
+`src/index.css` no longer hardcodes `color-scheme: light`, and the global `bg-cream-100`
+wrapper is gone from `App.tsx`.
+
+**`src/lib/theme.ts`** is the route→mode map. Dark chrome is the default, so nothing needs
+listing to be dark; light reading is opt-in by path prefix:
 
 ```ts
-{
-  slug: "placeholder-model-card-review",
-  projectTitle: "Placeholder: What Public Model Cards Actually Disclose",
-  field: "Computer Science & AI",
-  status: "Recruiting",
-  setting: "online",
-  oneLine: "Placeholder group reviewing published model cards to see which disclosures appear consistently and which do not.",
-  leadName: "Placeholder Lead",
-  location: "Distributed / online",
-  memberCount: 6,
-  abstract: "PLACEHOLDER ABSTRACT. This group reviews publicly available model cards…\n\nThe team builds a coding scheme…two members independently code each document so disagreement can be measured rather than assumed away…\n\nThe output is a literature review… The group notes that the sample reflects what organizations chose to publish, which is not the same as what those organizations know.",
-  outputType: "Literature review",
-  methods: [
-    "Systematic document sampling with stated inclusion criteria",
-    "Independent double-coding against a shared scheme",
-    "Inter-coder agreement measurement",
-  ],
-  milestones: [
-    "Define inclusion criteria and assemble the document sample",
-    "Draft and pilot the coding scheme",
-    "Independent coding and disagreement resolution",
-    "Synthesis and drafting",
-    "Submit for Atlas review",
-  ],
-  startedAt: "2026-01-20",
-  reviewStatus: "none",
-}
+const LIGHT_READING_PREFIXES: readonly string[] = [
+  "/chapters/", // individual chapter briefs, not the directory
+];
+
+export function modeForPath(pathname: string): Mode { … }  // defaults to "dark"
+```
+
+The prefix is deliberately `/chapters/` with the trailing slash so the **directory** at
+`/chapters` stays dark chrome while an individual **brief** at `/chapters/:slug` is light
+reading. Confirmed by the smoke test below.
+
+**`App.tsx`** applies the mode at route level via a `ModeManager` that swaps a single class
+on `<html>`. Two reasons it is on the document element rather than a wrapper div: the
+background then extends past the app's own height (no light strip under a short dark page),
+and exactly one of `mode-dark` / `mode-light` is ever present, so the two modes cannot
+bleed into each other.
+
+Routes registered: `/`, `/chapters`, `/fellowship`, `/apply`, `/journal`, `/partners`, and
+a real `404`. `Chapters.tsx` and `Publish.tsx` existed but were never routed — `/chapters`
+and `/journal` now reach them. The `*` route previously rendered the Landing page, meaning
+every bad URL silently returned the homepage; it now renders an actual 404.
+
+**Nav** rebuilt. It reads its mode from `theme.ts` via `useLocation` rather than taking a
+prop, so no page can put it in the wrong mode. The dead `/#study` and `/#sequence` anchors
+are replaced with `/chapters`, `/fellowship`, `/journal`, `/partners`, with `aria-current`
+on the active route.
+
+**Footer** split out of `Closing.tsx` into `src/components/Footer.tsx`, rendered by the
+shell on every route. `Closing` is now a landing-page CTA section only. The footer carries
+the required line verbatim:
+
+> Atlas Research Institute operates as a project of yourbuddy Inc., a California nonprofit
+> public benefit corporation.
+
+No donate link, no donate button.
+
+**`AtlasLogo`** had to be rewritten — its `inverse` prop had collapsed to two identical dark
+branches under the sweep. It now takes `mode` and renders correctly in both. Tagline kept
+as "Global Research Access".
+
+**Contact email** is `admin@atlas-research.org` everywhere; `APPLY_EMAIL` (`info@`) was
+renamed to `CONTACT_EMAIL` across the 3 files that used it. The smoke test asserts no `info@`
+survives on any route.
+
+## Motion
+
+`IntroSplash` deleted entirely. `Reveal` and the other entrance animations are untouched,
+per the instruction to leave them for Phase 7.
+
+## Q3 — globe cut
+
+Deleted `src/components/ui/globe.tsx`, `src/lib/cohort.ts`, and the `cobe` dependency
+(`package.json` + lockfile). `WorldSection.tsx` rebuilt without it. All three
+"Active in 15 countries" instances are gone — the heading, the body copy, and the caption
+under the globe. Figures now come from `stats.ts`, and the null country count renders
+nothing at all rather than a fallback:
+
+```tsx
+...(hasStat(COUNTRIES_ACTIVE)
+  ? [{ n: String(COUNTRIES_ACTIVE), label: "Countries active" }]
+  : []),
 ```
 
 ---
 
-### FILE 2 — `src/data/openings.ts`
+## Defects found and fixed during the sweep
 
-Single source of truth for every role. Top-of-file comment states this is the only place
-roles are added, edited, opened, or closed, that no page or component may hardcode a role,
-and that chapter vs. team are two separate pathways a student may hold both of.
+Four things the mechanical pass produced or exposed, all corrected:
 
-```ts
-export type OpeningCategory = "chapter" | "team";
-export type OpeningStatus = "open" | "closed" | "rolling";
+1. **Invisible CTAs.** `bg-navy-800 text-cream-100` buttons became `bg-panel text-text` —
+   near-invisible on a `ground` page, with degenerate `hover:bg-panel` no-op hovers. All
+   primary CTAs are now `bg-brass text-ground hover:bg-brass-hi`, which is also what the
+   accent rule calls for.
+2. **Invisible arrows.** Five `→` glyphs carried `text-brass` *inside* brass buttons. Class
+   removed so they inherit `text-ground`. The one remaining brass arrow is in a ghost
+   button, where it is correct.
+3. **Brass body text.** Two form error messages rendered as `text-sm text-brass`, which
+   violates the accent-only rule. Rewritten as `text-text` with a brass left border.
+4. **Dangling globe reference.** `Chapters.tsx` advertised "the same globe on our front
+   page" — copy pointing at a component deleted in this phase. Rewritten.
 
-export type Opening = {
-  slug: string;
-  title: string;
-  category: OpeningCategory;
-  area: string;
-  status: OpeningStatus;
-  selectivity: string | null;
-  commitment: string | null;
-  oneLine: string;
-  description: string;
-  responsibilities: string[];
-  lookingFor: string[];
-  regions: string[] | null;
-  deadline: string | null;   // ISO date, null renders as "Rolling"
-  formUrl: string | null;    // null renders a disabled "Opening soon" state, never a dead link
-  formNote: string | null;
-  updatedAt: string;         // ISO date
-};
-```
+## Two content fixes made outside the stated scope
 
-**Deadline helper**, plus the wrapper pages should actually call:
+Both were live false or broken claims that this phase's work put directly in front of me.
+Flagging them rather than burying them:
 
-```ts
-export function isDeadlinePassed(o: Opening, now = new Date()): boolean {
-  if (!o.deadline) return false;                        // rolling never expires
-  const due = Date.parse(`${o.deadline}T23:59:59Z`);    // live through the whole deadline day
-  return Number.isNaN(due) ? false : now.getTime() > due;
-}
+- **`Hero.tsx` — the Lumiere scholarship claim.** It read "Fellows and research leads
+  receive thousands of dollars in **scholarships**." That is the exact claim Q4 says must
+  never appear. Replaced with the approved wording: "Fellows get thousands of dollars in
+  discounts on Lumiere Education programs through our partnership." The institution line in
+  the same sentence was also repointed to "Fellows learn from researchers at institutions
+  including USC, the University of Melbourne, and Stanford" — it previously read "Seminars
+  feature researchers from…", which is not the approved phrasing. IJHSR, Curieux, and
+  Lumiere logos all kept; USC, Melbourne, and Stanford all kept.
+- **`index.html` metadata.** Metadata was in scope for this phase, and the title and both
+  descriptions were education-inequality framed with a "grades 9–12" eligibility claim.
+  Rewritten topic-agnostic, with eligibility as "secondary and university students
+  worldwide".
 
-export function effectiveStatus(o: Opening, now = new Date()): OpeningStatus {
-  if (o.status === "closed") return "closed";
-  return isDeadlinePassed(o, now) ? "closed" : o.status;
-}
-```
+## AnnouncementBar
 
-An expired role auto-renders as closed with no file edit. Also exported:
-`isAcceptingApplications()`, `isFormPending()` (drives the disabled "Opening soon" state when
-`formUrl` is null, so no page can produce a dead link), `chapterOpenings()`, `teamOpenings()`,
-`findOpening(slug)`.
-
-**Six roles seeded**, all `status: "rolling"`, all `deadline: null`:
-
-| # | Role | Category | Area | Selectivity | Commitment |
-| --- | --- | --- | --- | --- | --- |
-| 1 | Chapter Leader | chapter | Chapter leadership | — | — |
-| 2 | Regional Youth Director | team | Regional leadership | Extremely selective | 5-8+ hrs/week |
-| 3 | Logistics Analyst | team | Program operations | Selective | 2-4 hrs/week |
-| 4 | Marketing Associate | team | Brand and growth strategy | Selective | 2-4 hrs/week |
-| 5 | Social Media Manager | team | Digital communications | Highly selective | 3-5 hrs/week |
-| 6 | Fellowship Mentor | team | Research mentorship | Highly selective | 3-5 hrs/week |
-
-Chapter Leader → `https://forms.gle/s2qpP3XX3ydLc58k6`, `formNote: null`.
-Roles 2–6 → `https://forms.gle/XiLxGwedVS32LLNc9`, `formNote: "One role per submission. Select this role inside the form."`
-
-Regional Youth Director carries all ten regions and the multi-director note (international
-regions may have more than one director depending on scale, time zones, and language) in its
-description. Roles 2–6 have 5–6 `responsibilities` and 5–6 `lookingFor` bullets written from
-the supplied material.
-
-**Seeded example:**
-
-```ts
-{
-  slug: "social-media-manager",
-  title: "Social Media Manager",
-  category: "team",
-  area: "Digital communications",
-  status: "rolling",
-  selectivity: "Highly selective",
-  commitment: "3-5 hours per week",
-  oneLine: "Own the content calendar and the day-to-day quality of Atlas's public social presence.",
-  description: "…This is a public-facing voice role. Everything posted is an Atlas statement, which means accuracy comes before reach: no overstated outcomes, no implied publication guarantees, no claims that have not been confirmed…",
-  responsibilities: [
-    "Own and maintain the content calendar across approved platforms.",
-    "Write, schedule, and publish posts at a consistent cadence and standard.",
-    "Keep a consistent visual and verbal identity across every channel.",
-    "Monitor replies, mentions, and messages, and respond or escalate appropriately.",
-    "Verify every factual claim before it is posted; route anything uncertain to Atlas leadership first.",
-    "Report on what content actually reached people and adjust the calendar accordingly.",
-  ],
-  lookingFor: [ /* 6 bullets */ ],
-  regions: null,
-  deadline: null,
-  formUrl: "https://forms.gle/XiLxGwedVS32LLNc9",
-  formNote: "One role per submission. Select this role inside the form.",
-  updatedAt: "2026-08-16",
-}
-```
+Removed from the shell. It was hardcoded to "Applications are open · Due July 24, 2026",
+which contradicts Q1 (cohort is running now), and Q1 says to remove it sitewide. The
+component was deleted along with the rest of the old `Nav.tsx`. Calling it out because it
+was not in the explicit Phase 2 list — it came along with the shell rewrite.
 
 ---
 
-### FILE 3 — `src/lib/stats.ts`
+## Verification
 
-Homepage was audited for numbers first. Confirmed-able figures exported and marked
-PLACEHOLDER:
+`npx tsc --noEmit` — clean. `npx vite build` — succeeds, 423 modules, 20.29 kB CSS.
 
-- `FELLOWSHIP_WEEKS` = `4`
-- `ELIGIBLE_GRADES` = `"9–12"`
-- `APPLICATION_ESSAY_COUNT` = `3`
-- `FELLOWSHIP_COST_LABEL` = `"Free"` (flagged as a policy statement, not a metric)
+Every route rendered through `renderToString` and asserted on:
 
-Country count was **not** carried over. `WorldSection.tsx` asserts "Active in 15 countries"
-in three separate places with nothing behind it:
+```
+/                                          mode=dark   32530b legal=y email=y
+/chapters                                  mode=dark    8453b legal=y email=y
+/fellowship                                mode=dark    3204b legal=y email=y
+/apply                                     mode=dark    3201b legal=y email=y
+/journal                                   mode=dark    7293b legal=y email=y
+/partners                                  mode=dark    6343b legal=y email=y
+/chapters/placeholder-model-card-review    mode=light   2982b legal=y email=y
+/definitely-not-a-page                     mode=dark    2982b legal=y email=y
 
-```ts
-/**
- * UNVERIFIED — INTENTIONALLY NULL. DO NOT FILL IN WITH AN ESTIMATE.
- *
- * The site previously claimed "Active in 15 countries" in three places. That
- * figure has no source behind it and is not a live claim. It stays null until
- * there is a real record to count, and the UI must render nothing — not a
- * fallback, not a rounded guess — while it is null.
- */
-export const COUNTRIES_ACTIVE: number | null = null;
+all routes rendered clean
 ```
 
-Same treatment for `ACTIVE_CHAPTERS`, `FELLOWS_TO_DATE`, `HOST_INSTITUTIONS`.
+`legal=y` asserts the yourbuddy Inc. line is present, `email=y` asserts the contact address
+is present, and each route was scanned for the banned strings `ISSN`, `501(c)(3)`,
+`tax deductible`, and `info@atlas-research.org` — none found. The mode column confirms the
+directory/brief split works. The smoke harness was temporary and is not committed.
 
-```ts
-/** True when a stat has a confirmed value and may be rendered. */
-export function hasStat(value: number | null): value is number {
-  return typeof value === "number" && Number.isFinite(value);
-}
-```
-
-`hasStat()` is the guard so a null renders as absent rather than `0`.
-
-**Deliberately excluded:** `Instrument.tsx` has "1970–2024 · 200+ territories" and similar,
-but those are illustrative labels on a mock UNESCO/World Bank dataset card, not Atlas
-claims — and that whole component is education-framed, so it is slated for the
-topic-agnostic rewrite anyway. Open question whether they belong in `stats.ts` regardless.
+Note that `/chapters/:slug` currently falls through to the 404 (2982b, same as the unknown
+route) because chapter brief pages are a later phase. The mode map is already correct for
+them, which is why it reports `mode=light`.
 
 ---
 
 ## Open items for the next phase
 
-- `WorldSection.tsx` imports the globe being cut (Q3) **and** carries the 15-countries
-  claim, so Q3 and the stats cleanup land on the same file.
-- Seeded `updatedAt` on all six roles is `2026-08-16` (today). Change if it should instead
-  reflect when the role copy was actually written.
-- `Instrument.tsx` mock dataset numbers — in or out of `stats.ts`?
+- **The palette has no error/danger token.** Nine tokens, none of which signals a failed
+  form submission. Handled for now with a brass left-border treatment, but forms will need
+  a real answer.
+- **`bg-white` on the three partner logo chips in `Hero.tsx`** is not a token. It is there
+  so the logos stay legible, which is a real constraint on a dark ground — but it is
+  currently the only raw color in the codebase.
+- **`dates.ts` still says applications are open, due July 24, 2026.** Q1 says the cohort is
+  running now. Not touched, since Q1 was not in Phase 2 scope; it is still pending.
+- **`Instrument.tsx` and `Outcomes.tsx` remain education-framed** and still reference the
+  access gap. Slated for the topic-agnostic rewrite.
+- **`Partners.tsx` still falls back to mailto** via `FORM_ENDPOINT`, which is still `null`.
+  Q2's fix is pending.

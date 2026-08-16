@@ -27,30 +27,30 @@ const faqs = [
 
 export function Faq() {
   return (
-    <section id="faq" className="bg-cream-100">
+    <section id="faq" className="bg-ground">
       <div className="mx-auto max-w-3xl px-6 py-20 md:py-28">
         <Reveal>
-          <p className="meta-label text-navy-500">Straight answers</p>
-          <h2 className="mt-4 font-serif text-3xl md:text-5xl text-navy-900">
+          <p className="meta-label text-muted">Straight answers</p>
+          <h2 className="mt-4 font-display text-3xl md:text-5xl text-text">
             Asked by skeptics, answered plainly.
           </h2>
         </Reveal>
         <div className="mt-12">
           {faqs.map((f, i) => (
             <Reveal key={f.q} delay={i * 0.04}>
-              <details className="group border-t border-hairline last:border-b">
+              <details className="group border-t border-line last:border-b">
                 <summary className="flex items-center justify-between gap-6 py-5 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
-                  <span className="font-serif text-lg md:text-xl text-navy-900">
+                  <span className="font-display text-lg md:text-xl text-text">
                     {f.q}
                   </span>
                   <span
                     aria-hidden
-                    className="shrink-0 h-8 w-8 rounded-full border border-hairline grid place-items-center text-navy-500 transition-transform duration-300 group-open:rotate-45 group-hover:border-navy-400"
+                    className="shrink-0 h-8 w-8 rounded-control border border-line grid place-items-center text-muted transition-transform duration-300 group-open:rotate-45 group-hover:border-brass"
                   >
                     +
                   </span>
                 </summary>
-                <p className="pb-6 pr-10 text-[15px] leading-relaxed text-navy-600">
+                <p className="pb-6 pr-10 text-[15px] leading-relaxed text-muted">
                   {f.a}
                 </p>
               </details>

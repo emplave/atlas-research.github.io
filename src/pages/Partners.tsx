@@ -19,17 +19,17 @@ export function Partners() {
   };
 
   return (
-    <div className="bg-cream-100">
-      <section className="border-b border-hairline-soft">
+    <div className="bg-ground">
+      <section className="border-b border-line/50">
         <div className="mx-auto max-w-3xl px-6 pt-16 md:pt-24 pb-12">
           <Reveal>
-            <p className="meta-label text-navy-500">
+            <p className="meta-label text-muted">
               Partners · Journals · Funders · NGOs
             </p>
-            <h1 className="mt-4 font-serif text-4xl md:text-6xl text-navy-900 leading-[1.05]">
+            <h1 className="mt-4 font-display text-4xl md:text-6xl text-text leading-[1.05]">
               Start a conversation.
             </h1>
-            <p className="mt-6 text-lg text-navy-600 leading-relaxed">
+            <p className="mt-6 text-lg text-muted leading-relaxed">
               Atlas is a for-youth nonprofit. If your organization works on
               education access, research integrity, or youth publishing — or
               you're a researcher who'd speak to a cohort — tell us a little and
@@ -41,9 +41,9 @@ export function Partners() {
 
       <section className="mx-auto max-w-2xl px-6 py-14 md:py-20">
         {state === "sent" ? (
-          <div className="border border-hairline bg-cream-50 rounded-2xl p-10 text-center">
-            <p className="font-serif text-3xl text-navy-900">Message on its way.</p>
-            <p className="mt-4 text-navy-600">
+          <div className="border border-line bg-ground rounded-card p-10 text-center">
+            <p className="font-display text-3xl text-text">Message on its way.</p>
+            <p className="mt-4 text-muted">
               Thanks for reaching out — we read every note and reply
               personally. (If your email client opened, hit send there to
               finish.)
@@ -84,13 +84,13 @@ export function Partners() {
                 <button
                   type="submit"
                   disabled={state === "sending"}
-                  className="rounded-full bg-navy-800 text-cream-100 pl-7 pr-6 py-3.5 text-[15px] inline-flex items-center gap-2.5 hover:bg-navy-700 transition-all hover:gap-3.5 disabled:opacity-60"
+                  className="rounded-control bg-brass text-ground pl-7 pr-6 py-3.5 text-[15px] inline-flex items-center gap-2.5 hover:bg-brass-hi transition-all hover:gap-3.5 disabled:opacity-60"
                 >
                   {state === "sending" ? "Sending…" : "Send to Atlas"}
-                  <span aria-hidden className="text-gold-300">→</span>
+                  <span aria-hidden>→</span>
                 </button>
                 {state === "error" && (
-                  <p className="text-sm text-gold-600">
+                  <p className="text-sm text-text border-l-2 border-brass pl-3">
                     Something failed — please retry.
                   </p>
                 )}
