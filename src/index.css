@@ -4,58 +4,57 @@
 
 @layer base {
   /*
-   * No hardcoded color-scheme and no global background. The shell sets both
-   * per route (see src/lib/theme.ts) so dark chrome and light reading stay
-   * cleanly separated.
+   * Single polarity. The background lives on <html> so it extends past a
+   * short page, and there is no mode class to swap — every route is light.
    */
+  :root {
+    color-scheme: light;
+  }
   html {
     scroll-behavior: smooth;
+    @apply bg-paper;
   }
   body {
-    @apply font-sans antialiased;
-    font-weight: 420;
-    font-variation-settings: "wght" 420;
+    @apply bg-paper text-ink font-sans antialiased;
+    font-weight: 400;
+  }
+  ::selection {
+    @apply bg-navy/15 text-ink;
   }
 
-  /* Mode surfaces — applied by the shell to <html>. */
-  .mode-dark {
-    color-scheme: dark;
-    @apply bg-ground text-text;
-  }
-  .mode-light {
-    color-scheme: light;
-    @apply bg-paper text-ink;
-  }
-  .mode-dark ::selection {
-    @apply bg-text/25 text-text;
-  }
-  .mode-light ::selection {
-    @apply bg-ink/15 text-ink;
-  }
-
-  /* Headings stay light. Spectral above 500 is off-brand. */
+  /* Headings are navy and stay light. Spectral above 500 is off-brand. */
   h1,
   h2,
   h3,
   h4 {
+    @apply font-display text-navy;
     font-weight: 400;
+  }
+
+  /* Visible focus, since motion no longer signals interaction. */
+  :focus-visible {
+    @apply outline-none ring-2 ring-navy/40 ring-offset-2 ring-offset-paper;
   }
 }
 
 @layer utilities {
-  /*
-   * Metadata label — the small-caps chrome register. Redefined from mono to
-   * Inter so the ~33 existing call sites keep working with no edits.
-   */
+  /* Small-caps metadata register. */
   .meta-label {
     @apply font-sans text-[11px] tracking-meta uppercase;
   }
-  /* hairline rules — elevation without shadows */
   .rule {
     @apply border-t border-line;
   }
-  .rule-inverse {
-    @apply border-t border-line;
+
+  /*
+   * Type inside a navy full-bleed band. The band inverts polarity locally, so
+   * headings must not inherit the global navy heading color.
+   */
+  .on-navy h1,
+  .on-navy h2,
+  .on-navy h3,
+  .on-navy h4 {
+    @apply text-white;
   }
 }
 

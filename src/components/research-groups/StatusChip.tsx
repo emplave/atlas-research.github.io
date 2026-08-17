@@ -2,51 +2,38 @@ import type { Status } from "@/data/research-groups";
 import { cn } from "@/lib/utils";
 
 /**
- * Lifecycle status chip for a research group.
+ * Lifecycle status chip.
  *
- * Small status chip — one of the few places rounded-full is permitted.
- *
- * Only "Recruiting" gets the accent, because it is the only status that carries an
- * action. Everything else is muted: a status chip is information, not an
- * accent. "Archived" is muted too, not alert — a dissolved group is inactive,
- * not an error, and the alert token is reserved for failures.
+ * Only "Recruiting" is emphasised, because it is the only status carrying an
+ * action. The rest are muted: a status chip is information, not an accent.
+ * Archived is muted too — a dissolved group is inactive, not an error, and
+ * `alert` is reserved for failures.
  */
 const STYLES: Record<Status, string> = {
-  Recruiting: "border-accent/45 text-accent",
-  "In Progress": "border-line text-text",
-  Full: "border-line text-muted",
-  Completed: "border-line text-muted",
-  Archived: "border-line/60 text-muted/70",
-};
-
-/** Light reading equivalents, for briefs and articles on paper. */
-const LIGHT_STYLES: Record<Status, string> = {
-  Recruiting: "border-accent/50 text-accent",
-  "In Progress": "border-ink/20 text-ink",
-  Full: "border-ink/20 text-ink/60",
-  Completed: "border-ink/20 text-ink/60",
-  Archived: "border-ink/15 text-ink/45",
+  Recruiting: "border-navy/35 bg-navy/[0.06] text-navy",
+  "In Progress": "border-line bg-paper text-ink",
+  Full: "border-line bg-paper text-muted",
+  Completed: "border-line bg-paper text-muted",
+  Archived: "border-line bg-paper text-muted",
 };
 
 export function StatusChip({
   status,
-  mode = "dark",
   className,
 }: {
   status: Status;
-  mode?: "dark" | "light";
   className?: string;
 }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 meta-label",
-        mode === "light" ? LIGHT_STYLES[status] : STYLES[status],
+        "inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-1 meta-label",
+        STYLES[status],
         className
       )}
     >
       {status === "Recruiting" && (
-        <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-accent" />
+        <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-navy" />
       )}
       {status}
     </span>

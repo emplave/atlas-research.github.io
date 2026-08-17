@@ -1,65 +1,52 @@
 import { Link } from "react-router-dom";
-import { Reveal } from "./Reveal";
 import { findOpening, isFormPending } from "@/data/openings";
 
 /**
- * Closing CTA — the homepage bookend.
+ * Section 8 — closing CTA. NAVY FULL-BLEED.
  *
- * Points at starting a research group, not at the fellowship. Nothing here
- * links to the application; the homepage carries no apply path.
+ * The second and final navy band on the page. Points at starting a group; the
+ * homepage carries no path to the fellowship application.
  */
 export function Closing() {
   const opening = findOpening("chapter-leader");
   const formPending = !opening || isFormPending(opening);
 
   return (
-    <section id="start" className="bg-ground border-t border-line">
-      <div className="mx-auto max-w-4xl px-6 py-24 md:py-32 text-center">
-        <Reveal>
-          <p className="meta-label text-muted">Start where you are</p>
-        </Reveal>
-        <Reveal delay={0.1}>
-          <h2 className="mt-6 font-display text-4xl md:text-6xl leading-[1.08] text-text">
-            Do research that
-            <br />
-            gets taken seriously.
-          </h2>
-        </Reveal>
-        <Reveal delay={0.22}>
-          <p className="mt-6 mx-auto max-w-xl text-muted text-lg leading-relaxed">
-            Pick a question that matters where you are, in whatever field it
-            belongs to. Recruit a team. Atlas provides the structure, the
-            feedback, and a route to submit the finished work for review.
-          </p>
-        </Reveal>
-        <Reveal delay={0.34}>
-          <div className="mt-10 flex flex-wrap justify-center items-center gap-4">
-            {formPending ? (
-              <span
-                aria-disabled="true"
-                className="rounded-control border border-line px-7 py-3.5 text-[15px] text-muted cursor-not-allowed"
-              >
-                Opening soon
-              </span>
-            ) : (
-              <a
-                href={opening.formUrl as string}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-control bg-text text-ground pl-7 pr-6 py-3.5 text-[15px] inline-flex items-center gap-2.5 hover:bg-text-hi transition-all hover:gap-3.5"
-              >
-                Start a research group
-                <span aria-hidden>→</span>
-              </a>
-            )}
-            <Link
-              to="/research-groups"
-              className="rounded-control border border-line text-text px-7 py-3.5 text-[15px] inline-flex items-center gap-2.5 hover:border-muted transition-colors"
+    <section id="start" className="on-navy bg-navy">
+      <div className="mx-auto max-w-3xl px-6 py-20 md:py-24 text-center">
+        <h2 className="font-display text-3xl md:text-4xl leading-tight">
+          Start a research group this term.
+        </h2>
+        <p className="mt-5 text-lg text-white/75 leading-relaxed">
+          Pick a question, recruit three to ten members, and submit the finished
+          paper for review.
+        </p>
+
+        <div className="mt-9 flex flex-col sm:flex-row justify-center gap-3">
+          {formPending ? (
+            <span
+              aria-disabled="true"
+              className="rounded-control border border-white/30 px-6 py-3 text-[15px] text-white/70 cursor-not-allowed"
             >
-              Browse research groups
-            </Link>
-          </div>
-        </Reveal>
+              Applications opening soon
+            </span>
+          ) : (
+            <a
+              href={opening.formUrl as string}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-control bg-white text-navy px-6 py-3 text-[15px] hover:bg-white/90 transition-colors"
+            >
+              Start a research group
+            </a>
+          )}
+          <Link
+            to="/research-groups"
+            className="rounded-control border border-white/40 text-white px-6 py-3 text-[15px] hover:bg-white hover:text-navy transition-colors"
+          >
+            Browse research groups
+          </Link>
+        </div>
       </div>
     </section>
   );

@@ -19,6 +19,9 @@ export type EventKind =
 
 export type EventStatus = "upcoming" | "past" | "cancelled";
 
+/** Same shape as GroupImage. Null renders a typographic fallback. */
+export type EventImage = { src: string; alt: string };
+
 export type AtlasEvent = {
   slug: string;
   title: string;
@@ -34,6 +37,8 @@ export type AtlasEvent = {
   /** null renders "Details coming soon" — never a dead link. */
   registrationUrl: string | null;
   status: EventStatus;
+  /** 16:9 image, or null to render the typographic fallback. */
+  image: EventImage | null;
 };
 
 /** True when an event's date is in the past (date-only, UTC). */
@@ -109,6 +114,7 @@ export const EVENTS: AtlasEvent[] = [
       "PLACEHOLDER EVENT. A working session on narrowing a broad interest into a question a small team can answer with the access it actually has — scoping, feasibility, and knowing when a question is too large. Open to all research group leads and members.",
     registrationUrl: null,
     status: "upcoming",
+    image: null,
   },
   {
     slug: "placeholder-sources-workshop",
@@ -122,5 +128,6 @@ export const EVENTS: AtlasEvent[] = [
       "PLACEHOLDER EVENT. How to judge whether a source holds up, how to cite accurately, and how to write about limitations honestly rather than hiding them. Includes a walkthrough of a real literature review and where its argument is weakest.",
     registrationUrl: null,
     status: "upcoming",
+    image: null,
   },
 ];

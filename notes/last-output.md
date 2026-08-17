@@ -1,251 +1,200 @@
-# Chapters rebuild — Phases 4 and 5
+# Phase 6 — light mode, visual rebuild, cleanup
 
-Branch: `chapters-rebuild`. Prior commits: `548b701` (P0), `f5c156c` (P1), `b3337f7` (P2),
-`1ef922e` (P3), `f97a993` (P4).
+Branch: `chapters-rebuild`. Prior: `548b701` P0, `f5c156c` P1, `b3337f7` P2, `1ef922e` P3,
+`f97a993` P4, `80ceca5` P5.
 
 Verification: `tsc --noEmit` clean, `vite build` succeeds, `npm run dev` starts clean with
-no warnings, 32/32 checks pass.
+no warnings (200 on all six top-level routes), 47/47 checks pass.
 
 ---
 
-# Phase 4 — research group briefs (committed separately, `f97a993`)
+## Light mode
 
-Phase 4 was not complete, so it was built and committed on its own before Phase 5.
+The dual-mode system is gone: `src/lib/theme.ts` deleted, `ModeManager` removed from
+`App.tsx`, and no mode class is written to `<html>`. Background lives on `html` so it
+extends past a short page.
 
-**`Prose.tsx`** owns long-form reading typography so the two long-form surfaces — briefs and
-journal articles — cannot drift apart. Measure caps near 68 characters.
-`ProseParagraphs` renders blank-line-separated text as paragraphs, keeping markup out of the
-data layer.
-
-**`ResearchGroupBrief`** renders abstract, methods, and milestones as prose with a sidebar
-carrying lead, members, setting, output type, start date, and review status. The review
-labels are written so none promises or schedules a published outcome, and a closing note
-states plainly that submission does not guarantee publication. `StatusChip` gained a light
-mode rather than a second component.
-
-Every "View brief" link had been landing on the 404; the route now renders 7792b.
-
----
-
-# Phase 5
-
-## Global rename — Chapter → Research Group
-
-Files renamed via `git mv` so history follows: `data/chapters.ts` →
-`data/research-groups.ts`, `components/chapters/` → `components/research-groups/`,
-`ChapterCard` → `ResearchGroupCard`, `pages/Chapters.tsx` → `ResearchGroups.tsx`,
-`ChapterBrief.tsx` → `ResearchGroupBrief.tsx`.
-
-Routes are now `/research-groups` and `/research-groups/:slug`, and `theme.ts`'s
-light-reading prefix moved with them. **Redirects added** for `/chapters`,
-`/chapters/:slug` (slug-preserving, via a small `LegacyChapterRedirect`), and `/apply` →
-`/fellowship`, so no existing link breaks.
-
-**Internal identifiers deliberately kept:** the `category: "chapter"` value stays as
-instructed, and so does the `slug: "chapter-leader"` — both are internal ids, not display
-copy. A new `CATEGORY_LABEL` map supplies what readers actually see:
-
-```ts
-export const CATEGORY_LABEL: Record<OpeningCategory, string> = {
-  chapter: "Research Group",
-  team: "Atlas Team",
-};
-```
-
-A note in the file explains why the stored value and the label diverge, so the next person
-to open it does not "fix" the mismatch.
-
-## Accent change — no warm tone anywhere
-
-`brass` and `brass-hi` are deleted. Replacements:
+New tokens replace the entire previous set. `ground`, `panel`, `text`, `accent-hi`, `brass`,
+`brass-hi`, `text-hi`, and `logo-plate` are all deleted — verified absent from every
+rendered page, not just from the config.
 
 | Token | Value | Job |
 | --- | --- | --- |
-| `accent` | `#6B8CAE` | **links only** |
-| `accent-hi` | `#83A3C4` | link hover |
-| `text-hi` | `#FFFFFF` | primary button hover only |
+| `paper` | `#FAFAF9` | page background |
+| `surface` | `#FFFFFF` | cards, raised surfaces |
+| `ink` | `#16191D` | primary text |
+| `muted` | `#5A6169` | secondary text |
+| `line` | `#E2E0DA` | hairline borders |
+| `navy` | `#1C3F5E` | headings, primary buttons, bands |
+| `navy-hi` | `#2A5A82` | hover |
+| `accent` | `#1C3F5E` | links |
+| `alert` | `#B3402F` | errors only |
 
-All 44 brass sites were migrated by role, not by find-and-replace:
+Headings are navy via a base-layer rule, so no component sets heading color. Navy bands
+carry an `on-navy` class that flips headings to white — without it they would inherit navy
+on navy and vanish. **Exactly two navy bands on the homepage**, asserted in the checks.
 
-- **Primary buttons** → `bg-text text-ground hover:bg-text-hi` (cream with ground labels,
-  lifting to white). Verified: no `bg-accent` on any button.
-- **Links** → `text-accent hover:text-accent-hi`.
-- **Eyebrows and meta labels** → `muted`.
-- **Status chips** → Recruiting `accent`, everything else `muted`.
-- **Logo mark** → cream (`bg-text text-ground`).
-- **Card and control hover borders** → `muted`, since accent is links only.
-- **Selection highlight** → neutral (`text/25` on dark, `ink/15` on light), previously brass.
-- **Form-error hints** that were brass → `alert`.
+Primary buttons are `bg-navy` + white; secondary are white with navy border and text. A
+visible `:focus-visible` ring was added, because with motion removed there is less signal
+that a control is interactive.
 
-`text-hi` needed adding: the spec called for a `#FFFFFF` button hover, and reusing
-`logo-plate` for it would have overloaded a single-purpose token.
+`Prose` retuned for light: ink body at 17px/1.75, navy headings, underlined navy links.
 
-## Tagline
+## No stat band on launch
 
-"Global Research Access" → "Student Research Institute" everywhere, including the logo
-lockup and `index.html`. Page metadata was also rewritten — the title had become
-"Atlas Research Institute — Student Research Institute", which read as a stutter, and the
-description still said "network of student-led Chapters".
+`stats.ts` holds five counts, all `null`. `displayStats()` returns only non-null entries,
+so `StatBand` returns `null` and renders nothing. Filling in one value in `stats.ts` makes
+the band appear with no other edit.
 
-## Homepage restructure
+Asserted: `displayStats()` is empty, no stat markup renders, and no "coming soon" appears
+in any stat slot.
 
-`Landing.tsx` now renders exactly the approved order: hero → what a research group is → how
-it works → featured groups → what Atlas provides → events → fellowship strip → partners →
-FAQ → closing.
+## Images
 
-- **Hero** leads with research groups. Primary CTA "Start a research group" (reads its URL
-  from the Research Group Leader opening), secondary "Browse research groups". The
-  "Apply to the Fellowship" CTA is gone.
-- **How it works** step four states that completed work *may* be submitted and that review
-  decides — never scheduled publication.
-- **Featured groups** pulls three from the data file through the same
-  `isVisibleByDefault()` rule the directory uses, so an archived group can never be
-  featured.
-- **Fellowship strip** is one compact secondary section stating the cohort is underway,
-  applications are closed, and the only action is the waitlist.
-- **Closing** points at starting a group, not the fellowship.
+`image: { src, alt } | null` added to `ResearchGroup` and `AtlasEvent`. Every seeded record
+is `null`, so the fallback is what you can judge.
 
-**Deleted as instructed:** `AccessCheck`, `Instrument`, `Thesis`, `WhoItsFor`, `Pathways`.
+`ResearchGroupCard` opens with a 16:9 block: real image when present, otherwise a navy
+typographic block showing the field name. No broken image, no gray box.
 
-**Deleted beyond the list — flagging explicitly:** `WorldSection`, `Sequence`, and
-`ApplyBox`. None appears in the approved nine-section order, and all three were
-fellowship- or education-framed (`ApplyBox` was the fellowship apply CTA; `Sequence` was
-superseded by the new How it works). Leaving them would have meant unused
-components carrying stale copy. Say the word if any should come back.
-`Publish.tsx` was also removed, replaced by `Journal.tsx`.
+`public/images/README.md` documents the 16:9 / 960×540 minimum, the 1600×900 recommendation,
+the 300 KB budget, the slug-based naming convention, alt-text rules, and the licensing and
+identifiable-minors constraints. Nothing was downloaded, generated, or hotlinked.
 
-## Fellowship page
+## Copy
 
-Rebuilt. States the cohort is underway and applications are closed; the only action is the
-waitlist, which posts directly to `WAITLIST_ENDPOINT` — the same live Apps Script backend
-`/apply.html` uses. **No path to `apply.html` exists anywhere on the site** (asserted in the
-checks). The page also points readers at research groups as the thing that *is* open.
+The named sentence is deleted, along with the sections built to host that kind of
+description. The homepage no longer explains what a category is; it shows six real projects
+instead.
 
-**Outcomes rewritten.** The previous copy was inaccurate on two counts: it claimed
-"Co-author credit — your name on a real cross-national dataset", and it asserted journal
-submission as accomplished fact ("Your policy brief **is submitted to** the International
-Journal of High School Research"). Replaced with what is true: research methodology
-training, structured mentor feedback, guest sessions with university researchers, a
-completed literature review or policy brief, and **eligibility to submit** for review with
-an explicit no-guarantee line.
+Homepage rebuilt to the eight-section order: hero → six group cards → what Atlas provides
+→ navy proof band → events → fellowship strip → FAQ → navy closing CTA.
 
-## Partners
+Deleted outright: `WhatIsAResearchGroup`, `HowItWorks`, `PartnersStrip` (replaced by
+`ProofBand`), plus `Reveal` and `container-scroll-animation`.
 
-Lumiere is removed from the publishing context entirely — it is not a journal. The homepage
-partners section now separates two categories that must not merge:
+Section intros are gone — every section is a heading and then content. Hero subhead is one
+sentence: "You pick the question, recruit three to ten members, and finish a paper in one
+term." Every CTA names its action. Checked against the banned-word list on every rendered
+page: no hits.
 
-- **Where completed work may be submitted** — the Atlas Journal and IJHSR.
-- **Programme partners** — Lumiere (discounts, never scholarships) and Curieux.
-
-Institutions remain phrased "fellows learn from researchers at… USC, the University of
-Melbourne, and Stanford".
-
-One judgment call: you said the publish strip is "IJHSR only" but also "Curieux stays".
-Since Curieux is a publication rather than a discount partner, I kept it under programme
-partners described as partnering "on student research writing" rather than inventing a
-publishing claim for it. Easy to move if you meant something else.
-
-## FAQ
-
-Rewritten for research groups, covering all eight required topics: what a group is, who can
-start one, prior experience (not needed), fields (any), time commitment, what happens to
-completed work, whether publication is guaranteed (**no — review decides**, with the
-criteria and the revision/rejection outcomes stated), and what Atlas provides. Exactly one
-question covers the fellowship, marked as a separate programme with applications closed.
+Homepage HTML is **26.3 KB, down from 34.3 KB** — 23% less markup.
 
 ## Events
 
-**`src/data/events.ts`** is the single source of truth. Events reclassify themselves:
+Past events stay visible with dates. `speakerName` / `speakerAffiliation` remain `null` in
+the seed and no name is invented. Both the events page and the homepage strip render a
+speaker line only when a name exists, so adding one is a single edit to `events.ts`.
 
-```ts
-export function effectiveEventStatus(event, now = new Date()): EventStatus {
-  if (event.status === "cancelled") return "cancelled";  // sticky, never reclassified
-  return isPast(event, now) ? "past" : "upcoming";
-}
-```
+## Motion
 
-`upcomingEvents()` / `pastEvents()` split by date, so a past event moves with no file edit.
-`/events` is dark chrome, upcoming first then past, and past sessions stay visible as a
-dated record. Added to nav and footer. Two PLACEHOLDER events seeded with
-`speakerName` and `speakerAffiliation` **null** — no researcher is named until they have
-actually agreed to appear.
+`Reveal`, `StaggerWords`, and `container-scroll-animation` deleted. Hover states only.
 
-## Journal
+**On your framer-motion question:** `AnimatePresence` was used nowhere, and
+`container-scroll-animation.tsx` — the only file using `useScroll`/`useTransform` — was
+already orphaned (its consumer was the `Instrument` section deleted in Phase 5). So nothing
+legitimately required it, and framer-motion is dropped. I also found `lucide-react` unused
+and dropped it.
 
-**`src/data/publications.ts`** with the two-track model. The file header states the rule
-directly: a working paper must never be labelled peer reviewed or presented as though it
-carries the same standing.
+**JS bundle: 403 KB → 281 KB (-30%); gzip 127 KB → 87 KB.** Dependencies are now `clsx`,
+`react`, `react-dom`, `react-router-dom`, `tailwind-merge`.
 
-- **Track 1, Atlas Working Papers** — founding contributions, published without external
-  peer review, labelled "Not externally peer reviewed" with a line explaining they are
-  published while the first open call is underway. Each entry links to the full paper;
-  `isFullTextPending()` renders "Full text coming soon" rather than a dead link.
-- **Track 2, Peer-Reviewed Articles** — empty. Instead of placeholders, the page states the
-  first reviewed issue has not been published and describes the three-step process, six
-  review criteria, and what revision and rejection actually mean.
+## Cleanup
 
-Article pages (`/journal/:slug`) use light reading mode and the same `Prose` component as
-the briefs. The standing is restated **on the article itself** — a reader arriving from a
-direct link, with no memory of which list it came from, still gets told whether it was
-reviewed.
+**1. `public/apply.html`** replaced with a minimal self-contained light page: applications
+closed, cohort underway, buttons to `/fellowship` and `/research-groups`. `noindex` +
+canonical to `/fellowship`, and `Disallow` in robots.txt. The file is kept because old
+emails point at it. The 16-column form is gone — a live form on a closed cycle collects
+submissions nobody reads. `WAITLIST_ENDPOINT` is untouched in `dates.ts` and is no longer
+duplicated in the HTML, so the two-place sync problem from Phase 0 is resolved.
 
-One placeholder working paper seeded, authored to "Atlas Research Institute" rather than an
-invented person. No ISSN, no metrics, no impact factor.
+**2. Partners form.** The mailto fallback is deleted from `submitApplication` entirely — it
+cannot be reached by any caller. New `isFormEndpointConfigured()` gates the page: with
+`FORM_ENDPOINT` null, the form renders inside a `<fieldset disabled>` at reduced opacity,
+the submit becomes a disabled "Form not open", and an explainer shows the contact address as
+plain text. Asserted: no mailto on the submit path.
+
+**3. Root duplicates deleted:** `about.html`, `apply.html`, `journal.html`, `privacy.html`,
+`llms.txt`, `robots.txt`, `sitemap.xml`, `CNAME`, `googlecf01a647f079a605.html`,
+`world-map.svg`, `atlas-journal-logo.png`, `ijhsr-logo.png`. Root `index.html` is **kept** —
+it is the Vite entry point, not a duplicate. `dev.cmd` kept.
+
+**4. `stats.ts` unused constants.** `ELIGIBILITY_LABEL` and `FELLOWSHIP_WEEKS` are now wired
+into the Fellowship page headline and eligibility line, so numbers and eligibility prose
+have one source. `ELIGIBILITY_LONG` was deleted rather than forced in. Also removed
+`LEGACY_PORTAL` and `WAITLIST_FORM_PATH` from `dates.ts` — both had zero consumers and
+`WAITLIST_FORM_PATH` pointed at `apply.html`.
+
+**5. Crawler files rewritten.** `llms.txt` was the worst offender on the site: education
+inequality throughout, "grades 9-12", scholarships, "15+ countries" plus an invented
+14-country list, the July 24 deadline, and apply.html as the primary CTA. Rewritten
+topic-agnostic and research-group-led, with the review process stated honestly and the
+two journal tracks distinguished. `sitemap.xml` rebuilt on current routes, deliberately
+excluding placeholder group and article slugs. `robots.txt` disallows the apply.html
+signpost.
+
+**6. Motion removed** — see above.
+
+**7. Full-repo grep.** Everything found and fixed:
+
+| Found | Where | Action |
+| --- | --- | --- |
+| Education-inequality framing, grades 9-12, scholarships, invented 14-country reach list, July 24, apply.html CTA | `public/llms.txt` | full rewrite |
+| "Atlas Journal of Education Policy" | `public/privacy.html` | → "Atlas Journal" |
+| framer-motion, cobe globe, `Reveal.tsx`, gold accent, Playfair/JetBrains, wrong dates (July 21 / Sept 8 / Oct 5), unregistered email `apply@atlasresearch.institute` | `README.md` | full rewrite |
+| Banned filler sentence verbatim in `og:description` and `description` | `index.html` | rewritten with facts |
+| `theme-color` `#17181A` (dark) | `index.html` | → `#FAFAF9` |
+| Brass favicon `#C08A3E` | `index.html` | → navy `#1C3F5E` |
+| "NOT REAL CHAPTERS" | `research-groups.ts` | → research groups |
+| `chapterOpenings()` | `openings.ts` | → `researchGroupOpenings()` |
+| "fellowship/chapter forms POST" + mailto-fallback comment | `dates.ts` | corrected |
+| Stale "Dark chrome" doc comments | Events, Journal, JournalArticle, App | corrected |
+
+Remaining `chapter` matches are the two internal identifiers you told me to keep
+(`category: "chapter"`, `slug: "chapter-leader"`) and the legacy redirect routes. Remaining
+`ISSN` / `9-12` / `scholarship` matches are prohibition comments telling future editors not
+to write them.
 
 ---
 
 ## Verification
 
 ```
-PASS  /                                              mode=dark   34279b
-PASS  /research-groups                               mode=dark   15518b
-PASS  /research-groups/placeholder-model-card-review mode=light   7792b
-PASS  /events                                        mode=dark    5919b
-PASS  /journal                                       mode=dark    9319b
-PASS  /journal/placeholder-working-paper             mode=light   5987b
-PASS  /fellowship                                    mode=dark   10127b
-PASS  /partners                                      mode=dark    6678b
-PASS  /nope                                          mode=dark    3275b
+PASS  /                                               26270b
+PASS  /research-groups                                17493b
+PASS  /research-groups/placeholder-model-card-review   7775b
+PASS  /events                                          5832b
+PASS  /journal                                          9200b
+PASS  /journal/placeholder-working-paper               5956b
+PASS  /fellowship                                      9284b
+PASS  /partners                                        6486b
+PASS  /nope                                            3225b
 ```
 
-Every page was scanned for `ISSN`, `501(c)`, `tax deductible`, `info@`, `scholarship`,
-`9–12`, `apply.html`, and `brass`, and asserted to carry the yourbuddy Inc. line, the
-contact address, and the tagline. Plus 23 behavioural assertions — all passed:
+Each page scanned for 33 banned strings — every dead token, every banned word, plus ISSN /
+501(c) / info@ / scholarship / 9-12 / education framing / July 24 / apply.html — and
+asserted to carry the yourbuddy Inc. line and the contact address. Then 38 behavioural
+assertions covering the stat band, the image fallback, homepage structure, the two-navy-band
+rule, deleted sections, the apply.html ban, the disabled Partners form, journal track
+separation, and speaker nulls. **All 47 passed.**
 
-```
-PASS  homepage never links to apply.html
-PASS  homepage has no 'Apply to the Fellowship' CTA
-PASS  fellowship page never links to apply.html
-PASS  outcomes no longer claim co-author credit
-PASS  outcomes no longer assert journal submission as fact
-PASS  journal separates working papers from peer reviewed
-PASS  journal states working papers not peer reviewed
-PASS  article page states working paper standing
-PASS  publish strip is IJHSR only (no Lumiere as journal)
-PASS  Lumiere framed as discount, not scholarship
-PASS  institutions phrased as 'learn from researchers at'
-PASS  brief page uses light mode  ·  directory uses dark mode
-…
-all checks passed
-```
-
-`npm run dev` starts clean — 200 on `/` and `/research-groups`, no errors or warnings.
-(First run reported port 5173 in use and fell back to 5174, so the check was rerun on a
-free port to be sure the 200 came from this build.)
+`npm run dev`: clean start, 200 on `/`, `/research-groups`, `/events`, `/journal`,
+`/fellowship`, `/partners`, no warnings.
 
 ---
 
-## Open items
+## Two things you should look at
 
-- **`FORM_ENDPOINT` is still `null`**, so `Partners.tsx` still falls back to mailto. Q2's
-  fix — render the form visibly disabled instead — is still outstanding. The Fellowship
-  waitlist bypasses this and posts to `WAITLIST_ENDPOINT` directly.
-- **Root-level duplicate files** (`about.html`, `apply.html`, `index.html` siblings) are
-  still present; Q6 says delete them and keep `public/` only.
-- **`submitApplication()` in `forms.tsx`** now has one caller (Partners) after the research
-  group registration form was replaced by the Google Form.
-- **`ELIGIBILITY_LABEL` / `ELIGIBILITY_LONG` in `stats.ts` are unused** — the new copy
-  spells eligibility out inline. Worth wiring up or removing so the constants do not drift
-  from the prose.
-- **`public/apply.html` still exists and still works.** Nothing links to it now, but it is
-  reachable by direct URL and its copy has not been reviewed against the current rules.
+**`public/og-globe.png` is stale.** It is an 842 KB image of a globe — a component deleted
+in Phase 2 — and it is still the `og:image` for every social share. I did not replace it
+because generating or downloading imagery was out of bounds. It needs a 1200×630 replacement
+(see `public/images/README.md`); until then every shared link previews a globe the site no
+longer has.
+
+**`public/logo-plate.jpeg` is unused** (the `logo-plate` token is deleted). Left in place
+since the cleanup brief covered root duplicates only, but it is dead weight.
+
+Also worth noting: several data-layer exports have no callers yet —
+`researchGroupOpenings()`, `teamOpenings()`, `CATEGORY_LABEL`, `cancelledEvents()`,
+`findEvent()`. They are the documented API for pages not yet built (a roles page, a single
+event page), so I left them rather than trimming an interface you are about to use.

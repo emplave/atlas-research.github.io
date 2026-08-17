@@ -1,64 +1,45 @@
-import { Reveal } from "@/components/Reveal";
-
 /**
- * Section 5 — what Atlas actually provides.
+ * Section 3 — what Atlas provides. Four items, no paragraph intro.
  *
- * Every item here is a thing Atlas does. Nothing on this list promises an
- * outcome, and the review referral is described as eligibility to submit, not
- * as placement.
+ * Each item is a thing Atlas does, stated as a mechanism with a cadence. None
+ * promises an outcome, and the last one is eligibility to submit — never
+ * submission or publication happening on its own.
  */
-const PROVISIONS = [
+const ITEMS = [
   {
-    t: "Onboarding",
-    d: "A structured start for new groups: what to set up first, how to run the first few meetings, and what a realistic first project looks like.",
+    t: "Mentor guidance and feedback at set checkpoints",
+    d: "A mentor reads the question, the sources, and the draft at fixed points in the term and returns written changes to make.",
   },
   {
-    t: "Research frameworks",
-    d: "Session-by-session materials on scoping a question, choosing a method, reading and citing sources, and writing up findings with limitations stated honestly.",
+    t: "Weekly logs and research milestones",
+    d: "Groups record what they did each week. The project is split into milestones so a stall shows up in days, not months.",
   },
   {
-    t: "Mentor and youth volunteer guidance",
-    d: "Access to mentors and experienced student volunteers who review the work at checkpoints and give specific, usable feedback.",
+    t: "Guest sessions with university researchers",
+    d: "Fellows and group members learn from researchers at institutions including USC, the University of Melbourne, and Stanford.",
   },
   {
-    t: "Webinars and guest sessions",
-    d: "Live sessions on methods and writing, including guest sessions with university researchers.",
-  },
-  {
-    t: "Progress review",
-    d: "Regular check-ins on whether a group is actually moving, with early intervention when a project stalls rather than a post-mortem when it fails.",
-  },
-  {
-    t: "Referral to specialised mentorship",
-    d: "Where a project needs expertise Atlas does not hold in-house, groups are pointed toward mentors who have it.",
-  },
-  {
-    t: "An international peer community",
-    d: "Other groups working the same problems in different places, and a directory that makes their work findable.",
+    t: "A route to submit completed work for review",
+    d: "Finished work may be submitted to the Atlas Journal. Review decides what is published. Submission is not acceptance.",
   },
 ];
 
 export function WhatAtlasProvides() {
   return (
-    <section className="bg-ground border-t border-line">
-      <div className="mx-auto max-w-6xl px-6 py-16 md:py-24">
-        <Reveal>
-          <p className="meta-label text-muted">What Atlas provides</p>
-          <h2 className="mt-4 font-display text-3xl md:text-5xl text-text leading-tight max-w-3xl">
-            The support behind the work.
-          </h2>
-        </Reveal>
+    <section className="bg-paper border-b border-line">
+      <div className="mx-auto max-w-6xl px-6 py-16 md:py-20">
+        <h2 className="font-display text-2xl md:text-3xl">
+          What Atlas provides
+        </h2>
 
-        <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {PROVISIONS.map((p, i) => (
-            <Reveal key={p.t} delay={i * 0.04}>
-              <div>
-                <h3 className="font-display text-lg text-text">{p.t}</h3>
-                <p className="mt-2.5 text-[15px] text-muted leading-relaxed">
-                  {p.d}
-                </p>
-              </div>
-            </Reveal>
+        <div className="mt-8 grid gap-px bg-line border border-line md:grid-cols-2">
+          {ITEMS.map((item) => (
+            <div key={item.t} className="bg-surface p-6 md:p-7">
+              <h3 className="font-display text-lg leading-snug">{item.t}</h3>
+              <p className="mt-2.5 text-[15px] text-muted leading-relaxed">
+                {item.d}
+              </p>
+            </div>
           ))}
         </div>
       </div>

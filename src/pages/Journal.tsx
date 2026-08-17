@@ -7,7 +7,7 @@ import {
 } from "@/data/publications";
 
 /**
- * The Atlas Journal. Dark chrome.
+ * The Atlas Journal.
  *
  * TWO TRACKS, KEPT VISUALLY AND STRUCTURALLY SEPARATE.
  *
@@ -21,11 +21,11 @@ export function Journal() {
   const reviewed = peerReviewedArticles();
 
   return (
-    <div className="bg-ground">
+    <div className="bg-paper">
       <section className="border-b border-line">
         <div className="mx-auto max-w-5xl px-6 pt-16 md:pt-24 pb-12">
           <p className="meta-label text-muted">The Atlas Journal</p>
-          <h1 className="mt-4 font-display text-4xl md:text-6xl text-text leading-[1.05] max-w-3xl">
+          <h1 className="mt-4 font-display text-4xl md:text-6xl leading-[1.05] max-w-3xl">
             Student research, published in the open.
           </h1>
           <p className="mt-6 max-w-2xl text-lg text-muted leading-relaxed">
@@ -42,7 +42,7 @@ export function Journal() {
       {/* ---------------------------------------------------------------- */}
       <section className="mx-auto max-w-5xl px-6 py-12 md:py-16">
         <div className="flex flex-wrap items-baseline gap-x-4 gap-y-2">
-          <h2 className="font-display text-2xl md:text-3xl text-text">
+          <h2 className="font-display text-2xl md:text-3xl">
             Atlas Working Papers
           </h2>
           <span className="meta-label text-muted">
@@ -76,7 +76,7 @@ export function Journal() {
       <section className="border-t border-line">
         <div className="mx-auto max-w-5xl px-6 py-12 md:py-16">
           <div className="flex flex-wrap items-baseline gap-x-4 gap-y-2">
-            <h2 className="font-display text-2xl md:text-3xl text-text">
+            <h2 className="font-display text-2xl md:text-3xl">
               Peer-Reviewed Articles
             </h2>
             <span className="meta-label text-muted">
@@ -91,7 +91,7 @@ export function Journal() {
               ))}
             </ul>
           ) : (
-            <div className="mt-8 rounded-card border border-line bg-panel p-7 md:p-9">
+            <div className="mt-8 rounded-card border border-line bg-surface p-7 md:p-9">
               <p className="max-w-2xl text-[15px] text-muted leading-relaxed">
                 The first reviewed issue has not been published. Rather than
                 list placeholders, here is what the process actually involves.
@@ -189,7 +189,7 @@ function ProcessStep({
   return (
     <div>
       <span className="meta-label text-muted">{step}</span>
-      <h3 className="mt-2 font-display text-lg text-text">{title}</h3>
+      <h3 className="mt-2 font-display text-lg">{title}</h3>
       <p className="mt-2 text-[15px] text-muted leading-relaxed">{body}</p>
     </div>
   );
@@ -217,7 +217,7 @@ function PublicationRow({ publication }: { publication: Publication }) {
   const pending = isFullTextPending(publication);
 
   return (
-    <li className="rounded-card border border-line bg-panel p-6">
+    <li className="rounded-card border border-line bg-surface p-6">
       <div className="flex flex-wrap items-center gap-3">
         <span className="meta-label text-muted">{publication.field}</span>
         <span className="meta-label text-muted">
@@ -225,7 +225,7 @@ function PublicationRow({ publication }: { publication: Publication }) {
         </span>
       </div>
 
-      <h3 className="mt-3 font-display text-xl leading-snug text-text">
+      <h3 className="mt-3 font-display text-xl leading-snug">
         {publication.title}
       </h3>
 
@@ -240,7 +240,7 @@ function PublicationRow({ publication }: { publication: Publication }) {
       <div className="mt-5 flex flex-wrap items-center gap-5">
         <Link
           to={`/journal/${publication.slug}`}
-          className="text-sm text-accent hover:text-accent-hi transition-colors inline-flex items-center gap-1.5"
+          className="text-sm text-accent hover:text-navy-hi transition-colors inline-flex items-center gap-1.5"
         >
           Read the paper
           <span aria-hidden>→</span>

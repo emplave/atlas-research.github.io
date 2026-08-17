@@ -17,7 +17,6 @@ import { ResearchGroupBrief } from "./pages/ResearchGroupBrief";
 import { Journal } from "./pages/Journal";
 import { JournalArticle } from "./pages/JournalArticle";
 import { Events } from "./pages/Events";
-import { modeClass, modeForPath } from "./lib/theme";
 
 /** Scroll to top on route change; honor #hash targets within a page. */
 function ScrollManager() {
@@ -36,24 +35,6 @@ function ScrollManager() {
 }
 
 /**
- * Applies the route's display mode to <html>.
- *
- * The mode lives on the document element, not on a wrapper div, so the
- * background extends past the app's own height — no light strip under a short
- * dark page. The two modes never overlap: exactly one class is on at a time.
- */
-function ModeManager() {
-  const { pathname } = useLocation();
-  const mode = modeForPath(pathname);
-  useEffect(() => {
-    const root = document.documentElement;
-    root.classList.remove("mode-dark", "mode-light");
-    root.classList.add(modeClass(mode));
-  }, [mode]);
-  return null;
-}
-
-/**
  * Legacy /chapters/:slug → /research-groups/:slug.
  *
  * Chapters were renamed to research groups. Old links must keep working
@@ -68,7 +49,6 @@ export default function App() {
   return (
     <BrowserRouter>
       <ScrollManager />
-      <ModeManager />
       <div className="min-h-screen flex flex-col">
         <Nav />
         <main className="flex-1">
@@ -107,12 +87,12 @@ export default function App() {
   );
 }
 
-/** 404 — dark chrome, same as the rest of the shell. */
+/** 404. */
 function NotFound() {
   return (
     <div className="mx-auto max-w-2xl px-6 py-32 text-center">
       <p className="meta-label text-muted">404</p>
-      <h1 className="mt-5 font-display text-4xl md:text-5xl text-text">
+      <h1 className="mt-5 font-display text-4xl md:text-5xl">
         That page isn't here.
       </h1>
       <p className="mt-5 text-muted leading-relaxed">
@@ -121,7 +101,7 @@ function NotFound() {
       </p>
       <a
         href="/"
-        className="mt-8 inline-flex items-center gap-2 rounded-control bg-text text-ground pl-5 pr-4 py-2.5 text-sm hover:bg-text-hi transition-colors"
+        className="mt-8 inline-flex items-center gap-2 rounded-control bg-navy text-white pl-5 pr-4 py-2.5 text-sm hover:bg-navy-hi transition-colors"
       >
         Back to the homepage
         <span aria-hidden>→</span>

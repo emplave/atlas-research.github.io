@@ -57,7 +57,7 @@ const SETTINGS: { value: Setting; label: string }[] = [
 ];
 
 const selectCls =
-  "w-full rounded-control border border-line bg-ground px-3 py-2.5 text-sm text-text focus:outline-none focus:border-accent transition-colors";
+  "w-full rounded-control border border-line bg-paper px-3 py-2.5 text-sm text-ink focus:outline-none focus:border-accent transition-colors";
 
 export function DirectoryFilters({
   value,
@@ -78,7 +78,7 @@ export function DirectoryFilters({
   ) => onChange({ ...value, [key]: v });
 
   return (
-    <div className="rounded-card border border-line bg-panel p-5 md:p-6">
+    <div className="rounded-card border border-line bg-surface p-5 md:p-6">
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <label className="block lg:col-span-2">
           <span className="meta-label text-muted">Search</span>
@@ -147,8 +147,8 @@ export function DirectoryFilters({
       <div className="mt-5 pt-4 border-t border-line flex flex-wrap items-center justify-between gap-4">
         <div className="flex flex-wrap items-center gap-5">
           <p className="text-sm text-muted" aria-live="polite">
-            Showing <span className="text-text">{resultCount}</span> of{" "}
-            <span className="text-text">{totalCount}</span>{" "}
+            Showing <span className="text-ink">{resultCount}</span> of{" "}
+            <span className="text-ink">{totalCount}</span>{" "}
             {totalCount === 1 ? "group" : "groups"}
           </p>
           <label className="inline-flex items-center gap-2.5 text-sm text-muted cursor-pointer">
@@ -166,7 +166,7 @@ export function DirectoryFilters({
           <button
             type="button"
             onClick={onReset}
-            className="text-sm text-accent hover:text-accent-hi transition-colors"
+            className="text-sm text-accent hover:text-navy-hi transition-colors"
           >
             Reset filters
           </button>

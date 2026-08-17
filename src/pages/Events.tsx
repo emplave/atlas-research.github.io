@@ -6,7 +6,7 @@ import {
 } from "@/data/events";
 
 /**
- * Events. Dark chrome.
+ * Events.
  *
  * Upcoming first, then past. Past events stay visible on purpose — a dated
  * record of sessions that actually happened is a credibility signal, and
@@ -20,11 +20,11 @@ export function Events() {
   const past = pastEvents();
 
   return (
-    <div className="bg-ground">
+    <div className="bg-paper">
       <section className="border-b border-line">
         <div className="mx-auto max-w-5xl px-6 pt-16 md:pt-24 pb-12">
           <p className="meta-label text-muted">Events</p>
-          <h1 className="mt-4 font-display text-4xl md:text-6xl text-text leading-[1.05] max-w-3xl">
+          <h1 className="mt-4 font-display text-4xl md:text-6xl leading-[1.05] max-w-3xl">
             Webinars, workshops, and guest sessions.
           </h1>
           <p className="mt-6 max-w-2xl text-lg text-muted leading-relaxed">
@@ -36,7 +36,7 @@ export function Events() {
       </section>
 
       <section className="mx-auto max-w-5xl px-6 py-12 md:py-16">
-        <h2 className="font-display text-2xl text-text">Upcoming</h2>
+        <h2 className="font-display text-2xl">Upcoming</h2>
         {upcoming.length > 0 ? (
           <ul className="mt-6 space-y-4">
             {upcoming.map((event) => (
@@ -54,7 +54,7 @@ export function Events() {
       {past.length > 0 && (
         <section className="border-t border-line">
           <div className="mx-auto max-w-5xl px-6 py-12 md:py-16">
-            <h2 className="font-display text-2xl text-text">Past sessions</h2>
+            <h2 className="font-display text-2xl">Past sessions</h2>
             <p className="mt-3 max-w-xl text-[15px] text-muted leading-relaxed">
               A record of sessions Atlas has actually run.
             </p>
@@ -79,7 +79,7 @@ function EventRow({ event, past = false }: { event: AtlasEvent; past?: boolean }
   return (
     <li
       className={
-        "rounded-card border border-line bg-panel p-6 " +
+        "rounded-card border border-line bg-surface p-6 " +
         (past ? "opacity-75" : "")
       }
     >
@@ -93,7 +93,7 @@ function EventRow({ event, past = false }: { event: AtlasEvent; past?: boolean }
             </span>
           </div>
 
-          <h3 className="mt-3 font-display text-xl leading-snug text-text">
+          <h3 className="mt-3 font-display text-xl leading-snug">
             {event.title}
           </h3>
 
@@ -120,7 +120,7 @@ function EventRow({ event, past = false }: { event: AtlasEvent; past?: boolean }
                 href={event.registrationUrl as string}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex rounded-control bg-text text-ground px-4 py-2 text-sm hover:bg-text-hi transition-colors"
+                className="inline-flex rounded-control bg-navy text-white px-4 py-2 text-sm hover:bg-navy-hi transition-colors"
               >
                 Register
               </a>

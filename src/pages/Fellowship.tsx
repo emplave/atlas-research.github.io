@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Reveal } from "@/components/Reveal";
 import { Outcomes } from "@/components/Outcomes";
 import { Field, inputCls, SubmitState } from "@/components/forms";
 import { DATES, WAITLIST_ENDPOINT } from "@/lib/dates";
+import { ELIGIBILITY_LABEL, FELLOWSHIP_WEEKS } from "@/lib/stats";
 
 /**
  * The Fellowship. Dark chrome.
@@ -41,34 +41,30 @@ export function Fellowship() {
   };
 
   return (
-    <div className="bg-ground">
+    <div className="bg-paper">
       <section className="border-b border-line">
         <div className="mx-auto max-w-4xl px-6 pt-16 md:pt-24 pb-12">
-          <Reveal>
             <p className="meta-label text-muted">
               The Fellowship · A separate programme · Applications closed
             </p>
-            <h1 className="mt-4 font-display text-4xl md:text-6xl text-text leading-[1.05]">
-              A selective four-week summer cohort.
+            <h1 className="mt-4 font-display text-4xl md:text-5xl leading-[1.06]">
+              A selective {FELLOWSHIP_WEEKS}-week summer cohort.
             </h1>
             <p className="mt-6 max-w-2xl text-lg text-muted leading-relaxed">
-              Free, remote, and open to secondary and university students
-              worldwide. {DATES.cohortState}, so applications for the current
-              cohort are closed. {DATES.nextCycle}.
+              Free and remote. {ELIGIBILITY_LABEL}. {DATES.cohortState}, so
+              applications for this cohort are closed. {DATES.nextCycle}.
             </p>
             <p className="mt-5 max-w-2xl text-[15px] text-muted leading-relaxed">
-              The Fellowship is separate from Atlas research groups. Starting
-              or joining a research group is open right now, independently of
-              this programme — and a student may do both.{" "}
+              The Fellowship is a separate programme from Atlas research groups.
+              Starting a research group is open now. A student may do both.{" "}
               <Link
                 to="/research-groups"
-                className="text-accent hover:text-accent-hi transition-colors underline underline-offset-2"
+                className="text-accent underline underline-offset-4 hover:text-navy-hi transition-colors"
               >
                 Browse research groups
               </Link>
               .
             </p>
-          </Reveal>
         </div>
       </section>
 
@@ -76,9 +72,8 @@ export function Fellowship() {
 
       <section id="waitlist" className="border-t border-line">
         <div className="mx-auto max-w-2xl px-6 py-16 md:py-20">
-          <Reveal>
             <p className="meta-label text-muted">Next cohort</p>
-            <h2 className="mt-4 font-display text-3xl text-text">
+            <h2 className="mt-4 font-display text-3xl">
               {DATES.waitlist}
             </h2>
             <p className="mt-4 text-[15px] text-muted leading-relaxed">
@@ -86,11 +81,10 @@ export function Fellowship() {
               does not affect selection — it means you hear when the next cycle
               opens.
             </p>
-          </Reveal>
 
           {state === "sent" ? (
-            <div className="mt-9 rounded-card border border-line bg-panel p-10 text-center">
-              <p className="font-display text-3xl text-text">You're on the list.</p>
+            <div className="mt-9 rounded-card border border-line bg-surface p-10 text-center">
+              <p className="font-display text-3xl">You're on the list.</p>
               <p className="mt-4 text-muted">
                 We'll write when the next cohort opens.
               </p>
@@ -148,7 +142,7 @@ export function Fellowship() {
               <button
                 type="submit"
                 disabled={state === "sending"}
-                className="rounded-control bg-text text-ground pl-7 pr-6 py-3.5 text-[15px] inline-flex items-center gap-2.5 hover:bg-text-hi transition-all hover:gap-3.5 disabled:opacity-60"
+                className="rounded-control bg-navy text-white pl-7 pr-6 py-3.5 text-[15px] inline-flex items-center gap-2.5 hover:bg-navy-hi transition-all hover:gap-3.5 disabled:opacity-60"
               >
                 {state === "sending" ? "Joining…" : "Join the waitlist"}
                 <span aria-hidden>→</span>

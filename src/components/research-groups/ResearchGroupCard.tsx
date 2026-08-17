@@ -1,12 +1,15 @@
 import { Link } from "react-router-dom";
-import { canApply, type ResearchGroup, type Setting } from "@/data/research-groups";
+import {
+  canApply,
+  type ResearchGroup,
+  type Setting,
+} from "@/data/research-groups";
 import { findOpening, isFormPending } from "@/data/openings";
 import { StatusChip } from "./StatusChip";
 
-/** Human-readable label for the setting enum. */
 const SETTING_LABEL: Record<Setting, string> = {
-  school: "School-based",
-  community: "Community-based",
+  school: "School",
+  community: "Community",
   hybrid: "Hybrid",
   online: "Online",
 };
@@ -14,85 +17,130 @@ const SETTING_LABEL: Record<Setting, string> = {
 /**
  * Directory card for one research group.
  *
- * The Apply action is gated on canApply() — Recruiting only. Completed and
- * Full render the card with no Apply, and Archived never reaches the default
- * view at all (see isVisibleByDefault in src/data/research-groups.ts).
+ * Every card opens with a 16:9 block. When `image` is null it renders a
+ * typographic fallback in navy carrying the field name — never a broken
+ * image, never an empty gray box. The fallback is a designed state, not a
+ * degraded one, because most groups will not have a photo.
  *
- * The Apply URL is read from the Research Group Leader opening in
- * src/data/openings.ts and is never hardcoded here. If that opening has no
- * form yet, the action renders disabled rather than as a dead link.
+ * The Apply action is gated on canApply() (Recruiting only) and its URL comes
+ * from the Research Group Leader opening, never hardcoded here.
  */
 export function ResearchGroupCard({ group }: { group: ResearchGroup }) {
   const applyable = canApply(group);
-  const groupOpening = findOpening("chapter-leader");
-  const formPending = !groupOpening || isFormPending(groupOpening);
+  const opening = findOpening("chapter-leader");
+  const formPending = !opening || isFormPending(opening);
 
   const place = [group.schoolOrCommunityName, group.location]
     .filter(Boolean)
     .join(" · ");
 
   return (
-    <article className="flex flex-col rounded-card border border-line bg-panel p-6 transition-colors hover:border-muted/50">
-      <div className="flex items-start justify-between gap-3">
-        <span className="meta-label text-muted">{group.field}</span>
-        <StatusChip status={group.status} />
-      </div>
+    <article className="flex flex-col overflow-hidden rounded-card border border-line bg-surface transition-colors hover:border-navy/40">
+      <CardMedia group={group} />
 
-      <h3 className="mt-4 font-display text-xl leading-snug text-text">
-        {group.projectTitle}
-      </h3>
-
-      <p className="mt-2.5 text-[15px] leading-relaxed text-muted">
-        {group.oneLine}
-      </p>
-
-      <dl className="mt-5 space-y-1 text-sm">
-        <div className="flex gap-2">
-          <dt className="text-muted">Lead</dt>
-          <dd className="text-text">{group.leadName}</dd>
+      <div className="flex flex-1 flex-col p-6">
+        <div className="flex items-start justify-between gap-3">
+          <span className="meta-label text-muted">{group.field}</span>
+          <StatusChip status={group.status} />
         </div>
-        <div className="flex gap-2">
-          <dt className="text-muted">Setting</dt>
-          <dd className="text-text">
+
+        <h3 className="mt-3 font-display text-xl leading-snug">
+          <Link
+            to={`/research-groups/${group.slug}`}
+            className="hover:text-navy-hi transition-colors"
+          >
+            {group.projectTitle}
+          </Link>
+        </h3>
+
+        <p className="mt-2.5 text-[15px] leading-relaxed text-muted">
+          {group.oneLine}
+        </p>
+
+        <dl className="mt-5 space-y-1 text-sm">
+          <Row label="Lead">{group.leadName}</Row>
+          <Row label="Setting">
             {SETTING_LABEL[group.setting]}
-            {place && <span className="text-muted"> — {place}</span>}
-          </dd>
-        </div>
-        <div className="flex gap-2">
-          <dt className="text-muted">Members</dt>
-          <dd className="text-text">{group.memberCount}</dd>
-        </div>
-      </dl>
+            {place && <span className="text-muted"> · {place}</span>}
+          </Row>
+          <Row label="Members">{group.memberCount}</Row>
+        </dl>
 
-      <div className="mt-6 pt-4 border-t border-line flex items-center justify-between gap-4">
-        <Link
-          to={`/research-groups/${group.slug}`}
-          className="text-sm text-accent hover:text-accent-hi transition-colors inline-flex items-center gap-1.5"
-        >
-          View brief
-          <span aria-hidden>→</span>
-        </Link>
+        <div className="mt-6 pt-4 border-t border-line flex items-center justify-between gap-4">
+          <Link
+            to={`/research-groups/${group.slug}`}
+            className="text-sm text-accent underline underline-offset-4 hover:text-navy-hi transition-colors"
+          >
+            Read the brief
+          </Link>
 
-        {applyable &&
-          (formPending ? (
-            <span
-              aria-disabled="true"
-              title="The Research Group Leader form is not open yet"
-              className="rounded-control border border-line px-4 py-2 text-sm text-muted cursor-not-allowed"
-            >
-              Opening soon
-            </span>
-          ) : (
-            <a
-              href={groupOpening.formUrl as string}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-control bg-text text-ground px-4 py-2 text-sm hover:bg-text-hi transition-colors"
-            >
-              Apply to join
-            </a>
-          ))}
+          {applyable &&
+            (formPending ? (
+              <span
+                aria-disabled="true"
+                title="The Research Group Leader form is not open yet"
+                className="rounded-control border border-line px-4 py-2 text-sm text-muted cursor-not-allowed"
+              >
+                Opening soon
+              </span>
+            ) : (
+              <a
+                href={opening.formUrl as string}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-control bg-navy text-white px-4 py-2 text-sm hover:bg-navy-hi transition-colors"
+              >
+                Apply to join
+              </a>
+            ))}
+        </div>
       </div>
     </article>
+  );
+}
+
+/**
+ * The 16:9 media block. Real image when there is one, typographic navy block
+ * carrying the field name when there is not.
+ */
+function CardMedia({ group }: { group: ResearchGroup }) {
+  if (group.image) {
+    return (
+      <div className="aspect-[16/9] w-full overflow-hidden bg-navy">
+        <img
+          src={group.image.src}
+          alt={group.image.alt}
+          loading="lazy"
+          className="h-full w-full object-cover"
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div
+      aria-hidden
+      className="aspect-[16/9] w-full bg-navy px-6 flex flex-col justify-center"
+    >
+      <span className="meta-label text-white/55">Research group</span>
+      <span className="mt-1.5 font-display text-2xl leading-tight text-white">
+        {group.field}
+      </span>
+    </div>
+  );
+}
+
+function Row({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="flex gap-2">
+      <dt className="text-muted">{label}</dt>
+      <dd className="text-ink">{children}</dd>
+    </div>
   );
 }

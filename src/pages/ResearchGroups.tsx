@@ -64,11 +64,11 @@ export function ResearchGroups() {
   const startFormPending = !groupOpening || isFormPending(groupOpening);
 
   return (
-    <div className="bg-ground">
+    <div className="bg-paper">
       <section className="border-b border-line">
         <div className="mx-auto max-w-6xl px-6 pt-16 md:pt-24 pb-12">
           <p className="meta-label text-muted">Research groups · Directory</p>
-          <h1 className="mt-4 font-display text-4xl md:text-6xl text-text leading-[1.05] max-w-3xl">
+          <h1 className="mt-4 font-display text-4xl md:text-6xl leading-[1.05] max-w-3xl">
             Every Atlas research group, and what it is working on.
           </h1>
           <p className="mt-6 max-w-2xl text-lg text-muted leading-relaxed">
@@ -96,8 +96,8 @@ export function ResearchGroups() {
             ))}
           </div>
         ) : (
-          <div className="mt-8 rounded-card border border-line bg-panel px-6 py-16 text-center">
-            <h2 className="font-display text-2xl text-text">
+          <div className="mt-8 rounded-card border border-line bg-surface px-6 py-16 text-center">
+            <h2 className="font-display text-2xl">
               No groups match those filters.
             </h2>
             <p className="mt-3 mx-auto max-w-md text-[15px] text-muted leading-relaxed">
@@ -109,7 +109,7 @@ export function ResearchGroups() {
               <button
                 type="button"
                 onClick={() => setFilters(EMPTY_FILTERS)}
-                className="mt-7 rounded-control bg-text text-ground px-5 py-2.5 text-sm hover:bg-text-hi transition-colors"
+                className="mt-7 rounded-control bg-navy text-white px-5 py-2.5 text-sm hover:bg-navy-hi transition-colors"
               >
                 Reset filters
               </button>
@@ -125,12 +125,12 @@ export function ResearchGroups() {
       */}
       <section className="border-t border-line">
         <div className="mx-auto max-w-6xl px-6 py-16 md:py-20">
-          <div className="rounded-card border border-line bg-panel p-8 md:p-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
+          <div className="rounded-card border border-line bg-surface p-8 md:p-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
             <div className="max-w-xl">
               <p className="meta-label text-muted">
                 {groupOpening?.area ?? "Research Group leadership"}
               </p>
-              <h2 className="mt-3 font-display text-2xl md:text-3xl text-text">
+              <h2 className="mt-3 font-display text-2xl md:text-3xl">
                 Nothing here fits? Start your own.
               </h2>
               <p className="mt-3 text-[15px] text-muted leading-relaxed">
@@ -154,7 +154,7 @@ export function ResearchGroups() {
                   href={groupOpening.formUrl as string}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2.5 rounded-control bg-text text-ground pl-6 pr-5 py-3 text-[15px] hover:bg-text-hi transition-all hover:gap-3.5"
+                  className="inline-flex items-center gap-2.5 rounded-control bg-navy text-white pl-6 pr-5 py-3 text-[15px] hover:bg-navy-hi transition-all hover:gap-3.5"
                 >
                   Apply to lead a group
                   <span aria-hidden>→</span>

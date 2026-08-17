@@ -1,6 +1,12 @@
 User-agent: *
 Allow: /
 
-# AI model context
-# See https://llmstxt.org for the llms.txt standard
+# Legacy signpost kept only so older external links do not 404.
+# It carries a noindex meta tag and canonicals to /fellowship.
+Disallow: /apply.html
+
 Sitemap: https://atlas-research.org/sitemap.xml
+
+# Structured context for language models.
+# See https://llmstxt.org for the llms.txt standard.
+# https://atlas-research.org/llms.txt

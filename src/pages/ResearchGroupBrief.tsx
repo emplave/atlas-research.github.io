@@ -51,25 +51,25 @@ function Brief({ group }: { group: ResearchGroup }) {
 
   return (
     <article className="bg-paper">
-      <header className="border-b border-ink/10">
+      <header className="border-b border-line">
         <div className="mx-auto max-w-4xl px-6 pt-12 md:pt-16 pb-10">
           <Link
             to="/research-groups"
-            className="meta-label text-ink/55 hover:text-ink transition-colors inline-flex items-center gap-1.5"
+            className="meta-label text-muted hover:text-ink transition-colors inline-flex items-center gap-1.5"
           >
             <span aria-hidden>←</span> All research groups
           </Link>
 
           <div className="mt-7 flex flex-wrap items-center gap-3">
-            <span className="meta-label text-ink/55">{group.field}</span>
-            <StatusChip status={group.status} mode="light" />
+            <span className="meta-label text-muted">{group.field}</span>
+            <StatusChip status={group.status} />
           </div>
 
-          <h1 className="mt-4 font-display text-3xl md:text-5xl leading-[1.12] text-ink max-w-3xl">
+          <h1 className="mt-4 font-display text-3xl md:text-5xl leading-[1.12] max-w-3xl">
             {group.projectTitle}
           </h1>
 
-          <p className="mt-5 max-w-2xl text-lg text-ink/70 leading-relaxed">
+          <p className="mt-5 max-w-2xl text-lg text-muted leading-relaxed">
             {group.oneLine}
           </p>
         </div>
@@ -95,30 +95,30 @@ function Brief({ group }: { group: ResearchGroup }) {
           </ul>
         </Prose>
 
-        <aside className="lg:sticky lg:top-24 rounded-card border border-ink/12 bg-ink/[0.03] p-6">
-          <h2 className="meta-label text-ink/55">Group details</h2>
+        <aside className="lg:sticky lg:top-24 rounded-card border border-line bg-surface p-6">
+          <h2 className="meta-label text-muted">Group details</h2>
           <dl className="mt-4 space-y-4 text-[15px]">
             <Detail label="Lead">{group.leadName}</Detail>
             <Detail label="Members">{group.memberCount}</Detail>
             <Detail label="Setting">
               {SETTING_LABEL[group.setting]}
-              {place && <span className="block text-ink/60">{place}</span>}
+              {place && <span className="block text-muted">{place}</span>}
             </Detail>
             <Detail label="Output">{group.outputType}</Detail>
             <Detail label="Started">{formatDate(group.startedAt)}</Detail>
             <Detail label="Review status">
-              <span className="block text-ink/70">
+              <span className="block text-muted">
                 {REVIEW_LABEL[group.reviewStatus]}
               </span>
             </Detail>
           </dl>
 
           {applyable && (
-            <div className="mt-6 pt-5 border-t border-ink/12">
+            <div className="mt-6 pt-5 border-t border-line">
               {formPending ? (
                 <span
                   aria-disabled="true"
-                  className="block text-center rounded-control border border-ink/20 px-4 py-2.5 text-sm text-ink/50 cursor-not-allowed"
+                  className="block text-center rounded-control border border-line px-4 py-2.5 text-sm text-muted cursor-not-allowed"
                 >
                   Opening soon
                 </span>
@@ -127,7 +127,7 @@ function Brief({ group }: { group: ResearchGroup }) {
                   href={opening.formUrl as string}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block text-center rounded-control bg-ink text-paper px-4 py-2.5 text-sm hover:bg-ink/85 transition-colors"
+                  className="block text-center rounded-control bg-navy text-white px-4 py-2.5 text-sm hover:bg-navy-hi transition-colors"
                 >
                   Apply to join
                 </a>
@@ -137,9 +137,9 @@ function Brief({ group }: { group: ResearchGroup }) {
         </aside>
       </div>
 
-      <div className="border-t border-ink/10">
+      <div className="border-t border-line">
         <div className="mx-auto max-w-4xl px-6 py-10">
-          <p className="text-sm text-ink/60 max-w-2xl leading-relaxed">
+          <p className="text-sm text-muted max-w-2xl leading-relaxed">
             Completed work may be submitted to Atlas for review. The Atlas
             research and editorial team decides what advances; work meeting the
             journal's standards may be considered for publication in the Atlas
@@ -160,7 +160,7 @@ function Detail({
 }) {
   return (
     <div>
-      <dt className="meta-label text-ink/45">{label}</dt>
+      <dt className="meta-label text-muted">{label}</dt>
       <dd className="mt-1 text-ink">{children}</dd>
     </div>
   );
@@ -182,16 +182,16 @@ function BriefNotFound() {
   return (
     <div className="bg-paper">
       <div className="mx-auto max-w-2xl px-6 py-28 text-center">
-        <p className="meta-label text-ink/50">Not found</p>
-        <h1 className="mt-5 font-display text-4xl text-ink">
+        <p className="meta-label text-muted">Not found</p>
+        <h1 className="mt-5 font-display text-4xl">
           No research group at this address.
         </h1>
-        <p className="mt-5 text-ink/70 leading-relaxed">
+        <p className="mt-5 text-muted leading-relaxed">
           The link may be out of date, or the group may have been archived.
         </p>
         <Link
           to="/research-groups"
-          className="mt-8 inline-flex items-center gap-2 rounded-control bg-ink text-paper px-5 py-2.5 text-sm hover:bg-ink/85 transition-colors"
+          className="mt-8 inline-flex items-center gap-2 rounded-control bg-navy text-white px-5 py-2.5 text-sm hover:bg-navy-hi transition-colors"
         >
           Browse all research groups
           <span aria-hidden>→</span>

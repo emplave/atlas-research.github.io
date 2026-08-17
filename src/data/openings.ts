@@ -325,7 +325,7 @@ export const OPENINGS: Opening[] = [
 ];
 
 /** Openings for the Research Group Leader pathway. Separate from the team pathway. */
-export function chapterOpenings(): Opening[] {
+export function researchGroupOpenings(): Opening[] {
   return OPENINGS.filter((o) => o.category === "chapter");
 }
 

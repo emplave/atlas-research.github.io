@@ -26,7 +26,6 @@ export const DATES = {
  */
 export const CONTACT_EMAIL = "admin@atlas-research.org";
 
-export const LEGACY_PORTAL = "https://atlas-research.org/apply.html";
 
 /**
  * DO NOT DELETE — LIVE WAITLIST BACKEND.
@@ -44,12 +43,11 @@ export const LEGACY_PORTAL = "https://atlas-research.org/apply.html";
 export const WAITLIST_ENDPOINT =
   "https://script.google.com/macros/s/AKfycbzoGRSNMoJhYjcbHbqG2NEdIqCZ9DJ5vGVaMBvnXHwnRnoQInQ6RsuwWirb5nb0iwTqlA/exec";
 
-/** The static page that posts to WAITLIST_ENDPOINT. */
-export const WAITLIST_FORM_PATH = "/apply.html";
 
 /**
- * Where the fellowship/chapter forms POST. Point this at a real endpoint
+ * Where the partnership form POSTs. Point this at a real endpoint
  * (Formspree, Google Apps Script, your own API) to activate direct
- * submission; until then the forms fall back to a prefilled email draft.
+ * submission. While it is null, pages render their form visibly disabled —
+ * there is no mailto fallback.
  */
 export const FORM_ENDPOINT: string | null = null;

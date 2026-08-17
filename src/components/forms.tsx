@@ -1,5 +1,5 @@
 import { ReactNode, useState } from "react";
-import { FORM_ENDPOINT, CONTACT_EMAIL } from "@/lib/dates";
+import { FORM_ENDPOINT } from "@/lib/dates";
 
 export function Field({
   label,
@@ -15,7 +15,7 @@ export function Field({
   return (
     <label className="block">
       <span className="flex items-baseline gap-2">
-        <span className="text-sm text-text">{label}</span>
+        <span className="text-sm text-ink">{label}</span>
         {required ? (
           <span className="text-alert text-xs" aria-hidden>
             required
@@ -31,7 +31,7 @@ export function Field({
 }
 
 export const inputCls =
-  "w-full rounded-control border border-line bg-ground px-4 py-2.5 text-[15px] text-text placeholder:text-muted focus:outline-none focus:border-panel transition-colors";
+  "w-full rounded-control border border-line bg-paper px-4 py-2.5 text-[15px] text-ink placeholder:text-muted focus:outline-none focus:border-panel transition-colors";
 
 export function WordCountArea({
   name,
@@ -75,34 +75,42 @@ export function WordCountArea({
 export type SubmitState = "idle" | "sending" | "sent" | "error";
 
 /**
- * Submits to FORM_ENDPOINT when configured; otherwise opens a prefilled
- * email draft (guaranteed-functional fallback, no fake door).
+ * Submits to FORM_ENDPOINT.
+ *
+ * THERE IS NO MAILTO FALLBACK. A mailto: handler is a dead end for anyone
+ * without a configured desktop mail client, and it silently loses the
+ * submission — which is worse than telling the reader the form is not open.
+ *
+ * When FORM_ENDPOINT is null, callers must render the form visibly DISABLED
+ * (see isFormEndpointConfigured below) rather than call this. Calling it
+ * without an endpoint is a programming error and reports "error".
  */
 export async function submitApplication(
   kind: string,
   data: Record<string, string>,
   setState: (s: SubmitState) => void
 ): Promise<void> {
-  setState("sending");
-  if (FORM_ENDPOINT) {
-    try {
-      const res = await fetch(FORM_ENDPOINT, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ kind, ...data, submittedAt: new Date().toISOString() }),
-      });
-      setState(res.ok ? "sent" : "error");
-      return;
-    } catch {
-      setState("error");
-      return;
-    }
+  if (!FORM_ENDPOINT) {
+    setState("error");
+    return;
   }
-  const body = Object.entries(data)
-    .map(([k, v]) => `${k}:\n${v}`)
-    .join("\n\n");
-  window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
-    `${kind} submission`
-  )}&body=${encodeURIComponent(body.slice(0, 1800))}`;
-  setState("sent");
+  setState("sending");
+  try {
+    const res = await fetch(FORM_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ kind, ...data, submittedAt: new Date().toISOString() }),
+    });
+    setState(res.ok ? "sent" : "error");
+  } catch {
+    setState("error");
+  }
+}
+
+/**
+ * True when a real submission endpoint exists. Pages gate their forms on this
+ * and render a disabled state when it is false.
+ */
+export function isFormEndpointConfigured(): boolean {
+  return Boolean(FORM_ENDPOINT);
 }

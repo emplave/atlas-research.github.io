@@ -64,6 +64,13 @@ export type OutputType =
  */
 export type ReviewStatus = "none" | "submitted" | "in review" | "published";
 
+/**
+ * A card image. `src` is a path under /public/images/ (see the README there
+ * for required dimensions). Null is a first-class value, not a missing
+ * asset — the card renders a typographic fallback instead.
+ */
+export type GroupImage = { src: string; alt: string };
+
 export type ResearchGroup = {
   slug: string;
   projectTitle: string;
@@ -84,6 +91,8 @@ export type ResearchGroup = {
   /** ISO date (YYYY-MM-DD) the group started work. */
   startedAt: string;
   reviewStatus: ReviewStatus;
+  /** 16:9 card image, or null to render the typographic fallback. */
+  image: GroupImage | null;
 };
 
 /** Statuses hidden from the directory unless explicitly filtered for. */
@@ -100,7 +109,7 @@ export function canApply(group: ResearchGroup): boolean {
 }
 
 /**
- * PLACEHOLDER DATA — NOT REAL CHAPTERS.
+ * PLACEHOLDER DATA — NOT REAL RESEARCH GROUPS.
  *
  * Every group below is invented to exercise the directory UI across fields,
  * statuses, and settings. Hamaad replaces these with real groups before
@@ -137,6 +146,7 @@ export const RESEARCH_GROUPS: ResearchGroup[] = [
     ],
     startedAt: "2026-02-09",
     reviewStatus: "none",
+    image: null,
   },
   {
     slug: "placeholder-clinic-wait-times",
@@ -167,6 +177,7 @@ export const RESEARCH_GROUPS: ResearchGroup[] = [
     ],
     startedAt: "2025-11-03",
     reviewStatus: "none",
+    image: null,
   },
   {
     slug: "placeholder-river-turbidity",
@@ -197,6 +208,7 @@ export const RESEARCH_GROUPS: ResearchGroup[] = [
     ],
     startedAt: "2025-09-15",
     reviewStatus: "none",
+    image: null,
   },
   {
     slug: "placeholder-model-card-review",
@@ -226,6 +238,7 @@ export const RESEARCH_GROUPS: ResearchGroup[] = [
     ],
     startedAt: "2026-01-20",
     reviewStatus: "none",
+    image: null,
   },
   {
     slug: "placeholder-market-vendor-costs",
@@ -256,6 +269,7 @@ export const RESEARCH_GROUPS: ResearchGroup[] = [
     ],
     startedAt: "2025-03-10",
     reviewStatus: "in review",
+    image: null,
   },
   {
     slug: "placeholder-oral-history-archive",
@@ -283,5 +297,6 @@ export const RESEARCH_GROUPS: ResearchGroup[] = [
     ],
     startedAt: "2025-01-13",
     reviewStatus: "none",
+    image: null,
   },
 ];
