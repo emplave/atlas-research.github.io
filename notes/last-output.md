@@ -1,200 +1,170 @@
-# Phase 6 — light mode, visual rebuild, cleanup
+# Phase 7 — design craft pass
 
-Branch: `chapters-rebuild`. Prior: `548b701` P0, `f5c156c` P1, `b3337f7` P2, `1ef922e` P3,
-`f97a993` P4, `80ceca5` P5.
+Branch: `chapters-rebuild`. Prior: `548b701` P0 · `f5c156c` P1 · `b3337f7` P2 · `1ef922e` P3
+· `f97a993` P4 · `80ceca5` P5 · `eaf5337` P6.
 
-Verification: `tsc --noEmit` clean, `vite build` succeeds, `npm run dev` starts clean with
-no warnings (200 on all six top-level routes), 47/47 checks pass.
+Verification: `tsc --noEmit` clean, `vite build` succeeds, `npm run dev` starts clean (200
+on all six top-level routes, no warnings), **43/43 checks pass**.
 
 ---
 
-## Light mode
+## Footer
 
-The dual-mode system is gone: `src/lib/theme.ts` deleted, `ModeManager` removed from
-`App.tsx`, and no mode class is written to `<html>`. Background lives on `html` so it
-extends past a short page.
+Replaced with the exact line, in `Footer.tsx`, `public/apply.html`, and `public/llms.txt`:
 
-New tokens replace the entire previous set. `ground`, `panel`, `text`, `accent-hi`, `brass`,
-`brass-hi`, `text-hi`, and `logo-plate` are all deleted — verified absent from every
-rendered page, not just from the config.
+> Atlas Research Institute operates as a project of a California nonprofit public benefit
+> corporation. For more information contact admin@atlas-research.org
 
-| Token | Value | Job |
-| --- | --- | --- |
-| `paper` | `#FAFAF9` | page background |
-| `surface` | `#FFFFFF` | cards, raised surfaces |
-| `ink` | `#16191D` | primary text |
-| `muted` | `#5A6169` | secondary text |
-| `line` | `#E2E0DA` | hairline borders |
-| `navy` | `#1C3F5E` | headings, primary buttons, bands |
-| `navy-hi` | `#2A5A82` | hover |
-| `accent` | `#1C3F5E` | links |
-| `alert` | `#B3402F` | errors only |
+The entity name is gone from the entire repo — grepped, and asserted per-page in the checks.
+A comment above the line says not to reintroduce a company name, EIN, "501(c)(3)", or "tax
+deductible".
 
-Headings are navy via a base-layer rule, so no component sets heading color. Navy bands
-carry an `on-navy` class that flips headings to white — without it they would inherit navy
-on navy and vanish. **Exactly two navy bands on the homepage**, asserted in the checks.
+## 1. Globe
 
-Primary buttons are `bg-navy` + white; secondary are white with navy border and text. A
-visible `:focus-visible` ring was added, because with motion removed there is less signal
-that a control is interactive.
+`cobe` reinstalled. `src/data/reach.ts` holds the 20 countries with centroid coordinates,
+under a header stating that no country may be added without a real fellow and no count may
+be shown that does not match the array length.
 
-`Prose` retuned for light: ink body at 17px/1.75, navy headings, underlined navy links.
+`REACH_COUNT` is **derived**, not written — the caption reads "Fellows in {REACH_COUNT}
+countries", so a hardcoded number cannot drift from the list. Checks assert the count
+matches the array, codes are unique, and every coordinate is in range.
 
-## No stat band on launch
+Sits right of the headline. Paper sphere `#FAFAF9`, navy markers `#1C3F5E`, a `#E2E0DA` rim
+rather than a glow. Slow rotation at 0.0022 rad/frame.
 
-`stats.ts` holds five counts, all `null`. `displayStats()` returns only non-null entries,
-so `StatBand` returns `null` and renders nothing. Filling in one value in `stats.ts` makes
-the band appear with no other edit.
+**One implementation note:** this cobe version does not expose `onRender` in its types, so
+rotation is driven by our own rAF loop calling the documented `update()` API. Under
+`prefers-reduced-motion` the globe draws once at an opening angle showing the widest marker
+spread and **no rAF loop starts at all** — the preference is honoured by not animating,
+rather than by animating and hiding it. The listener is live, so toggling the OS setting
+takes effect without a reload.
 
-Asserted: `displayStats()` is empty, no stat markup renders, and no "coming soon" appears
-in any stat slot.
+## 2. Field icons
 
-## Images
+`src/components/FieldIcon.tsx` — eight hand-drawn line icons, one per `Field`. Stroke-only,
+1.5px, `currentColor`, 24px default, no fills, no library, no emoji. All drawn on the same
+24-unit grid at matching visual weight so a row reads as one set.
 
-`image: { src, alt } | null` added to `ResearchGroup` and `AtlasEvent`. Every seeded record
-is `null`, so the fallback is what you can judge.
+Used in card headers, directory filters, brief pages, and the field index band. `currentColor`
+means the same icon works on paper and on a navy header without a variant.
 
-`ResearchGroupCard` opens with a 16:9 block: real image when present, otherwise a navy
-typographic block showing the field name. No broken image, no gray box.
+## 3. Paper grain
 
-`public/images/README.md` documents the 16:9 / 960×540 minimum, the 1600×900 recommendation,
-the 300 KB budget, the slug-based naming convention, alt-text rules, and the licensing and
-identifiable-minors constraints. Nothing was downloaded, generated, or hotlinked.
+An inline `feTurbulence` SVG on `body::before` — fixed, `pointer-events: none`, behind
+content via `#root { z-index: 1 }`. Fractal noise at `baseFrequency 0.82`, desaturated,
+rect opacity 0.035 under a layer opacity of 0.5.
 
-## Copy
+Cheap by construction: one fixed element, no blend mode, no repaint on scroll. It never
+lands on top of type, so measured text contrast is unchanged.
 
-The named sentence is deleted, along with the sections built to host that kind of
-description. The homepage no longer explains what a category is; it shows six real projects
-instead.
+## 4. Process track
 
-Homepage rebuilt to the eight-section order: hero → six group cards → what Atlas provides
-→ navy proof band → events → fellowship strip → FAQ → navy closing CTA.
+`ProcessTrack.tsx` replaces the four text boxes. Five nodes — Question, Sources, Analysis,
+Draft, Review — numbered 01–05 on a hairline, each with supporting text. Nodes are drawn
+SVG. No animation.
 
-Deleted outright: `WhatIsAResearchGroup`, `HowItWorks`, `PartnersStrip` (replaced by
-`ProofBand`), plus `Reveal` and `container-scroll-animation`.
+Desktop runs horizontal with the rule behind the node row, clipped at both ends so it does
+not overhang. Mobile becomes a vertical rail with the line down the left. **One set of
+markup for both** — a grid change, not duplicated steps.
 
-Section intros are gone — every section is a heading and then content. Hero subhead is one
-sentence: "You pick the question, recruit three to ten members, and finish a paper in one
-term." Every CTA names its action. Checked against the banned-word list on every rendered
-page: no hits.
+Step 05 states that completed work *may* be submitted and review decides.
 
-Homepage HTML is **26.3 KB, down from 34.3 KB** — 23% less markup.
+## 5. Field index band
 
-## Events
+Eight rows, each with its icon, each linking to `/research-groups?field=…`. Kept compact and
+typographic rather than eight cards — a card grid here would out-weigh the research groups
+section above it, which is what actually carries proof.
 
-Past events stay visible with dates. `speakerName` / `speakerAffiliation` remain `null` in
-the seed and no name is invented. Both the events page and the homepage strip render a
-speaker line only when a name exists, so adding one is a single edit to `events.ts`.
+The directory now **reads `?field=`**, validates it against the `Field` union, applies it,
+and strips it from the URL. An unrecognised value is ignored rather than producing an empty
+directory.
 
-## Motion
+## 6. Typographic scale
 
-`Reveal`, `StaggerWords`, and `container-scroll-animation` deleted. Hover states only.
+- `.type-hero` — `clamp(2.75rem, 7.2vw, 5.25rem)` = 44px → 84px
+- `.type-section` — `clamp(1.75rem, 3.4vw, 2.75rem)` = 28px → 44px
+- `.type-body` — fixed 17px
+- `.numeral` — oversized light-navy display numerals for numbered sections
 
-**On your framer-motion question:** `AnimatePresence` was used nowhere, and
-`container-scroll-animation.tsx` — the only file using `useScroll`/`useTransform` — was
-already orphaned (its consumer was the `Instrument` section deleted in Phase 5). So nothing
-legitimately required it, and framer-motion is dropped. I also found `lucide-react` unused
-and dropped it.
+## 7. Asymmetric layout
 
-**JS bundle: 403 KB → 281 KB (-30%); gzip 127 KB → 87 KB.** Dependencies are now `clsx`,
-`react`, `react-dom`, `react-router-dom`, `tailwind-merge`.
+- Hero: `lg:grid-cols-[55fr_45fr]`, text left, globe right.
+- Homepage groups: first card `md:col-span-2` with larger type and a taller header.
+- Events: `lg:grid-cols-[3fr_2fr]` — next event large left, following stacked small right.
+  Three equal tiles gave every session the same weight, which was wrong; only the next one
+  is actionable today.
 
-## Cleanup
+## 8. Structure as design
 
-**1. `public/apply.html`** replaced with a minimal self-contained light page: applications
-closed, cohort underway, buttons to `/fellowship` and `/research-groups`. `noindex` +
-canonical to `/fellowship`, and `Disallow` in robots.txt. The file is kept because old
-emails point at it. The 16-column form is gone — a live form on a closed cycle collects
-submissions nobody reads. `WAITLIST_ENDPOINT` is untouched in `dates.ts` and is no longer
-duplicated in the HTML, so the two-place sync problem from Phase 0 is resolved.
+`components/home/Section.tsx` owns the numbering, the hairline rule, and the tone
+alternation so no section can drift. Sections 01–06 carry their numeral in the heading's
+left margin, `aria-hidden` because the heading already says it. Vertical spacing tightened
+~25% (py-16/20 → py-12/16).
 
-**2. Partners form.** The mailto fallback is deleted from `submitApplication` entirely — it
-cannot be reached by any caller. New `isFormEndpointConfigured()` gates the page: with
-`FORM_ENDPOINT` null, the form renders inside a `<fieldset disabled>` at reduced opacity,
-the submit becomes a disabled "Form not open", and an explainer shows the contact address as
-plain text. Asserted: no mailto on the submit path.
+## 9. Card headers
 
-**3. Root duplicates deleted:** `about.html`, `apply.html`, `journal.html`, `privacy.html`,
-`llms.txt`, `robots.txt`, `sitemap.xml`, `CNAME`, `googlecf01a647f079a605.html`,
-`world-map.svg`, `atlas-journal-logo.png`, `ijhsr-logo.png`. Root `index.html` is **kept** —
-it is the Vite entry point, not a duplicate. `dev.cmd` kept.
+The navy block is now the card's main surface: field icon top-left, status chip top-right,
+project title in large Spectral white at the bottom. The duplicate field label below is gone.
 
-**4. `stats.ts` unused constants.** `ELIGIBILITY_LABEL` and `FELLOWSHIP_WEEKS` are now wired
-into the Fellowship page headline and eligibility line, so numbers and eligibility prose
-have one source. `ELIGIBILITY_LONG` was deleted rather than forced in. Also removed
-`LEGACY_PORTAL` and `WAITLIST_FORM_PATH` from `dates.ts` — both had zero consumers and
-`WAITLIST_FORM_PATH` pointed at `apply.html`.
+Navy tint varies deterministically across four steps `#1C3F5E → #22496B → #265078 →
+#2A5A82`, keyed to field index — deterministic rather than random because a tint that
+changes between renders reads as a bug, and because the association becomes learnable.
 
-**5. Crawler files rewritten.** `llms.txt` was the worst offender on the site: education
-inequality throughout, "grades 9-12", scholarships, "15+ countries" plus an invented
-14-country list, the July 24 deadline, and apply.html as the primary CTA. Rewritten
-topic-agnostic and research-group-led, with the review process stated honestly and the
-two journal tracks distinguished. `sitemap.xml` rebuilt on current routes, deliberately
-excluding placeholder group and article slugs. `robots.txt` disallows the apply.html
-signpost.
+`StatusChip` gained an `onNavy` variant; the paper-toned chip was illegible on navy.
 
-**6. Motion removed** — see above.
+When a real image exists the image takes the block and the title moves below it.
 
-**7. Full-repo grep.** Everything found and fixed:
+## 10. Research groups page
 
-| Found | Where | Action |
-| --- | --- | --- |
-| Education-inequality framing, grades 9-12, scholarships, invented 14-country reach list, July 24, apply.html CTA | `public/llms.txt` | full rewrite |
-| "Atlas Journal of Education Policy" | `public/privacy.html` | → "Atlas Journal" |
-| framer-motion, cobe globe, `Reveal.tsx`, gold accent, Playfair/JetBrains, wrong dates (July 21 / Sept 8 / Oct 5), unregistered email `apply@atlasresearch.institute` | `README.md` | full rewrite |
-| Banned filler sentence verbatim in `og:description` and `description` | `index.html` | rewritten with facts |
-| `theme-color` `#17181A` (dark) | `index.html` | → `#FAFAF9` |
-| Brass favicon `#C08A3E` | `index.html` | → navy `#1C3F5E` |
-| "NOT REAL CHAPTERS" | `research-groups.ts` | → research groups |
-| `chapterOpenings()` | `openings.ts` | → `researchGroupOpenings()` |
-| "fellowship/chapter forms POST" + mailto-fallback comment | `dates.ts` | corrected |
-| Stale "Dark chrome" doc comments | Events, Journal, JournalArticle, App | corrected |
+A band directly under the heading, above the filters: "No group here doing your question?
+Start one." plus the primary button. The bottom CTA is kept.
 
-Remaining `chapter` matches are the two internal identifiers you told me to keep
-(`category: "chapter"`, `slug: "chapter-leader"`) and the legacy redirect routes. Remaining
-`ISSN` / `9-12` / `scholarship` matches are prohibition comments telling future editors not
-to write them.
+The empty-filter state now leads with **Start a research group** and demotes reset to
+secondary — resetting only returns the reader to a list that already did not have what they
+wanted.
+
+## 11. Motion
+
+Kept: globe rotation, card hover (1px navy border + `translateY(-2px)` + small shadow at
+120ms), button/link transitions, focus-visible rings, smooth anchor scroll. None added.
+
+`prefers-reduced-motion` drops the hover lift to `transform: none` and stops the globe loop
+entirely.
 
 ---
 
 ## Verification
 
 ```
-PASS  /                                               26270b
-PASS  /research-groups                                17493b
-PASS  /research-groups/placeholder-model-card-review   7775b
-PASS  /events                                          5832b
-PASS  /journal                                          9200b
-PASS  /journal/placeholder-working-paper               5956b
-PASS  /fellowship                                      9284b
-PASS  /partners                                        6486b
-PASS  /nope                                            3225b
+PASS  /                                               38094b
+PASS  /research-groups                                18674b
+PASS  /research-groups/placeholder-model-card-review   8337b
+PASS  /events                                          6032b
+PASS  /journal                                          9389b
+PASS  /journal/placeholder-working-paper               6134b
+PASS  /fellowship                                      9462b
+PASS  /partners                                        6664b
+PASS  /nope                                            3403b
 ```
 
-Each page scanned for 33 banned strings — every dead token, every banned word, plus ISSN /
-501(c) / info@ / scholarship / 9-12 / education framing / July 24 / apply.html — and
-asserted to carry the yourbuddy Inc. line and the contact address. Then 38 behavioural
-assertions covering the stat band, the image fallback, homepage structure, the two-navy-band
-rule, deleted sections, the apply.html ban, the disabled Partners form, journal track
-separation, and speaker nulls. **All 47 passed.**
+Every page scanned for 33 banned strings (dead tokens, banned words, ISSN / 501(c) / info@ /
+scholarship / 9-12 / education framing / July 24 / apply.html / yourbuddy) and asserted to
+carry the exact footer line and the contact address. Then 34 behavioural assertions across
+the globe data, icons, process track, type scale, asymmetry, card headers, directory CTAs,
+motion, and the still-empty stat band. **All 43 passed.**
 
-`npm run dev`: clean start, 200 on `/`, `/research-groups`, `/events`, `/journal`,
-`/fellowship`, `/partners`, no warnings.
+Bundle: 281 KB → 305 KB JS (97 KB gzipped); CSS 19.4 KB → 22.8 KB. The increase is cobe.
 
 ---
 
-## Two things you should look at
+## Two things worth your attention
 
-**`public/og-globe.png` is stale.** It is an 842 KB image of a globe — a component deleted
-in Phase 2 — and it is still the `og:image` for every social share. I did not replace it
-because generating or downloading imagery was out of bounds. It needs a 1200×630 replacement
-(see `public/images/README.md`); until then every shared link previews a globe the site no
-longer has.
+**The globe is the site's only unverifiable-by-me claim.** `reach.ts` asserts that a real
+fellow exists in each of those 20 countries. I took the list as given and wrote the guard
+rails around it, but I cannot check it — and unlike the stat band, which stays empty until
+you fill it, this one ships visible. If any country on that list is aspirational rather than
+actual, remove it before launch and the count follows automatically.
 
-**`public/logo-plate.jpeg` is unused** (the `logo-plate` token is deleted). Left in place
-since the cleanup brief covered root duplicates only, but it is dead weight.
-
-Also worth noting: several data-layer exports have no callers yet —
-`researchGroupOpenings()`, `teamOpenings()`, `CATEGORY_LABEL`, `cancelledEvents()`,
-`findEvent()`. They are the documented API for pages not yet built (a roles page, a single
-event page), so I left them rather than trimming an interface you are about to use.
+**`public/og-globe.png` is still stale** — 842 KB, and now doubly odd since a globe exists
+on the site again but this image is not it. Still needs a 1200×630 replacement; generating
+imagery remains out of bounds for me. `public/logo-plate.jpeg` is still unused.

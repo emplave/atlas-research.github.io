@@ -1,7 +1,9 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import {
   isVisibleByDefault,
   RESEARCH_GROUPS,
+  type Field,
   type ResearchGroup,
 } from "@/data/research-groups";
 import { findOpening, isFormPending } from "@/data/openings";
@@ -13,6 +15,17 @@ import {
   isFiltered,
   type DirectoryFilterState,
 } from "@/components/research-groups/DirectoryFilters";
+
+const FIELDS: Field[] = [
+  "Computer Science & AI",
+  "Health & Life Sciences",
+  "Engineering & Technology",
+  "Physical Sciences & Mathematics",
+  "Social Sciences",
+  "Humanities",
+  "Economics & Business",
+  "Environment & Sustainability",
+];
 
 /** Newest first by startedAt — the default order for the directory. */
 function byNewest(a: ResearchGroup, b: ResearchGroup): number {
@@ -38,7 +51,23 @@ function matchesQuery(group: ResearchGroup, query: string): boolean {
  * listings.
  */
 export function ResearchGroups() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [filters, setFilters] = useState<DirectoryFilterState>(EMPTY_FILTERS);
+
+  /**
+   * Adopt ?field= from the URL, so the field index on the homepage links to a
+   * genuinely pre-filtered directory rather than an unfiltered one. Only a
+   * value matching the Field union is accepted; anything else is ignored
+   * rather than producing an empty directory for a bad query string.
+   */
+  useEffect(() => {
+    const requested = searchParams.get("field");
+    if (!requested) return;
+    const match = FIELDS.find((f) => f === requested);
+    if (match) setFilters((prev) => ({ ...prev, field: match }));
+    searchParams.delete("field");
+    setSearchParams(searchParams, { replace: true });
+  }, [searchParams, setSearchParams]);
 
   /** Groups in scope before the field/status/setting/search filters apply. */
   const inScope = useMemo(
@@ -68,19 +97,54 @@ export function ResearchGroups() {
       <section className="border-b border-line">
         <div className="mx-auto max-w-6xl px-6 pt-16 md:pt-24 pb-12">
           <p className="meta-label text-muted">Research groups · Directory</p>
-          <h1 className="mt-4 font-display text-4xl md:text-6xl leading-[1.05] max-w-3xl">
-            Every Atlas research group, and what it is working on.
+          <h1 className="type-hero font-display max-w-3xl">
+            Every Atlas research group.
           </h1>
-          <p className="mt-6 max-w-2xl text-lg text-muted leading-relaxed">
-            A research group is a working research community. Each one investigates a
-            question in its own local context — in any discipline — and takes
-            it through to a concrete output. Groups open to new members are
-            marked Recruiting.
+          <p className="mt-6 max-w-2xl type-body text-muted">
+            Groups open to new members are marked Recruiting.
           </p>
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 py-10 md:py-14">
+      {/*
+        Starting a group is pushed hard here, above the filters. Most readers
+        arriving at a directory are deciding whether to join OR to start, and
+        the second option was previously buried at the bottom of the page.
+      */}
+      <section className="border-b border-line bg-surface">
+        <div className="mx-auto max-w-6xl px-6 py-8 md:py-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
+          <div className="max-w-2xl">
+            <h2 className="font-display text-xl md:text-2xl">
+              No group here doing your question? Start one.
+            </h2>
+            <p className="mt-2 text-[15px] text-muted leading-relaxed">
+              You need three to ten members and one question. Atlas provides the
+              rest.
+            </p>
+          </div>
+          <div className="shrink-0">
+            {startFormPending ? (
+              <span
+                aria-disabled="true"
+                className="inline-flex rounded-control border border-line px-6 py-3 text-[15px] text-muted cursor-not-allowed"
+              >
+                Applications opening soon
+              </span>
+            ) : (
+              <a
+                href={groupOpening.formUrl as string}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex rounded-control bg-navy text-white px-6 py-3 text-[15px] hover:bg-navy-hi transition-colors"
+              >
+                Start a research group
+              </a>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-6 py-10 md:py-12">
         <DirectoryFilters
           value={filters}
           onChange={setFilters}
@@ -101,19 +165,42 @@ export function ResearchGroups() {
               No groups match those filters.
             </h2>
             <p className="mt-3 mx-auto max-w-md text-[15px] text-muted leading-relaxed">
-              {isFiltered(filters)
-                ? "Try widening the field, status, or setting — or clear the search term."
-                : "There are no research groups in the directory yet."}
+              No group here is working on what you are looking for. That is a
+              reason to start one.
             </p>
-            {isFiltered(filters) && (
-              <button
-                type="button"
-                onClick={() => setFilters(EMPTY_FILTERS)}
-                className="mt-7 rounded-control bg-navy text-white px-5 py-2.5 text-sm hover:bg-navy-hi transition-colors"
-              >
-                Reset filters
-              </button>
-            )}
+            {/*
+              Starting a group is the primary action in the empty state.
+              Resetting filters only returns the reader to a list that already
+              did not have what they wanted.
+            */}
+            <div className="mt-7 flex flex-wrap justify-center gap-3">
+              {startFormPending ? (
+                <span
+                  aria-disabled="true"
+                  className="rounded-control border border-line px-5 py-2.5 text-sm text-muted cursor-not-allowed"
+                >
+                  Applications opening soon
+                </span>
+              ) : (
+                <a
+                  href={groupOpening.formUrl as string}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-control bg-navy text-white px-5 py-2.5 text-sm hover:bg-navy-hi transition-colors"
+                >
+                  Start a research group
+                </a>
+              )}
+              {isFiltered(filters) && (
+                <button
+                  type="button"
+                  onClick={() => setFilters(EMPTY_FILTERS)}
+                  className="rounded-control border border-navy bg-surface text-navy px-5 py-2.5 text-sm hover:bg-navy hover:text-white transition-colors"
+                >
+                  Reset filters
+                </button>
+              )}
+            </div>
           </div>
         )}
       </section>

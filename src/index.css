@@ -35,6 +35,35 @@
   :focus-visible {
     @apply outline-none ring-2 ring-navy/40 ring-offset-2 ring-offset-paper;
   }
+
+  /*
+   * PAPER GRAIN.
+   *
+   * A fixed, non-interactive noise layer so the background stops reading as
+   * flat default white. It sits behind all content (z-index 0 against a page
+   * that stacks above it) and is deliberately near the threshold of
+   * perception.
+   *
+   * Cheap on purpose: one fixed element, no repaint on scroll, no blend mode,
+   * and pointer-events none. Opacity is low enough that measured text contrast
+   * is unchanged — the grain never lands on top of type.
+   */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.5;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+  }
+
+  /* All real content stacks above the grain. */
+  #root {
+    position: relative;
+    z-index: 1;
+  }
 }
 
 @layer utilities {
@@ -47,6 +76,41 @@
   }
 
   /*
+   * TYPOGRAPHIC SCALE.
+   *
+   * The page read flat because heading and body sat at nearly the same size.
+   * The contrast between the display sizes and the fixed 17px body is the
+   * whole effect — do not shrink the top end or grow the body.
+   */
+  .type-hero {
+    font-size: clamp(2.75rem, 7.2vw, 5.25rem); /* 44px → 84px */
+    line-height: 1.02;
+    letter-spacing: -0.022em;
+  }
+  .type-section {
+    font-size: clamp(1.75rem, 3.4vw, 2.75rem); /* 28px → 44px */
+    line-height: 1.1;
+    letter-spacing: -0.014em;
+  }
+  .type-sub {
+    font-size: clamp(1.25rem, 2vw, 1.6rem);
+    line-height: 1.2;
+  }
+  .type-body {
+    font-size: 17px;
+    line-height: 1.7;
+  }
+
+  /*
+   * Oversized section numeral. Light navy, decorative, and hidden from
+   * assistive tech — the heading beside it already carries the meaning.
+   */
+  .numeral {
+    @apply font-display text-navy/20 leading-none select-none;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+  }
+
+  /*
    * Type inside a navy full-bleed band. The band inverts polarity locally, so
    * headings must not inherit the global navy heading color.
    */
@@ -55,6 +119,22 @@
   .on-navy h3,
   .on-navy h4 {
     @apply text-white;
+  }
+
+  /*
+   * Card hover: 1px navy border shift plus a small lift. 120ms — fast enough
+   * to feel like a response rather than an animation.
+   */
+  .card-hover {
+    transition:
+      border-color 120ms ease,
+      box-shadow 120ms ease,
+      transform 120ms ease;
+  }
+  .card-hover:hover {
+    @apply border-navy;
+    box-shadow: 0 6px 20px -8px rgba(28, 63, 94, 0.22);
+    transform: translateY(-2px);
   }
 }
 
@@ -68,5 +148,9 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+  /* No lift under reduced motion; the border shift alone carries the hover. */
+  .card-hover:hover {
+    transform: none;
   }
 }

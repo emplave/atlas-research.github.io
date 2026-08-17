@@ -1,5 +1,6 @@
 import type { Field, Setting, Status } from "@/data/research-groups";
 import { cn } from "@/lib/utils";
+import { FieldIcon } from "@/components/FieldIcon";
 
 export const ALL = "all" as const;
 
@@ -92,7 +93,12 @@ export function DirectoryFilters({
         </label>
 
         <label className="block">
-          <span className="meta-label text-muted">Field</span>
+          <span className="meta-label text-muted flex items-center gap-1.5">
+            {value.field !== ALL && (
+              <FieldIcon field={value.field} size={14} className="text-navy" />
+            )}
+            Field
+          </span>
           <select
             value={value.field}
             onChange={(e) => set("field", e.target.value as Field | typeof ALL)}

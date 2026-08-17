@@ -13,8 +13,8 @@ export function Closing() {
 
   return (
     <section id="start" className="on-navy bg-navy">
-      <div className="mx-auto max-w-3xl px-6 py-20 md:py-24 text-center">
-        <h2 className="font-display text-3xl md:text-4xl leading-tight">
+      <div className="mx-auto max-w-3xl px-6 py-16 md:py-20 text-center">
+        <h2 className="type-section font-display">
           Start a research group this term.
         </h2>
         <p className="mt-5 text-lg text-white/75 leading-relaxed">

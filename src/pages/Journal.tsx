@@ -217,7 +217,7 @@ function PublicationRow({ publication }: { publication: Publication }) {
   const pending = isFullTextPending(publication);
 
   return (
-    <li className="rounded-card border border-line bg-surface p-6">
+    <li className="card-hover rounded-card border border-line bg-surface p-6">
       <div className="flex flex-wrap items-center gap-3">
         <span className="meta-label text-muted">{publication.field}</span>
         <span className="meta-label text-muted">

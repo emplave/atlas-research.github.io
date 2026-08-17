@@ -1,11 +1,14 @@
 import { Link } from "react-router-dom";
 import {
   canApply,
+  type Field,
   type ResearchGroup,
   type Setting,
 } from "@/data/research-groups";
 import { findOpening, isFormPending } from "@/data/openings";
+import { FieldIcon } from "@/components/FieldIcon";
 import { StatusChip } from "./StatusChip";
+import { cn } from "@/lib/utils";
 
 const SETTING_LABEL: Record<Setting, string> = {
   school: "School",
@@ -15,45 +18,137 @@ const SETTING_LABEL: Record<Setting, string> = {
 };
 
 /**
+ * Four navy steps between #1C3F5E and #2A5A82.
+ *
+ * Assigned deterministically by field, so the same field always gets the same
+ * tint and consecutive cards in a grid are not identical slabs. Deterministic
+ * rather than random because a tint that changes between renders reads as a
+ * bug, and because a reader should be able to learn the association.
+ */
+const NAVY_STEPS = ["#1C3F5E", "#22496B", "#265078", "#2A5A82"] as const;
+
+const FIELD_ORDER: Field[] = [
+  "Computer Science & AI",
+  "Health & Life Sciences",
+  "Engineering & Technology",
+  "Physical Sciences & Mathematics",
+  "Social Sciences",
+  "Humanities",
+  "Economics & Business",
+  "Environment & Sustainability",
+];
+
+function navyForField(field: Field): string {
+  const i = FIELD_ORDER.indexOf(field);
+  return NAVY_STEPS[(i < 0 ? 0 : i) % NAVY_STEPS.length];
+}
+
+/**
  * Directory card for one research group.
  *
- * Every card opens with a 16:9 block. When `image` is null it renders a
- * typographic fallback in navy carrying the field name — never a broken
- * image, never an empty gray box. The fallback is a designed state, not a
- * degraded one, because most groups will not have a photo.
+ * The header block is the card's main surface, not dead space. With no image
+ * it carries the project title in Spectral white, the field icon, and the
+ * status chip. When a real image exists the image takes the block and the
+ * title moves below it.
  *
  * The Apply action is gated on canApply() (Recruiting only) and its URL comes
  * from the Research Group Leader opening, never hardcoded here.
  */
-export function ResearchGroupCard({ group }: { group: ResearchGroup }) {
+export function ResearchGroupCard({
+  group,
+  featured = false,
+}: {
+  group: ResearchGroup;
+  /** Larger type and a taller header, for the lead card in a grid. */
+  featured?: boolean;
+}) {
   const applyable = canApply(group);
   const opening = findOpening("chapter-leader");
   const formPending = !opening || isFormPending(opening);
+  const hasImage = Boolean(group.image);
 
   const place = [group.schoolOrCommunityName, group.location]
     .filter(Boolean)
     .join(" · ");
 
   return (
-    <article className="flex flex-col overflow-hidden rounded-card border border-line bg-surface transition-colors hover:border-navy/40">
-      <CardMedia group={group} />
+    <article className="card-hover flex flex-col overflow-hidden rounded-card border border-line bg-surface">
+      {hasImage ? (
+        <div className="aspect-[16/9] w-full overflow-hidden bg-navy">
+          <img
+            src={group.image!.src}
+            alt={group.image!.alt}
+            loading="lazy"
+            className="h-full w-full object-cover"
+          />
+        </div>
+      ) : (
+        <div
+          className={cn(
+            "flex flex-col justify-between p-6",
+            featured ? "min-h-[15rem] md:min-h-[17rem]" : "min-h-[11.5rem]"
+          )}
+          style={{ backgroundColor: navyForField(group.field) }}
+        >
+          <div className="flex items-start justify-between gap-3">
+            <FieldIcon
+              field={group.field}
+              size={featured ? 28 : 24}
+              className="text-white/80 shrink-0"
+            />
+            <StatusChip status={group.status} onNavy />
+          </div>
+
+          <h3
+            className={cn(
+              "mt-6 font-display text-white leading-[1.15]",
+              featured ? "text-2xl md:text-3xl" : "text-xl"
+            )}
+          >
+            <Link
+              to={`/research-groups/${group.slug}`}
+              className="hover:underline underline-offset-4"
+            >
+              {group.projectTitle}
+            </Link>
+          </h3>
+        </div>
+      )}
 
       <div className="flex flex-1 flex-col p-6">
-        <div className="flex items-start justify-between gap-3">
-          <span className="meta-label text-muted">{group.field}</span>
-          <StatusChip status={group.status} />
-        </div>
+        {hasImage && (
+          <>
+            <div className="flex items-start justify-between gap-3">
+              <FieldIcon
+                field={group.field}
+                size={24}
+                className="text-navy shrink-0"
+              />
+              <StatusChip status={group.status} />
+            </div>
+            <h3
+              className={cn(
+                "mt-3 font-display leading-snug",
+                featured ? "text-2xl" : "text-xl"
+              )}
+            >
+              <Link
+                to={`/research-groups/${group.slug}`}
+                className="hover:text-navy-hi transition-colors"
+              >
+                {group.projectTitle}
+              </Link>
+            </h3>
+          </>
+        )}
 
-        <h3 className="mt-3 font-display text-xl leading-snug">
-          <Link
-            to={`/research-groups/${group.slug}`}
-            className="hover:text-navy-hi transition-colors"
-          >
-            {group.projectTitle}
-          </Link>
-        </h3>
-
-        <p className="mt-2.5 text-[15px] leading-relaxed text-muted">
+        <p
+          className={cn(
+            "leading-relaxed text-muted",
+            hasImage ? "mt-2.5" : "",
+            featured ? "text-[17px]" : "text-[15px]"
+          )}
+        >
           {group.oneLine}
         </p>
 
@@ -96,37 +191,6 @@ export function ResearchGroupCard({ group }: { group: ResearchGroup }) {
         </div>
       </div>
     </article>
-  );
-}
-
-/**
- * The 16:9 media block. Real image when there is one, typographic navy block
- * carrying the field name when there is not.
- */
-function CardMedia({ group }: { group: ResearchGroup }) {
-  if (group.image) {
-    return (
-      <div className="aspect-[16/9] w-full overflow-hidden bg-navy">
-        <img
-          src={group.image.src}
-          alt={group.image.alt}
-          loading="lazy"
-          className="h-full w-full object-cover"
-        />
-      </div>
-    );
-  }
-
-  return (
-    <div
-      aria-hidden
-      className="aspect-[16/9] w-full bg-navy px-6 flex flex-col justify-center"
-    >
-      <span className="meta-label text-white/55">Research group</span>
-      <span className="mt-1.5 font-display text-2xl leading-tight text-white">
-        {group.field}
-      </span>
-    </div>
   );
 }
 

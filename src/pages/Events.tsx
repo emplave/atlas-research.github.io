@@ -79,7 +79,7 @@ function EventRow({ event, past = false }: { event: AtlasEvent; past?: boolean }
   return (
     <li
       className={
-        "rounded-card border border-line bg-surface p-6 " +
+        "card-hover rounded-card border border-line bg-surface p-6 " +
         (past ? "opacity-75" : "")
       }
     >

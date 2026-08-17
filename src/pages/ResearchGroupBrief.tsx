@@ -8,6 +8,7 @@ import {
 } from "@/data/research-groups";
 import { findOpening, isFormPending } from "@/data/openings";
 import { StatusChip } from "@/components/research-groups/StatusChip";
+import { FieldIcon } from "@/components/FieldIcon";
 import { Prose, ProseParagraphs } from "@/components/Prose";
 
 const SETTING_LABEL: Record<Setting, string> = {
@@ -61,11 +62,14 @@ function Brief({ group }: { group: ResearchGroup }) {
           </Link>
 
           <div className="mt-7 flex flex-wrap items-center gap-3">
-            <span className="meta-label text-muted">{group.field}</span>
+            <span className="inline-flex items-center gap-2 meta-label text-muted">
+              <FieldIcon field={group.field} size={18} className="text-navy" />
+              {group.field}
+            </span>
             <StatusChip status={group.status} />
           </div>
 
-          <h1 className="mt-4 font-display text-3xl md:text-5xl leading-[1.12] max-w-3xl">
+          <h1 className="type-hero font-display mt-4 max-w-3xl">
             {group.projectTitle}
           </h1>
 

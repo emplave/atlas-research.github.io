@@ -42,9 +42,20 @@ export function Footer() {
       </div>
 
       <div className="mx-auto max-w-6xl px-6 pb-10 flex flex-col gap-2">
+        {/*
+          Exact required wording. The parent entity is deliberately NOT named.
+          Do not reintroduce a company name, an EIN, "501(c)(3)", or
+          "tax deductible" here.
+        */}
         <p className="text-xs leading-relaxed max-w-2xl text-muted">
-          Atlas Research Institute operates as a project of yourbuddy Inc., a
-          California nonprofit public benefit corporation.
+          Atlas Research Institute operates as a project of a California
+          nonprofit public benefit corporation. For more information contact{" "}
+          <a
+            href={`mailto:${CONTACT_EMAIL}`}
+            className="text-accent underline underline-offset-4 hover:text-navy-hi transition-colors"
+          >
+            {CONTACT_EMAIL}
+          </a>
         </p>
         <p className="meta-label text-muted">
           © {year} Atlas Research Institute

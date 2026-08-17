@@ -8,13 +8,16 @@ import { Link } from "react-router-dom";
  */
 export function FellowshipStrip() {
   return (
-    <section className="bg-paper border-b border-line">
-      <div className="mx-auto max-w-6xl px-6 py-14">
-        <div className="rounded-card border border-line bg-surface p-7 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
+    <section className="bg-surface border-b border-line">
+      <div className="mx-auto max-w-6xl px-6 py-12 md:py-14">
+        <div className="rounded-card border border-line bg-paper p-7 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="max-w-2xl">
-            <h2 className="font-display text-xl md:text-2xl">
-              The Atlas Fellowship
-            </h2>
+            <div className="flex items-baseline gap-4">
+              <span aria-hidden className="meta-label text-navy/45">06</span>
+              <h2 className="font-display text-xl md:text-2xl">
+                The Atlas Fellowship
+              </h2>
+            </div>
             <p className="mt-2.5 text-[15px] text-muted leading-relaxed">
               A selective four-week summer cohort, free and remote. Applications
               for the current cohort are closed. The waitlist is open for the

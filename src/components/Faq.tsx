@@ -47,8 +47,8 @@ const faqs = [
 export function Faq() {
   return (
     <section id="faq" className="bg-paper border-b border-line">
-      <div className="mx-auto max-w-3xl px-6 py-16 md:py-20">
-        <h2 className="font-display text-2xl md:text-3xl">Questions</h2>
+      <div className="mx-auto max-w-3xl px-6 py-12 md:py-16">
+        <h2 className="type-section font-display">Questions</h2>
 
         <div className="mt-8">
           {faqs.map((f) => (

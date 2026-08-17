@@ -1,6 +1,7 @@
 import { Hero } from "@/components/Hero";
 import { FeaturedGroups } from "@/components/home/FeaturedGroups";
-import { WhatAtlasProvides } from "@/components/home/WhatAtlasProvides";
+import { ProcessTrack } from "@/components/home/ProcessTrack";
+import { FieldIndex } from "@/components/home/FieldIndex";
 import { ProofBand } from "@/components/home/ProofBand";
 import { EventsStrip } from "@/components/home/EventsStrip";
 import { FellowshipStrip } from "@/components/home/FellowshipStrip";
@@ -8,13 +9,19 @@ import { Faq } from "@/components/Faq";
 import { Closing } from "@/components/Closing";
 
 /**
- * The homepage, ordered for a five-second read.
+ * The homepage.
  *
- *   1 hero · 2 research groups · 3 what Atlas provides · 4 proof band
- *   5 events · 6 fellowship · 7 FAQ · 8 closing CTA
+ *   hero · 01 research groups · 02 how the work runs · 03 eight fields
+ *   04 proof band · 05 events · 06 fellowship · FAQ · closing CTA
  *
- * The groups sit second because they are the proof — a reader deciding whether
- * this is real needs actual projects, not a description of what a project is.
+ * The groups sit first because they are the proof — a reader deciding whether
+ * this is real needs actual projects, not a description of a project.
+ *
+ * ProcessTrack replaces the old four text boxes of "What Atlas provides": the
+ * same commitments, drawn as the sequence they actually happen in.
+ *
+ * Section tones alternate paper / surface, and each numbered section carries
+ * its numeral in the heading's left margin (see components/home/Section.tsx).
  *
  * Exactly two navy full-bleed bands: the proof band and the closing CTA.
  * Nothing here links to the fellowship application.
@@ -24,7 +31,8 @@ export function Landing() {
     <>
       <Hero />
       <FeaturedGroups />
-      <WhatAtlasProvides />
+      <ProcessTrack />
+      <FieldIndex />
       <ProofBand />
       <EventsStrip />
       <FellowshipStrip />

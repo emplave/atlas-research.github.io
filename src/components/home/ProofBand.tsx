@@ -25,8 +25,10 @@ const LOGOS = [
 export function ProofBand() {
   return (
     <section className="on-navy bg-navy">
-      <div className="mx-auto max-w-6xl px-6 py-14 md:py-16">
-        <div className="flex flex-wrap items-center gap-3">
+      <div className="mx-auto max-w-6xl px-6 py-12 md:py-14">
+        <p aria-hidden className="meta-label text-white/45">04</p>
+
+        <div className="mt-5 flex flex-wrap items-center gap-3">
           {LOGOS.map((logo) => (
             <span
               key={logo.src}
