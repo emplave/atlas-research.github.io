@@ -28,7 +28,7 @@ export function Prose({
         "[&_h3]:font-display [&_h3]:text-xl [&_h3]:text-ink [&_h3]:mt-9 [&_h3]:mb-3",
         "[&_ul]:mt-5 [&_ul]:space-y-2.5",
         "[&_li]:font-sans [&_li]:text-[17px] [&_li]:leading-[1.7]",
-        "[&_a]:text-brass [&_a:hover]:text-brass-hi [&_a]:underline [&_a]:underline-offset-2",
+        "[&_a]:text-accent [&_a:hover]:text-accent-hi [&_a]:underline [&_a]:underline-offset-2",
         "[&_strong]:text-ink [&_strong]:font-medium",
         className
       )}

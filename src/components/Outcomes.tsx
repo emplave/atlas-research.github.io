@@ -1,27 +1,40 @@
 import { Reveal } from "./Reveal";
 
+/**
+ * What fellows actually get.
+ *
+ * The previous copy claimed co-author credit on a cross-national dataset and
+ * asserted journal submission as a completed fact. Neither was true. Every
+ * item below is something the programme actually delivers, and the review
+ * item is stated as ELIGIBILITY TO SUBMIT — never as submission or
+ * publication happening automatically.
+ */
 const outcomes = [
   {
-    title: "Co-author credit",
-    body: "Your name on a real cross-national dataset — the kind of authorship most people first earn in university, if ever.",
+    title: "Research methodology training",
+    body: "How to narrow a question until it is answerable, choose a method that fits it, judge whether a source holds up, and write about limitations honestly instead of hiding them.",
   },
   {
-    title: "Journal submission",
-    body: "Your policy brief is submitted to the International Journal of High School Research (EBSCO & Google Scholar indexed) and the Atlas Journal of Education Policy.",
+    title: "Structured mentor feedback",
+    body: "Scheduled check-ins with a mentor who reads the work and pushes back on it — the question, the sourcing, the reasoning, the draft. Revision is the normal outcome, not a sign something went wrong.",
   },
   {
-    title: "Real methodology",
-    body: "Survey design, sampling, analysis — taught straight, through guest seminars from university researchers, including faculty from USC, the University of Melbourne, and Stanford.",
+    title: "Guest sessions with university researchers",
+    body: "Fellows learn from researchers at institutions including USC, the University of Melbourne, and Stanford, in sessions on methods and on how research actually gets done.",
   },
   {
-    title: "A global peer network",
-    body: "The people in your cohort are researching the same access gap from their own regions, the same weeks you are.",
+    title: "A completed literature review or policy brief",
+    body: "You finish the cohort holding a real piece of work on a question you chose, in whatever field it belongs to — not a certificate of attendance.",
+  },
+  {
+    title: "Eligibility to submit for review",
+    body: "Completed work may be submitted to the Atlas Journal. The Atlas research and editorial team decides what advances; work meeting the Journal's standards may be considered for publication. Submission does not guarantee publication.",
   },
 ];
 
 export function Outcomes() {
   return (
-    <section id="outcomes" className="bg-ground">
+    <section id="outcomes" className="bg-ground border-t border-line">
       <div className="mx-auto max-w-6xl px-6 py-20 md:py-28">
         <Reveal>
           <p className="meta-label text-muted">What fellows get</p>
@@ -29,25 +42,19 @@ export function Outcomes() {
             Outcomes, not perks.
           </h2>
         </Reveal>
-        <div className="mt-14 grid md:grid-cols-2 gap-x-16 gap-y-12">
+
+        <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {outcomes.map((o, i) => (
-            <Reveal key={o.title} delay={i * 0.07}>
-              <div className="border-t border-line pt-6">
-                <h3 className="font-display text-2xl text-text">{o.title}</h3>
-                <p className="mt-3 text-muted leading-relaxed text-[15px]">
+            <Reveal key={o.title} delay={i * 0.05}>
+              <div>
+                <h3 className="font-display text-xl text-text">{o.title}</h3>
+                <p className="mt-3 text-[15px] text-muted leading-relaxed">
                   {o.body}
                 </p>
               </div>
             </Reveal>
           ))}
         </div>
-        <Reveal delay={0.2}>
-          <p className="mt-14 text-sm text-muted max-w-2xl">
-            What we don't promise: college admission. No single program can,
-            and we'd rather earn your trust than borrow it — so we point you to
-            verifiable work, not invented numbers.
-          </p>
-        </Reveal>
       </div>
     </section>
   );

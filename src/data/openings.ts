@@ -6,13 +6,27 @@
  * edit the entry below — never a page.
  *
  * Two separate application pathways, never merged:
- *   category "chapter" — the student who runs a local Atlas Chapter.
+ *   category "chapter" — the student who runs a local Atlas research group.
+ *                        NOTE: the stored value and the "chapter-leader" slug
+ *                        deliberately keep their original names. They are
+ *                        internal identifiers, not display copy; the label
+ *                        shown to readers is CATEGORY_LABEL below.
  *   category "team"    — Atlas team and leadership positions.
  * A student may hold both. They are applied for separately, through
  * different forms.
  */
 
 export type OpeningCategory = "chapter" | "team";
+
+/**
+ * Display labels for the stored category values. Pages render THESE, never
+ * the raw value — which is how the internal "chapter" identifier can stay
+ * put while the site reads "Research Group" everywhere.
+ */
+export const CATEGORY_LABEL: Record<OpeningCategory, string> = {
+  chapter: "Research Group",
+  team: "Atlas Team",
+};
 
 /**
  * - "open"    — accepting applications until `deadline`.
@@ -88,7 +102,7 @@ export function isFormPending(opening: Opening): boolean {
   return !opening.formUrl;
 }
 
-const CHAPTER_FORM_URL = "https://forms.gle/s2qpP3XX3ydLc58k6";
+const RESEARCH_GROUP_FORM_URL = "https://forms.gle/s2qpP3XX3ydLc58k6";
 const TEAM_FORM_URL = "https://forms.gle/XiLxGwedVS32LLNc9";
 const TEAM_FORM_NOTE =
   "One role per submission. Select this role inside the form.";
@@ -96,16 +110,16 @@ const TEAM_FORM_NOTE =
 export const OPENINGS: Opening[] = [
   {
     slug: "chapter-leader",
-    title: "Chapter Leader",
+    title: "Research Group Leader",
     category: "chapter",
-    area: "Chapter leadership",
+    area: "Research Group leadership",
     status: "rolling",
     selectivity: null,
     commitment: null,
     oneLine:
-      "Start and lead a local Atlas Chapter — a working research community, not an honorary title.",
+      "Start and lead a local Atlas research group — a working research community, not an honorary title.",
     description:
-      "Chapter Leaders run a local Atlas Chapter at a school, in a community setting, as a hybrid, or fully online. The role is to recruit a reliable team, identify an issue in your own local context, and guide a structured research project through to a concrete output — while communicating openly with Atlas and upholding research integrity throughout.\n\nChapters are topic agnostic. A Chapter may investigate a question in any discipline, so long as the question matters where the Chapter is and the team can study it honestly with the access it actually has.\n\nA Chapter is a working research community, not an honorary title. Leading one means holding a meeting cadence, keeping records, chasing people who owe work, and finishing something real.",
+      "Research Group Leaders run a local Atlas research group at a school, in a community setting, as a hybrid, or fully online. The role is to recruit a reliable team, identify an issue in your own local context, and guide a structured research project through to a concrete output — while communicating openly with Atlas and upholding research integrity throughout.\n\nResearch groups are topic agnostic. A group may investigate a question in any discipline, so long as the question matters where the group is and the team can study it honestly with the access it actually has.\n\nA research group is a working research community, not an honorary title. Leading one means holding a meeting cadence, keeping records, chasing people who owe work, and finishing something real.",
     responsibilities: [
       "Secure school or community approval where it is required, before recruiting.",
       "Recruit members and set clear expectations for participation, conduct, and deadlines.",
@@ -127,7 +141,7 @@ export const OPENINGS: Opening[] = [
     ],
     regions: null,
     deadline: null,
-    formUrl: CHAPTER_FORM_URL,
+    formUrl: RESEARCH_GROUP_FORM_URL,
     formNote: null,
     updatedAt: "2026-08-16",
   },
@@ -142,20 +156,20 @@ export const OPENINGS: Opening[] = [
     oneLine:
       "Lead Atlas growth and operating quality across an assigned region, and hold the line on both.",
     description:
-      "Regional Youth Directors lead Atlas growth and operating quality across an assigned region. The role is the primary link between Atlas leadership, Chapter teams, schools, and regional partners — the person who knows what is actually happening on the ground and reports it accurately.\n\nThe work is equal parts expansion and quality control. A Director recruits and supports new Chapters, but is also responsible for whether existing Chapters in the region are meeting, progressing, and producing work that holds up to review.\n\nInternational regions may have more than one Director depending on scale, time zones, and language. Assignments are made based on where a Director can genuinely operate, not on map boundaries alone.",
+      "Regional Youth Directors lead Atlas growth and operating quality across an assigned region. The role is the primary link between Atlas leadership, research group teams, schools, and regional partners — the person who knows what is actually happening on the ground and reports it accurately.\n\nThe work is equal parts expansion and quality control. A Director recruits and supports new ResearchGroups, but is also responsible for whether existing ResearchGroups in the region are meeting, progressing, and producing work that holds up to review.\n\nInternational regions may have more than one Director depending on scale, time zones, and language. Assignments are made based on where a Director can genuinely operate, not on map boundaries alone.",
     responsibilities: [
-      "Own Chapter growth in the assigned region: outreach to schools and community organizations, and support through launch.",
-      "Serve as the standing point of contact between Atlas leadership and every Chapter team in the region.",
-      "Monitor operating quality across regional Chapters — cadence, progress, and record-keeping — and intervene early when a Chapter stalls.",
+      "Own research group growth in the assigned region: outreach to schools and community organizations, and support through launch.",
+      "Serve as the standing point of contact between Atlas leadership and every research group team in the region.",
+      "Monitor operating quality across regional ResearchGroups — cadence, progress, and record-keeping — and intervene early when a group stalls.",
       "Build and maintain relationships with regional partners, schools, and community organizations.",
-      "Report regional status to Atlas leadership accurately, including problems and stalled Chapters.",
+      "Report regional status to Atlas leadership accurately, including problems and stalled ResearchGroups.",
       "Coordinate with other Directors where a region is split across time zones or languages.",
     ],
     lookingFor: [
       "A track record of running things that involved other people and finishing them.",
-      "Judgment about when a Chapter needs support and when it needs a hard conversation.",
+      "Judgment about when a group needs support and when it needs a hard conversation.",
       "Professional communication with school administrators, community leaders, and partners.",
-      "Honest reporting — you surface the Chapters that are failing, not just the ones that look good.",
+      "Honest reporting — you surface the ResearchGroups that are failing, not just the ones that look good.",
       "Regional knowledge: you understand the schools, languages, and constraints where you would operate.",
       "Availability of 5-8+ hours per week, sustained, across an academic year.",
     ],
@@ -310,7 +324,7 @@ export const OPENINGS: Opening[] = [
   },
 ];
 
-/** Openings for the Chapter Leader pathway. Separate from the team pathway. */
+/** Openings for the Research Group Leader pathway. Separate from the team pathway. */
 export function chapterOpenings(): Opening[] {
   return OPENINGS.filter((o) => o.category === "chapter");
 }

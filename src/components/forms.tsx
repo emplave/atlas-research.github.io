@@ -17,7 +17,7 @@ export function Field({
       <span className="flex items-baseline gap-2">
         <span className="text-sm text-text">{label}</span>
         {required ? (
-          <span className="text-brass text-xs" aria-hidden>
+          <span className="text-alert text-xs" aria-hidden>
             required
           </span>
         ) : (
@@ -63,7 +63,7 @@ export function WordCountArea({
       <p
         className={
           "mt-1 text-right font-sans text-[11px] " +
-          (bad ? "text-brass" : "text-muted")
+          (bad ? "text-alert" : "text-muted")
         }
       >
         {words} words · target {min}–{max}

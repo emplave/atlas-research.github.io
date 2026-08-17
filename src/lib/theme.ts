@@ -19,12 +19,14 @@ export type Mode = "dark" | "light";
  * Light reading routes, matched by path prefix. Everything not listed here is
  * dark chrome, so a new marketing or directory route needs no edit.
  *
- * /chapters is the DIRECTORY and is dark chrome. /chapters/:slug is an
- * individual chapter brief — long-form reading — and is light. The prefix
- * below is deliberately the deeper path so the directory itself is unaffected.
+ * /research-groups is the DIRECTORY and is dark chrome. /research-groups/:slug
+ * is an individual group brief — long-form reading — and is light. The
+ * prefixes below are deliberately the deeper paths so the directory and the
+ * journal landing page are unaffected.
  */
 const LIGHT_READING_PREFIXES: readonly string[] = [
-  "/chapters/", // individual chapter briefs, not the directory
+  "/research-groups/", // individual group briefs, not the directory
+  "/journal/", // individual articles, not the journal landing page
 ];
 
 /** Exact-match light reading routes. */
@@ -43,7 +45,7 @@ export function modeClass(mode: Mode): string {
   return mode === "light" ? "mode-light" : "mode-dark";
 }
 
-/** Strip a trailing slash so "/chapters/" and "/chapters" agree. */
+/** Strip a trailing slash so "/research-groups/" and "/research-groups" agree. */
 function normalize(pathname: string): string {
   if (pathname.length > 1 && pathname.endsWith("/")) {
     return pathname.slice(0, -1);
@@ -58,8 +60,8 @@ function normalize(pathname: string): string {
  */
 export const DARK_CHROME_ROUTES: readonly string[] = [
   "/",
-  "/chapters",
-  "/apply",
+  "/research-groups",
+  "/events",
   "/fellowship",
   "/journal",
   "/partners",

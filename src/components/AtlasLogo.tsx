@@ -2,10 +2,10 @@ import { cn } from "@/lib/utils";
 import type { Mode } from "@/lib/theme";
 
 /**
- * Brand lockup — brass chip with the display A, plus the stacked institution
+ * Brand lockup — cream chip with the display A, plus the stacked institution
  * name and tagline. Renders correctly in both modes.
  *
- * The tagline "Global Research Access" is fixed brand copy. Do not reword it.
+ * The tagline "Student Research Institute" is fixed brand copy. Do not reword it.
  */
 export function AtlasLogo({
   className,
@@ -18,7 +18,7 @@ export function AtlasLogo({
   return (
     <span className={cn("inline-flex items-center gap-2.5 select-none", className)}>
       <span
-        className="grid place-items-center h-8 w-8 rounded-control font-display font-medium text-lg leading-none bg-brass text-ground"
+        className="grid place-items-center h-8 w-8 rounded-control font-display font-medium text-lg leading-none bg-text text-ground"
         aria-hidden
       >
         A
@@ -38,7 +38,7 @@ export function AtlasLogo({
             light ? "text-ink/55" : "text-muted"
           )}
         >
-          Global Research Access
+          Student Research Institute
         </span>
       </span>
     </span>

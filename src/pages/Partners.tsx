@@ -24,16 +24,16 @@ export function Partners() {
         <div className="mx-auto max-w-3xl px-6 pt-16 md:pt-24 pb-12">
           <Reveal>
             <p className="meta-label text-muted">
-              Partners · Journals · Funders · NGOs
+              Partners · Journals · Funders · Institutions
             </p>
             <h1 className="mt-4 font-display text-4xl md:text-6xl text-text leading-[1.05]">
               Start a conversation.
             </h1>
             <p className="mt-6 text-lg text-muted leading-relaxed">
-              Atlas is a for-youth nonprofit. If your organization works on
-              education access, research integrity, or youth publishing — or
-              you're a researcher who'd speak to a cohort — tell us a little and
-              we'll write back.
+              Atlas supports student research groups worldwide, in every
+              field. If your organisation works on research integrity, student
+              publishing, or mentorship — or you're a researcher who would
+              speak to a group — tell us a little and we'll write back.
             </p>
           </Reveal>
         </div>
@@ -75,7 +75,7 @@ export function Partners() {
                   name="message"
                   rows={5}
                   className={inputCls + " resize-y"}
-                  placeholder="A sentence or two is plenty — mentorship, a partnership, speaking to a cohort, publishing…"
+                  placeholder="A sentence or two is plenty — mentorship, a partnership, speaking to a research group, publishing…"
                 />
               </Field>
             </Reveal>
@@ -84,7 +84,7 @@ export function Partners() {
                 <button
                   type="submit"
                   disabled={state === "sending"}
-                  className="rounded-control bg-brass text-ground pl-7 pr-6 py-3.5 text-[15px] inline-flex items-center gap-2.5 hover:bg-brass-hi transition-all hover:gap-3.5 disabled:opacity-60"
+                  className="rounded-control bg-text text-ground pl-7 pr-6 py-3.5 text-[15px] inline-flex items-center gap-2.5 hover:bg-text-hi transition-all hover:gap-3.5 disabled:opacity-60"
                 >
                   {state === "sending" ? "Sending…" : "Send to Atlas"}
                   <span aria-hidden>→</span>

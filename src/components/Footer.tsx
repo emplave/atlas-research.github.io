@@ -14,9 +14,10 @@ import { cn } from "@/lib/utils";
  * No donate link and no donate page in this build.
  */
 const LINKS = [
-  { to: "/chapters", label: "Chapters" },
-  { to: "/fellowship", label: "Fellowship" },
+  { to: "/research-groups", label: "Research Groups" },
+  { to: "/events", label: "Events" },
   { to: "/journal", label: "Journal" },
+  { to: "/fellowship", label: "Fellowship" },
   { to: "/partners", label: "Partners" },
 ];
 
@@ -54,7 +55,7 @@ export function Footer() {
           ))}
           <a
             href={`mailto:${CONTACT_EMAIL}`}
-            className="text-brass hover:text-brass-hi transition-colors"
+            className="text-accent hover:text-accent-hi transition-colors"
           >
             {CONTACT_EMAIL}
           </a>

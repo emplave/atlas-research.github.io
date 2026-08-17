@@ -1,10 +1,10 @@
 /**
- * Atlas Chapters — research group directory data layer.
+ * Atlas ResearchGroups — research group directory data layer.
  *
- * This file is the only source of truth for Chapter research groups. No page
+ * This file is the only source of truth for Atlas research groups. No page
  * or component may hardcode a group.
  *
- * TOPIC AGNOSTIC by design. A Chapter investigates an issue in its own local
+ * TOPIC AGNOSTIC by design. A group investigates an issue in its own local
  * context, in any discipline. Nothing here assumes an education subject.
  */
 

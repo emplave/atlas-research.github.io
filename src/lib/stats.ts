@@ -59,7 +59,7 @@ export const COUNTRIES_ACTIVE: number | null = null;
 
 /**
  * UNVERIFIED — INTENTIONALLY NULL. DO NOT FILL IN WITH AN ESTIMATE.
- * Number of active Chapters. Derive from real records in src/data/chapters.ts
+ * Number of active research groups. Derive from real records in src/data/research-groups.ts
  * once those are real groups rather than placeholder seed data.
  */
 export const ACTIVE_CHAPTERS: number | null = null;
@@ -72,7 +72,7 @@ export const FELLOWS_TO_DATE: number | null = null;
 
 /**
  * UNVERIFIED — INTENTIONALLY NULL. DO NOT FILL IN WITH AN ESTIMATE.
- * Number of schools and community organizations hosting Chapters.
+ * Number of schools and community organizations hosting research groups.
  */
 export const HOST_INSTITUTIONS: number | null = null;
 

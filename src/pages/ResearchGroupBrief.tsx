@@ -5,9 +5,9 @@ import {
   type ResearchGroup,
   type ReviewStatus,
   type Setting,
-} from "@/data/chapters";
+} from "@/data/research-groups";
 import { findOpening, isFormPending } from "@/data/openings";
-import { StatusChip } from "@/components/chapters/StatusChip";
+import { StatusChip } from "@/components/research-groups/StatusChip";
 import { Prose, ProseParagraphs } from "@/components/Prose";
 
 const SETTING_LABEL: Record<Setting, string> = {
@@ -32,7 +32,7 @@ const REVIEW_LABEL: Record<ReviewStatus, string> = {
 };
 
 /** Long-form brief for a single research group. Light reading mode. */
-export function ChapterBrief() {
+export function ResearchGroupBrief() {
   const { slug } = useParams<{ slug: string }>();
   const group = RESEARCH_GROUPS.find((g) => g.slug === slug);
 
@@ -54,7 +54,7 @@ function Brief({ group }: { group: ResearchGroup }) {
       <header className="border-b border-ink/10">
         <div className="mx-auto max-w-4xl px-6 pt-12 md:pt-16 pb-10">
           <Link
-            to="/chapters"
+            to="/research-groups"
             className="meta-label text-ink/55 hover:text-ink transition-colors inline-flex items-center gap-1.5"
           >
             <span aria-hidden>←</span> All research groups
@@ -190,7 +190,7 @@ function BriefNotFound() {
           The link may be out of date, or the group may have been archived.
         </p>
         <Link
-          to="/chapters"
+          to="/research-groups"
           className="mt-8 inline-flex items-center gap-2 rounded-control bg-ink text-paper px-5 py-2.5 text-sm hover:bg-ink/85 transition-colors"
         >
           Browse all research groups

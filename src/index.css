@@ -27,10 +27,10 @@
     @apply bg-paper text-ink;
   }
   .mode-dark ::selection {
-    @apply bg-brass/30 text-text;
+    @apply bg-text/25 text-text;
   }
   .mode-light ::selection {
-    @apply bg-brass/25 text-ink;
+    @apply bg-ink/15 text-ink;
   }
 
   /* Headings stay light. Spectral above 500 is off-brand. */

@@ -1,4 +1,4 @@
-import type { Status } from "@/data/chapters";
+import type { Status } from "@/data/research-groups";
 import { cn } from "@/lib/utils";
 
 /**
@@ -6,13 +6,13 @@ import { cn } from "@/lib/utils";
  *
  * Small status chip — one of the few places rounded-full is permitted.
  *
- * Only "Recruiting" gets brass, because it is the only status that carries an
+ * Only "Recruiting" gets the accent, because it is the only status that carries an
  * action. Everything else is muted: a status chip is information, not an
  * accent. "Archived" is muted too, not alert — a dissolved group is inactive,
  * not an error, and the alert token is reserved for failures.
  */
 const STYLES: Record<Status, string> = {
-  Recruiting: "border-brass/45 text-brass",
+  Recruiting: "border-accent/45 text-accent",
   "In Progress": "border-line text-text",
   Full: "border-line text-muted",
   Completed: "border-line text-muted",
@@ -21,7 +21,7 @@ const STYLES: Record<Status, string> = {
 
 /** Light reading equivalents, for briefs and articles on paper. */
 const LIGHT_STYLES: Record<Status, string> = {
-  Recruiting: "border-brass/50 text-brass",
+  Recruiting: "border-accent/50 text-accent",
   "In Progress": "border-ink/20 text-ink",
   Full: "border-ink/20 text-ink/60",
   Completed: "border-ink/20 text-ink/60",
@@ -46,7 +46,7 @@ export function StatusChip({
       )}
     >
       {status === "Recruiting" && (
-        <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-brass" />
+        <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-accent" />
       )}
       {status}
     </span>

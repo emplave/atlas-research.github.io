@@ -29,10 +29,22 @@ export default {
         text: "#E9E4DA",
         /** secondary text on dark */
         muted: "#98948B",
-        /** links and buttons only */
-        brass: "#C08A3E",
-        /** link and button hover */
-        "brass-hi": "#D2A254",
+        /**
+         * LINKS ONLY. Not buttons, not eyebrows, not meta labels, not the
+         * logo, not rules. The site reads as monochrome editorial with blue
+         * links; an accent-colored button breaks that immediately.
+         *
+         * The one non-link exception is the Recruiting status chip, which is
+         * a link-adjacent affordance — every other status is muted.
+         */
+        accent: "#6B8CAE",
+        /** link hover */
+        "accent-hi": "#83A3C4",
+        /**
+         * Primary button hover only. Primary buttons are cream (`text`) with
+         * ground-colored labels and lift to pure white on hover.
+         */
+        "text-hi": "#FFFFFF",
         /** light reading background */
         paper: "#F2EBDD",
         /** light reading text */

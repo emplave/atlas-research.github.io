@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { AtlasLogo } from "./AtlasLogo";
 import { modeForPath } from "@/lib/theme";
+import { findOpening, isFormPending } from "@/data/openings";
 import { cn } from "@/lib/utils";
 
 /**
@@ -12,15 +13,18 @@ import { cn } from "@/lib/utils";
  * gone; those section ids do not survive the rebuild.
  */
 const LINKS = [
-  { to: "/chapters", label: "Chapters" },
-  { to: "/fellowship", label: "Fellowship" },
+  { to: "/research-groups", label: "Research Groups" },
+  { to: "/events", label: "Events" },
   { to: "/journal", label: "Journal" },
+  { to: "/fellowship", label: "Fellowship" },
   { to: "/partners", label: "Partners" },
 ];
 
 export function Nav() {
   const { pathname } = useLocation();
   const light = modeForPath(pathname) === "light";
+  const opening = findOpening("chapter-leader");
+  const formPending = !opening || isFormPending(opening);
 
   return (
     <header
@@ -59,13 +63,29 @@ export function Nav() {
           })}
         </div>
 
-        <Link
-          to="/apply"
-          className="rounded-control bg-brass text-ground text-sm pl-5 pr-4 py-2 inline-flex items-center gap-2 hover:bg-brass-hi transition-colors"
-        >
-          Apply
-          <span aria-hidden>→</span>
-        </Link>
+        {/*
+          The nav CTA is starting a research group, not applying to the
+          fellowship — research groups are the primary programme and
+          fellowship applications are closed. Never points at /apply.html.
+        */}
+        {formPending ? (
+          <span
+            aria-disabled="true"
+            className="rounded-control border border-line text-muted text-sm px-4 py-2 cursor-not-allowed"
+          >
+            Opening soon
+          </span>
+        ) : (
+          <a
+            href={opening.formUrl as string}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-control bg-text text-ground text-sm pl-5 pr-4 py-2 inline-flex items-center gap-2 hover:bg-text-hi transition-colors"
+          >
+            Start a group
+            <span aria-hidden>→</span>
+          </a>
+        )}
       </nav>
     </header>
   );

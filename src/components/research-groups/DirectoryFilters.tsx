@@ -1,4 +1,4 @@
-import type { Field, Setting, Status } from "@/data/chapters";
+import type { Field, Setting, Status } from "@/data/research-groups";
 import { cn } from "@/lib/utils";
 
 export const ALL = "all" as const;
@@ -57,7 +57,7 @@ const SETTINGS: { value: Setting; label: string }[] = [
 ];
 
 const selectCls =
-  "w-full rounded-control border border-line bg-ground px-3 py-2.5 text-sm text-text focus:outline-none focus:border-brass transition-colors";
+  "w-full rounded-control border border-line bg-ground px-3 py-2.5 text-sm text-text focus:outline-none focus:border-accent transition-colors";
 
 export function DirectoryFilters({
   value,
@@ -156,7 +156,7 @@ export function DirectoryFilters({
               type="checkbox"
               checked={value.includeArchived}
               onChange={(e) => set("includeArchived", e.target.checked)}
-              className="accent-brass"
+              className="accent-accent"
             />
             Include archived
           </label>
@@ -166,7 +166,7 @@ export function DirectoryFilters({
           <button
             type="button"
             onClick={onReset}
-            className="text-sm text-brass hover:text-brass-hi transition-colors"
+            className="text-sm text-accent hover:text-accent-hi transition-colors"
           >
             Reset filters
           </button>
