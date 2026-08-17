@@ -19,18 +19,29 @@ const STYLES: Record<Status, string> = {
   Archived: "border-line/60 text-muted/70",
 };
 
+/** Light reading equivalents, for briefs and articles on paper. */
+const LIGHT_STYLES: Record<Status, string> = {
+  Recruiting: "border-brass/50 text-brass",
+  "In Progress": "border-ink/20 text-ink",
+  Full: "border-ink/20 text-ink/60",
+  Completed: "border-ink/20 text-ink/60",
+  Archived: "border-ink/15 text-ink/45",
+};
+
 export function StatusChip({
   status,
+  mode = "dark",
   className,
 }: {
   status: Status;
+  mode?: "dark" | "light";
   className?: string;
 }) {
   return (
     <span
       className={cn(
         "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 meta-label",
-        STYLES[status],
+        mode === "light" ? LIGHT_STYLES[status] : STYLES[status],
         className
       )}
     >

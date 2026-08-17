@@ -6,6 +6,7 @@ import { Landing } from "./pages/Landing";
 import { Fellowship } from "./pages/Fellowship";
 import { Partners } from "./pages/Partners";
 import { Chapters } from "./pages/Chapters";
+import { ChapterBrief } from "./pages/ChapterBrief";
 import { Publish } from "./pages/Publish";
 import { modeClass, modeForPath } from "./lib/theme";
 
@@ -54,6 +55,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/chapters" element={<Chapters />} />
+            <Route path="/chapters/:slug" element={<ChapterBrief />} />
             <Route path="/fellowship" element={<Fellowship />} />
             <Route path="/apply" element={<Fellowship />} />
             <Route path="/journal" element={<Publish />} />
