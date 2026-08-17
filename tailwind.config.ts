@@ -37,6 +37,18 @@ export default {
         paper: "#F2EBDD",
         /** light reading text */
         ink: "#241B10",
+        /**
+         * Form errors and destructive states ONLY. A muted brick red that
+         * sits with the palette. Never decoration, never an accent, never a
+         * status chip for anything that is merely inactive.
+         */
+        alert: "#C4553D",
+        /**
+         * The white plate behind third-party partner logos. Legibility on a
+         * dark ground wins here — partner marks are supplied light-background.
+         * This is the ONLY white in the system and it has exactly one use.
+         */
+        "logo-plate": "#FFFFFF",
       },
       fontFamily: {
         /**

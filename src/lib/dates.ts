@@ -1,13 +1,23 @@
 /**
- * Single source of truth for cohort dates + contact.
- * Applications OPEN, due July 24, 2026, reviewed on a rolling basis.
- * Cohort runs four weeks, starting August 3, 2026.
+ * Single source of truth for cohort state + contact.
+ *
+ * CURRENT STATE: the Fellowship cohort is RUNNING. Applications for the
+ * current cohort are closed; the waitlist is open for the next cycle.
+ *
+ * There is deliberately no deadline field. Nothing on the site may imply an
+ * expired deadline — a past date reads as a dead program. When the next cycle
+ * opens, set status to "open" and add the date then, not before.
  */
 export const DATES = {
-  status: "open" as const,
-  deadline: "July 24, 2026",
+  status: "cohort-running" as const,
+  /** What the current cohort is doing, for status lines. */
+  cohortState: "The current cohort is underway",
+  /** The call to action while applications are closed. */
+  waitlist: "Join the waitlist for the next cohort",
+  /** How the next cycle will be reviewed, stated without committing to a date. */
   review: "rolling — decisions within days of submission",
-  programStart: "August 3, 2026",
+  /** When the next cycle opens. Intentionally undated until it is real. */
+  nextCycle: "Next cohort dates are announced to the waitlist first",
 } as const;
 
 /**

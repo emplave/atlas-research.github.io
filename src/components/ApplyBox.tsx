@@ -12,14 +12,15 @@ export function ApplyBox() {
             <div>
               <p className="meta-label text-brass flex items-center gap-2">
                 <span className="h-1.5 w-1.5 rounded-full bg-brass" />
-                Applications open now
+                {DATES.cohortState}
               </p>
               <h2 className="mt-3 font-display text-2xl md:text-3xl text-text">
-                Applications open · Due {DATES.deadline}
+                {DATES.waitlist}
               </h2>
               <p className="mt-2 text-[15px] text-muted max-w-lg">
-                Reviewed {DATES.review}. Free, remote, no prior research
-                required — three short essays, no résumé.
+                {DATES.nextCycle}. Applications are reviewed {DATES.review}.
+                Free, remote, no prior research required — three short essays,
+                no résumé.
               </p>
             </div>
             <div className="flex flex-col sm:flex-row md:flex-col gap-3 shrink-0">
@@ -27,7 +28,7 @@ export function ApplyBox() {
                 to="/fellowship"
                 className="rounded-control bg-brass text-ground pl-6 pr-5 py-3 text-[15px] inline-flex items-center justify-center gap-2.5 hover:bg-brass-hi transition-all hover:gap-3.5"
               >
-                Start your application
+                Join the waitlist
                 <span aria-hidden>→</span>
               </Link>
             </div>

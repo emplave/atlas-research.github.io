@@ -15,7 +15,7 @@ export function Hero() {
     <section id="top" className="relative overflow-hidden">
       <div className="mx-auto max-w-6xl px-6 pt-20 pb-16 md:pt-28 md:pb-20">
         <motion.p {...fade(0.05)} className="meta-label text-muted mb-7">
-          A for-youth nonprofit · Global education access · Grades 9–12
+          A nonprofit · Global Research Access · Secondary and university
         </motion.p>
         <h1 className="font-display text-text text-[13vw] sm:text-6xl md:text-8xl leading-[1.02] tracking-tight max-w-5xl">
           <StaggerWords text="Research that gets published." delay={0.15} />
@@ -25,13 +25,13 @@ export function Hero() {
             {...fade(0.6)}
             className="max-w-xl text-lg md:text-xl text-muted leading-relaxed"
           >
-            Atlas trains high school students to study education inequality in
-            their own regions —{" "}
+            Atlas trains students to investigate a question in their own local
+            context, in any discipline —{" "}
             <em className="font-display not-italic text-text">
-              with real datasets, toward published work
+              with real evidence, toward work that holds up
             </em>
             . The Fellowship is a selective, four-week summer cohort — free,
-            remote, and open to grades 9–12.
+            remote, and open to secondary and university students worldwide.
           </motion.p>
           <motion.div {...fade(0.75)} className="flex flex-col items-start gap-4">
             <Link
@@ -60,21 +60,21 @@ export function Hero() {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <span className="inline-flex items-center rounded-control bg-white border border-line px-3 py-2">
+            <span className="inline-flex items-center rounded-control bg-logo-plate border border-line px-3 py-2">
               <img
                 src="/partners/ijhsr.png"
                 alt="International Journal of High School Research"
                 className="h-6 w-auto"
               />
             </span>
-            <span className="inline-flex items-center rounded-control bg-white border border-line px-3 py-2">
+            <span className="inline-flex items-center rounded-control bg-logo-plate border border-line px-3 py-2">
               <img
                 src="/partners/curieux.png"
                 alt="The Curieux Review"
                 className="h-8 w-auto"
               />
             </span>
-            <span className="inline-flex items-center rounded-control bg-white border border-line px-3 py-2">
+            <span className="inline-flex items-center rounded-control bg-logo-plate border border-line px-3 py-2">
               <img
                 src="/partners/lumiere.png"
                 alt="Lumiere Education"

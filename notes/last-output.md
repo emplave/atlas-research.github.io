@@ -1,217 +1,188 @@
-# Chapters rebuild — Phase 2
+# Chapters rebuild — Phase 3
 
-Branch: `chapters-rebuild`. Phases 0 and 1 committed separately beforehand
-(`548b701`, `f5c156c`).
+Branch: `chapters-rebuild`. Prior commits: `548b701` (Phase 0), `f5c156c` (Phase 1),
+`b3337f7` (Phase 2).
 
-Verification: `npx tsc --noEmit` clean, `npx vite build` succeeds, all 8 routes render.
+Verification: `npx tsc --noEmit` clean, `npx vite build` succeeds, 11/11 directory behavior
+checks pass, all 8 routes render.
 
 ---
 
-## Tokens — `tailwind.config.ts`
+## Cleanups
 
-The `cream.*`, `navy.*`, and `gold.*` ramps are gone, along with the `fade-up` and
-`pulse-node` keyframes. Nine semantic tokens replace them:
+### 1. `alert` token — `#C4553D`
 
-| Token | Value | Job |
-| --- | --- | --- |
-| `ground` | `#17181A` | dark page background |
-| `panel` | `#1F2022` | cards, raised surfaces |
-| `line` | `#34342F` | hairline borders |
-| `text` | `#E9E4DA` | primary text on dark |
-| `muted` | `#98948B` | secondary text on dark |
-| `brass` | `#C08A3E` | links and buttons only |
-| `brass-hi` | `#D2A254` | link and button hover |
-| `paper` | `#F2EBDD` | light reading background |
-| `ink` | `#241B10` | light reading text |
+Added to `tailwind.config.ts` with the usage rule in the comment: form errors and
+destructive states only. The two form error messages in `Partners.tsx` and `Chapters.tsx`
+now use `text-alert`, replacing the brass-left-border workaround from Phase 2.
 
-The file comment states the accent rule directly: brass is links and buttons, never a
-background wash, never body text.
+Deliberate call in `StatusChip`: **`Archived` is muted, not alert.** A dissolved group is
+inactive, not an error, and widening `alert` to mean "bad status" is exactly how a
+single-purpose token erodes.
 
-**~270 token occurrences across 23 files** were swept to the new names. The mapping was
-prefix-sensitive, because the old palette was light-first and the new default is dark —
-`text-cream-100` was light text *on* a dark section and became `text-text`, while
-`bg-cream-100` was a light surface and became `bg-ground`. A naive find-and-replace would
-have inverted half the site.
+### 2. `logo-plate` token — `#FFFFFF`
 
-## Fonts
+The three partner logo chips in `Hero.tsx` now use `bg-logo-plate` instead of raw
+`bg-white`. There is no raw color left anywhere in `src/`. The token comment states it is
+the only white in the system and has exactly one use.
 
-- `font-display` → Spectral, Georgia, serif. A base rule pins `h1`–`h4` to weight 400, so
-  Spectral cannot render at 600+. Audited: no `font-bold` / `font-semibold` anywhere.
-- `font-serif` was kept as an alias during the sweep, then all 35 call sites were converted
-  to `font-display`. The alias remains in the config as a safety net.
-- `font-sans` → Inter, system-ui, sans-serif.
-- `font-mono` removed from the config; the 5 usages were rewritten.
-- `.meta-label` redefined as Inter / 11px / uppercase / `0.14em`, so all 33 existing call
-  sites keep working with no edits.
-- `index.html` fonts → `Spectral:300;400;500` + `Inter:300..600`. Playfair Display and
-  JetBrains Mono dropped.
-- `theme-color` → `#17181A`. Favicon recolored to brass-on-ground.
+### 3. `dates.ts` — cohort running, no expired deadline
 
-## Radius
-
-`rounded-card` 10px, `rounded-control` 6px. All 15 `rounded-full` CTAs converted to
-`rounded-control`; the loose `rounded-2xl` / `xl` / `lg` / `md` / `[24px]` mix was
-normalized into the two tokens. `rounded-full` survives on exactly 4 elements — three
-`h-1.5 w-1.5` status dots and one uppercase tag pill, all small status chips.
-
-## Dual-mode shell
-
-`src/index.css` no longer hardcodes `color-scheme: light`, and the global `bg-cream-100`
-wrapper is gone from `App.tsx`.
-
-**`src/lib/theme.ts`** is the route→mode map. Dark chrome is the default, so nothing needs
-listing to be dark; light reading is opt-in by path prefix:
+`deadline` and `programStart` are **removed as fields**, not just blanked, so nothing can
+render a stale date by reaching for them:
 
 ```ts
-const LIGHT_READING_PREFIXES: readonly string[] = [
-  "/chapters/", // individual chapter briefs, not the directory
-];
-
-export function modeForPath(pathname: string): Mode { … }  // defaults to "dark"
+export const DATES = {
+  status: "cohort-running" as const,
+  cohortState: "The current cohort is underway",
+  waitlist: "Join the waitlist for the next cohort",
+  review: "rolling — decisions within days of submission",
+  nextCycle: "Next cohort dates are announced to the waitlist first",
+} as const;
 ```
 
-The prefix is deliberately `/chapters/` with the trailing slash so the **directory** at
-`/chapters` stays dark chrome while an individual **brief** at `/chapters/:slug` is light
-reading. Confirmed by the smoke test below.
-
-**`App.tsx`** applies the mode at route level via a `ModeManager` that swaps a single class
-on `<html>`. Two reasons it is on the document element rather than a wrapper div: the
-background then extends past the app's own height (no light strip under a short dark page),
-and exactly one of `mode-dark` / `mode-light` is ever present, so the two modes cannot
-bleed into each other.
-
-Routes registered: `/`, `/chapters`, `/fellowship`, `/apply`, `/journal`, `/partners`, and
-a real `404`. `Chapters.tsx` and `Publish.tsx` existed but were never routed — `/chapters`
-and `/journal` now reach them. The `*` route previously rendered the Landing page, meaning
-every bad URL silently returned the homepage; it now renders an actual 404.
-
-**Nav** rebuilt. It reads its mode from `theme.ts` via `useLocation` rather than taking a
-prop, so no page can put it in the wrong mode. The dead `/#study` and `/#sequence` anchors
-are replaced with `/chapters`, `/fellowship`, `/journal`, `/partners`, with `aria-current`
-on the active route.
-
-**Footer** split out of `Closing.tsx` into `src/components/Footer.tsx`, rendered by the
-shell on every route. `Closing` is now a landing-page CTA section only. The footer carries
-the required line verbatim:
-
-> Atlas Research Institute operates as a project of yourbuddy Inc., a California nonprofit
-> public benefit corporation.
-
-No donate link, no donate button.
-
-**`AtlasLogo`** had to be rewritten — its `inverse` prop had collapsed to two identical dark
-branches under the sweep. It now takes `mode` and renders correctly in both. Tagline kept
-as "Global Research Access".
-
-**Contact email** is `admin@atlas-research.org` everywhere; `APPLY_EMAIL` (`info@`) was
-renamed to `CONTACT_EMAIL` across the 3 files that used it. The smoke test asserts no `info@`
-survives on any route.
-
-## Motion
-
-`IntroSplash` deleted entirely. `Reveal` and the other entrance animations are untouched,
-per the instruction to leave them for Phase 7.
-
-## Q3 — globe cut
-
-Deleted `src/components/ui/globe.tsx`, `src/lib/cohort.ts`, and the `cobe` dependency
-(`package.json` + lockfile). `WorldSection.tsx` rebuilt without it. All three
-"Active in 15 countries" instances are gone — the heading, the body copy, and the caption
-under the globe. Figures now come from `stats.ts`, and the null country count renders
-nothing at all rather than a fallback:
-
-```tsx
-...(hasStat(COUNTRIES_ACTIVE)
-  ? [{ n: String(COUNTRIES_ACTIVE), label: "Countries active" }]
-  : []),
-```
+All four consumers were rewritten: `ApplyBox` (headline is now the waitlist CTA, button
+reads "Join the waitlist"), `Closing` (×3 references), and the `Faq` selectivity answer,
+which had asserted "Applications are open now, due July 24, 2026". Grepped clean — no
+"July 24", "August 3", "deadline", or "applications are open" anywhere in `src/`.
 
 ---
 
-## Defects found and fixed during the sweep
+## Phase 3 — the directory
 
-Four things the mechanical pass produced or exposed, all corrected:
+Four new files under `src/components/chapters/` plus a rebuilt page.
 
-1. **Invisible CTAs.** `bg-navy-800 text-cream-100` buttons became `bg-panel text-text` —
-   near-invisible on a `ground` page, with degenerate `hover:bg-panel` no-op hovers. All
-   primary CTAs are now `bg-brass text-ground hover:bg-brass-hi`, which is also what the
-   accent rule calls for.
-2. **Invisible arrows.** Five `→` glyphs carried `text-brass` *inside* brass buttons. Class
-   removed so they inherit `text-ground`. The one remaining brass arrow is in a ghost
-   button, where it is correct.
-3. **Brass body text.** Two form error messages rendered as `text-sm text-brass`, which
-   violates the accent-only rule. Rewritten as `text-text` with a brass left border.
-4. **Dangling globe reference.** `Chapters.tsx` advertised "the same globe on our front
-   page" — copy pointing at a component deleted in this phase. Rewritten.
+### `StatusChip.tsx`
 
-## Two content fixes made outside the stated scope
+Maps each `Status` to its own treatment. Only `Recruiting` gets brass — it is the only
+status carrying an action — and it alone gets a dot. Everything else is muted, because a
+status chip is information, not an accent. Uses `rounded-full`, which the radius rule
+permits for small status chips.
 
-Both were live false or broken claims that this phase's work put directly in front of me.
-Flagging them rather than burying them:
+### `ChapterCard.tsx`
 
-- **`Hero.tsx` — the Lumiere scholarship claim.** It read "Fellows and research leads
-  receive thousands of dollars in **scholarships**." That is the exact claim Q4 says must
-  never appear. Replaced with the approved wording: "Fellows get thousands of dollars in
-  discounts on Lumiere Education programs through our partnership." The institution line in
-  the same sentence was also repointed to "Fellows learn from researchers at institutions
-  including USC, the University of Melbourne, and Stanford" — it previously read "Seminars
-  feature researchers from…", which is not the approved phrasing. IJHSR, Curieux, and
-  Lumiere logos all kept; USC, Melbourne, and Stanford all kept.
-- **`index.html` metadata.** Metadata was in scope for this phase, and the title and both
-  descriptions were education-inequality framed with a "grades 9–12" eligibility claim.
-  Rewritten topic-agnostic, with eligibility as "secondary and university students
-  worldwide".
+Contents in the specified order: field tag, status chip, project title, `oneLine`, then a
+definition list for lead / setting+location / members, then a footer row with "View brief"
+and the conditional Apply.
 
-## AnnouncementBar
+The Apply gate reads from the data layer rather than reimplementing the rule:
 
-Removed from the shell. It was hardcoded to "Applications are open · Due July 24, 2026",
-which contradicts Q1 (cohort is running now), and Q1 says to remove it sitewide. The
-component was deleted along with the rest of the old `Nav.tsx`. Calling it out because it
-was not in the explicit Phase 2 list — it came along with the shell rewrite.
+```tsx
+const applyable = canApply(group);
+const chapterOpening = findOpening("chapter-leader");
+const formPending = !chapterOpening || isFormPending(chapterOpening);
+```
+
+The URL comes from `openings.ts` and is never hardcoded — verified by grep, the only
+`forms.gle` string in `src/` is in `data/openings.ts`. If that opening ever loses its
+`formUrl`, the card renders a disabled "Opening soon" rather than a dead link.
+
+Visual spec as given: `bg-panel`, `border-line`, `rounded-card` (10px), Spectral 400 title
+via `font-display`, Inter body, `text-muted` secondary, brass only on the "View brief" link
+and the Apply button. Hover is a border shift to `brass/40`. No entrance animation — no
+`Reveal` wrapper anywhere in the directory.
+
+### `DirectoryFilters.tsx`
+
+Owns the filter state type, the empty state, and the `isFiltered` predicate, so the page
+does not hand-roll them.
+
+**`Archived` is deliberately not in the status dropdown.** It is reachable only through the
+"Include archived" checkbox, off by default. Putting it in the dropdown would let a stray
+selection fill the directory with dead listings — the failure mode this design is avoiding.
+
+Count is live and `aria-live="polite"`: "Showing 5 of 5 groups". "Reset filters" appears
+only when something is actually narrowing the view.
+
+### `pages/Chapters.tsx`
+
+Rebuilt from scratch. The old page was a chapter-registration form with hardcoded marketing
+copy; it is now a directory rendered entirely from `src/data/chapters.ts`.
+
+Sort is newest-first by `startedAt`. Search matches across project title, `oneLine`, and
+lead name. Archive scope is computed before the other filters so the "of N" denominator is
+honest — it reflects what is reachable, not the raw array length.
+
+Empty state never renders an empty grid: it states plainly that nothing matched and offers
+a reset. It distinguishes "no groups match those filters" from "the directory is empty",
+since those need different responses.
+
+The "Start a Chapter" CTA closes the loop for someone who finds no group worth joining. It
+pulls its `area` and `oneLine` from the Chapter Leader opening and uses the same
+`isFormPending` guard as the cards.
 
 ---
 
 ## Verification
 
-`npx tsc --noEmit` — clean. `npx vite build` — succeeds, 423 modules, 20.29 kB CSS.
+`npx tsc --noEmit` clean. `npx vite build` succeeds — 21.01 kB CSS, 395 kB JS.
 
-Every route rendered through `renderToString` and asserted on:
+Directory behavior, asserted against the data layer rather than hardcoded numbers, so the
+checks stay valid when the placeholder groups are replaced:
 
 ```
-/                                          mode=dark   32530b legal=y email=y
-/chapters                                  mode=dark    8453b legal=y email=y
+PASS  archived group absent from default view  (1 archived: Archived)
+PASS  all non-archived groups rendered  (5 visible)
+PASS  count reads 'Showing N of N' with archived excluded
+PASS  Apply action count equals Recruiting count  (found 2, expected 2)
+PASS  Apply points at the Chapter Leader form from openings.ts
+PASS  no hardcoded forms.gle URL outside openings.ts
+PASS  Completed and Full render without Apply  (In Progress,Full,Completed)
+PASS  default sort is newest first by startedAt
+PASS  'Start a chapter' CTA present
+PASS  no empty grid rendered
+PASS  every status chip label present for visible groups
+
+all 11 checks passed
+```
+
+All 8 routes still render, `/chapters` now at 15159b:
+
+```
+/                                          mode=dark   32669b legal=y email=y
+/chapters                                  mode=dark   15159b legal=y email=y
 /fellowship                                mode=dark    3204b legal=y email=y
 /apply                                     mode=dark    3201b legal=y email=y
 /journal                                   mode=dark    7293b legal=y email=y
 /partners                                  mode=dark    6343b legal=y email=y
 /chapters/placeholder-model-card-review    mode=light   2982b legal=y email=y
 /definitely-not-a-page                     mode=dark    2982b legal=y email=y
-
-all routes rendered clean
 ```
 
-`legal=y` asserts the yourbuddy Inc. line is present, `email=y` asserts the contact address
-is present, and each route was scanned for the banned strings `ISSN`, `501(c)(3)`,
-`tax deductible`, and `info@atlas-research.org` — none found. The mode column confirms the
-directory/brief split works. The smoke harness was temporary and is not committed.
+Both smoke harnesses were temporary and are not committed.
 
-Note that `/chapters/:slug` currently falls through to the 404 (2982b, same as the unknown
-route) because chapter brief pages are a later phase. The mode map is already correct for
-them, which is why it reports `mode=light`.
+---
+
+## One content fix outside stated scope
+
+The banned-string sweep caught **two live "Grades 9–12" claims in `Hero.tsx`** — the exact
+string the eligibility rule says must never appear. Fixed:
+
+- The kicker read "A for-youth nonprofit · Global education access · Grades 9–12" → now
+  "A nonprofit · Global Research Access · Secondary and university". This also removed an
+  education-access framing and aligned the phrase with the brand tagline.
+- The body read "Atlas trains **high school students** to study **education inequality**…
+  open to **grades 9–12**" — three separate rule violations in one sentence (eligibility
+  narrowed twice, plus the education framing). Now: "Atlas trains students to investigate a
+  question in their own local context, in any discipline… open to secondary and university
+  students worldwide."
+
+Only the eligibility and framing claims were touched. The full homepage rewrite is a later
+phase and I did not start it.
 
 ---
 
 ## Open items for the next phase
 
-- **The palette has no error/danger token.** Nine tokens, none of which signals a failed
-  form submission. Handled for now with a brass left-border treatment, but forms will need
-  a real answer.
-- **`bg-white` on the three partner logo chips in `Hero.tsx`** is not a token. It is there
-  so the logos stay legible, which is a real constraint on a dark ground — but it is
-  currently the only raw color in the codebase.
-- **`dates.ts` still says applications are open, due July 24, 2026.** Q1 says the cohort is
-  running now. Not touched, since Q1 was not in Phase 2 scope; it is still pending.
-- **`Instrument.tsx` and `Outcomes.tsx` remain education-framed** and still reference the
-  access gap. Slated for the topic-agnostic rewrite.
-- **`Partners.tsx` still falls back to mailto** via `FORM_ENDPOINT`, which is still `null`.
-  Q2's fix is pending.
+- **`/chapters/:slug` has no route yet**, so every "View brief" link currently lands on the
+  404. The `theme.ts` mode map already resolves those paths to light reading, and the smoke
+  test confirms it — the brief pages themselves are the missing piece.
+- **`Instrument.tsx` and `Outcomes.tsx` remain education-framed**, as does the rest of the
+  `Faq` copy and the `Publish`/journal page. Pending the topic-agnostic rewrite.
+- **`Partners.tsx` still falls back to mailto** — `FORM_ENDPOINT` is still `null` and Q2's
+  fix is not done.
+- **Root-level duplicate files** (`about.html`, `apply.html`, `index.html` siblings, etc.)
+  are still present; Q6 says delete them and keep `public/` only.
+- **The old chapter-registration form is gone** with the `Chapters.tsx` rebuild. That was
+  intentional — chapter applications now go through the Chapter Leader Google Form — but it
+  means `submitApplication("Chapter registration", …)` no longer has a caller.

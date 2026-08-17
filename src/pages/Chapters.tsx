@@ -1,129 +1,168 @@
-import { useState } from "react";
-import { Reveal } from "@/components/Reveal";
-import { Field, inputCls, submitApplication, SubmitState } from "@/components/forms";
+import { useMemo, useState } from "react";
+import {
+  isVisibleByDefault,
+  RESEARCH_GROUPS,
+  type ResearchGroup,
+} from "@/data/chapters";
+import { findOpening, isFormPending } from "@/data/openings";
+import { ChapterCard } from "@/components/chapters/ChapterCard";
+import {
+  ALL,
+  DirectoryFilters,
+  EMPTY_FILTERS,
+  isFiltered,
+  type DirectoryFilterState,
+} from "@/components/chapters/DirectoryFilters";
 
-const gets = [
-  {
-    t: "The Atlas curriculum",
-    d: "Session-by-session materials for running a research club: methods, real datasets (UNESCO, World Bank, PISA), and how to read a paper without drowning.",
-  },
-  {
-    t: "A place on the map",
-    d: "Your Chapter joins the Atlas directory alongside every other active research group. Chapters are where research access actually scales.",
-  },
-  {
-    t: "A pathway to the Fellowship",
-    d: "Chapter leads and members get direct experience that makes a Fellowship application concrete instead of hypothetical.",
-  },
-  {
-    t: "Publishing support",
-    d: "Strong chapter projects can be developed toward the Atlas Journal and partner journals, with editorial guidance.",
-  },
-];
+/** Newest first by startedAt — the default order for the directory. */
+function byNewest(a: ResearchGroup, b: ResearchGroup): number {
+  return b.startedAt.localeCompare(a.startedAt);
+}
+
+/** Free-text match across project title, one-line summary, and lead name. */
+function matchesQuery(group: ResearchGroup, query: string): boolean {
+  const q = query.trim().toLowerCase();
+  if (!q) return true;
+  return [group.projectTitle, group.oneLine, group.leadName]
+    .join(" ")
+    .toLowerCase()
+    .includes(q);
+}
 
 /**
- * Chapters — open enrollment. The deliberate opposite of the selective
- * Fellowship: any school, any time, no gate.
+ * The Chapters directory. Dark chrome.
+ *
+ * Everything rendered here comes from src/data/chapters.ts — no group is
+ * hardcoded. Archived groups are excluded by isVisibleByDefault() unless the
+ * reader explicitly asks for them, so the directory never fills with dead
+ * listings.
  */
 export function Chapters() {
-  const [state, setState] = useState<SubmitState>("idle");
+  const [filters, setFilters] = useState<DirectoryFilterState>(EMPTY_FILTERS);
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const fd = new FormData(e.currentTarget);
-    const data: Record<string, string> = {};
-    fd.forEach((v, k) => (data[k] = String(v)));
-    void submitApplication("Chapter registration", data, setState);
-  };
+  /** Groups in scope before the field/status/setting/search filters apply. */
+  const inScope = useMemo(
+    () =>
+      RESEARCH_GROUPS.filter(
+        (g) => filters.includeArchived || isVisibleByDefault(g)
+      ),
+    [filters.includeArchived]
+  );
+
+  const results = useMemo(
+    () =>
+      inScope
+        .filter((g) => filters.field === ALL || g.field === filters.field)
+        .filter((g) => filters.status === ALL || g.status === filters.status)
+        .filter((g) => filters.setting === ALL || g.setting === filters.setting)
+        .filter((g) => matchesQuery(g, filters.query))
+        .sort(byNewest),
+    [inScope, filters.field, filters.status, filters.setting, filters.query]
+  );
+
+  const chapterOpening = findOpening("chapter-leader");
+  const startFormPending = !chapterOpening || isFormPending(chapterOpening);
 
   return (
     <div className="bg-ground">
-      <section className="border-b border-line/50">
-        <div className="mx-auto max-w-3xl px-6 pt-16 md:pt-24 pb-12">
-          <Reveal>
-            <p className="meta-label text-muted">
-              Chapters · Open enrollment · Any school, any country
-            </p>
-            <h1 className="mt-4 font-display text-4xl md:text-6xl text-text leading-[1.05]">
-              Start a research club at your school.
-            </h1>
-            <p className="mt-6 text-lg text-muted leading-relaxed">
-              The Fellowship is selective. Chapters are deliberately not —
-              because the whole point of Atlas is that research access
-              shouldn't depend on winning a gate. If you have a school and the
-              will to run it, you can open a chapter.
-            </p>
-          </Reveal>
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-5xl px-6 py-14 md:py-20">
-        <div className="grid md:grid-cols-2 gap-px bg-line border border-line">
-          {gets.map((g, i) => (
-            <Reveal key={g.t} delay={i * 0.06} className="h-full">
-              <div className="h-full bg-ground p-7">
-                <h3 className="font-display text-2xl text-text">{g.t}</h3>
-                <p className="mt-3 text-[15px] text-muted leading-relaxed">{g.d}</p>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-3xl px-6 pb-20">
-        <Reveal>
-          <h2 className="font-display text-3xl text-text">Register your chapter</h2>
-          <p className="mt-3 text-muted text-[15px]">
-            Takes two minutes. We'll send the starter kit and add your school
-            to the network.
+      <section className="border-b border-line">
+        <div className="mx-auto max-w-6xl px-6 pt-16 md:pt-24 pb-12">
+          <p className="meta-label text-muted">Chapters · Research directory</p>
+          <h1 className="mt-4 font-display text-4xl md:text-6xl text-text leading-[1.05] max-w-3xl">
+            Every Atlas research group, and what it is working on.
+          </h1>
+          <p className="mt-6 max-w-2xl text-lg text-muted leading-relaxed">
+            A Chapter is a working research community. Each one investigates a
+            question in its own local context — in any discipline — and takes
+            it through to a concrete output. Groups open to new members are
+            marked Recruiting.
           </p>
-        </Reveal>
-        {state === "sent" ? (
-          <div className="mt-8 border border-line bg-ground rounded-card p-10 text-center">
-            <p className="font-display text-3xl text-text">Welcome to the network.</p>
-            <p className="mt-4 text-muted">
-              Starter kit is on its way. (If your email client opened, hit
-              send there to finish.)
-            </p>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-6 py-10 md:py-14">
+        <DirectoryFilters
+          value={filters}
+          onChange={setFilters}
+          onReset={() => setFilters(EMPTY_FILTERS)}
+          resultCount={results.length}
+          totalCount={inScope.length}
+        />
+
+        {results.length > 0 ? (
+          <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+            {results.map((group) => (
+              <ChapterCard key={group.slug} group={group} />
+            ))}
           </div>
         ) : (
-          <form onSubmit={onSubmit} className="mt-8 space-y-6">
-            <div className="grid md:grid-cols-2 gap-6">
-              <Field label="Your name" required>
-                <input name="name" required className={inputCls} autoComplete="name" />
-              </Field>
-              <Field label="Email" required>
-                <input name="email" type="email" required className={inputCls} autoComplete="email" />
-              </Field>
-              <Field label="School" required>
-                <input name="school" required className={inputCls} />
-              </Field>
-              <Field label="City + country" required>
-                <input name="location" required className={inputCls} placeholder="e.g. Kathmandu, Nepal" />
-              </Field>
-            </div>
-            <Field label="Why a chapter, in one or two lines?" hint="No essay. We just want to know you're real.">
-              <textarea name="why" rows={3} className={inputCls + " resize-y"} />
-            </Field>
-            <label className="flex items-start gap-3 text-sm text-muted">
-              <input type="checkbox" name="privacy" required className="mt-1" />
-              <span>I agree to the privacy policy.</span>
-            </label>
-            <button
-              type="submit"
-              disabled={state === "sending"}
-              className="rounded-control bg-brass text-ground pl-7 pr-6 py-3.5 text-[15px] inline-flex items-center gap-2.5 hover:bg-brass-hi transition-all hover:gap-3.5 disabled:opacity-60"
-            >
-              {state === "sending" ? "Registering…" : "Register chapter"}
-              <span aria-hidden>→</span>
-            </button>
-            {state === "error" && (
-              <p className="text-sm text-text border-l-2 border-brass pl-3">
-                Something failed — please retry, or email us directly.
-              </p>
+          <div className="mt-8 rounded-card border border-line bg-panel px-6 py-16 text-center">
+            <h2 className="font-display text-2xl text-text">
+              No groups match those filters.
+            </h2>
+            <p className="mt-3 mx-auto max-w-md text-[15px] text-muted leading-relaxed">
+              {isFiltered(filters)
+                ? "Try widening the field, status, or setting — or clear the search term."
+                : "There are no research groups in the directory yet."}
+            </p>
+            {isFiltered(filters) && (
+              <button
+                type="button"
+                onClick={() => setFilters(EMPTY_FILTERS)}
+                className="mt-7 rounded-control bg-brass text-ground px-5 py-2.5 text-sm hover:bg-brass-hi transition-colors"
+              >
+                Reset filters
+              </button>
             )}
-          </form>
+          </div>
         )}
+      </section>
+
+      {/*
+        Someone who finds no group worth joining still needs a path forward:
+        start their own. Links to the Chapter Leader opening, never a
+        hardcoded URL.
+      */}
+      <section className="border-t border-line">
+        <div className="mx-auto max-w-6xl px-6 py-16 md:py-20">
+          <div className="rounded-card border border-line bg-panel p-8 md:p-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
+            <div className="max-w-xl">
+              <p className="meta-label text-brass">
+                {chapterOpening?.area ?? "Chapter leadership"}
+              </p>
+              <h2 className="mt-3 font-display text-2xl md:text-3xl text-text">
+                Nothing here fits? Start a Chapter.
+              </h2>
+              <p className="mt-3 text-[15px] text-muted leading-relaxed">
+                {chapterOpening?.oneLine ??
+                  "Start and lead a local Atlas Chapter."}{" "}
+                You pick the question, recruit the team, and take it through to
+                a real output.
+              </p>
+            </div>
+            <div className="shrink-0">
+              {startFormPending ? (
+                <span
+                  aria-disabled="true"
+                  title="The Chapter Leader form is not open yet"
+                  className="inline-flex rounded-control border border-line px-6 py-3 text-[15px] text-muted cursor-not-allowed"
+                >
+                  Opening soon
+                </span>
+              ) : (
+                <a
+                  href={chapterOpening.formUrl as string}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2.5 rounded-control bg-brass text-ground pl-6 pr-5 py-3 text-[15px] hover:bg-brass-hi transition-all hover:gap-3.5"
+                >
+                  Apply to lead a Chapter
+                  <span aria-hidden>→</span>
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
       </section>
     </div>
   );

@@ -90,7 +90,7 @@ export function Partners() {
                   <span aria-hidden>→</span>
                 </button>
                 {state === "error" && (
-                  <p className="text-sm text-text border-l-2 border-brass pl-3">
+                  <p className="text-sm text-alert">
                     Something failed — please retry.
                   </p>
                 )}

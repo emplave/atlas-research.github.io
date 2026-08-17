@@ -14,7 +14,7 @@ export function Closing() {
     <section id="apply" className="bg-ground text-text border-t border-line">
       <div className="mx-auto max-w-4xl px-6 py-24 md:py-32 text-center">
         <Reveal>
-          <p className="meta-label text-muted">Applications open now</p>
+          <p className="meta-label text-muted">{DATES.cohortState}</p>
         </Reveal>
         <Reveal delay={0.1}>
           <h2 className="mt-6 font-display text-4xl md:text-6xl leading-[1.08] text-text">
@@ -26,8 +26,7 @@ export function Closing() {
         <Reveal delay={0.22}>
           <p className="mt-6 mx-auto max-w-xl text-muted text-lg">
             The selective summer Fellowship — free, remote, and open to
-            secondary and university students worldwide. Applications close{" "}
-            {DATES.deadline}, a real deadline, not a manufactured one.
+            secondary and university students worldwide. {DATES.nextCycle}.
           </p>
         </Reveal>
         <Reveal delay={0.34}>
@@ -36,15 +35,14 @@ export function Closing() {
               to="/apply"
               className="rounded-control bg-brass text-ground pl-7 pr-6 py-3.5 text-[15px] inline-flex items-center gap-2.5 hover:bg-brass-hi transition-all hover:gap-3.5"
             >
-              Apply to the Fellowship
+              {DATES.waitlist}
               <span aria-hidden>→</span>
             </Link>
           </div>
         </Reveal>
         <Reveal delay={0.45}>
           <p className="mt-8 meta-label text-muted">
-            Due {DATES.deadline} · Review {DATES.review} · Program{" "}
-            {DATES.programStart}
+            {DATES.cohortState} · Review {DATES.review}
           </p>
         </Reveal>
       </div>

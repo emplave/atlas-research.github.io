@@ -13,7 +13,7 @@ const faqs = [
   },
   {
     q: "Is the Fellowship selective?",
-    a: `Yes — mentored cohorts have real capacity limits — but selection is based on your thinking in three short essays, not your résumé, and there's no invented acceptance-rate theater. Applications are open now, due ${DATES.deadline}, reviewed on a rolling basis.`,
+    a: `Yes — mentored cohorts have real capacity limits — but selection is based on your thinking in three short essays, not your résumé, and there's no invented acceptance-rate theater. ${DATES.cohortState}, so applications are closed for now. ${DATES.nextCycle}.`,
   },
   {
     q: "What do fellows actually produce?",
