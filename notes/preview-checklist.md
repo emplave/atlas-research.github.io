@@ -57,6 +57,11 @@ Every one should render with no console errors.
 - [ ] Submit with **School** blank → inline error under that field, form does **not** submit
 - [ ] Submit with **City + country** blank → same
 - [ ] Submit with a whitespace-only School (just spaces) → still rejected
+- [ ] **Submit with the privacy checkbox UNCHECKED** → blocked, with the message under the
+      checkbox and the summary line under the button. Confirm **no row** reaches the sheet.
+      (Verified by unit-testing the rule with real FormData; the literal click is not something
+      I could execute without a DOM.)
+- [ ] Tick the box and resubmit → succeeds
 - [ ] The research-interest field is optional and submits fine when empty
 
 **Why the UI cannot confirm success.** The request uses `mode: "no-cors"` because the Apps

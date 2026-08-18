@@ -5,16 +5,53 @@ import { Field, inputCls, SubmitState } from "@/components/forms";
 import { CONTACT_EMAIL, DATES, WAITLIST_ENDPOINT } from "@/lib/dates";
 import { ELIGIBILITY_LABEL, FELLOWSHIP_WEEKS } from "@/lib/stats";
 
-/** Waitlist fields that must be filled, with the message shown when they are not. */
-const REQUIRED_FIELDS = {
+/** Text fields that must be non-blank, with the message shown when they are not. */
+const REQUIRED_TEXT_FIELDS = {
   name: "Enter your name.",
   email: "Enter your email address.",
   school: "Enter your school or institution.",
   location: "Enter your city and country.",
 } as const;
 
-type FieldName = keyof typeof REQUIRED_FIELDS;
-type Errors = Partial<Record<FieldName, string>>;
+/**
+ * Consent is required and is validated in JS like everything else.
+ *
+ * The browser's `required` attribute cannot be relied on here: the form sets
+ * `noValidate` so that all messages are ours, which makes native constraint
+ * validation inert. The attribute stays on the input for assistive tech, but
+ * the check below is what actually blocks submission.
+ */
+const CONSENT_ERROR = "Agree to the privacy policy to continue.";
+
+type TextFieldName = keyof typeof REQUIRED_TEXT_FIELDS;
+type FieldName = TextFieldName | "privacy";
+export type WaitlistErrors = Partial<Record<FieldName, string>>;
+
+/**
+ * The waitlist validation rule, as a pure function of the submitted FormData.
+ *
+ * Exported and kept free of React so the rule can be tested directly rather
+ * than only through a rendered form. `onSubmit` does nothing but call this and
+ * bail out when it returns anything.
+ */
+export function validateWaitlist(fd: FormData): WaitlistErrors {
+  const found: WaitlistErrors = {};
+
+  // Every required text field must be non-blank. Whitespace does not count.
+  for (const key of Object.keys(REQUIRED_TEXT_FIELDS) as TextFieldName[]) {
+    const value = String(fd.get(key) ?? "").trim();
+    if (!value) found[key] = REQUIRED_TEXT_FIELDS[key];
+  }
+
+  /*
+   * Consent. An UNCHECKED checkbox contributes no entry to FormData at all —
+   * it is absent rather than empty or "off" — so absence is the signal. A
+   * checked box yields "on".
+   */
+  if (!fd.get("privacy")) found.privacy = CONSENT_ERROR;
+
+  return found;
+}
 
 /**
  * The Fellowship.
@@ -33,25 +70,21 @@ type Errors = Partial<Record<FieldName, string>>;
  */
 export function Fellowship() {
   const [state, setState] = useState<SubmitState>("idle");
-  const [errors, setErrors] = useState<Errors>({});
+  const [errors, setErrors] = useState<WaitlistErrors>({});
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
 
-    const data: Record<string, string> = {};
-    fd.forEach((v, k) => (data[k] = String(v).trim()));
-
-    // Every required field must be non-blank. Whitespace does not count.
-    const found: Errors = {};
-    for (const key of Object.keys(REQUIRED_FIELDS) as FieldName[]) {
-      if (!data[key]) found[key] = REQUIRED_FIELDS[key];
-    }
+    const found = validateWaitlist(fd);
     if (Object.keys(found).length > 0) {
       setErrors(found);
       setState("idle");
       return;
     }
+
+    const data: Record<string, string> = {};
+    fd.forEach((v, k) => (data[k] = String(v).trim()));
 
     setErrors({});
     setState("sending");
@@ -212,24 +245,34 @@ export function Fellowship() {
                 />
               </Field>
 
-              <label className="flex items-start gap-3 text-sm text-muted">
-                <input
-                  type="checkbox"
-                  name="privacy"
-                  required
-                  className="mt-1 accent-ink"
-                />
-                <span>
-                  I agree to the{" "}
-                  <Link
-                    to="/privacy"
-                    className="link"
-                  >
-                    privacy policy
-                  </Link>
-                  .
-                </span>
-              </label>
+              {/*
+                One consent control, required. Same error treatment as the text
+                fields: alert-coloured message under the control, aria-invalid
+                on the input, and counted in the summary below the button.
+              */}
+              <div>
+                <label className="flex items-start gap-3 text-sm text-muted">
+                  <input
+                    type="checkbox"
+                    name="privacy"
+                    required
+                    aria-invalid={Boolean(errors.privacy)}
+                    className="mt-1 accent-ink"
+                  />
+                  <span>
+                    I agree to the{" "}
+                    <Link to="/privacy" className="link">
+                      privacy policy
+                    </Link>
+                    .
+                  </span>
+                </label>
+                {errors.privacy && (
+                  <p role="alert" className="mt-1.5 text-xs text-alert">
+                    {errors.privacy}
+                  </p>
+                )}
+              </div>
 
               <button
                 type="submit"
