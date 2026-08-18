@@ -10,7 +10,14 @@ const REQUIRED_TEXT_FIELDS = {
   name: "Enter your name.",
   email: "Enter your email address.",
   school: "Enter your school or institution.",
-  location: "Enter your city and country.",
+  city: "Enter your city.",
+  /*
+   * Country is its own required field, not half of a combined "City, Country"
+   * string. It is the column that feeds src/data/reach.ts, and a free-text
+   * "Lagos, Nigeria" cannot be split back apart reliably — "Washington, DC,
+   * USA" and "Cork, Ireland" do not parse the same way.
+   */
+  country: "Enter your country.",
 } as const;
 
 /**
@@ -26,6 +33,112 @@ const CONSENT_ERROR = "Agree to the privacy policy to continue.";
 type TextFieldName = keyof typeof REQUIRED_TEXT_FIELDS;
 type FieldName = TextFieldName | "privacy";
 export type WaitlistErrors = Partial<Record<FieldName, string>>;
+
+/**
+ * The exact keys the Apps Script reads, in the order it appends them.
+ *
+ * THE SCRIPT WRITES POSITIONALLY and must not change. It appends:
+ *
+ *   new Date(), name, email, school, city, country, grade, timezone, prompt,
+ *   datasource, completion, research, research_desc, consent, referral,
+ *   referral_other
+ *
+ * The script supplies the timestamp itself, so the client sends the fifteen
+ * field keys only. EVERY key is always sent as a string — never undefined.
+ * `undefined` does not survive JSON.stringify (the key is dropped entirely),
+ * which writes a blank the script did not expect and is the exact failure this
+ * payload exists to prevent.
+ *
+ * Seven of the fifteen are fields this form does not collect. They are sent as
+ * empty strings deliberately, so the columns stay aligned with the 85 existing
+ * rows rather than shifting.
+ */
+export type WaitlistPayload = {
+  name: string;
+  email: string;
+  school: string;
+  city: string;
+  country: string;
+  grade: string;
+  timezone: string;
+  prompt: string;
+  datasource: string;
+  completion: string;
+  research: string;
+  research_desc: string;
+  consent: string;
+  referral: string;
+  referral_other: string;
+};
+
+/**
+ * What goes in the `referral` column for a waitlist signup.
+ *
+ * Deliberately NOT "Future interest (applications closed)", which is what the
+ * old page sent. The current cohort is running, not closed, so that string is
+ * inaccurate on every new row.
+ */
+export const WAITLIST_REFERRAL = "Waitlist for next cohort";
+
+/**
+ * Build the POST body from the submitted form.
+ *
+ * Pure and exported so the payload can be asserted directly — the POST is
+ * no-cors and its response is unreadable, so this function is the only place
+ * the body can actually be verified.
+ *
+ * Call only after validateWaitlist returns clean. `consent` is hardcoded to
+ * "yes" because submission is blocked when the box is unchecked, so a posted
+ * row can only ever represent granted consent.
+ */
+export function buildWaitlistPayload(fd: FormData): WaitlistPayload {
+  const text = (key: string) => String(fd.get(key) ?? "").trim();
+  return {
+    name: text("name"),
+    email: text("email"),
+    school: text("school"),
+    city: text("city"),
+    country: text("country"),
+    grade: "",
+    timezone: "",
+    prompt: "",
+    datasource: "",
+    completion: "",
+    research: "",
+    research_desc: text("research_desc"),
+    consent: "yes",
+    referral: WAITLIST_REFERRAL,
+    referral_other: "",
+  };
+}
+
+/** The live domain. Everything else — localhost, Vercel previews — is not it. */
+const PRODUCTION_HOSTS = ["atlas-research.org", "www.atlas-research.org"];
+
+/**
+ * Whether to log the outgoing POST body.
+ *
+ * NOT gated on import.meta.env.DEV alone. A Vercel preview is a PRODUCTION
+ * build, so DEV is false there and the log would be missing from precisely the
+ * environment it exists to be read in.
+ *
+ * Gated on hostname instead: logs on localhost and on any preview URL, silent
+ * on the live domain. The body contains what the visitor just typed, so it must
+ * never appear in a real user's console.
+ *
+ * The host rule is split into isLoggableHost so it can be asserted on its own —
+ * testing shouldLogWaitlistPayload directly is useless, because a test runner
+ * runs in dev and short-circuits on the first line.
+ */
+export function isLoggableHost(hostname: string): boolean {
+  return hostname !== "" && !PRODUCTION_HOSTS.includes(hostname);
+}
+
+export function shouldLogWaitlistPayload(): boolean {
+  if (import.meta.env.DEV) return true;
+  if (typeof window === "undefined") return false;
+  return isLoggableHost(window.location.hostname);
+}
 
 /**
  * The waitlist validation rule, as a pure function of the submitted FormData.
@@ -83,8 +196,14 @@ export function Fellowship() {
       return;
     }
 
-    const data: Record<string, string> = {};
-    fd.forEach((v, k) => (data[k] = String(v).trim()));
+    const payload = buildWaitlistPayload(fd);
+
+    if (shouldLogWaitlistPayload()) {
+      // The POST is no-cors, so this is the only way to see what actually left
+      // the browser and confirm every column is populated. Silent on the live
+      // domain — see shouldLogWaitlistPayload.
+      console.log("[waitlist] POST body\n" + JSON.stringify(payload, null, 2));
+    }
 
     setErrors({});
     setState("sending");
@@ -113,11 +232,7 @@ export function Fellowship() {
         method: "POST",
         mode: "no-cors",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          kind: "Fellowship waitlist",
-          ...data,
-          submittedAt: new Date().toISOString(),
-        }),
+        body: JSON.stringify(payload),
       });
       setState("sent");
     } catch {
@@ -223,13 +338,29 @@ export function Fellowship() {
                     autoComplete="organization"
                   />
                 </Field>
-                <Field label="City + country" required error={errors.location}>
+                <Field label="City" required error={errors.city}>
                   <input
-                    name="location"
+                    name="city"
                     required
-                    aria-invalid={Boolean(errors.location)}
+                    aria-invalid={Boolean(errors.city)}
                     className={inputCls}
-                    placeholder="e.g. Kathmandu, Nepal"
+                    autoComplete="address-level2"
+                    placeholder="e.g. Kathmandu"
+                  />
+                </Field>
+                {/*
+                  Country is separate on purpose — it is the column that feeds
+                  src/data/reach.ts. A combined "City, Country" string cannot be
+                  split back apart reliably.
+                */}
+                <Field label="Country" required error={errors.country}>
+                  <input
+                    name="country"
+                    required
+                    aria-invalid={Boolean(errors.country)}
+                    className={inputCls}
+                    autoComplete="country-name"
+                    placeholder="e.g. Nepal"
                   />
                 </Field>
               </div>
@@ -239,7 +370,7 @@ export function Fellowship() {
                 hint="A sentence is plenty. Any field."
               >
                 <textarea
-                  name="interest"
+                  name="research_desc"
                   rows={3}
                   className={inputCls + " resize-y"}
                 />

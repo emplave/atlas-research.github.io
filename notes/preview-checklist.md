@@ -55,7 +55,8 @@ Every one should render with no console errors.
 - [ ] **Open the Apps Script sheet and confirm the row actually landed.** The UI cannot tell
       you this — see below.
 - [ ] Submit with **School** blank → inline error under that field, form does **not** submit
-- [ ] Submit with **City + country** blank → same
+- [ ] Submit with **City** blank → same
+- [ ] Submit with **Country** blank → same (City and Country are now separate required fields)
 - [ ] Submit with a whitespace-only School (just spaces) → still rejected
 - [ ] **Submit with the privacy checkbox UNCHECKED** → blocked, with the message under the
       checkbox and the summary line under the button. Confirm **no row** reaches the sheet.
@@ -63,6 +64,15 @@ Every one should render with no console errors.
       I could execute without a DOM.)
 - [ ] Tick the box and resubmit → succeeds
 - [ ] The research-interest field is optional and submits fine when empty
+
+**Check the console log first.** On the preview the form logs its exact POST body:
+`[waitlist] POST body` followed by all fifteen keys. Confirm `school`, `city`, `country`,
+`research_desc`, `consent` (`"yes"`) and `referral` (`"Waitlist for next cohort"`) are populated,
+and that the seven uncollected keys are empty strings rather than missing. This log is silent on
+the live domain.
+
+- [ ] Console shows all fifteen keys with the five collected fields populated
+- [ ] **Then check the sheet** and confirm the columns line up rather than shifting by one
 
 **Why the UI cannot confirm success.** The request uses `mode: "no-cors"` because the Apps
 Script `/exec` endpoint answers a POST with a 302 to `script.googleusercontent.com`, and that
