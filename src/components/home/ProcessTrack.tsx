@@ -60,7 +60,7 @@ function Node() {
 
 export function ProcessTrack() {
   return (
-    <Section number="02" title="How the work runs" tone="surface">
+    <Section number="03" title="How the work runs" tone="paper">
       <ol className="mt-10 grid gap-y-0 md:grid-cols-5 md:gap-x-6">
         {STEPS.map((step, i) => (
           <li key={step.n} className="relative md:pt-0">

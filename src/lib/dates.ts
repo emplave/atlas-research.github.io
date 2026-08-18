@@ -26,6 +26,24 @@ export const DATES = {
  */
 export const CONTACT_EMAIL = "admin@atlas-research.org";
 
+/**
+ * Partnership enquiries only, used on the Partners page.
+ *
+ * This is the ONE page that does not use CONTACT_EMAIL. Every other surface —
+ * footer, privacy policy, form errors — uses the address above. Kept as a named
+ * constant so the exception exists in exactly one place rather than being
+ * pasted into a page.
+ */
+export const PARTNERS_EMAIL = "nirav.goenka@atlas-research.org";
+
+/**
+ * When the privacy policy was last substantively changed.
+ *
+ * Pulled from here so the date cannot go stale silently while the text is
+ * edited. Update it in the same commit as any change to the policy content.
+ */
+export const PRIVACY_UPDATED = "17 August 2026";
+
 
 /**
  * DO NOT DELETE — LIVE WAITLIST BACKEND.

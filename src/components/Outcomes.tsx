@@ -1,10 +1,15 @@
 /**
  * What fellows actually get. Used on the Fellowship page.
  *
+ * FIVE items, laid out as a 2 + 3 split: the first row is two wider cells, the
+ * second row three. Five items in a three-column grid left a visible empty
+ * sixth cell, and the fix is a layout that divides by five — not a sixth item
+ * invented to fill the hole.
+ *
  * The previous copy claimed co-author credit on a cross-national dataset and
- * asserted journal submission as a completed fact. Neither was true. Every
- * item below is something the programme delivers, and the review item is
- * eligibility to submit — never submission or publication happening on its own.
+ * asserted journal submission as a completed fact. Neither was true. Every item
+ * below is something the programme delivers, and the review item is eligibility
+ * to submit — never submission or publication happening on its own.
  */
 const outcomes = [
   {
@@ -17,7 +22,7 @@ const outcomes = [
   },
   {
     title: "Guest sessions with university researchers",
-    body: "Fellows learn from researchers at USC, the University of Melbourne, and Stanford.",
+    body: "Live sessions on methods and on how research actually gets done.",
   },
   {
     title: "A completed literature review or policy brief",
@@ -30,22 +35,55 @@ const outcomes = [
 ];
 
 export function Outcomes() {
-  return (
-    <section id="outcomes" className="bg-paper border-t border-line">
-      <div className="mx-auto max-w-6xl px-6 py-16 md:py-20">
-        <h2 className="font-display text-2xl md:text-3xl">What fellows get</h2>
+  const firstRow = outcomes.slice(0, 2);
+  const secondRow = outcomes.slice(2);
 
-        <div className="mt-8 grid gap-px bg-line border border-line md:grid-cols-2 lg:grid-cols-3">
-          {outcomes.map((o) => (
-            <div key={o.title} className="bg-surface p-6">
-              <h3 className="font-display text-lg leading-snug">{o.title}</h3>
-              <p className="mt-2.5 text-[15px] text-muted leading-relaxed">
-                {o.body}
-              </p>
-            </div>
-          ))}
+  return (
+    <section id="outcomes" className="bg-surface border-t border-line">
+      <div className="mx-auto max-w-6xl px-6 py-12 md:py-16">
+        <h2 className="type-section font-display">What fellows get</h2>
+
+        {/*
+          Two rows rather than one grid, so five items divide cleanly and no
+          cell is left empty. Hairline separators come from the gap-px + bg-line
+          pattern used elsewhere on the site.
+        */}
+        <div className="mt-8 border border-line bg-line grid gap-px">
+          <div className="grid gap-px md:grid-cols-2">
+            {firstRow.map((o) => (
+              <Cell key={o.title} title={o.title} body={o.body} wide />
+            ))}
+          </div>
+          <div className="grid gap-px md:grid-cols-3">
+            {secondRow.map((o) => (
+              <Cell key={o.title} title={o.title} body={o.body} />
+            ))}
+          </div>
         </div>
       </div>
     </section>
+  );
+}
+
+function Cell({
+  title,
+  body,
+  wide = false,
+}: {
+  title: string;
+  body: string;
+  wide?: boolean;
+}) {
+  return (
+    <div className="bg-paper p-6 md:p-7">
+      <h3
+        className={
+          "font-display leading-snug " + (wide ? "text-xl md:text-2xl" : "text-lg")
+        }
+      >
+        {title}
+      </h3>
+      <p className="mt-2.5 text-[15px] text-muted leading-relaxed">{body}</p>
+    </div>
   );
 }

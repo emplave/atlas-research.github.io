@@ -13,6 +13,7 @@ const LINKS = [
   { to: "/journal", label: "Journal" },
   { to: "/fellowship", label: "Fellowship" },
   { to: "/partners", label: "Partners" },
+  { to: "/privacy", label: "Privacy" },
 ];
 
 export function Footer() {

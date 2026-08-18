@@ -17,6 +17,7 @@ import { ResearchGroupBrief } from "./pages/ResearchGroupBrief";
 import { Journal } from "./pages/Journal";
 import { JournalArticle } from "./pages/JournalArticle";
 import { Events } from "./pages/Events";
+import { Privacy } from "./pages/Privacy";
 
 /** Scroll to top on route change; honor #hash targets within a page. */
 function ScrollManager() {
@@ -66,6 +67,7 @@ export default function App() {
             <Route path="/journal/:slug" element={<JournalArticle />} />
             <Route path="/fellowship" element={<Fellowship />} />
             <Route path="/partners" element={<Partners />} />
+            <Route path="/privacy" element={<Privacy />} />
 
             {/* Legacy paths — kept so existing links do not break. */}
             <Route

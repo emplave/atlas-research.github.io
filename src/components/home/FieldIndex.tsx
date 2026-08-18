@@ -27,13 +27,13 @@ const FIELDS: Field[] = [
 
 export function FieldIndex() {
   return (
-    <Section number="03" title="Eight fields" tone="paper">
+    <Section number="04" title="Eight fields" tone="surface">
       <ul className="mt-8 grid gap-px bg-line border border-line sm:grid-cols-2 lg:grid-cols-4">
         {FIELDS.map((field) => (
           <li key={field}>
             <Link
               to={`/research-groups?field=${encodeURIComponent(field)}`}
-              className="group flex h-full items-center gap-3 bg-surface px-5 py-4 transition-colors hover:bg-navy"
+              className="group flex h-full items-center gap-3 bg-paper px-5 py-4 transition-colors hover:bg-navy"
             >
               <FieldIcon
                 field={field}

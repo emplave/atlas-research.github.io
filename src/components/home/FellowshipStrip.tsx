@@ -8,9 +8,9 @@ import { Link } from "react-router-dom";
  */
 export function FellowshipStrip() {
   return (
-    <section className="bg-surface border-b border-line">
+    <section className="bg-paper border-b border-line">
       <div className="mx-auto max-w-6xl px-6 py-12 md:py-14">
-        <div className="rounded-card border border-line bg-paper p-7 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="rounded-card border border-line bg-surface p-7 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="max-w-2xl">
             <div className="flex items-baseline gap-4">
               <span aria-hidden className="meta-label text-navy/45">06</span>

@@ -1,170 +1,179 @@
-# Phase 7 — design craft pass
+# Phase 8
 
 Branch: `chapters-rebuild`. Prior: `548b701` P0 · `f5c156c` P1 · `b3337f7` P2 · `1ef922e` P3
-· `f97a993` P4 · `80ceca5` P5 · `eaf5337` P6.
+· `f97a993` P4 · `80ceca5` P5 · `eaf5337` P6 · `a65e778` P7.
 
-Verification: `tsc --noEmit` clean, `vite build` succeeds, `npm run dev` starts clean (200
-on all six top-level routes, no warnings), **43/43 checks pass**.
+Verification: `tsc --noEmit` clean, `vite build` succeeds, `npm run dev` starts clean (200 on
+all seven routes, no warnings), **54/54 checks pass**.
 
 ---
 
 ## Footer
 
-Replaced with the exact line, in `Footer.tsx`, `public/apply.html`, and `public/llms.txt`:
+Exact required wording, in `Footer.tsx`, `public/apply.html`, and `public/llms.txt`:
 
 > Atlas Research Institute operates as a project of a California nonprofit public benefit
 > corporation. For more information contact admin@atlas-research.org
 
-The entity name is gone from the entire repo — grepped, and asserted per-page in the checks.
-A comment above the line says not to reintroduce a company name, EIN, "501(c)(3)", or "tax
-deductible".
+Asserted per-page. The entity name remains absent from the whole repo.
 
-## 1. Globe
+## 1. Proof band
 
-`cobe` reinstalled. `src/data/reach.ts` holds the 20 countries with centroid coordinates,
-under a header stating that no country may be added without a real fellow and no count may
-be shown that does not match the array length.
+Rebuilt. Eyebrow "Partners and publication routes" above three larger logos, evenly spaced
+and centred on white plates as the primary element. Plate heights are tuned per mark
+(`h-9`/`h-11`/`h-14`) so the logos read as optically equal rather than mathematically equal.
 
-`REACH_COUNT` is **derived**, not written — the caption reads "Fellows in {REACH_COUNT}
-countries", so a hardcoded number cannot drift from the list. Checks assert the count
-matches the array, codes are unique, and every coordinate is in range.
+One compact relationship line beneath: *IJHSR is a peer-reviewed submission route. Lumiere
+Education is a program partner. The Curieux Review is a student research writing partner.*
 
-Sits right of the headline. Paper sphere `#FAFAF9`, navy markers `#1C3F5E`, a `#E2E0DA` rim
-rather than a glow. Slow rotation at 0.0022 rad/frame.
+The institutions line is **gone from this band** — asserted absent.
 
-**One implementation note:** this cobe version does not expose `onRender` in its types, so
-rotation is driven by our own rAF loop calling the documented `update()` API. Under
-`prefers-reduced-motion` the globe draws once at an opening angle showing the widest marker
-spread and **no rAF loop starts at all** — the preference is honoured by not animating,
-rather than by animating and hiding it. The listener is live, so toggling the OS setting
-takes effect without a reload.
+**Extension point built in:** a `GUEST_RESEARCHERS` array renders a bordered "Guest
+researchers" row beneath the logos when populated, and nothing at all while empty. Adding
+confirmed names is a data edit, no redesign. It ships empty, with a comment that a named
+researcher is an endorsement claim and needs their agreement first.
 
-## 2. Field icons
+## Institutions line → Fellowship only
 
-`src/components/FieldIcon.tsx` — eight hand-drawn line icons, one per `Field`. Stroke-only,
-1.5px, `currentColor`, 24px default, no fills, no library, no emoji. All drawn on the same
-24-unit grid at matching visual weight so a row reads as one set.
+Now a small "Guest sessions" block on the Fellowship page, where guest sessions are already
+discussed, in the exact approved wording:
 
-Used in card headers, directory filters, brief pages, and the field index band. `currentColor`
-means the same icon works on paper and on a navy header without a variant.
+> Fellows learn from researchers at the University of Melbourne, USC, and Stanford.
 
-## 3. Paper grain
+`"and more"` is in the banned-string list, so it cannot be appended without failing the
+suite. Checks assert the line appears on `/fellowship` and on no other route.
 
-An inline `feTurbulence` SVG on `body::before` — fixed, `pointer-events: none`, behind
-content via `#root { z-index: 1 }`. Fractal noise at `baseFrequency 0.82`, desaturated,
-rect opacity 0.035 under a layer opacity of 0.5.
+## 2. Events moved up
 
-Cheap by construction: one fixed element, no blend mode, no repaint on scroll. It never
-lands on top of type, so measured text contrast is unchanged.
+Order is now hero · **01** research groups · **02** events · **03** how the work runs ·
+**04** eight fields · **05** proof band · **06** fellowship · FAQ · closing.
 
-## 4. Process track
+Two-column split kept, next event large on the left.
 
-`ProcessTrack.tsx` replaces the four text boxes. Five nodes — Question, Sources, Analysis,
-Draft, Review — numbered 01–05 on a hairline, each with supporting text. Nodes are drawn
-SVG. No animation.
+**Tone alternation had to be re-derived, not just renumbered.** Moving events into slot 02
+put its surface-coloured cards onto a surface-coloured section — invisible. Every section
+whose content is cards now sits on the opposite tone to those cards. Final sequence:
 
-Desktop runs horizontal with the rule behind the node row, clipped at both ends so it does
-not overhang. Mobile becomes a vertical rail with the line down the left. **One set of
-markup for both** — a grid change, not duplicated steps.
+`paper → surface → paper → surface → navy → paper → surface → navy`
 
-Step 05 states that completed work *may* be submitted and review decides.
+so no card ever sits on its own background colour, and the two navy bands still bracket the
+page.
 
-## 5. Field index band
+## 3. "What fellows get" — no empty cell
 
-Eight rows, each with its icon, each linking to `/research-groups?field=…`. Kept compact and
-typographic rather than eight cards — a card grid here would out-weigh the research groups
-section above it, which is what actually carries proof.
+Five items in a three-column grid left a visible empty sixth cell. Restructured as a **2 + 3
+split**: first row two wider cells with larger type, second row three. Five items divide
+cleanly and nothing is empty.
 
-The directory now **reads `?field=`**, validates it against the `Field` union, applies it,
-and strips it from the URL. An unrecognised value is ignored rather than producing an empty
-directory.
+No sixth item was invented — asserted, along with the item count still being exactly five.
 
-## 6. Typographic scale
+## 4. Waitlist required fields
 
-- `.type-hero` — `clamp(2.75rem, 7.2vw, 5.25rem)` = 44px → 84px
-- `.type-section` — `clamp(1.75rem, 3.4vw, 2.75rem)` = 28px → 44px
-- `.type-body` — fixed 17px
-- `.numeral` — oversized light-navy display numerals for numbered sections
+`School or institution` and `City + country` are now required; labels read "required".
+`What would you want to research?` stays optional.
 
-## 7. Asymmetric layout
+Validation runs in JS with `noValidate` on the form, so the messages are ours and are
+announced at the field rather than in a browser tooltip. `Field` gained an `error` prop
+rendering `role="alert"` text under the control, inputs carry `aria-invalid`, and a summary
+line appears below the button. Whitespace-only input does not pass — values are trimmed
+before the check.
 
-- Hero: `lg:grid-cols-[55fr_45fr]`, text left, globe right.
-- Homepage groups: first card `md:col-span-2` with larger type and a taller header.
-- Events: `lg:grid-cols-[3fr_2fr]` — next event large left, following stacked small right.
-  Three equal tiles gave every session the same weight, which was wrong; only the next one
-  is actionable today.
+## 5. Partners contact address
 
-## 8. Structure as design
+`PARTNERS_EMAIL = "nirav.goenka@atlas-research.org"` in `src/lib/dates.ts`, used only by the
+Partners page. One named constant, so the exception exists in one place.
 
-`components/home/Section.tsx` owns the numbering, the hairline rule, and the tone
-alternation so no section can drift. Sections 01–06 carry their numeral in the heading's
-left margin, `aria-hidden` because the heading already says it. Vertical spacing tightened
-~25% (py-16/20 → py-12/16).
+Asserted: the Partners page body uses that address, does not use `admin@`, and the partners
+address appears on no other route. The shared footer on `/partners` still shows `admin@`,
+which is correct — that scoping caught a bad assertion in my own test rather than a bug.
 
-## 9. Card headers
+## 6. Privacy policy
 
-The navy block is now the card's main surface: field icon top-left, status chip top-right,
-project title in large Spectral white at the bottom. The duplicate field label below is gone.
+`src/pages/Privacy.tsx` at `/privacy`, linked from the footer and from the waitlist consent
+checkbox. `public/privacy.html` becomes a `noindex` redirect (meta refresh plus
+`location.replace`) so old links work; `robots.txt` disallows it and the sitemap points at
+`/privacy`.
 
-Navy tint varies deterministically across four steps `#1C3F5E → #22496B → #265078 →
-#2A5A82`, keyed to field index — deterministic rather than random because a tint that
-changes between renders reads as a bug, and because the association becomes learnable.
+Carried over from the old page: Google Workspace storage, the no-selling commitment, and the
+copy/correct/delete rights. Dropped as inaccurate: "youth-led organization" (violates the
+org-level rule), the email-only waitlist description, the 12-month retention window, and the
+grade-level/application-questions fields the current form does not collect.
 
-`StatusChip` gained an `onNavy` variant; the paper-toned chip was illegible on navy.
+Content is specific to what the site does: the five collected fields matching the waitlist
+form exactly, use limited to contacting you about that programme, storage in Google Sheets
+via Apps Script plus Brevo for email, retention until you ask for removal, and deletion by
+emailing `admin@`. Minors section states the minimum-necessary collection, that no date of
+birth is asked, and that a parent or guardian may email for removal without involving the
+student. `PRIVACY_UPDATED` lives in `dates.ts` so the date cannot go stale silently.
 
-When a real image exists the image takes the block and the title moves below it.
+**On cookies, I described what is actually true rather than what the brief assumed.** I
+grepped for cookies, `localStorage`, `sessionStorage`, and script tags: the site sets **no
+cookies at all**. So the policy says that plainly, then explains that Vercel Web Analytics is
+cookieless — no cookie, no persistent identifier, no cross-site tracking. It also discloses
+the Google Fonts request, since that does send the reader's IP to Google and is the only
+third-party request the site makes. A generic "we use cookies" section would have been false.
 
-## 10. Research groups page
+---
 
-A band directly under the heading, above the filters: "No group here doing your question?
-Start one." plus the primary button. The bottom CTA is kept.
+## The thing you should know about
 
-The empty-filter state now leads with **Start a research group** and demotes reset to
-secondary — resetting only returns the reader to a list that already did not have what they
-wanted.
+**Vercel Analytics was not in this branch, and merging would have removed it from
+production.**
 
-## 11. Motion
+Your brief said "no analytics beyond Vercel Analytics", which assumes it is present. It is
+not — or was not. `@vercel/analytics` and `<Analytics />` exist on `main` (added in
+`51e06a0`), but `chapters-rebuild` branched from `42874be`, which predates that commit. The
+merge-base confirms it. So this branch has been analytics-free the whole time, and a PR into
+`main` would have silently deleted it.
 
-Kept: globe rotation, card hover (1px navy border + `translateY(-2px)` + small shadow at
-120ms), button/link transitions, focus-visible rings, smooth anchor scroll. None added.
+I reinstalled it and restored `<Analytics />` in `main.tsx`, which is both what you clearly
+intend and what makes the new privacy copy true. `main.tsx` carries a comment tying the two
+together: remove the component or add another provider, and `Privacy.tsx` must change in the
+same commit.
 
-`prefers-reduced-motion` drops the hover lift to `transform: none` and stops the globe loop
-entirely.
+Worth a look when this merges — it is the kind of thing a long-lived branch loses quietly.
 
 ---
 
 ## Verification
 
 ```
-PASS  /                                               38094b
-PASS  /research-groups                                18674b
-PASS  /research-groups/placeholder-model-card-review   8337b
-PASS  /events                                          6032b
-PASS  /journal                                          9389b
-PASS  /journal/placeholder-working-paper               6134b
-PASS  /fellowship                                      9462b
-PASS  /partners                                        6664b
-PASS  /nope                                            3403b
+PASS  /                                               38501b
+PASS  /research-groups                                18767b
+PASS  /research-groups/placeholder-model-card-review   8430b
+PASS  /events                                          6125b
+PASS  /journal                                          9482b
+PASS  /journal/placeholder-working-paper               6227b
+PASS  /fellowship                                     10062b
+PASS  /partners                                        6722b
+PASS  /privacy                                          7884b
+PASS  /nope                                            3496b
+
+all checks passed
 ```
 
-Every page scanned for 33 banned strings (dead tokens, banned words, ISSN / 501(c) / info@ /
-scholarship / 9-12 / education framing / July 24 / apply.html / yourbuddy) and asserted to
-carry the exact footer line and the contact address. Then 34 behavioural assertions across
-the globe data, icons, process track, type scale, asymmetry, card headers, directory CTAs,
-motion, and the still-empty stat band. **All 43 passed.**
+Every page scanned for 36 banned strings (dead tokens, banned words, ISSN / 501(c) / info@ /
+scholarship / 9-12 / education framing / July 24 / apply.html / yourbuddy / "and more") and
+asserted to carry the exact footer line. Then 44 behavioural assertions across the proof
+band, the institutions line's placement and exact wording, section order and numbering, the
+2+3 outcomes layout, required-field validation, email scoping, and every privacy content
+requirement.
 
-Bundle: 281 KB → 305 KB JS (97 KB gzipped); CSS 19.4 KB → 22.8 KB. The increase is cobe.
+Three initially failed. Two were bad assertions in my own test — React lowercases
+`noValidate` to `novalidate`, and the shared footer legitimately puts `admin@` in the
+Partners page HTML. One was real: the storage line said "a Google Sheet" where the brief
+names "Google Sheets", now corrected.
+
+Bundle: 305 KB → 315 KB JS (100 KB gzipped). The increase is `@vercel/analytics` plus the
+privacy page.
 
 ---
 
-## Two things worth your attention
+## Still open
 
-**The globe is the site's only unverifiable-by-me claim.** `reach.ts` asserts that a real
-fellow exists in each of those 20 countries. I took the list as given and wrote the guard
-rails around it, but I cannot check it — and unlike the stat band, which stays empty until
-you fill it, this one ships visible. If any country on that list is aspirational rather than
-actual, remove it before launch and the count follows automatically.
-
-**`public/og-globe.png` is still stale** — 842 KB, and now doubly odd since a globe exists
-on the site again but this image is not it. Still needs a 1200×630 replacement; generating
-imagery remains out of bounds for me. `public/logo-plate.jpeg` is still unused.
+- **`public/og-globe.png`** — 842 KB, still the `og:image`, still not a picture of anything
+  currently on the site. Needs a 1200×630 replacement; generating imagery remains out of
+  bounds for me.
+- **`public/logo-plate.jpeg`** — unused since Phase 6.
+- **`reach.ts`** still asserts a real fellow in each of 20 countries. I cannot verify that
+  list, and unlike the stat band it ships visible.

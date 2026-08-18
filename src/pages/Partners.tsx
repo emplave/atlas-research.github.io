@@ -6,7 +6,7 @@ import {
   submitApplication,
   SubmitState,
 } from "@/components/forms";
-import { CONTACT_EMAIL } from "@/lib/dates";
+import { PARTNERS_EMAIL } from "@/lib/dates";
 
 /**
  * Partners — partnership enquiries.
@@ -61,7 +61,7 @@ export function Partners() {
                 <p className="mt-2.5 text-[15px] text-muted leading-relaxed">
                   Submissions are not being accepted through the site right now.
                   Write to{" "}
-                  <span className="text-ink">{CONTACT_EMAIL}</span> and we will
+                  <span className="text-ink">{PARTNERS_EMAIL}</span> and we will
                   reply.
                 </p>
               </div>

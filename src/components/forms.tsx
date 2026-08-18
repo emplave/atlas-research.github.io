@@ -5,11 +5,14 @@ export function Field({
   label,
   required,
   hint,
+  error,
   children,
 }: {
   label: string;
   required?: boolean;
   hint?: string;
+  /** Inline validation message, shown under the control when set. */
+  error?: string;
   children: ReactNode;
 }) {
   return (
@@ -17,21 +20,24 @@ export function Field({
       <span className="flex items-baseline gap-2">
         <span className="text-sm text-ink">{label}</span>
         {required ? (
-          <span className="text-alert text-xs" aria-hidden>
-            required
-          </span>
+          <span className="text-muted text-xs">required</span>
         ) : (
           <span className="text-muted text-xs">optional</span>
         )}
       </span>
       {hint && <span className="block mt-0.5 text-xs text-muted">{hint}</span>}
       <span className="block mt-2">{children}</span>
+      {error && (
+        <span role="alert" className="block mt-1.5 text-xs text-alert">
+          {error}
+        </span>
+      )}
     </label>
   );
 }
 
 export const inputCls =
-  "w-full rounded-control border border-line bg-paper px-4 py-2.5 text-[15px] text-ink placeholder:text-muted focus:outline-none focus:border-panel transition-colors";
+  "w-full rounded-control border border-line bg-paper px-4 py-2.5 text-[15px] text-ink placeholder:text-muted focus:outline-none focus:border-navy transition-colors";
 
 export function WordCountArea({
   name,

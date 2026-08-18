@@ -1,9 +1,10 @@
 User-agent: *
 Allow: /
 
-# Legacy signpost kept only so older external links do not 404.
-# It carries a noindex meta tag and canonicals to /fellowship.
+# Legacy signposts, kept only so older external links do not 404.
+# Both are noindex and redirect to their current equivalents.
 Disallow: /apply.html
+Disallow: /privacy.html
 
 Sitemap: https://atlas-research.org/sitemap.xml
 

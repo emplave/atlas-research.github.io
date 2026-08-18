@@ -20,9 +20,9 @@ export function EventsStrip() {
 
   return (
     <Section
-      number="05"
+      number="02"
       title="Upcoming events"
-      tone="paper"
+      tone="surface"
       action={
         <Link
           to="/events"
@@ -33,7 +33,7 @@ export function EventsStrip() {
       }
     >
       <div className="mt-8 grid gap-5 lg:grid-cols-[3fr_2fr]">
-        <article className="card-hover rounded-card border border-line bg-surface p-7 md:p-8">
+        <article className="card-hover rounded-card border border-line bg-paper p-7 md:p-8">
           <p className="meta-label text-navy/45">Next</p>
           <p className="mt-3 meta-label text-muted">
             {formatEventDate(next.date)}
@@ -60,7 +60,7 @@ export function EventsStrip() {
             {later.map((event) => (
               <li
                 key={event.slug}
-                className="card-hover rounded-card border border-line bg-surface p-5"
+                className="card-hover rounded-card border border-line bg-paper p-5"
               >
                 <p className="meta-label text-muted">
                   {formatEventDate(event.date)}
