@@ -1,8 +1,17 @@
 /**
- * Atlas ResearchGroups — research group directory data layer.
+ * Atlas research groups — FALLBACK DATASET AND TYPES.
  *
- * This file is the only source of truth for Atlas research groups. No page
- * or component may hardcode a group.
+ * THIS IS NOT THE LIVE SOURCE. Research groups are managed in a Google Sheet
+ * and read at runtime by src/lib/groupsSource.ts. The array at the bottom of
+ * this file is used ONLY when the Sheet is unreachable, unconfigured, or
+ * returns nothing publishable.
+ *
+ * Editing this file does not change the site once the Sheet is wired up. To
+ * add, edit, publish, unpublish, or restatus a group, edit the Sheet — see
+ * notes/managing-research-groups.md.
+ *
+ * The TYPES here remain authoritative: groupsSource validates every Sheet row
+ * against the unions below and skips rows that do not match.
  *
  * TOPIC AGNOSTIC by design. A group investigates an issue in its own local
  * context, in any discipline. Nothing here assumes an education subject.
@@ -109,12 +118,15 @@ export function canApply(group: ResearchGroup): boolean {
 }
 
 /**
- * PLACEHOLDER DATA — NOT REAL RESEARCH GROUPS.
+ * FALLBACK DATA — NOT THE LIVE SOURCE, AND NOT REAL RESEARCH GROUPS.
  *
- * Every group below is invented to exercise the directory UI across fields,
- * statuses, and settings. Hamaad replaces these with real groups before
- * launch. Do not cite, screenshot, or reference any of this as an Atlas
- * claim while it remains placeholder.
+ * Shown only when the Sheet is unreachable or unconfigured. Every group below
+ * is invented to exercise the directory UI across fields, statuses, and
+ * settings. Do not cite, screenshot, or reference any of it as an Atlas claim.
+ *
+ * Once the Sheet is live this array is a safety net, not content. It is worth
+ * keeping rather than emptying: an unreachable Sheet then degrades to a
+ * populated directory instead of a blank page.
  */
 export const RESEARCH_GROUPS: ResearchGroup[] = [
   {

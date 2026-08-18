@@ -2,10 +2,11 @@ import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import {
   isVisibleByDefault,
-  RESEARCH_GROUPS,
   type Field,
   type ResearchGroup,
 } from "@/data/research-groups";
+import { useResearchGroups } from "@/lib/useResearchGroups";
+import { GroupGridSkeleton } from "@/components/research-groups/GroupCardSkeleton";
 import { findOpening, isFormPending } from "@/data/openings";
 import { ResearchGroupCard } from "@/components/research-groups/ResearchGroupCard";
 import {
@@ -45,14 +46,15 @@ function matchesQuery(group: ResearchGroup, query: string): boolean {
 /**
  * The research group directory. Dark chrome.
  *
- * Everything rendered here comes from src/data/research-groups.ts — no group is
- * hardcoded. Archived groups are excluded by isVisibleByDefault() unless the
+ * Everything rendered here comes through useResearchGroups, which reads the
+ * live Google Sheet and falls back to the seed dataset. No group is hardcoded. Archived groups are excluded by isVisibleByDefault() unless the
  * reader explicitly asks for them, so the directory never fills with dead
  * listings.
  */
 export function ResearchGroups() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [filters, setFilters] = useState<DirectoryFilterState>(EMPTY_FILTERS);
+  const { groups, loading } = useResearchGroups();
 
   /**
    * Adopt ?field= from the URL, so the field index on the homepage links to a
@@ -72,10 +74,8 @@ export function ResearchGroups() {
   /** Groups in scope before the field/status/setting/search filters apply. */
   const inScope = useMemo(
     () =>
-      RESEARCH_GROUPS.filter(
-        (g) => filters.includeArchived || isVisibleByDefault(g)
-      ),
-    [filters.includeArchived]
+      groups.filter((g) => filters.includeArchived || isVisibleByDefault(g)),
+    [groups, filters.includeArchived]
   );
 
   const results = useMemo(
@@ -153,7 +153,11 @@ export function ResearchGroups() {
           totalCount={inScope.length}
         />
 
-        {results.length > 0 ? (
+        {loading ? (
+          <div className="mt-8">
+            <GroupGridSkeleton />
+          </div>
+        ) : results.length > 0 ? (
           <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
             {results.map((group) => (
               <ResearchGroupCard key={group.slug} group={group} />

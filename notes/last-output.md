@@ -1,190 +1,177 @@
-# Phase 10 — monochrome system, the mark, Get Involved, visual elements
+# Phases 11 and 12
 
-Branch: `chapters-rebuild`. Prior: P0 `548b701` · P1 `f5c156c` · P2 `b3337f7` · P3 `1ef922e`
-· P4 `f97a993` · P5 `80ceca5` · P6 `eaf5337` · P7 `a65e778` · P8 `07463fc`.
+Branch: `chapters-rebuild`. Phase 11 committed as `cd417d8`; Phase 12 follows as its own
+commit, keeping the one-commit-per-phase convention. Phase 12 arrived mid-turn, so Phase 11
+was finished and committed first rather than merged into one change.
 
 Verification: `tsc --noEmit` clean, `vite build` succeeds, `npm run dev` starts clean (200 on
-all eight routes, no warnings), **47/47 checks pass** including an off-token colour scan on
-every page.
+all nine routes, no warnings), **36/36 render checks + 31/31 parser checks pass**.
 
 ---
 
-## 1. Tokens
+# Phase 11
 
-Every previous colour token is gone. New set, and **no accent colour**:
+## 1. Lockup descriptor removed
 
-| Token | Value | Job |
-| --- | --- | --- |
-| `paper` | `#FFFFFF` | page background |
-| `surface` | `#F5F5F6` | cards, raised surfaces, alternating sections |
-| `line` | `#E4E4E6` | hairline borders |
-| `ink` | `#0E0E10` | primary text, primary buttons, dark bands |
-| `ink-hover` | `#26262A` | primary button hover only |
-| `muted` | `#57575C` | secondary text |
-| `faint` | `#8A8A92` | eyebrows, meta labels, tertiary text |
-| `alert` | `#B3402F` | form errors only |
+`AtlasLockup` is now the mark plus the wordmark, nothing beneath, with a comment saying not to
+reintroduce a descriptor. Removed as a standalone tagline from `index.html`, the README's copy
+rules, **and `public/og.svg`**, which still had "STUDENT RESEARCH INSTITUTE" as a footer line
+under a rule — that one wasn't obvious from the brief but was the same repetition.
 
-Links are a `.link` utility: ink, 1px underline thickening to 2px on hover. No link colour
-exists to reach for. Status chips are faint except Recruiting, which is ink. Both former
-navy bands are now ink.
+## 2. Role renames
 
-**I added one token you didn't name:** `ink-hover` for the `#26262A` button hover. The spec
-gave the hex but no token, and it appeared 15 times across components — as a raw hex it would
-have failed your own "no component sets a colour outside the token set" requirement. The
-verification now asserts that every hex any page emits is in the sanctioned set.
+Fellowship Mentor → **Youth Research TA** (`youth-research-ta`), Logistics Analyst →
+**Logistics Analyst Intern** (`logistics-analyst-intern`).
 
-## 2. Fonts
+**No redirects were needed.** I checked before assuming: role slugs appear only as React keys
+in `GetInvolved.tsx`. They are not URLs, not anchors, and nothing external addresses them, so
+there was no link to break.
 
-Instrument Serif (400 only) and Archivo (400/500/600). Spectral and Inter are gone from
-`tailwind.config.ts` and the Google Fonts URL. `theme-color` → `#FFFFFF`.
+**One thing I did not rename:** "Research Group Leader" kept its title. Your rename list named
+exactly two roles, and the `RESEARCH GROUP LEAD` heading in the copy block reads as a label
+for which role the copy belongs to rather than a third rename. Say the word if you meant the
+title to change to "Research Group Lead" too — it's a two-line edit.
 
-Type scale runs at real size: `.type-hero` clamp(2.75rem, 7.2vw, 5.25rem), `.type-section`
-clamp(1.75rem, 3.4vw, 2.75rem), `.type-card` 19px, `.type-panel` up to 4.5rem, body fixed
-17px, tracking −0.01em at display sizes.
+## 3. Role copy replaced verbatim
 
-Because Instrument Serif has no bold cut, the places that leaned on a heavier heading now use
-size instead — card titles moved from `text-xl` to `.type-card`, and the Prose `h2`/`h3`
-stepped up to 26px/21px.
+All six roles: `oneLine`, `description`, `responsibilities`, `lookingFor`. Nothing rewritten,
+expanded, or padded; no closing lines added; short bullets left short.
 
-## 3. The mark
+Applied by locating each role's object literal by slug and substituting those four fields
+only, so `selectivity`, `commitment`, `regions`, `formUrl` and `formNote` were untouched and
+no neighbouring data moved. `updatedAt` stamped to 2026-08-17. Scanned the result for the
+banned adjectives — none present.
 
-`src/components/AtlasMark.tsx` — your two paths verbatim on `0 0 170 160`. Three exports:
-`AtlasMark`, `AtlasLockup` (horizontal and stacked), and the `MarkTone` type. The old
-letter-in-a-box `AtlasLogo` is deleted; nav and footer use the lockup.
+Verified verbatim by asserting exact substrings from each block render on the page, including
+"Sessions need scheduling. Forms need chasing. Submissions go missing." and "The goal is that
+they need you less by the end."
 
-**16px legibility, verified by rasterising the geometry rather than eyeballing it:**
+## 4. OG image regenerated with the real face
 
-```
-  ...#######......      the large block reads as a widening diagonal
-  ....#######.....
-  ......#######...
-  ....++#######...      the leg enters at lower-left
-  ..+++++#######..
-  .++++++.######..      counter visible on the lower rows
-```
+Instrument Serif and Archivo were fetched from Google Fonts and installed to
+`~/Library/Fonts`, so `qlmanage` now rasterises the wordmark in Instrument Serif rather than
+the Georgia fallback. **No project dependency added.** I read the PNG back to confirm the face
+changed rather than trusting that installing the font was enough — the letterforms are
+visibly the narrower, higher-contrast Instrument Serif.
 
-It resolves. Worth knowing *why*: at 16px the leg and the main stroke are only separated by a
-geometric gap on the bottom two rows — above that, the two tones (ink vs faint) do the work.
-So the mark reads at favicon size **because it is two-tone**. A single-colour version of this
-geometry would fill in. If you ever need a mono version, it needs a real gap cut into it.
+Note this installed two fonts on your machine (in `~/Library/Fonts`, user-level, no sudo).
+You authorised installing locally; flagging it because it is outside the repo.
 
-## 4. Favicon and OG
+## 5. Statement panel
 
-- `public/favicon.svg` — the mark, ink on white.
-- `public/apple-touch-icon.png` — **180×180, produced locally**.
-- `public/og.svg` and `public/og.png` — **1200×630, produced locally.**
-- Deleted `public/og-globe.png` and `public/logo-plate.jpeg`.
+Unchanged, on ink.
 
-**No PNG conversion is outstanding.** I found `qlmanage` (a macOS built-in) rasterises SVG,
-so no dependency was added. Its first output was wrong — it scales to fill a square and
-cropped the OG artwork — so I rendered from a 1200×1200 canvas with the artwork centred at
-y=285 and centre-cropped 630 rows with `sips`. I then read the result back to confirm the
-frame is correct rather than trusting the dimensions.
+---
 
-One caveat: the PNGs were rasterised on a machine without Instrument Serif installed, so the
-wordmark in `og.png` fell back to a Georgia-like face. It reads correctly and is on-brand for
-a serif, but it is not the exact face. `og.svg` is correct wherever the font is available.
+# Phase 12 — live Google Sheet source
 
-## 5. Get Involved
+## `src/lib/groupsSource.ts`
 
-`/get-involved`, in the nav and footer, anchored at `#researchers` and `#students`.
+`RESEARCH_GROUPS_CSV_URL` starts `null`. While null the site renders the fallback dataset, so
+nothing breaks before wiring.
 
-**Researchers first.** An invitation with four contributions, each a paragraph and one next
-step: guest session, mentoring, journal review, institutional partnership (pointing at
-Partners). Each ends in a prefilled mailto. No names, no advisor grid, nothing implying anyone
-has signed up — a `CONTRIBUTORS` array ships empty and renders a row when filled.
+**The CSV parser is a real parser**, hand-written, no dependency. It handles quoted fields
+containing commas, quoted fields containing newlines, escaped `""` quotes, CRLF and lone-CR
+line endings, and a UTF-8 BOM. All of those come out of Google Sheets — a single comma in an
+abstract is enough to break a naive split. 31 parser and validation checks cover the edge
+cases, including `","` as a whole field.
 
-Two things I was deliberate about:
+**Validation skips and logs rather than throwing.** A row with an unknown Field, Status,
+Setting, or OutputType, or missing any required field, is skipped with a console warning
+naming the row and the reason. One bad row cannot blank the directory, and a half-populated
+card never renders.
 
-- **The objection is answered in the first paragraph**, not the footer: "Guest sessions are
-  conversational — no lecture, no slides, no preparation expected."
-- **The mentoring commitment is stated honestly** — "two to four hours a term, spread across
-  three or four checkpoints, plus reading a draft near the end. It is not weekly, and it is
-  not open-ended." Understating it would produce mentors who quit.
+Behaviour as specified: only `Published` = `yes` (case-insensitive) is returned; blank slugs
+derive from the title; collisions get a numeric suffix and a warning; `MemberCount` defaults
+to 0; `Methods`/`Milestones` split on pipes and trim; `image` is null unless **both** src and
+alt are present; abstracts keep blank-line paragraphs.
 
-**Students** renders entirely from `openings.ts`, grouped by `CATEGORY_LABEL`, research group
-roles first. Every role shows title, area, commitment, selectivity, one-line, full
-description, responsibilities, what we look for, and deadline (or "Rolling"). RYD lists its
-ten regions. Closed roles still render, marked closed, no link. Null `formUrl` renders
-"Opening soon". Asserted: all six roles present, adding one still requires only `openings.ts`.
+**Caching** holds the *promise*, not just the result, so concurrent first-render callers share
+one request rather than firing three.
 
-Homepage gets a one-line entry point with two links — a hairline strip, not a section.
+**Fallback** on non-200, timeout (8s via `AbortController`), zero published rows, or an HTML
+response. That last case matters: un-publishing a Sheet makes Google serve an error *page*
+with a 200 status, which would otherwise parse as garbage CSV — it's detected by sniffing for
+a leading `<`.
 
-## 6. Visual elements
+## Column contract
 
-- **Citation network** (`visuals/CitationNetwork.tsx`) — 26 nodes, 0.5px edges, ink and faint.
-  Positions come from a **seeded PRNG, not `Math.random`**, so the graph is identical on every
-  load: a layout that reshuffles per visit reads as decoration, one that is stable reads as a
-  diagram. Drift is ~0.055px/frame, throttled to 20fps. Under reduced motion the loop never
-  starts.
-- **Field wheel** (`visuals/FieldWheel.tsx`) — eight fields radially on a hairline circle,
-  spokes to centre, each a link to the pre-filtered directory. Static. Labels are HTML rather
-  than SVG `<text>` because SVG text cannot wrap and four field names are two words; they're
-  placed by angle and aligned outward. Collapses to a list below md.
-- **Statement panel** — Instrument Serif at `.type-panel` on ink: "A question, a method, and
-  limitations stated honestly." A factual statement about the work, attributed to no one.
-- **Hatch dividers** — 40px diagonal hatch via SVG `pattern`, faint at 0.4 opacity. The `id`
-  prop is **required**, because two dividers sharing a pattern id silently break the second.
-- **Brief preview** — drawn page: title bar, ruled lines, figure block with axes and bars,
-  citation block, two labels. Ruled lines are abstract rather than lorem, since fake sentences
-  invite reading.
-- **Marginal spine** — hairline down the left of each numbered section, drawn on the inner
-  column so it aligns with the content gutter rather than the viewport edge. lg and up.
+Documented verbatim at the top of the file. Columns match **by header name**, so reordering is
+safe and renaming is not — a renamed required column skips every row, a renamed optional one
+blanks that field. Both behaviours are asserted.
 
-Homepage order: hero · 01 groups · 02 events · 03 process · hatch · statement panel ·
-04 fields · 05 output · 06 proof · get-involved line · hatch · fellowship · FAQ · closing.
+## Wiring
 
-**A judgement call on band count:** you capped navy bands at two per page, and there are now
-three ink surfaces — proof band, closing CTA, and the statement panel. I read the panel as a
-typographic rule rather than a section: it has no heading, no numeral, and no content. The two
-ink *sections* are still proof and closing, and no two dark surfaces are adjacent. Say the
-word if you want the panel on paper instead.
+Directory, homepage featured cards, and brief pages all read through `useResearchGroups`.
+No page imports the static array any more.
 
-Also unnumbered the fellowship strip so the spine reads a clean 01–06; it is a secondary
-programme, not a pillar.
+**A bug my own test caught.** The hook first initialised to `[]` and filled in via
+`useEffect`. With no Sheet configured that meant the first paint rendered an empty
+directory — "No groups match those filters" — for one frame, even though the fallback data was
+already in the bundle and needed no await. Fixed with `initialResearchGroups()`, which seeds
+state synchronously when there is nothing to fetch. Worth noting the three failures were real,
+not artefacts of the SSR harness.
 
-## 7. Sweep
+Skeletons match the real card dimensions — same header min-heights, same padding, same row
+count — so swapping in real cards causes no layout shift. No pulse animation: the motion
+budget is the globe and the citation network, and a shimmering grid would out-busy both. The
+brief page renders a matching skeleton and only 404s **after** the fetch resolves, so an
+existing group never shows "no research group at this address".
 
-Globe: white sphere, ink markers, faint rim. FieldIcon verified inheriting `currentColor` on
-both grounds. Card header tints are now four greys `#0E0E10 → #1B1B1F → #2A2A2F → #3A3A40`,
-still keyed to field index. `StatusChip`'s `onNavy` became `onInk`. Paper grain lifted from
-0.035 to 0.055 rect opacity — at the old value it was invisible on pure white.
+`src/data/research-groups.ts` is relabelled as the fallback dataset in both its file header
+and the array comment, and says editing it does not change the site once the Sheet is live.
+Its **types stay authoritative** — that is what Sheet rows are validated against.
 
-## 8. Verification grep
+## Template and docs
 
-Everything found and fixed:
+`scripts/generate-sheet-template.mjs` → `notes/research-groups-template.csv`: the exact 20
+column headers plus two example rows from the seed data, one Recruiting with no image and one
+Completed with a review status, so both ends of the lifecycle are visible. Runs under plain
+node, no dependency, RFC 4180 quoting.
 
-| Found | Where | Action |
-| --- | --- | --- |
-| Full navy palette, Spectral, Inter, `#FAFAF9` | `public/apply.html`, `public/privacy.html` | converted to monochrome + new fonts |
-| Navy palette table, Spectral rule, old routes | `README.md` | design-system section rewritten |
-| `ResearchGroups` in role prose ("supports new ResearchGroups") | `src/data/openings.ts` | fixed — identifier bleed from the Phase 5 rename that had been sitting in user-visible copy |
-| `ink-hi` (not a token) | `Prose.tsx`, `ResearchGroupCard.tsx` | replaced with underline hover |
-| `focus:border-accent`, `accent-accent` | `DirectoryFilters.tsx` | → ink |
-| "NAVY FULL-BLEED" | `Closing.tsx`, `ProofBand.tsx` | → INK |
-| `#26262A` × 15 | components | tokenised as `ink-hover` |
+I round-tripped the generated file through the real parser rather than eyeballing it: 20
+columns, 2 rows, both validating, 3 abstract paragraphs each, pipe lists splitting correctly.
 
-`navy`, `#1C3F5E`, `#4A7295`, `#6B8CAE`, `#2A5A82`, `Spectral`, `brass` — all absent from
-`src/`, `public/`, `index.html`, `tailwind.config.ts`, and `README.md`. Every rendered page
-asserted to emit only sanctioned hex values.
+`notes/managing-research-groups.md` covers publishing to the web and finding the CSV URL,
+where to paste it, publishing a group, changing status, unpublishing, images, the pipe
+convention, abstracts, slugs, renamed columns, and reading the console. It also covers two
+things worth knowing that the brief did not ask for: Google caches published CSVs for about
+five minutes, and `Published = no` versus `Status = Archived` mean different things — the doc
+says not to delete rows, because a deleted row kills any shared link to that brief.
+
+## Constraints honoured
+
+No dependency added (`@vercel/analytics, clsx, cobe, react, react-dom, react-router-dom,
+tailwind-merge` — unchanged). No auth. No admin UI.
+
+---
+
+## Verification
 
 ```
-PASS  /                                               61515b
-PASS  /research-groups                                18658b
-PASS  /get-involved                                   37765b
-PASS  /journal/placeholder-working-paper               6552b
+PASS  /                                               50602b
+PASS  /research-groups                                 8844b
+PASS  /research-groups/placeholder-model-card-review   4030b
+PASS  /get-involved                                   29315b
 …all 11 routes clean
-all checks passed
+
+PASS  lockup has no descriptor line      PASS  Youth Research TA present
+PASS  Fellowship Mentor gone             PASS  old slugs gone
+PASS  lead oneLine verbatim              PASS  TA description verbatim
+PASS  CSV url starts null                PASS  falls back to seed data
+PASS  cache returns the same promise     PASS  directory renders fallback groups
+PASS  brief renders for a fallback slug  PASS  no skeleton when sheet unconfigured
+
+all checks passed   (36 render + 31 parser/validation)
 ```
 
-Bundle: 315 KB → 330 KB JS (104 KB gzipped); CSS 23.1 → 25.6 KB. The increase is the
-visual components and the Get Involved page.
+Every page still scanned for off-token hex values and the banned-string list.
 
 ---
 
 ## Open
 
-- **`reach.ts` still asserts a real fellow in each of 20 countries.** Unverifiable by me and
-  ships visible. Unchanged from Phase 7.
-- **`og.png`'s wordmark is a Georgia fallback**, not Instrument Serif — see above. Regenerate
-  on a machine with the font if that matters.
+- **`reach.ts` still asserts a real fellow in each of 20 countries.** Unverifiable by me,
+  ships visible. Unchanged since Phase 7.
+- **`MemberApplicationUrl` is parsed and carried but unused**, per the brief — Phase 13.
+- **"Research Group Leader" vs "Research Group Lead"** — see above.

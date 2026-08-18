@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
-import { isVisibleByDefault, RESEARCH_GROUPS } from "@/data/research-groups";
+import { isVisibleByDefault } from "@/data/research-groups";
+import { useResearchGroups } from "@/lib/useResearchGroups";
+import { GroupCardSkeleton } from "@/components/research-groups/GroupCardSkeleton";
 import { ResearchGroupCard } from "@/components/research-groups/ResearchGroupCard";
 import { Section } from "./Section";
 
@@ -12,14 +14,19 @@ import { Section } from "./Section";
  *
  * Archived groups are excluded by the same isVisibleByDefault() rule the
  * directory uses, so a dissolved group can never be featured.
+ *
+ * Reads through useResearchGroups, so this reflects the live Sheet.
  */
 export function FeaturedGroups() {
-  const featured = RESEARCH_GROUPS.filter(isVisibleByDefault)
+  const { groups, loading } = useResearchGroups();
+
+  const featured = groups
+    .filter(isVisibleByDefault)
     .slice()
     .sort((a, b) => b.startedAt.localeCompare(a.startedAt))
     .slice(0, 6);
 
-  if (featured.length === 0) return null;
+  if (!loading && featured.length === 0) return null;
 
   const [lead, ...rest] = featured;
 
@@ -38,12 +45,25 @@ export function FeaturedGroups() {
       }
     >
       <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-        <div className="md:col-span-2">
-          <ResearchGroupCard group={lead} featured />
-        </div>
-        {rest.map((group) => (
-          <ResearchGroupCard key={group.slug} group={group} />
-        ))}
+        {loading ? (
+          <>
+            <div className="md:col-span-2">
+              <GroupCardSkeleton featured />
+            </div>
+            {Array.from({ length: 4 }, (_, i) => (
+              <GroupCardSkeleton key={i} />
+            ))}
+          </>
+        ) : (
+          <>
+            <div className="md:col-span-2">
+              <ResearchGroupCard group={lead} featured />
+            </div>
+            {rest.map((group) => (
+              <ResearchGroupCard key={group.slug} group={group} />
+            ))}
+          </>
+        )}
       </div>
     </Section>
   );

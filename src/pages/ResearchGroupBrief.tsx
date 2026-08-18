@@ -1,11 +1,11 @@
 import { Link, useParams } from "react-router-dom";
 import {
   canApply,
-  RESEARCH_GROUPS,
   type ResearchGroup,
   type ReviewStatus,
   type Setting,
 } from "@/data/research-groups";
+import { useResearchGroups } from "@/lib/useResearchGroups";
 import { findOpening, isFormPending } from "@/data/openings";
 import { StatusChip } from "@/components/research-groups/StatusChip";
 import { FieldIcon } from "@/components/FieldIcon";
@@ -32,13 +32,56 @@ const REVIEW_LABEL: Record<ReviewStatus, string> = {
   published: "Reviewed, accepted, and published",
 };
 
-/** Long-form brief for a single research group. Light reading mode. */
+/**
+ * Long-form brief for a single research group.
+ *
+ * Reads through useResearchGroups, so a group published in the Sheet is
+ * reachable at its slug without a deploy.
+ *
+ * The 404 is only rendered AFTER the fetch resolves. Rendering it while the
+ * request is outstanding would show "no research group at this address" for a
+ * group that does exist.
+ */
 export function ResearchGroupBrief() {
   const { slug } = useParams<{ slug: string }>();
-  const group = RESEARCH_GROUPS.find((g) => g.slug === slug);
+  const { groups, loading } = useResearchGroups();
 
+  if (loading) return <BriefSkeleton />;
+
+  const group = groups.find((g) => g.slug === slug);
   if (!group) return <BriefNotFound />;
   return <Brief group={group} />;
+}
+
+/** Matches the brief's header and column layout, so nothing shifts. */
+function BriefSkeleton() {
+  return (
+    <div aria-hidden className="bg-paper">
+      <header className="border-b border-line">
+        <div className="mx-auto max-w-4xl px-6 pt-12 md:pt-16 pb-10">
+          <div className="h-3 w-40 rounded bg-line" />
+          <div className="mt-7 h-3 w-56 rounded bg-line" />
+          <div className="mt-5 h-10 w-4/5 rounded bg-line" />
+          <div className="mt-4 h-4 w-2/3 rounded bg-line" />
+        </div>
+      </header>
+      <div className="mx-auto max-w-4xl px-6 py-12 grid lg:grid-cols-[1fr_260px] gap-12 lg:gap-16 items-start">
+        <div className="space-y-3">
+          {Array.from({ length: 9 }, (_, i) => (
+            <div key={i} className="h-3 rounded bg-line" style={{ width: `${95 - i * 4}%` }} />
+          ))}
+        </div>
+        <div className="rounded-card border border-line p-6 space-y-4">
+          {Array.from({ length: 6 }, (_, i) => (
+            <div key={i} className="space-y-1.5">
+              <div className="h-2.5 w-20 rounded bg-line" />
+              <div className="h-3 w-32 rounded bg-line" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }
 
 function Brief({ group }: { group: ResearchGroup }) {
