@@ -102,6 +102,13 @@ export type ResearchGroup = {
   reviewStatus: ReviewStatus;
   /** 16:9 card image, or null to render the typographic fallback. */
   image: GroupImage | null;
+  /**
+   * Per-group override for the join form, from the Sheet's
+   * MemberApplicationUrl column. When absent or null, the shared member
+   * application is used, prefilled with this group's title. See
+   * src/lib/memberApplication.ts.
+   */
+  memberApplicationUrl?: string | null;
 };
 
 /** Statuses hidden from the directory unless explicitly filtered for. */

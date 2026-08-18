@@ -5,7 +5,7 @@ import {
   type ResearchGroup,
   type Setting,
 } from "@/data/research-groups";
-import { findOpening, isFormPending } from "@/data/openings";
+import { memberApplicationUrl } from "@/lib/memberApplication";
 import { FieldIcon } from "@/components/FieldIcon";
 import { StatusChip } from "./StatusChip";
 import { cn } from "@/lib/utils";
@@ -51,8 +51,10 @@ function inkForField(field: Field): string {
  * status chip. When a real image exists the image takes the block and the
  * title moves below it.
  *
- * The Apply action is gated on canApply() (Recruiting only) and its URL comes
- * from the Research Group Leader opening, never hardcoded here.
+ * The Apply action is gated on canApply() — Recruiting only — and points at the
+ * MEMBER application, prefilled with this group's title. It must never point at
+ * the start-a-group form; those are different questions for different people.
+ * See src/lib/memberApplication.ts.
  */
 export function ResearchGroupCard({
   group,
@@ -63,8 +65,6 @@ export function ResearchGroupCard({
   featured?: boolean;
 }) {
   const applyable = canApply(group);
-  const opening = findOpening("chapter-leader");
-  const formPending = !opening || isFormPending(opening);
   const hasImage = Boolean(group.image);
 
   const place = [group.schoolOrCommunityName, group.location]
@@ -169,25 +169,16 @@ export function ResearchGroupCard({
             Read the brief
           </Link>
 
-          {applyable &&
-            (formPending ? (
-              <span
-                aria-disabled="true"
-                title="The Research Group Leader form is not open yet"
-                className="rounded-control border border-line px-4 py-2 text-sm text-muted cursor-not-allowed"
-              >
-                Opening soon
-              </span>
-            ) : (
-              <a
-                href={opening.formUrl as string}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-control bg-ink text-paper px-4 py-2 text-sm hover:bg-ink-hover transition-colors"
-              >
-                Apply to join
-              </a>
-            ))}
+          {applyable && (
+            <a
+              href={memberApplicationUrl(group)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-control bg-ink text-paper px-4 py-2 text-sm hover:bg-ink-hover transition-colors"
+            >
+              Apply to join
+            </a>
+          )}
         </div>
       </div>
     </article>

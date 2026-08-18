@@ -6,7 +6,7 @@ import {
   type Setting,
 } from "@/data/research-groups";
 import { useResearchGroups } from "@/lib/useResearchGroups";
-import { findOpening, isFormPending } from "@/data/openings";
+import { memberApplicationUrl } from "@/lib/memberApplication";
 import { StatusChip } from "@/components/research-groups/StatusChip";
 import { FieldIcon } from "@/components/FieldIcon";
 import { Prose, ProseParagraphs } from "@/components/Prose";
@@ -86,8 +86,6 @@ function BriefSkeleton() {
 
 function Brief({ group }: { group: ResearchGroup }) {
   const applyable = canApply(group);
-  const opening = findOpening("chapter-leader");
-  const formPending = !opening || isFormPending(opening);
 
   const place = [group.schoolOrCommunityName, group.location]
     .filter(Boolean)
@@ -162,23 +160,22 @@ function Brief({ group }: { group: ResearchGroup }) {
 
           {applyable && (
             <div className="mt-6 pt-5 border-t border-line">
-              {formPending ? (
-                <span
-                  aria-disabled="true"
-                  className="block text-center rounded-control border border-line px-4 py-2.5 text-sm text-muted cursor-not-allowed"
-                >
-                  Opening soon
-                </span>
-              ) : (
-                <a
-                  href={opening.formUrl as string}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block text-center rounded-control bg-ink text-paper px-4 py-2.5 text-sm hover:bg-ink-hover transition-colors"
-                >
-                  Apply to join
-                </a>
-              )}
+              <a
+                href={memberApplicationUrl(group)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block text-center rounded-control bg-ink text-paper px-4 py-2.5 text-sm hover:bg-ink-hover transition-colors"
+              >
+                Apply to join
+              </a>
+              {/*
+                What happens next, stated plainly. No response time is
+                promised — leads are students, and a deadline nobody owns
+                becomes a broken promise.
+              */}
+              <p className="mt-3 text-xs text-muted leading-relaxed">
+                This group's lead reviews applications and decides who joins.
+              </p>
             </div>
           )}
         </aside>

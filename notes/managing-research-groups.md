@@ -222,7 +222,73 @@ Common causes:
 - **"Publish to web" was undone** — Google then serves an HTML error page
   instead of CSV, which is detected and treated as unreachable.
 
-## 12. What still needs code
+## 12. The two application forms
+
+There are **two different Google Forms**, and they are for different people.
+
+| Form | Who it is for | Where it is set |
+| --- | --- | --- |
+| **Research Group Application** | Someone who wants to **start** a group and lead it | `formUrl` on the Research Group Leader role in `src/data/openings.ts` |
+| **Member application** | Someone who wants to **join** an existing group | `src/lib/memberApplication.ts` |
+
+Every "Start a research group" button uses the first. Every "Apply to join" on a
+specific group uses the second. They are never interchangeable — a prospective
+member sent to the start form gets asked how they will recruit a team.
+
+### The join action only appears on Recruiting groups
+
+"Apply to join" shows on a group only when its **Status** is `Recruiting`.
+Change the status to `Full`, `In Progress`, `Completed`, or `Archived` and the
+join button disappears from both the card and the brief page. That is how you
+close a group to new members: **change the Status, not the form.**
+
+### How the prefill works
+
+The join form's first question asks which group the applicant is applying to.
+The site fills that in automatically by appending the group's **ProjectTitle** to
+the form URL, so an applicant never has to pick from a list or type it correctly.
+
+You do not need to do anything for this to work. It uses whatever is in the
+ProjectTitle cell, so if you rename a group in the Sheet, the prefill follows.
+
+Titles with spaces, colons, and ampersands are handled — they are URL-encoded,
+so "Placeholder: Costs & Pricing" arrives intact rather than being cut off at
+the ampersand.
+
+### What breaks the prefill
+
+The prefill is tied to the **identity of question 1** in the join form, not to
+its wording. So:
+
+- **Safe:** editing question 1's wording, its help text, or making it required.
+- **Breaks it silently:** deleting question 1 and adding it back. Google issues a
+  new field ID, and the group name then fills nothing.
+- **Breaks it worse:** reordering questions so a different question is first.
+  The group name lands in the wrong field.
+
+If either happens, the fix is to get a fresh prefilled link from Google —
+**Send → Get pre-filled link**, fill in the group-name field with any text, then
+copy the link — and update `MEMBER_APPLICATION_BASE_URL` and
+`MEMBER_APPLICATION_ENTRY_ID` in `src/lib/memberApplication.ts`. That is a code
+change and a deploy.
+
+Worth testing after any edit to the join form: open a Recruiting group's brief,
+click "Apply to join", and check the group name is already filled in.
+
+### Overriding the join form for one group
+
+If a lead wants to run their own application form for their group, put its URL
+in that group's **MemberApplicationUrl** cell. That group's "Apply to join" then
+opens that URL instead of the shared form, and no prefill is attempted — their
+form, their questions.
+
+Leave the cell blank for every group that should use the shared form. That is
+the normal case.
+
+Note that a custom form gets no group-name prefill, so it should ask which group
+the applicant means, or be specific to one group by its wording.
+
+## 13. What still needs code
 
 Everything else is the Sheet. These are not:
 
