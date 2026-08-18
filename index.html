@@ -19,11 +19,18 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content="/og.png" />
     <!--
-      Favicon is the Atlas mark (src/components/AtlasMark.tsx), kept in sync by
-      hand: public/favicon.svg carries the same two paths. If the mark geometry
-      changes, update favicon.svg, apple-touch-icon.png, og.svg, and og.png.
+      Favicon set is the Atlas mark (src/components/AtlasMark.tsx), kept in sync
+      by hand — every file below carries the same two paths. If the mark geometry
+      changes, regenerate favicon.svg, favicon.ico, favicon-32.png,
+      apple-touch-icon.png, og.svg, and og.png together.
+
+      Multiple formats on purpose: SVG for current browsers, .ico for older ones
+      and for crawlers that only look for /favicon.ico, and a 32px PNG for the
+      ones that take neither.
     -->
+    <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

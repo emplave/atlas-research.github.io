@@ -24,7 +24,8 @@ type Errors = Partial<Record<FieldName, string>>;
  *
  * There is deliberately NO path to /apply.html from this page. The waitlist
  * form posts directly to WAITLIST_ENDPOINT — the same live Apps Script backend
- * /apply.html used — so submissions land in the same sheet.
+ * /apply.html used — so submissions land in the same sheet, using the same
+ * no-cors pattern (see the comment on the fetch below for why).
  *
  * Validation runs in JS rather than relying on the browser's `required`
  * attribute alone, so the messages are ours and are announced at the field.
@@ -55,17 +56,39 @@ export function Fellowship() {
     setErrors({});
     setState("sending");
     try {
-      const res = await fetch(WAITLIST_ENDPOINT, {
+      /*
+       * THE RESPONSE IS OPAQUE BY NECESSITY. Do not "improve" this by reading
+       * res.ok or removing mode: "no-cors".
+       *
+       * The Apps Script /exec endpoint answers a POST with a 302 to
+       * script.googleusercontent.com. That redirect target sends NO
+       * Access-Control-Allow-Origin header, so a normal CORS-mode fetch follows
+       * the redirect, fails the CORS check, and rejects — even though the POST
+       * itself was already processed and the row was written. The visitor would
+       * be told it failed when it had not.
+       *
+       * mode: "no-cors" sends the request opaquely, which is what public/
+       * apply.html has always done and what is known to work. The cost is that
+       * the response is unreadable: status is 0 and res.ok is always false.
+       *
+       * So "sent" below is OPTIMISTIC. It means "the request left the browser",
+       * not "the server accepted it". A genuine server-side failure is not
+       * detectable here, and pretending otherwise would need a CORS-enabled
+       * endpoint.
+       */
+      await fetch(WAITLIST_ENDPOINT, {
         method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           kind: "Fellowship waitlist",
           ...data,
           submittedAt: new Date().toISOString(),
         }),
       });
-      setState(res.ok ? "sent" : "error");
+      setState("sent");
     } catch {
+      // Only a network-level failure reaches here; an HTTP error cannot.
       setState("error");
     }
   };
