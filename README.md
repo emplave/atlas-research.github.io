@@ -23,33 +23,51 @@ Vercel auto-detects Vite. Build command `npm run build`, output directory
 
 ## Design system
 
-Light mode only. There is no dark mode and no per-route polarity.
-
-Tokens live in `tailwind.config.ts`:
+Light mode only, and **pure monochrome — there is no accent colour.** Tokens live
+in `tailwind.config.ts`:
 
 | Token | Value | Job |
 | --- | --- | --- |
-| `paper` | `#FAFAF9` | page background |
-| `surface` | `#FFFFFF` | cards, raised surfaces |
-| `ink` | `#16191D` | primary text |
-| `muted` | `#5A6169` | secondary text |
-| `line` | `#E2E0DA` | hairline borders |
-| `navy` | `#1C3F5E` | headings, primary buttons, section bands |
-| `navy-hi` | `#2A5A82` | hover |
-| `accent` | `#1C3F5E` | links |
-| `alert` | `#B3402F` | errors only |
+| `paper` | `#FFFFFF` | page background |
+| `surface` | `#F5F5F6` | cards, raised surfaces, alternating sections |
+| `line` | `#E4E4E6` | hairline borders |
+| `ink` | `#0E0E10` | primary text, primary buttons, dark bands |
+| `ink-hover` | `#26262A` | primary button hover only |
+| `muted` | `#57575C` | secondary text |
+| `faint` | `#8A8A92` | eyebrows, meta labels, tertiary text |
+| `alert` | `#B3402F` | form errors only |
 
 Rules that are easy to break by accident:
 
-- **Navy full-bleed bands appear at most twice per page.** On the homepage they
-  are the proof band and the closing CTA. A third turns a light page striped.
-  Bands carry the `on-navy` class so headings render white instead of navy.
-- **Spectral (`font-display`) never exceeds weight 500.** A base rule pins
-  `h1`–`h4` to 400.
-- **Primary buttons** are `bg-navy` + white text. **Secondary** are white with a
-  navy border and navy text. Links are navy and underlined.
+- **Never colour a link.** Links are ink with a 1px underline that thickens to
+  2px on hover — the `.link` utility. There is no link colour to reach for.
+- **If a design problem seems to need a colour, it needs size, spacing, or a
+  rule instead.** `alert` is the only non-grey token and it is form errors only.
+- **Instrument Serif has ONE weight (400).** There is no bold cut. Where a
+  heavier heading is wanted, use size and spacing — never `font-weight`.
+- **Ink full-bleed bands are rationed.** On the homepage: the proof band, the
+  closing CTA, and the statement panel. Bands carry `on-ink` so headings render
+  paper instead of ink.
+- **Primary buttons** are `bg-ink` + paper text. **Secondary** are paper with a
+  `line` border and ink text.
+- Type scale utilities: `.type-hero`, `.type-section`, `.type-panel`,
+  `.type-card`, `.type-body` (fixed 17px). The contrast between the display
+  sizes and the fixed body is the effect.
 - Radii: `rounded-card` (10px) for cards, `rounded-control` (6px) for controls.
-- **Hover states only.** No scroll-entrance or staggered animation.
+- **Hover states only.** No scroll-entrance or staggered animation. The only
+  motion is the globe's rotation and the citation network's drift, both static
+  under `prefers-reduced-motion`.
+
+### Brand mark
+
+`src/components/AtlasMark.tsx` exports `AtlasMark` (mark alone) and
+`AtlasLockup` (mark plus wordmark and tagline, horizontal or stacked). The
+geometry is two fixed paths on a `0 0 170 160` viewBox — do not nudge them, the
+counter is what makes the pair read as an A and it is already tight at 16px.
+
+`public/favicon.svg`, `public/apple-touch-icon.png`, `public/og.svg` and
+`public/og.png` carry the same geometry by hand. Change the mark and all four
+need regenerating.
 
 ## Data layer — edit these, never a page
 
@@ -124,7 +142,7 @@ and rules before adding any.
 ## Routes
 
 `/` · `/research-groups` · `/research-groups/:slug` · `/events` · `/journal` ·
-`/journal/:slug` · `/fellowship` · `/partners`
+`/journal/:slug` · `/get-involved` · `/fellowship` · `/partners` · `/privacy`
 
 `/chapters`, `/chapters/:slug`, and `/apply` redirect to their current
 equivalents so older links keep working.

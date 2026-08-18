@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { AtlasLogo } from "./AtlasLogo";
+import { AtlasLockup } from "./AtlasMark";
 import { findOpening, isFormPending } from "@/data/openings";
 import { cn } from "@/lib/utils";
 
@@ -14,6 +14,7 @@ const LINKS = [
   { to: "/research-groups", label: "Research Groups" },
   { to: "/events", label: "Events" },
   { to: "/journal", label: "Journal" },
+  { to: "/get-involved", label: "Get Involved" },
   { to: "/fellowship", label: "Fellowship" },
   { to: "/partners", label: "Partners" },
 ];
@@ -27,7 +28,7 @@ export function Nav() {
     <header className="sticky top-0 z-50 bg-paper/95 backdrop-blur border-b border-line">
       <nav className="mx-auto max-w-6xl px-6 h-16 flex items-center justify-between gap-6">
         <Link to="/" aria-label="Atlas Research Institute — home">
-          <AtlasLogo />
+          <AtlasLockup />
         </Link>
 
         <div className="hidden md:flex items-center gap-7">
@@ -40,7 +41,7 @@ export function Nav() {
                 aria-current={active ? "page" : undefined}
                 className={cn(
                   "text-sm transition-colors",
-                  active ? "text-navy" : "text-muted hover:text-navy"
+                  active ? "text-ink" : "text-muted hover:text-ink"
                 )}
               >
                 {l.label}
@@ -61,7 +62,7 @@ export function Nav() {
             href={opening.formUrl as string}
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded-control bg-navy text-white text-sm px-4 py-2 hover:bg-navy-hi transition-colors"
+            className="rounded-control bg-ink text-paper text-sm px-4 py-2 hover:bg-ink-hover transition-colors"
           >
             Start a group
           </a>

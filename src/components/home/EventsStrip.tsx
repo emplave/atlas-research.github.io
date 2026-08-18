@@ -26,7 +26,7 @@ export function EventsStrip() {
       action={
         <Link
           to="/events"
-          className="text-sm text-accent underline underline-offset-4 hover:text-navy-hi transition-colors"
+          className="text-sm link"
         >
           See all events
         </Link>
@@ -34,8 +34,8 @@ export function EventsStrip() {
     >
       <div className="mt-8 grid gap-5 lg:grid-cols-[3fr_2fr]">
         <article className="card-hover rounded-card border border-line bg-paper p-7 md:p-8">
-          <p className="meta-label text-navy/45">Next</p>
-          <p className="mt-3 meta-label text-muted">
+          <p className="meta-label text-faint">Next</p>
+          <p className="mt-3 meta-label">
             {formatEventDate(next.date)}
             {next.time && ` · ${next.time}`}
           </p>
@@ -62,7 +62,7 @@ export function EventsStrip() {
                 key={event.slug}
                 className="card-hover rounded-card border border-line bg-paper p-5"
               >
-                <p className="meta-label text-muted">
+                <p className="meta-label">
                   {formatEventDate(event.date)}
                   {event.time && ` · ${event.time}`}
                 </p>

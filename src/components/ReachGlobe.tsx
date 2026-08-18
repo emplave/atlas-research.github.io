@@ -6,7 +6,7 @@ import { REACH_COUNT, reachMarkers } from "@/data/reach";
  * The reach globe. Renders ONLY from src/data/reach.ts — every marker is a
  * country with a real fellow in it.
  *
- * Tuned to the light palette: paper-toned sphere, navy dots, a hairline rim
+ * Tuned to the monochrome palette: white sphere, ink dots, a faint rim
  * rather than a glow.
  *
  * Rotation is driven by our own rAF loop calling the documented `update()`
@@ -51,9 +51,9 @@ export function ReachGlobe({ className }: { className?: string }) {
       diffuse: 0.85,
       mapSamples: 17000,
       mapBrightness: 1.45,
-      baseColor: [0.965, 0.961, 0.953], // paper  #FAFAF9
-      markerColor: [0.11, 0.247, 0.369], // navy   #1C3F5E
-      glowColor: [0.886, 0.878, 0.855], // line   #E2E0DA
+      baseColor: [1, 1, 1], // paper  #FFFFFF
+      markerColor: [0.055, 0.055, 0.063], // ink    #0E0E10
+      glowColor: [0.541, 0.541, 0.572], // faint  #8A8A92
       markers: reachMarkers().map((location) => ({ location, size: 0.045 })),
     });
 

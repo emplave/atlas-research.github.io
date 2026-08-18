@@ -6,7 +6,7 @@ import type { Field } from "@/data/research-groups";
  * Eight hand-built line icons, one per Field. Deliberately restrained:
  * stroke-only, 1.5px, currentColor, no fills, no gradients, no icon library,
  * no emoji. They inherit color from context so the same icon works on paper,
- * on a navy card header, and inside a filter row.
+ * on an ink card header, and inside a filter row.
  *
  * All eight are drawn on the same 24-unit grid with the same visual weight, so
  * a row of them reads as one set rather than eight borrowed marks. Keep it

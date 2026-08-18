@@ -12,12 +12,11 @@ export function FellowshipStrip() {
       <div className="mx-auto max-w-6xl px-6 py-12 md:py-14">
         <div className="rounded-card border border-line bg-surface p-7 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="max-w-2xl">
-            <div className="flex items-baseline gap-4">
-              <span aria-hidden className="meta-label text-navy/45">06</span>
-              <h2 className="font-display text-xl md:text-2xl">
-                The Atlas Fellowship
-              </h2>
-            </div>
+            {/*
+              Deliberately unnumbered. The spine runs 01-06 across the numbered
+              pillars; the fellowship is a secondary programme, not one of them.
+            */}
+            <h2 className="font-display text-[26px]">The Atlas Fellowship</h2>
             <p className="mt-2.5 text-[15px] text-muted leading-relaxed">
               A selective four-week summer cohort, free and remote. Applications
               for the current cohort are closed. The waitlist is open for the
@@ -26,7 +25,7 @@ export function FellowshipStrip() {
           </div>
           <Link
             to="/fellowship"
-            className="shrink-0 rounded-control border border-navy bg-surface text-navy px-5 py-2.5 text-[15px] text-center hover:bg-navy hover:text-white transition-colors"
+            className="shrink-0 rounded-control border border-line bg-paper text-ink px-5 py-2.5 text-[15px] text-center hover:bg-ink hover:text-paper transition-colors"
           >
             Join the waitlist
           </Link>

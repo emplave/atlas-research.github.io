@@ -63,7 +63,7 @@ function Brief({ group }: { group: ResearchGroup }) {
 
           <div className="mt-7 flex flex-wrap items-center gap-3">
             <span className="inline-flex items-center gap-2 meta-label text-muted">
-              <FieldIcon field={group.field} size={18} className="text-navy" />
+              <FieldIcon field={group.field} size={18} className="text-ink" />
               {group.field}
             </span>
             <StatusChip status={group.status} />
@@ -100,7 +100,7 @@ function Brief({ group }: { group: ResearchGroup }) {
         </Prose>
 
         <aside className="lg:sticky lg:top-24 rounded-card border border-line bg-surface p-6">
-          <h2 className="meta-label text-muted">Group details</h2>
+          <h2 className="meta-label">Group details</h2>
           <dl className="mt-4 space-y-4 text-[15px]">
             <Detail label="Lead">{group.leadName}</Detail>
             <Detail label="Members">{group.memberCount}</Detail>
@@ -131,7 +131,7 @@ function Brief({ group }: { group: ResearchGroup }) {
                   href={opening.formUrl as string}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block text-center rounded-control bg-navy text-white px-4 py-2.5 text-sm hover:bg-navy-hi transition-colors"
+                  className="block text-center rounded-control bg-ink text-paper px-4 py-2.5 text-sm hover:bg-ink-hover transition-colors"
                 >
                   Apply to join
                 </a>
@@ -164,7 +164,7 @@ function Detail({
 }) {
   return (
     <div>
-      <dt className="meta-label text-muted">{label}</dt>
+      <dt className="meta-label">{label}</dt>
       <dd className="mt-1 text-ink">{children}</dd>
     </div>
   );
@@ -186,7 +186,7 @@ function BriefNotFound() {
   return (
     <div className="bg-paper">
       <div className="mx-auto max-w-2xl px-6 py-28 text-center">
-        <p className="meta-label text-muted">Not found</p>
+        <p className="meta-label">Not found</p>
         <h1 className="mt-5 font-display text-4xl">
           No research group at this address.
         </h1>
@@ -195,7 +195,7 @@ function BriefNotFound() {
         </p>
         <Link
           to="/research-groups"
-          className="mt-8 inline-flex items-center gap-2 rounded-control bg-navy text-white px-5 py-2.5 text-sm hover:bg-navy-hi transition-colors"
+          className="mt-8 inline-flex items-center gap-2 rounded-control bg-ink text-paper px-5 py-2.5 text-sm hover:bg-ink-hover transition-colors"
         >
           Browse all research groups
           <span aria-hidden>→</span>

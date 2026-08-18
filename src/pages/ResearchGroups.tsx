@@ -96,7 +96,7 @@ export function ResearchGroups() {
     <div className="bg-paper">
       <section className="border-b border-line">
         <div className="mx-auto max-w-6xl px-6 pt-16 md:pt-24 pb-12">
-          <p className="meta-label text-muted">Research groups · Directory</p>
+          <p className="meta-label">Research groups · Directory</p>
           <h1 className="type-hero font-display max-w-3xl">
             Every Atlas research group.
           </h1>
@@ -135,7 +135,7 @@ export function ResearchGroups() {
                 href={groupOpening.formUrl as string}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex rounded-control bg-navy text-white px-6 py-3 text-[15px] hover:bg-navy-hi transition-colors"
+                className="inline-flex rounded-control bg-ink text-paper px-6 py-3 text-[15px] hover:bg-ink-hover transition-colors"
               >
                 Start a research group
               </a>
@@ -186,7 +186,7 @@ export function ResearchGroups() {
                   href={groupOpening.formUrl as string}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-control bg-navy text-white px-5 py-2.5 text-sm hover:bg-navy-hi transition-colors"
+                  className="rounded-control bg-ink text-paper px-5 py-2.5 text-sm hover:bg-ink-hover transition-colors"
                 >
                   Start a research group
                 </a>
@@ -195,7 +195,7 @@ export function ResearchGroups() {
                 <button
                   type="button"
                   onClick={() => setFilters(EMPTY_FILTERS)}
-                  className="rounded-control border border-navy bg-surface text-navy px-5 py-2.5 text-sm hover:bg-navy hover:text-white transition-colors"
+                  className="rounded-control border border-line bg-paper text-ink px-5 py-2.5 text-sm hover:bg-ink hover:text-paper transition-colors"
                 >
                   Reset filters
                 </button>
@@ -214,7 +214,7 @@ export function ResearchGroups() {
         <div className="mx-auto max-w-6xl px-6 py-16 md:py-20">
           <div className="rounded-card border border-line bg-surface p-8 md:p-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
             <div className="max-w-xl">
-              <p className="meta-label text-muted">
+              <p className="meta-label">
                 {groupOpening?.area ?? "Research Group leadership"}
               </p>
               <h2 className="mt-3 font-display text-2xl md:text-3xl">
@@ -241,7 +241,7 @@ export function ResearchGroups() {
                   href={groupOpening.formUrl as string}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2.5 rounded-control bg-navy text-white pl-6 pr-5 py-3 text-[15px] hover:bg-navy-hi transition-all hover:gap-3.5"
+                  className="inline-flex items-center gap-2.5 rounded-control bg-ink text-paper pl-6 pr-5 py-3 text-[15px] hover:bg-ink-hover transition-all hover:gap-3.5"
                 >
                   Apply to lead a group
                   <span aria-hidden>→</span>

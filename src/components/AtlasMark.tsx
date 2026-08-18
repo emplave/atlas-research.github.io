@@ -1,0 +1,109 @@
+import { cn } from "@/lib/utils";
+
+/**
+ * The Atlas mark — two interlocking angular blocks forming an A.
+ *
+ * The large block is the main diagonal stroke, running top-left to
+ * bottom-right and widening as it falls. The small block is the lower-left
+ * leg. The gap between them is the counter of the A.
+ *
+ * Geometry is fixed. Do not nudge these paths: the counter is what makes the
+ * pair read as a letter rather than two shapes, and it is already tight at
+ * small sizes.
+ *
+ * Legibility floor: 16px. At that size the leg is ~6px wide and the counter
+ * ~4px, which still resolves. Below 16px use the mark alone at a larger size
+ * rather than shrinking it further.
+ */
+const LARGE = "M30 8 L104 8 L154 146 L80 146 Z";
+const SMALL = "M44 100 L74 100 L74 146 L10 146 Z";
+
+/** Grey used for the leg on an ink ground — the `faint` token value. */
+const FAINT = "#8A8A92";
+
+export type MarkTone = "light" | "ink";
+
+export function AtlasMark({
+  size = 32,
+  tone = "light",
+  className,
+  title,
+}: {
+  /** Rendered height in px. The mark is slightly taller than it is wide. */
+  size?: number;
+  /** Ground the mark sits on. */
+  tone?: MarkTone;
+  className?: string;
+  /** Set only when the mark stands alone as the accessible name. */
+  title?: string;
+}) {
+  const large = tone === "ink" ? "#FFFFFF" : "#0E0E10";
+  const small = FAINT;
+
+  return (
+    <svg
+      viewBox="0 0 170 160"
+      height={size}
+      width={(size * 170) / 160}
+      className={cn("shrink-0", className)}
+      role={title ? "img" : undefined}
+      aria-label={title}
+      aria-hidden={title ? undefined : true}
+      focusable="false"
+    >
+      <path d={LARGE} fill={large} />
+      <path d={SMALL} fill={small} />
+    </svg>
+  );
+}
+
+/**
+ * The full lockup: mark, institution name in Instrument Serif, and the
+ * tagline in Archivo small caps beneath.
+ *
+ * The tagline "Student Research Institute" is fixed brand copy. Do not reword.
+ */
+export function AtlasLockup({
+  size = 32,
+  tone = "light",
+  variant = "horizontal",
+  className,
+}: {
+  size?: number;
+  tone?: MarkTone;
+  variant?: "horizontal" | "stacked";
+  className?: string;
+}) {
+  const onInk = tone === "ink";
+  const stacked = variant === "stacked";
+
+  return (
+    <span
+      className={cn(
+        "inline-flex select-none",
+        stacked
+          ? "flex-col items-start gap-2.5"
+          : "flex-row items-center gap-2.5",
+        className
+      )}
+    >
+      <AtlasMark size={size} tone={tone} />
+      <span className="flex flex-col leading-tight">
+        <span
+          className={cn(
+            "font-display text-[17px] leading-none",
+            onInk ? "text-paper" : "text-ink"
+          )}
+        >
+          Atlas Research Institute
+        </span>
+        <span
+          className="font-sans text-[8px] uppercase tracking-lockup mt-1"
+          style={{ color: FAINT }}
+        >
+          Student Research Institute
+        </span>
+      </span>
+    </span>
+  );
+}

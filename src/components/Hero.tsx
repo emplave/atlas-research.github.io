@@ -42,7 +42,7 @@ export function Hero() {
                   href={opening.formUrl as string}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-control bg-navy text-white px-6 py-3 text-[15px] text-center hover:bg-navy-hi transition-colors"
+                  className="rounded-control bg-ink text-paper px-6 py-3 text-[15px] text-center hover:bg-ink-hover transition-colors"
                 >
                   Start a research group
                 </a>
@@ -50,7 +50,7 @@ export function Hero() {
 
               <Link
                 to="/research-groups"
-                className="rounded-control border border-navy bg-surface text-navy px-6 py-3 text-[15px] text-center hover:bg-navy hover:text-white transition-colors"
+                className="rounded-control border border-line bg-paper text-ink px-6 py-3 text-[15px] text-center hover:bg-ink hover:text-paper transition-colors"
               >
                 Browse research groups
               </Link>

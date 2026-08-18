@@ -24,7 +24,7 @@ export function Journal() {
     <div className="bg-paper">
       <section className="border-b border-line">
         <div className="mx-auto max-w-5xl px-6 pt-16 md:pt-24 pb-12">
-          <p className="meta-label text-muted">The Atlas Journal</p>
+          <p className="meta-label">The Atlas Journal</p>
           <h1 className="mt-4 font-display text-4xl md:text-6xl leading-[1.05] max-w-3xl">
             Student research, published in the open.
           </h1>
@@ -45,7 +45,7 @@ export function Journal() {
           <h2 className="font-display text-2xl md:text-3xl">
             Atlas Working Papers
           </h2>
-          <span className="meta-label text-muted">
+          <span className="meta-label">
             Not externally peer reviewed
           </span>
         </div>
@@ -79,7 +79,7 @@ export function Journal() {
             <h2 className="font-display text-2xl md:text-3xl">
               Peer-Reviewed Articles
             </h2>
-            <span className="meta-label text-muted">
+            <span className="meta-label">
               First issue not yet published
             </span>
           </div>
@@ -116,7 +116,7 @@ export function Journal() {
               </div>
 
               <div className="mt-9 pt-7 border-t border-line">
-                <h3 className="meta-label text-muted">What review looks for</h3>
+                <h3 className="meta-label">What review looks for</h3>
                 <ul className="mt-4 grid gap-2.5 md:grid-cols-2 text-[15px] text-muted">
                   <Criterion>
                     A question that is stated clearly and is actually answerable
@@ -146,7 +146,7 @@ export function Journal() {
 
               <div className="mt-9 pt-7 border-t border-line grid gap-7 md:grid-cols-2">
                 <div>
-                  <h3 className="meta-label text-muted">
+                  <h3 className="meta-label">
                     What revision means
                   </h3>
                   <p className="mt-3 text-[15px] text-muted leading-relaxed">
@@ -157,7 +157,7 @@ export function Journal() {
                   </p>
                 </div>
                 <div>
-                  <h3 className="meta-label text-muted">
+                  <h3 className="meta-label">
                     What rejection means
                   </h3>
                   <p className="mt-3 text-[15px] text-muted leading-relaxed">
@@ -188,7 +188,7 @@ function ProcessStep({
 }) {
   return (
     <div>
-      <span className="meta-label text-muted">{step}</span>
+      <span className="meta-label">{step}</span>
       <h3 className="mt-2 font-display text-lg">{title}</h3>
       <p className="mt-2 text-[15px] text-muted leading-relaxed">{body}</p>
     </div>
@@ -219,8 +219,8 @@ function PublicationRow({ publication }: { publication: Publication }) {
   return (
     <li className="card-hover rounded-card border border-line bg-surface p-6">
       <div className="flex flex-wrap items-center gap-3">
-        <span className="meta-label text-muted">{publication.field}</span>
-        <span className="meta-label text-muted">
+        <span className="meta-label">{publication.field}</span>
+        <span className="meta-label">
           {formatPublishedDate(publication.publishedAt)}
         </span>
       </div>
@@ -240,7 +240,7 @@ function PublicationRow({ publication }: { publication: Publication }) {
       <div className="mt-5 flex flex-wrap items-center gap-5">
         <Link
           to={`/journal/${publication.slug}`}
-          className="text-sm text-accent hover:text-navy-hi transition-colors inline-flex items-center gap-1.5"
+          className="text-sm link inline-flex items-center gap-1.5"
         >
           Read the paper
           <span aria-hidden>→</span>

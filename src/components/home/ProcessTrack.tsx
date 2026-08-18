@@ -52,8 +52,8 @@ function Node() {
       aria-hidden="true"
       className="shrink-0"
     >
-      <circle cx="9" cy="9" r="8.25" className="fill-paper stroke-navy" strokeWidth="1.5" />
-      <circle cx="9" cy="9" r="2.75" className="fill-navy" />
+      <circle cx="9" cy="9" r="8.25" className="fill-paper stroke-ink" strokeWidth="1.5" />
+      <circle cx="9" cy="9" r="2.75" className="fill-ink" />
     </svg>
   );
 }
@@ -97,7 +97,7 @@ export function ProcessTrack() {
               </div>
 
               <div className="min-w-0">
-                <span className="meta-label text-navy/45">{step.n}</span>
+                <span className="meta-label text-faint">{step.n}</span>
                 <h3 className="mt-1 font-display text-lg leading-snug">
                   {step.label}
                 </h3>

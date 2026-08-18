@@ -74,7 +74,7 @@ export function Fellowship() {
     <div className="bg-paper">
       <section className="border-b border-line">
         <div className="mx-auto max-w-4xl px-6 pt-16 md:pt-20 pb-12">
-          <p className="meta-label text-muted">
+          <p className="meta-label">
             The Fellowship · A separate programme · Applications closed
           </p>
           <h1 className="type-hero font-display mt-4">
@@ -89,7 +89,7 @@ export function Fellowship() {
             Starting a research group is open now. A student may do both.{" "}
             <Link
               to="/research-groups"
-              className="text-accent underline underline-offset-4 hover:text-navy-hi transition-colors"
+              className="link"
             >
               Browse research groups
             </Link>
@@ -107,7 +107,7 @@ export function Fellowship() {
       */}
       <section className="bg-paper border-t border-line">
         <div className="mx-auto max-w-4xl px-6 py-10">
-          <p className="meta-label text-muted">Guest sessions</p>
+          <p className="meta-label">Guest sessions</p>
           <p className="mt-3 max-w-2xl type-body text-ink">
             Fellows learn from researchers at the University of Melbourne, USC,
             and Stanford.
@@ -117,7 +117,7 @@ export function Fellowship() {
 
       <section id="waitlist" className="bg-surface border-t border-line">
         <div className="mx-auto max-w-2xl px-6 py-12 md:py-16">
-          <p className="meta-label text-muted">Next cohort</p>
+          <p className="meta-label">Next cohort</p>
           <h2 className="type-section font-display mt-4">{DATES.waitlist}</h2>
           <p className="mt-4 text-[15px] text-muted leading-relaxed">
             {DATES.nextCycle}. Joining the waitlist is not an application and
@@ -194,13 +194,13 @@ export function Fellowship() {
                   type="checkbox"
                   name="privacy"
                   required
-                  className="mt-1 accent-navy"
+                  className="mt-1 accent-ink"
                 />
                 <span>
                   I agree to the{" "}
                   <Link
                     to="/privacy"
-                    className="text-accent underline underline-offset-4 hover:text-navy-hi transition-colors"
+                    className="link"
                   >
                     privacy policy
                   </Link>
@@ -211,7 +211,7 @@ export function Fellowship() {
               <button
                 type="submit"
                 disabled={state === "sending"}
-                className="rounded-control bg-navy text-white px-6 py-3 text-[15px] hover:bg-navy-hi transition-colors disabled:opacity-60"
+                className="rounded-control bg-ink text-paper px-6 py-3 text-[15px] hover:bg-ink-hover transition-colors disabled:opacity-60"
               >
                 {state === "sending" ? "Joining" : "Join the waitlist"}
               </button>

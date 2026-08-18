@@ -33,7 +33,7 @@ export function Partners() {
     <div className="bg-paper">
       <section className="border-b border-line">
         <div className="mx-auto max-w-3xl px-6 pt-16 md:pt-24 pb-12">
-          <p className="meta-label text-muted">Partners</p>
+          <p className="meta-label">Partners</p>
           <h1 className="mt-4 font-display text-4xl md:text-5xl leading-[1.06]">
             Work with Atlas.
           </h1>
@@ -118,7 +118,7 @@ export function Partners() {
                     <button
                       type="submit"
                       disabled={state === "sending"}
-                      className="rounded-control bg-navy text-white px-6 py-3 text-[15px] hover:bg-navy-hi transition-colors disabled:opacity-60"
+                      className="rounded-control bg-ink text-paper px-6 py-3 text-[15px] hover:bg-ink-hover transition-colors disabled:opacity-60"
                     >
                       {state === "sending" ? "Sending" : "Send to Atlas"}
                     </button>

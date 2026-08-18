@@ -23,7 +23,7 @@ export function Events() {
     <div className="bg-paper">
       <section className="border-b border-line">
         <div className="mx-auto max-w-5xl px-6 pt-16 md:pt-24 pb-12">
-          <p className="meta-label text-muted">Events</p>
+          <p className="meta-label">Events</p>
           <h1 className="mt-4 font-display text-4xl md:text-6xl leading-[1.05] max-w-3xl">
             Webinars, workshops, and guest sessions.
           </h1>
@@ -86,8 +86,8 @@ function EventRow({ event, past = false }: { event: AtlasEvent; past?: boolean }
       <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-5">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-3">
-            <span className="meta-label text-muted">{event.kind}</span>
-            <span className="meta-label text-muted">
+            <span className="meta-label">{event.kind}</span>
+            <span className="meta-label">
               {formatEventDate(event.date)}
               {event.time && ` · ${event.time}`}
             </span>
@@ -120,7 +120,7 @@ function EventRow({ event, past = false }: { event: AtlasEvent; past?: boolean }
                 href={event.registrationUrl as string}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex rounded-control bg-navy text-white px-4 py-2 text-sm hover:bg-navy-hi transition-colors"
+                className="inline-flex rounded-control bg-ink text-paper px-4 py-2 text-sm hover:bg-ink-hover transition-colors"
               >
                 Register
               </a>

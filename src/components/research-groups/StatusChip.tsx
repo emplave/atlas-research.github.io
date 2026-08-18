@@ -5,43 +5,43 @@ import { cn } from "@/lib/utils";
  * Lifecycle status chip.
  *
  * Only "Recruiting" is emphasised, because it is the only status carrying an
- * action. The rest are muted: a status chip is information, not an accent.
+ * action. The rest are faint: a status chip is information, not emphasis.
  * Archived is muted too — a dissolved group is inactive, not an error, and
  * `alert` is reserved for failures.
  *
- * `onNavy` is required inside a navy card header, where the paper-toned
+ * `onInk` is required inside an ink card header, where the paper-toned
  * variants would be illegible.
  */
 const STYLES: Record<Status, string> = {
-  Recruiting: "border-navy/35 bg-navy/[0.06] text-navy",
-  "In Progress": "border-line bg-paper text-ink",
-  Full: "border-line bg-paper text-muted",
-  Completed: "border-line bg-paper text-muted",
-  Archived: "border-line bg-paper text-muted/70",
+  Recruiting: "border-ink/40 bg-ink/[0.05] text-ink",
+  "In Progress": "border-line bg-paper text-muted",
+  Full: "border-line bg-paper text-faint",
+  Completed: "border-line bg-paper text-faint",
+  Archived: "border-line bg-paper text-faint",
 };
 
-const ON_NAVY_STYLES: Record<Status, string> = {
-  Recruiting: "border-white/60 bg-white/15 text-white",
-  "In Progress": "border-white/35 text-white/90",
-  Full: "border-white/25 text-white/75",
-  Completed: "border-white/25 text-white/75",
-  Archived: "border-white/20 text-white/60",
+const ON_INK_STYLES: Record<Status, string> = {
+  Recruiting: "border-paper/60 bg-paper/15 text-paper",
+  "In Progress": "border-paper/35 text-paper/90",
+  Full: "border-paper/25 text-paper/75",
+  Completed: "border-paper/25 text-paper/75",
+  Archived: "border-paper/20 text-faint",
 };
 
 export function StatusChip({
   status,
-  onNavy = false,
+  onInk = false,
   className,
 }: {
   status: Status;
-  onNavy?: boolean;
+  onInk?: boolean;
   className?: string;
 }) {
   return (
     <span
       className={cn(
         "inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-1 meta-label",
-        onNavy ? ON_NAVY_STYLES[status] : STYLES[status],
+        onInk ? ON_INK_STYLES[status] : STYLES[status],
         className
       )}
     >
@@ -50,7 +50,7 @@ export function StatusChip({
           aria-hidden
           className={cn(
             "h-1.5 w-1.5 rounded-full",
-            onNavy ? "bg-white" : "bg-navy"
+            onInk ? "bg-paper" : "bg-ink"
           )}
         />
       )}

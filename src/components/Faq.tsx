@@ -57,10 +57,10 @@ export function Faq() {
               className="group border-t border-line last:border-b"
             >
               <summary className="flex items-center justify-between gap-6 py-5 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
-                <span className="font-display text-lg text-navy">{f.q}</span>
+                <span className="font-display text-lg text-ink">{f.q}</span>
                 <span
                   aria-hidden
-                  className="shrink-0 h-7 w-7 rounded-control border border-line grid place-items-center text-muted group-hover:border-navy group-hover:text-navy transition-colors"
+                  className="shrink-0 h-7 w-7 rounded-control border border-line grid place-items-center text-muted group-hover:border-ink group-hover:text-ink transition-colors"
                 >
                   +
                 </span>

@@ -39,8 +39,8 @@ function Article({ publication }: { publication: Publication }) {
           </Link>
 
           <div className="mt-7 flex flex-wrap items-center gap-3">
-            <span className="meta-label text-muted">{publication.field}</span>
-            <span className="meta-label text-muted">
+            <span className="meta-label">{publication.field}</span>
+            <span className="meta-label">
               {formatPublishedDate(publication.publishedAt)}
             </span>
             <span className="inline-flex rounded-full border border-line px-2.5 py-1 meta-label text-muted">
@@ -103,7 +103,7 @@ function Article({ publication }: { publication: Publication }) {
               href={publication.fullTextUrl as string}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-control bg-navy text-white px-5 py-2.5 text-sm hover:bg-navy-hi transition-colors"
+              className="inline-flex items-center gap-2 rounded-control bg-ink text-paper px-5 py-2.5 text-sm hover:bg-ink-hover transition-colors"
             >
               Read the full paper
               <span aria-hidden>→</span>
@@ -119,7 +119,7 @@ function ArticleNotFound() {
   return (
     <div className="bg-paper">
       <div className="mx-auto max-w-2xl px-6 py-28 text-center">
-        <p className="meta-label text-muted">Not found</p>
+        <p className="meta-label">Not found</p>
         <h1 className="mt-5 font-display text-4xl">
           No paper at this address.
         </h1>
@@ -128,7 +128,7 @@ function ArticleNotFound() {
         </p>
         <Link
           to="/journal"
-          className="mt-8 inline-flex items-center gap-2 rounded-control bg-navy text-white px-5 py-2.5 text-sm hover:bg-navy-hi transition-colors"
+          className="mt-8 inline-flex items-center gap-2 rounded-control bg-ink text-paper px-5 py-2.5 text-sm hover:bg-ink-hover transition-colors"
         >
           Back to the Journal
           <span aria-hidden>→</span>

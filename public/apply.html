@@ -8,7 +8,7 @@
       name="description"
       content="Applications for the current Atlas Fellowship cohort are closed. The cohort is underway. Join the waitlist for the next cycle."
     />
-    <meta name="theme-color" content="#FAFAF9" />
+    <meta name="theme-color" content="#FFFFFF" />
     <meta name="robots" content="noindex, follow" />
     <link rel="canonical" href="https://atlas-research.org/fellowship" />
     <!--
@@ -29,19 +29,19 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Spectral:wght@400;500&family=Inter:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Archivo:wght@400;500&display=swap"
       rel="stylesheet"
     />
     <style>
       :root {
         color-scheme: light;
-        --paper: #fafaf9;
-        --surface: #ffffff;
-        --ink: #16191d;
-        --muted: #5a6169;
-        --line: #e2e0da;
-        --navy: #1c3f5e;
-        --navy-hi: #2a5a82;
+        --paper: #ffffff;
+        --surface: #f5f5f6;
+        --ink: #0e0e10;
+        --muted: #57575c;
+        --line: #e4e4e6;
+        --accentless-ink: #0e0e10;
+        --ink-hover: #26262a;
       }
       * {
         box-sizing: border-box;
@@ -50,7 +50,7 @@
         margin: 0;
         background: var(--paper);
         color: var(--ink);
-        font-family: Inter, system-ui, sans-serif;
+        font-family: Archivo, system-ui, sans-serif;
         -webkit-font-smoothing: antialiased;
         display: grid;
         place-items: center;
@@ -73,9 +73,9 @@
         margin: 0;
       }
       h1 {
-        font-family: Spectral, Georgia, serif;
+        font-family: 'Instrument Serif', Georgia, serif;
         font-weight: 400;
-        color: var(--navy);
+        color: var(--accentless-ink);
         font-size: 1.9rem;
         line-height: 1.15;
         margin: 14px 0 0;
@@ -101,19 +101,19 @@
         transition: background-color 0.15s ease, color 0.15s ease;
       }
       a.primary {
-        background: var(--navy);
+        background: var(--accentless-ink);
         color: #fff;
       }
       a.primary:hover {
-        background: var(--navy-hi);
+        background: var(--ink-hover);
       }
       a.secondary {
-        border: 1px solid var(--navy);
-        color: var(--navy);
+        border: 1px solid var(--accentless-ink);
+        color: var(--accentless-ink);
         background: var(--surface);
       }
       a.secondary:hover {
-        background: var(--navy);
+        background: var(--accentless-ink);
         color: #fff;
       }
       footer {

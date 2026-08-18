@@ -58,7 +58,7 @@ const SETTINGS: { value: Setting; label: string }[] = [
 ];
 
 const selectCls =
-  "w-full rounded-control border border-line bg-paper px-3 py-2.5 text-sm text-ink focus:outline-none focus:border-accent transition-colors";
+  "w-full rounded-control border border-line bg-paper px-3 py-2.5 text-sm text-ink focus:outline-none focus:border-ink transition-colors";
 
 export function DirectoryFilters({
   value,
@@ -82,7 +82,7 @@ export function DirectoryFilters({
     <div className="rounded-card border border-line bg-surface p-5 md:p-6">
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <label className="block lg:col-span-2">
-          <span className="meta-label text-muted">Search</span>
+          <span className="meta-label">Search</span>
           <input
             type="search"
             value={value.query}
@@ -95,7 +95,7 @@ export function DirectoryFilters({
         <label className="block">
           <span className="meta-label text-muted flex items-center gap-1.5">
             {value.field !== ALL && (
-              <FieldIcon field={value.field} size={14} className="text-navy" />
+              <FieldIcon field={value.field} size={14} className="text-ink" />
             )}
             Field
           </span>
@@ -114,7 +114,7 @@ export function DirectoryFilters({
         </label>
 
         <label className="block">
-          <span className="meta-label text-muted">Status</span>
+          <span className="meta-label">Status</span>
           <select
             value={value.status}
             onChange={(e) =>
@@ -132,7 +132,7 @@ export function DirectoryFilters({
         </label>
 
         <label className="block">
-          <span className="meta-label text-muted">Setting</span>
+          <span className="meta-label">Setting</span>
           <select
             value={value.setting}
             onChange={(e) =>
@@ -162,7 +162,7 @@ export function DirectoryFilters({
               type="checkbox"
               checked={value.includeArchived}
               onChange={(e) => set("includeArchived", e.target.checked)}
-              className="accent-accent"
+              className="accent-ink"
             />
             Include archived
           </label>
@@ -172,7 +172,7 @@ export function DirectoryFilters({
           <button
             type="button"
             onClick={onReset}
-            className="text-sm text-accent hover:text-navy-hi transition-colors"
+            className="text-sm link"
           >
             Reset filters
           </button>

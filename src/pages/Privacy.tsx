@@ -25,7 +25,7 @@ export function Privacy() {
     <div className="bg-paper">
       <section className="border-b border-line">
         <div className="mx-auto max-w-4xl px-6 pt-16 md:pt-20 pb-10">
-          <p className="meta-label text-muted">Legal</p>
+          <p className="meta-label">Legal</p>
           <h1 className="type-hero font-display mt-4">Privacy policy</h1>
           <p className="mt-5 meta-label text-muted">
             Last updated {PRIVACY_UPDATED}

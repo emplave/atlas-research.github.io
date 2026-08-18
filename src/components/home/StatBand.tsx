@@ -10,7 +10,7 @@ import { displayStats } from "@/lib/stats";
  * There is no empty state, no skeleton, and no "coming soon" slot. A stat
  * without a real number does not exist.
  *
- * Designed to sit inside the navy proof band, so its type is white.
+ * Designed to sit inside the ink proof band, so its type is paper.
  */
 export function StatBand() {
   const stats = displayStats();
@@ -25,8 +25,8 @@ export function StatBand() {
     >
       {stats.map((stat) => (
         <div key={stat.label}>
-          <dt className="meta-label text-white/55">{stat.label}</dt>
-          <dd className="mt-1.5 font-display text-3xl md:text-4xl text-white">
+          <dt className="meta-label text-faint">{stat.label}</dt>
+          <dd className="mt-1.5 font-display text-3xl md:text-4xl text-paper">
             {stat.value.toLocaleString("en-US")}
           </dd>
         </div>

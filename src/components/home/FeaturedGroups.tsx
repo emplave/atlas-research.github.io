@@ -31,7 +31,7 @@ export function FeaturedGroups() {
       action={
         <Link
           to="/research-groups"
-          className="text-sm text-accent underline underline-offset-4 hover:text-navy-hi transition-colors"
+          className="text-sm link"
         >
           See all research groups
         </Link>

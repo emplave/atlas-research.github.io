@@ -3,10 +3,6 @@
 @tailwind utilities;
 
 @layer base {
-  /*
-   * Single polarity. The background lives on <html> so it extends past a
-   * short page, and there is no mode class to swap — every route is light.
-   */
   :root {
     color-scheme: light;
   }
@@ -19,34 +15,32 @@
     font-weight: 400;
   }
   ::selection {
-    @apply bg-navy/15 text-ink;
+    @apply bg-ink/15 text-ink;
   }
 
-  /* Headings are navy and stay light. Spectral above 500 is off-brand. */
+  /*
+   * Headings are ink and Instrument Serif at weight 400. There is no bold
+   * cut of this face — scale and spacing carry emphasis instead.
+   */
   h1,
   h2,
   h3,
   h4 {
-    @apply font-display text-navy;
+    @apply font-display text-ink;
     font-weight: 400;
   }
 
-  /* Visible focus, since motion no longer signals interaction. */
   :focus-visible {
-    @apply outline-none ring-2 ring-navy/40 ring-offset-2 ring-offset-paper;
+    @apply outline-none ring-2 ring-ink/40 ring-offset-2 ring-offset-paper;
   }
 
   /*
    * PAPER GRAIN.
    *
-   * A fixed, non-interactive noise layer so the background stops reading as
-   * flat default white. It sits behind all content (z-index 0 against a page
-   * that stacks above it) and is deliberately near the threshold of
-   * perception.
-   *
-   * Cheap on purpose: one fixed element, no repaint on scroll, no blend mode,
-   * and pointer-events none. Opacity is low enough that measured text contrast
-   * is unchanged — the grain never lands on top of type.
+   * Fixed, non-interactive, behind all content. On pure white the previous
+   * settings were nearly invisible, so the rect opacity is lifted from 0.035
+   * to 0.055 — still below the threshold where it touches text contrast, since
+   * it never lands on top of type.
    */
   body::before {
     content: "";
@@ -54,12 +48,10 @@
     inset: 0;
     z-index: 0;
     pointer-events: none;
-    opacity: 0.5;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    opacity: 0.6;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E");
     background-repeat: repeat;
   }
-
-  /* All real content stacks above the grain. */
   #root {
     position: relative;
     z-index: 1;
@@ -67,34 +59,39 @@
 }
 
 @layer utilities {
-  /* Small-caps metadata register. */
+  /* Small-caps metadata register. Faint by default. */
   .meta-label {
-    @apply font-sans text-[11px] tracking-meta uppercase;
+    @apply font-sans text-[11px] tracking-meta uppercase text-faint;
   }
   .rule {
     @apply border-t border-line;
   }
 
   /*
-   * TYPOGRAPHIC SCALE.
+   * TYPE SCALE.
    *
-   * The page read flat because heading and body sat at nearly the same size.
-   * The contrast between the display sizes and the fixed 17px body is the
-   * whole effect — do not shrink the top end or grow the body.
+   * Instrument Serif carries the identity, so it runs at real scale. The
+   * contrast between these sizes and the fixed 17px body is the whole effect.
    */
   .type-hero {
-    font-size: clamp(2.75rem, 7.2vw, 5.25rem); /* 44px → 84px */
+    font-size: clamp(2.75rem, 7.2vw, 5.25rem);
     line-height: 1.02;
-    letter-spacing: -0.022em;
+    letter-spacing: -0.01em;
   }
   .type-section {
-    font-size: clamp(1.75rem, 3.4vw, 2.75rem); /* 28px → 44px */
-    line-height: 1.1;
-    letter-spacing: -0.014em;
+    font-size: clamp(1.75rem, 3.4vw, 2.75rem);
+    line-height: 1.08;
+    letter-spacing: -0.01em;
   }
-  .type-sub {
-    font-size: clamp(1.25rem, 2vw, 1.6rem);
-    line-height: 1.2;
+  .type-card {
+    font-size: 19px;
+    line-height: 1.25;
+    letter-spacing: -0.005em;
+  }
+  .type-panel {
+    font-size: clamp(2.25rem, 6vw, 4.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.012em;
   }
   .type-body {
     font-size: 17px;
@@ -102,28 +99,32 @@
   }
 
   /*
-   * Oversized section numeral. Light navy, decorative, and hidden from
-   * assistive tech — the heading beside it already carries the meaning.
+   * LINKS. Ink with a 1px underline that thickens on hover. Never coloured.
    */
-  .numeral {
-    @apply font-display text-navy/20 leading-none select-none;
-    font-size: clamp(2.5rem, 5vw, 4rem);
+  .link {
+    @apply text-ink underline underline-offset-4 transition-[text-decoration-thickness];
+    text-decoration-thickness: 1px;
+  }
+  .link:hover {
+    text-decoration-thickness: 2px;
+  }
+
+  /* Type inside an ink full-bleed band. */
+  .on-ink h1,
+  .on-ink h2,
+  .on-ink h3,
+  .on-ink h4 {
+    @apply text-paper;
+  }
+  .on-ink .meta-label {
+    color: #8a8a92;
+  }
+  .on-ink .link {
+    @apply text-paper;
   }
 
   /*
-   * Type inside a navy full-bleed band. The band inverts polarity locally, so
-   * headings must not inherit the global navy heading color.
-   */
-  .on-navy h1,
-  .on-navy h2,
-  .on-navy h3,
-  .on-navy h4 {
-    @apply text-white;
-  }
-
-  /*
-   * Card hover: 1px navy border shift plus a small lift. 120ms — fast enough
-   * to feel like a response rather than an animation.
+   * Card hover: 1px ink border shift plus a small lift at 120ms.
    */
   .card-hover {
     transition:
@@ -132,9 +133,34 @@
       transform 120ms ease;
   }
   .card-hover:hover {
-    @apply border-navy;
-    box-shadow: 0 6px 20px -8px rgba(28, 63, 94, 0.22);
+    @apply border-ink;
+    box-shadow: 0 6px 20px -8px rgba(14, 14, 16, 0.18);
     transform: translateY(-2px);
+  }
+
+  /*
+   * MARGINAL SPINE.
+   *
+   * A hairline down the left margin of each numbered section, connecting the
+   * numerals into one continuous vertical rule. Desktop only — below lg the
+   * numeral sits inline and a spine would have nothing to run alongside.
+   */
+  @media (min-width: 1024px) {
+    .spine {
+      position: relative;
+    }
+    .spine::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 1px;
+      background: theme("colors.line");
+    }
+    .on-ink.spine::before {
+      background: rgba(255, 255, 255, 0.18);
+    }
   }
 }
 
@@ -149,7 +175,6 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-  /* No lift under reduced motion; the border shift alone carries the hover. */
   .card-hover:hover {
     transform: none;
   }

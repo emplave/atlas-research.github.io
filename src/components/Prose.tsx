@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 
 /**
- * Long-form reading typography, retuned for light.
+ * Long-form reading typography.
  *
  * Used by research group briefs and journal articles. Measure caps near 68
  * characters, which is where sustained reading stays comfortable.
@@ -22,11 +22,11 @@ export function Prose({
         "max-w-[68ch] text-ink",
         "[&_p]:font-sans [&_p]:text-[17px] [&_p]:leading-[1.75] [&_p]:mt-5 [&_p]:text-ink/90",
         "[&_p:first-child]:mt-0",
-        "[&_h2]:font-display [&_h2]:text-2xl [&_h2]:text-navy [&_h2]:mt-12 [&_h2]:mb-4",
-        "[&_h3]:font-display [&_h3]:text-xl [&_h3]:text-navy [&_h3]:mt-9 [&_h3]:mb-3",
+        "[&_h2]:font-display [&_h2]:text-[26px] [&_h2]:text-ink [&_h2]:mt-12 [&_h2]:mb-4",
+        "[&_h3]:font-display [&_h3]:text-[21px] [&_h3]:text-ink [&_h3]:mt-9 [&_h3]:mb-3",
         "[&_ul]:mt-5 [&_ul]:space-y-2.5",
         "[&_li]:font-sans [&_li]:text-[17px] [&_li]:leading-[1.7] [&_li]:text-ink/90",
-        "[&_a]:text-accent [&_a]:underline [&_a]:underline-offset-2 [&_a:hover]:text-navy-hi",
+        "[&_a]:text-ink [&_a]:underline [&_a]:underline-offset-4 [&_a]:decoration-1 [&_a:hover]:decoration-2",
         "[&_strong]:text-ink [&_strong]:font-medium",
         className
       )}

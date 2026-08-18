@@ -18,6 +18,7 @@ import { Journal } from "./pages/Journal";
 import { JournalArticle } from "./pages/JournalArticle";
 import { Events } from "./pages/Events";
 import { Privacy } from "./pages/Privacy";
+import { GetInvolved } from "./pages/GetInvolved";
 
 /** Scroll to top on route change; honor #hash targets within a page. */
 function ScrollManager() {
@@ -66,6 +67,7 @@ export default function App() {
             <Route path="/journal" element={<Journal />} />
             <Route path="/journal/:slug" element={<JournalArticle />} />
             <Route path="/fellowship" element={<Fellowship />} />
+            <Route path="/get-involved" element={<GetInvolved />} />
             <Route path="/partners" element={<Partners />} />
             <Route path="/privacy" element={<Privacy />} />
 
@@ -93,7 +95,7 @@ export default function App() {
 function NotFound() {
   return (
     <div className="mx-auto max-w-2xl px-6 py-32 text-center">
-      <p className="meta-label text-muted">404</p>
+      <p className="meta-label">404</p>
       <h1 className="mt-5 font-display text-4xl md:text-5xl">
         That page isn't here.
       </h1>
@@ -103,7 +105,7 @@ function NotFound() {
       </p>
       <a
         href="/"
-        className="mt-8 inline-flex items-center gap-2 rounded-control bg-navy text-white pl-5 pr-4 py-2.5 text-sm hover:bg-navy-hi transition-colors"
+        className="mt-8 inline-flex items-center gap-2 rounded-control bg-ink text-paper pl-5 pr-4 py-2.5 text-sm hover:bg-ink-hover transition-colors"
       >
         Back to the homepage
         <span aria-hidden>→</span>

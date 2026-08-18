@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { AtlasLogo } from "./AtlasLogo";
+import { AtlasLockup } from "./AtlasMark";
 import { CONTACT_EMAIL } from "@/lib/dates";
 
 /**
@@ -11,6 +11,7 @@ const LINKS = [
   { to: "/research-groups", label: "Research Groups" },
   { to: "/events", label: "Events" },
   { to: "/journal", label: "Journal" },
+  { to: "/get-involved", label: "Get Involved" },
   { to: "/fellowship", label: "Fellowship" },
   { to: "/partners", label: "Partners" },
   { to: "/privacy", label: "Privacy" },
@@ -22,20 +23,20 @@ export function Footer() {
   return (
     <footer className="bg-paper border-t border-line">
       <div className="mx-auto max-w-6xl px-6 py-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-        <AtlasLogo />
+        <AtlasLockup />
         <div className="flex flex-wrap gap-x-8 gap-y-2 text-sm text-muted">
           {LINKS.map((l) => (
             <Link
               key={l.to}
               to={l.to}
-              className="hover:text-navy transition-colors"
+              className="hover:text-ink transition-colors"
             >
               {l.label}
             </Link>
           ))}
           <a
             href={`mailto:${CONTACT_EMAIL}`}
-            className="text-accent underline underline-offset-4 hover:text-navy-hi transition-colors"
+            className="link"
           >
             {CONTACT_EMAIL}
           </a>
@@ -53,12 +54,12 @@ export function Footer() {
           nonprofit public benefit corporation. For more information contact{" "}
           <a
             href={`mailto:${CONTACT_EMAIL}`}
-            className="text-accent underline underline-offset-4 hover:text-navy-hi transition-colors"
+            className="link"
           >
             {CONTACT_EMAIL}
           </a>
         </p>
-        <p className="meta-label text-muted">
+        <p className="meta-label">
           © {year} Atlas Research Institute
         </p>
       </div>

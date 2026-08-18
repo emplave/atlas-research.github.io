@@ -156,20 +156,20 @@ export const OPENINGS: Opening[] = [
     oneLine:
       "Lead Atlas growth and operating quality across an assigned region, and hold the line on both.",
     description:
-      "Regional Youth Directors lead Atlas growth and operating quality across an assigned region. The role is the primary link between Atlas leadership, research group teams, schools, and regional partners — the person who knows what is actually happening on the ground and reports it accurately.\n\nThe work is equal parts expansion and quality control. A Director recruits and supports new ResearchGroups, but is also responsible for whether existing ResearchGroups in the region are meeting, progressing, and producing work that holds up to review.\n\nInternational regions may have more than one Director depending on scale, time zones, and language. Assignments are made based on where a Director can genuinely operate, not on map boundaries alone.",
+      "Regional Youth Directors lead Atlas growth and operating quality across an assigned region. The role is the primary link between Atlas leadership, research group teams, schools, and regional partners — the person who knows what is actually happening on the ground and reports it accurately.\n\nThe work is equal parts expansion and quality control. A Director recruits and supports new research groups, but is also responsible for whether existing research groups in the region are meeting, progressing, and producing work that holds up to review.\n\nInternational regions may have more than one Director depending on scale, time zones, and language. Assignments are made based on where a Director can genuinely operate, not on map boundaries alone.",
     responsibilities: [
       "Own research group growth in the assigned region: outreach to schools and community organizations, and support through launch.",
       "Serve as the standing point of contact between Atlas leadership and every research group team in the region.",
-      "Monitor operating quality across regional ResearchGroups — cadence, progress, and record-keeping — and intervene early when a group stalls.",
+      "Monitor operating quality across regional research groups — cadence, progress, and record-keeping — and intervene early when a group stalls.",
       "Build and maintain relationships with regional partners, schools, and community organizations.",
-      "Report regional status to Atlas leadership accurately, including problems and stalled ResearchGroups.",
+      "Report regional status to Atlas leadership accurately, including problems and stalled research groups.",
       "Coordinate with other Directors where a region is split across time zones or languages.",
     ],
     lookingFor: [
       "A track record of running things that involved other people and finishing them.",
       "Judgment about when a group needs support and when it needs a hard conversation.",
       "Professional communication with school administrators, community leaders, and partners.",
-      "Honest reporting — you surface the ResearchGroups that are failing, not just the ones that look good.",
+      "Honest reporting — you surface the research groups that are failing, not just the ones that look good.",
       "Regional knowledge: you understand the schools, languages, and constraints where you would operate.",
       "Availability of 5-8+ hours per week, sustained, across an academic year.",
     ],

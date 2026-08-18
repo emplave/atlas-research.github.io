@@ -1,52 +1,24 @@
-import { Link } from "react-router-dom";
-import { FieldIcon } from "@/components/FieldIcon";
-import type { Field } from "@/data/research-groups";
+import { FieldWheel } from "@/components/visuals/FieldWheel";
 import { Section } from "./Section";
 
 /**
  * The field index — makes the "any field" claim visible rather than asserted.
  *
- * Compact and typographic on purpose: eight rows, not eight cards. A card grid
- * here would out-weigh the research groups directly above it, which is the
- * section that actually carries proof.
+ * Now a radial wheel rather than a list. The wheel earns the space because it
+ * shows eight peers around one centre, which is the actual claim: no field is
+ * the primary one. A vertical list implied a ranking that does not exist.
  *
- * Each row links to the directory pre-filtered to that field. The query
- * parameter is read by the directory page, so these are working links, not
- * decoration.
+ * FieldWheel collapses to a plain list below md, where a radial diagram would
+ * be unreadable at that width.
  */
-const FIELDS: Field[] = [
-  "Computer Science & AI",
-  "Health & Life Sciences",
-  "Engineering & Technology",
-  "Physical Sciences & Mathematics",
-  "Social Sciences",
-  "Humanities",
-  "Economics & Business",
-  "Environment & Sustainability",
-];
-
 export function FieldIndex() {
   return (
     <Section number="04" title="Eight fields" tone="surface">
-      <ul className="mt-8 grid gap-px bg-line border border-line sm:grid-cols-2 lg:grid-cols-4">
-        {FIELDS.map((field) => (
-          <li key={field}>
-            <Link
-              to={`/research-groups?field=${encodeURIComponent(field)}`}
-              className="group flex h-full items-center gap-3 bg-paper px-5 py-4 transition-colors hover:bg-navy"
-            >
-              <FieldIcon
-                field={field}
-                size={22}
-                className="text-navy shrink-0 transition-colors group-hover:text-white"
-              />
-              <span className="text-[15px] leading-snug text-ink transition-colors group-hover:text-white">
-                {field}
-              </span>
-            </Link>
-          </li>
-        ))}
-      </ul>
+      <p className="mt-4 max-w-2xl type-body text-muted">
+        A group's field is whatever its question needs. None of these is the
+        default.
+      </p>
+      <FieldWheel className="mt-10" />
     </Section>
   );
 }

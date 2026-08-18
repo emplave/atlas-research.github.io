@@ -37,7 +37,7 @@ export function Field({
 }
 
 export const inputCls =
-  "w-full rounded-control border border-line bg-paper px-4 py-2.5 text-[15px] text-ink placeholder:text-muted focus:outline-none focus:border-navy transition-colors";
+  "w-full rounded-control border border-line bg-paper px-4 py-2.5 text-[15px] text-ink placeholder:text-muted focus:outline-none focus:border-ink transition-colors";
 
 export function WordCountArea({
   name,

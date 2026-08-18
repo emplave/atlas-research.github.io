@@ -18,14 +18,14 @@ const SETTING_LABEL: Record<Setting, string> = {
 };
 
 /**
- * Four navy steps between #1C3F5E and #2A5A82.
+ * Four greys from ink (#0E0E10) up to #3A3A40.
  *
  * Assigned deterministically by field, so the same field always gets the same
  * tint and consecutive cards in a grid are not identical slabs. Deterministic
  * rather than random because a tint that changes between renders reads as a
  * bug, and because a reader should be able to learn the association.
  */
-const NAVY_STEPS = ["#1C3F5E", "#22496B", "#265078", "#2A5A82"] as const;
+const INK_STEPS = ["#0E0E10", "#1B1B1F", "#2A2A2F", "#3A3A40"] as const;
 
 const FIELD_ORDER: Field[] = [
   "Computer Science & AI",
@@ -38,16 +38,16 @@ const FIELD_ORDER: Field[] = [
   "Environment & Sustainability",
 ];
 
-function navyForField(field: Field): string {
+function inkForField(field: Field): string {
   const i = FIELD_ORDER.indexOf(field);
-  return NAVY_STEPS[(i < 0 ? 0 : i) % NAVY_STEPS.length];
+  return INK_STEPS[(i < 0 ? 0 : i) % INK_STEPS.length];
 }
 
 /**
  * Directory card for one research group.
  *
  * The header block is the card's main surface, not dead space. With no image
- * it carries the project title in Spectral white, the field icon, and the
+ * it carries the project title in Instrument Serif, the field icon, and the
  * status chip. When a real image exists the image takes the block and the
  * title moves below it.
  *
@@ -74,7 +74,7 @@ export function ResearchGroupCard({
   return (
     <article className="card-hover flex flex-col overflow-hidden rounded-card border border-line bg-surface">
       {hasImage ? (
-        <div className="aspect-[16/9] w-full overflow-hidden bg-navy">
+        <div className="aspect-[16/9] w-full overflow-hidden bg-ink">
           <img
             src={group.image!.src}
             alt={group.image!.alt}
@@ -88,20 +88,20 @@ export function ResearchGroupCard({
             "flex flex-col justify-between p-6",
             featured ? "min-h-[15rem] md:min-h-[17rem]" : "min-h-[11.5rem]"
           )}
-          style={{ backgroundColor: navyForField(group.field) }}
+          style={{ backgroundColor: inkForField(group.field) }}
         >
           <div className="flex items-start justify-between gap-3">
             <FieldIcon
               field={group.field}
               size={featured ? 28 : 24}
-              className="text-white/80 shrink-0"
+              className="text-paper/80 shrink-0"
             />
-            <StatusChip status={group.status} onNavy />
+            <StatusChip status={group.status} onInk />
           </div>
 
           <h3
             className={cn(
-              "mt-6 font-display text-white leading-[1.15]",
+              "mt-6 font-display text-paper leading-[1.15]",
               featured ? "text-2xl md:text-3xl" : "text-xl"
             )}
           >
@@ -122,7 +122,7 @@ export function ResearchGroupCard({
               <FieldIcon
                 field={group.field}
                 size={24}
-                className="text-navy shrink-0"
+                className="text-ink shrink-0"
               />
               <StatusChip status={group.status} />
             </div>
@@ -134,7 +134,7 @@ export function ResearchGroupCard({
             >
               <Link
                 to={`/research-groups/${group.slug}`}
-                className="hover:text-navy-hi transition-colors"
+                className="hover:underline underline-offset-4"
               >
                 {group.projectTitle}
               </Link>
@@ -164,7 +164,7 @@ export function ResearchGroupCard({
         <div className="mt-6 pt-4 border-t border-line flex items-center justify-between gap-4">
           <Link
             to={`/research-groups/${group.slug}`}
-            className="text-sm text-accent underline underline-offset-4 hover:text-navy-hi transition-colors"
+            className="text-sm link"
           >
             Read the brief
           </Link>
@@ -183,7 +183,7 @@ export function ResearchGroupCard({
                 href={opening.formUrl as string}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-control bg-navy text-white px-4 py-2 text-sm hover:bg-navy-hi transition-colors"
+                className="rounded-control bg-ink text-paper px-4 py-2 text-sm hover:bg-ink-hover transition-colors"
               >
                 Apply to join
               </a>
