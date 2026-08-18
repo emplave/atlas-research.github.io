@@ -58,10 +58,10 @@ export function AtlasMark({
 }
 
 /**
- * The full lockup: mark, institution name in Instrument Serif, and the
- * tagline in Archivo small caps beneath.
+ * The lockup: the mark plus "Atlas Research Institute" in Instrument Serif.
  *
- * The tagline "Student Research Institute" is fixed brand copy. Do not reword.
+ * NOTHING SITS BENEATH THE WORDMARK. A descriptor line here repeated "Research
+ * Institute" twice in the same lockup. Do not reintroduce one.
  */
 export function AtlasLockup({
   size = 32,
@@ -88,21 +88,13 @@ export function AtlasLockup({
       )}
     >
       <AtlasMark size={size} tone={tone} />
-      <span className="flex flex-col leading-tight">
-        <span
-          className={cn(
-            "font-display text-[17px] leading-none",
-            onInk ? "text-paper" : "text-ink"
-          )}
-        >
-          Atlas Research Institute
-        </span>
-        <span
-          className="font-sans text-[8px] uppercase tracking-lockup mt-1"
-          style={{ color: FAINT }}
-        >
-          Student Research Institute
-        </span>
+      <span
+        className={cn(
+          "font-display text-[17px] leading-none",
+          onInk ? "text-paper" : "text-ink"
+        )}
+      >
+        Atlas Research Institute
       </span>
     </span>
   );

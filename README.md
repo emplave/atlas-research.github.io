@@ -61,7 +61,9 @@ Rules that are easy to break by accident:
 ### Brand mark
 
 `src/components/AtlasMark.tsx` exports `AtlasMark` (mark alone) and
-`AtlasLockup` (mark plus wordmark and tagline, horizontal or stacked). The
+`AtlasLockup` (mark plus the wordmark, horizontal or stacked). **Nothing sits
+beneath the wordmark** — a descriptor line there repeated "Research Institute"
+twice. The
 geometry is two fixed paths on a `0 0 170 160` viewBox — do not nudge them, the
 counter is what makes the pair read as an A and it is already tight at 16px.
 
@@ -135,7 +137,6 @@ and rules before adding any.
   student-run** at the organisational level.
 - Eligibility is prose, not a grade range. Never "9-12".
 - Contact is `admin@atlas-research.org` everywhere.
-- Logo tagline is "Student Research Institute".
 - Banned words: empower, foster, robust, holistic, comprehensive, leverage,
   unlock, cutting-edge, seamless, journey, passionate, dedicated to.
 
