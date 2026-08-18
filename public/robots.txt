@@ -1,6 +1,13 @@
 User-agent: *
 Allow: /
 
-# AI model context
-# See https://llmstxt.org for the llms.txt standard
+# Legacy signposts, kept only so older external links do not 404.
+# Both are noindex and redirect to their current equivalents.
+Disallow: /apply.html
+Disallow: /privacy.html
+
 Sitemap: https://atlas-research.org/sitemap.xml
+
+# Structured context for language models.
+# See https://llmstxt.org for the llms.txt standard.
+# https://atlas-research.org/llms.txt

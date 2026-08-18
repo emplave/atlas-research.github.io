@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+
+# Build output — Vercel builds from source, this is never committed
+dist/
+
+# Local env and editor state
+.env
+.env.local
+.env.*.local
+.DS_Store
+.vscode/
+.idea/
+
+# Vite / tooling caches
+.vite/
+*.tsbuildinfo

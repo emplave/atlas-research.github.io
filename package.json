@@ -11,9 +11,7 @@
   "dependencies": {
     "@vercel/analytics": "^2.0.1",
     "clsx": "^2.1.1",
-    "cobe": "^0.6.4",
-    "framer-motion": "^11.15.0",
-    "lucide-react": "^0.469.0",
+    "cobe": "^2.0.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.18.1",

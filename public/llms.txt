@@ -1,47 +1,101 @@
 # Atlas Research Institute
 
-> A free, four-week research fellowship for high school students who study education inequality in their own region using real datasets (UNESCO, World Bank, PISA) and produce published work. Applicants come from 15+ countries.
+> Atlas Research Institute supports student research groups worldwide. A research group is three to ten students working one research question, run by a student lead, at a school, in a community setting, hybrid, or fully online. Groups work in any of eight fields. Atlas provides onboarding, research frameworks, mentor feedback at set checkpoints, guest sessions with university researchers, and a route to submit completed work for review. Free.
 
-Atlas Research Institute is a youth-led nonprofit addressing global education inequality. Fellows study educational disparity in their own region using established datasets and turn their analysis into a policy brief or literature review intended for publication. The program is free and remote. No prior research experience is required.
+Atlas Research Institute is a nonprofit. Its primary programme is a network of
+student-led research groups. It also runs a separate, selective four-week summer
+fellowship; applications for the current fellowship cohort are closed and a
+waitlist is open for the next cycle.
+
+Atlas is topic agnostic. A research group investigates a question in its own
+local context, in whichever field that question belongs to. Atlas does not
+specialise in a single subject area.
 
 ## What Atlas Does
 
-- Runs a free, four-week research fellowship for high school students (grades 9-12)
-- Trains fellows in survey and policy research methodology through live seminars with researchers from institutions like Stanford
-- Guides fellows to analyze education inequality in their own region using UNESCO, World Bank, and PISA data
-- Supports fellows toward publication in the Atlas Journal of Education Policy and partner journals
-- Provides scholarships to fellows and research leads through a partnership with Lumiere Education
+- Supports student research groups in eight fields: computer science and AI,
+  health and life sciences, engineering and technology, physical sciences and
+  mathematics, social sciences, humanities, economics and business, environment
+  and sustainability
+- Provides onboarding for new groups and session-by-session research frameworks
+- Provides mentor guidance and written feedback at set checkpoints
+- Runs webinars, workshops, and guest sessions with university researchers
+- Reviews weekly logs and research milestones so a stalled project is caught early
+- Refers groups to specialised mentorship where a project needs expertise Atlas
+  does not hold in-house
+- Publishes the Atlas Journal, which accepts completed work for review
+
+## How a Research Group Works
+
+1. A student lead recruits three to ten members and defines one research question.
+2. The group meets weekly and keeps a written log of what was done.
+3. The project is split into milestones so progress is visible.
+4. A mentor reviews the question, the sources, and the draft at set checkpoints.
+5. Completed work may be submitted to the Atlas Journal for review.
+
+## Publication
+
+Publication is decided by review. Submission is not acceptance. The Atlas
+research and editorial team evaluates submitted work on whether the question is
+answerable, the methods are described in enough detail to follow, the sources are
+credible and accurately cited, the conclusions match the evidence, and the
+limitations are stated honestly. Revision is the normal outcome. Some work is
+declined, with reasons given in writing.
+
+The Atlas Journal runs two separate tracks. Atlas Working Papers are founding
+contributions from the Atlas team, published without external peer review.
+Peer-Reviewed Articles have completed external review; the first reviewed issue
+has not yet been published. These two tracks are not equivalent and are not
+presented as though they are.
 
 ## Who It Is For
 
-- High school students (grades 9-12) interested in research, policy, or social science
-- Students seeking a mentored research experience and published research credentials
+- Secondary and university students worldwide, including Grade 8 or below,
+  Grades 9 through 12, gap year students, college and university students, and
+  international equivalents
+- Students who want to run or join a research project in any field
 - No prior research experience required
-- 100% free, remote, open to students worldwide
+- Free
 
-## Reach
+## The Fellowship
 
-Applications have come from students in 15+ countries, across both well-resourced and under-resourced education systems, including Bangladesh, Bolivia, Canada, China, India, Indonesia, Malaysia, Nepal, Pakistan, Saudi Arabia, Syria, Taiwan, Thailand, UAE, and the USA.
+A separate programme from research groups: a selective four-week summer cohort,
+free and remote. The current cohort is underway, so applications are closed. The
+waitlist is open and next cohort dates are announced to the waitlist first.
+Fellows receive research methodology training, structured mentor feedback, guest
+sessions with university researchers, a completed literature review or policy
+brief, and eligibility to submit completed work for review. A student may both
+join a research group and apply to the fellowship.
 
-## How It Works
+## Partners
 
-1. Students apply with three short essays. No resume required.
-2. Selected fellows train in research methodology through live seminars.
-3. Fellows analyze education inequality in their own region using real datasets.
-4. Fellows write a policy brief or literature review with editorial support.
-5. Strong work is submitted for publication in the Atlas Journal of Education Policy and partner journals.
+- Submission routes: the Atlas Journal, and the International Journal of High
+  School Research
+- Programme partners: Lumiere Education, which offers fellows thousands of
+  dollars in discounts on Lumiere Education programmes through the partnership;
+  The Curieux Review, which partners with Atlas on student research writing
+- Fellows learn from researchers at USC, the University of Melbourne, and
+  Stanford
 
 ## Key Details
 
 - Website: https://atlas-research.org
-- Apply: https://atlas-research.org/apply.html
-- Applications: founding cohort open now, due July 24, 2026
-- Cohort: four weeks, starting August 3, 2026
+- Research group directory: https://atlas-research.org/research-groups
+- Events: https://atlas-research.org/events
+- Journal: https://atlas-research.org/journal
+- Fellowship and waitlist: https://atlas-research.org/fellowship
+- Partners: https://atlas-research.org/partners
+- Privacy policy: https://atlas-research.org/privacy
+- Contact: admin@atlas-research.org
+- Partnership enquiries: nirav.goenka@atlas-research.org
 - Cost: free
-- Focus: education access and inequality, policy research
-- Publishing partners: International Journal of High School Research (IJHSR), The Curieux Review
-- Program partner: Lumiere Education (scholarships for fellows and research leads)
+- Atlas Research Institute operates as a project of a California nonprofit
+  public benefit corporation. For more information contact
+  admin@atlas-research.org
 
 ## Related Searches
 
-high school research opportunities, research programs for high school students, free research fellowships, international research for students, education policy research for high school students, student research publications, education inequality research, global student research, extracurricular research opportunities
+student research groups, high school research opportunities, undergraduate
+research groups, free research programmes for students, how to start a research
+group at school, student research journal, publish student research, research
+mentorship for students, international student research community

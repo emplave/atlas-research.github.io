@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <rect width="1200" height="630" fill="#FFFFFF"/>
+  <g transform="translate(96 150) scale(1.15)">
+    <path d="M30 8 L104 8 L154 146 L80 146 Z" fill="#0E0E10"/>
+    <path d="M44 100 L74 100 L74 146 L10 146 Z" fill="#8A8A92"/>
+  </g>
+  <text x="300" y="286" font-family="Instrument Serif, Georgia, serif" font-size="76" fill="#0E0E10">Atlas Research Institute</text>
+  <text x="300" y="344" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="30" fill="#57575C">Student research groups in any field.</text>
+</svg>

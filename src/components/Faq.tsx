@@ -1,60 +1,74 @@
-import { Reveal } from "./Reveal";
-import { DATES } from "@/lib/dates";
-
-/** The skeptic's section — every answer must survive a hostile fact-check. */
+/**
+ * FAQ — written for research groups, the primary programme.
+ *
+ * Exactly one question covers the fellowship, marked as a separate programme
+ * with applications closed. Publication is never stated or implied to be
+ * guaranteed.
+ */
 const faqs = [
   {
-    q: "Is this legitimate?",
-    a: "Fair question — ask it of every program. Here's what's real and checkable: the Fellowship is free, fellows work with real datasets (UNESCO, World Bank, PISA), seminars feature researchers from institutions like USC, the University of Melbourne, and Stanford, and work is developed toward publication in the Atlas Journal of Education Policy and partner journals including IJHSR, which is indexed in EBSCO and Google Scholar.",
+    q: "What is a research group?",
+    a: "Three to ten students working one research question, run by a student lead. The lead recruits members, holds a weekly meeting, keeps the log, and is the contact point with Atlas.",
   },
   {
-    q: "Why is it free?",
-    a: "Because the founding thesis is that research literacy is a function of structural access, not ability — and a fee would rebuild the exact wall we study. Paid competitors charge $3,000–$10,000 for individual mentorship. Atlas is structurally different: collective, cross-national, and free, run as a nonprofit.",
+    q: "Who can start one?",
+    a: "Any secondary or university student who will run the weekly meeting and keep the log. You need school or community approval where your setting requires it. You do not need a school: online and community groups work the same way.",
   },
   {
-    q: "Is the Fellowship selective?",
-    a: `Yes — mentored cohorts have real capacity limits — but selection is based on your thinking in three short essays, not your résumé, and there's no invented acceptance-rate theater. Applications for the current cohort are closed; join the list on the apply page to hear when the next one opens.`,
+    q: "Do I need prior research experience?",
+    a: "No. Atlas provides onboarding, the research frameworks, and mentor feedback at checkpoints. Most leads start with no research background.",
   },
   {
-    q: "What do fellows actually produce?",
-    a: "A policy brief or literature review on education inequality in your own region, built on real datasets (UNESCO, World Bank, PISA), written with editorial support, and developed toward publication in the Atlas Journal and partner journals — then used for advocacy, not just a line on a résumé.",
+    q: "What fields can a group research?",
+    a: "Any of eight: computer science and AI, health and life sciences, engineering and technology, physical sciences and mathematics, social sciences, humanities, economics and business, environment and sustainability.",
   },
   {
-    q: "Will this get me into a top university?",
-    a: "No program can honestly promise that, and we won't. What you'll have is real: published or publication-track work, experience with professional datasets, and proof you finished something hard. What admissions officers do with that is up to them — skeptical readers can verify every part of it.",
+    q: "How much time does it take?",
+    a: "One meeting a week plus your own assignments. Leads spend more. Groups that stop meeting stop finishing, which is what the weekly log catches.",
+  },
+  {
+    q: "What happens to completed work?",
+    a: "The work belongs to the group. It may be submitted to the Atlas Journal for review. Groups also present findings locally to councils, schools, and community organisations.",
+  },
+  {
+    q: "Is publication guaranteed?",
+    a: "No. Review decides. The Atlas research and editorial team checks whether the question is answerable, the methods are described in enough detail to follow, the sources are credible and cited accurately, the conclusions match the evidence, and the limitations are stated. Revision is the normal outcome. Some work is declined, with reasons given in writing.",
+  },
+  {
+    q: "What does Atlas cost?",
+    a: "Nothing. There is no fee to start a group, join one, or submit work for review.",
+  },
+  {
+    q: "Is the Fellowship the same thing?",
+    a: "No. The Fellowship is a separate programme: a selective four-week summer cohort. Applications for the current cohort are closed and the waitlist is open. Starting a research group is open now, and a student may do both.",
   },
 ];
 
 export function Faq() {
   return (
-    <section id="faq" className="bg-cream-100">
-      <div className="mx-auto max-w-3xl px-6 py-20 md:py-28">
-        <Reveal>
-          <p className="meta-label text-navy-500">Straight answers</p>
-          <h2 className="mt-4 font-serif text-3xl md:text-5xl text-navy-900">
-            Asked by skeptics, answered plainly.
-          </h2>
-        </Reveal>
-        <div className="mt-12">
-          {faqs.map((f, i) => (
-            <Reveal key={f.q} delay={i * 0.04}>
-              <details className="group border-t border-hairline last:border-b">
-                <summary className="flex items-center justify-between gap-6 py-5 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
-                  <span className="font-serif text-lg md:text-xl text-navy-900">
-                    {f.q}
-                  </span>
-                  <span
-                    aria-hidden
-                    className="shrink-0 h-8 w-8 rounded-full border border-hairline grid place-items-center text-navy-500 transition-transform duration-300 group-open:rotate-45 group-hover:border-navy-400"
-                  >
-                    +
-                  </span>
-                </summary>
-                <p className="pb-6 pr-10 text-[15px] leading-relaxed text-navy-600">
-                  {f.a}
-                </p>
-              </details>
-            </Reveal>
+    <section id="faq" className="bg-surface border-b border-line">
+      <div className="mx-auto max-w-3xl px-6 py-12 md:py-16">
+        <h2 className="type-section font-display">Questions</h2>
+
+        <div className="mt-8">
+          {faqs.map((f) => (
+            <details
+              key={f.q}
+              className="group border-t border-line last:border-b"
+            >
+              <summary className="flex items-center justify-between gap-6 py-5 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <span className="font-display text-lg text-ink">{f.q}</span>
+                <span
+                  aria-hidden
+                  className="shrink-0 h-7 w-7 rounded-control border border-line grid place-items-center text-muted group-hover:border-ink group-hover:text-ink transition-colors"
+                >
+                  +
+                </span>
+              </summary>
+              <p className="pb-6 pr-10 text-[15px] leading-relaxed text-muted">
+                {f.a}
+              </p>
+            </details>
           ))}
         </div>
       </div>

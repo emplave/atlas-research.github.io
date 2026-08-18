@@ -1,8 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Real routes only. Individual research group briefs (/research-groups/:slug)
+  and journal articles (/journal/:slug) are deliberately absent while their
+  data is placeholder — listing placeholder slugs would invite crawlers to
+  index content that is about to be replaced. Add them when the real records
+  land.
+
+  /apply.html is excluded on purpose: it is a noindex signpost kept only so
+  older external links do not 404.
+-->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://atlas-research.org/</loc><lastmod>2026-07-22</lastmod><priority>1.0</priority></url>
-  <url><loc>https://atlas-research.org/apply.html</loc><lastmod>2026-07-22</lastmod><priority>0.9</priority></url>
-  <url><loc>https://atlas-research.org/publish</loc><lastmod>2026-07-22</lastmod><priority>0.7</priority></url>
-  <url><loc>https://atlas-research.org/partners</loc><lastmod>2026-07-22</lastmod><priority>0.6</priority></url>
-  <url><loc>https://atlas-research.org/privacy.html</loc><lastmod>2026-07-22</lastmod><priority>0.3</priority></url>
+  <url>
+    <loc>https://atlas-research.org/</loc>
+    <lastmod>2026-08-17</lastmod>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://atlas-research.org/research-groups</loc>
+    <lastmod>2026-08-17</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://atlas-research.org/journal</loc>
+    <lastmod>2026-08-17</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://atlas-research.org/events</loc>
+    <lastmod>2026-08-17</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://atlas-research.org/fellowship</loc>
+    <lastmod>2026-08-17</lastmod>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://atlas-research.org/partners</loc>
+    <lastmod>2026-08-17</lastmod>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://atlas-research.org/privacy</loc>
+    <lastmod>2026-08-17</lastmod>
+    <priority>0.3</priority>
+  </url>
 </urlset>

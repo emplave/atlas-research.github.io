@@ -1,97 +1,63 @@
-import { motion, useReducedMotion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { StaggerWords } from "./Reveal";
+import { findOpening, isFormPending } from "@/data/openings";
+import { ReachGlobe } from "./ReachGlobe";
 
-/** Institutional hero — two-product model, credible register. */
+/**
+ * Homepage hero. Asymmetric: text on the left at ~55%, globe on the right.
+ *
+ * No entrance animation — the globe's rotation is the only motion, and the
+ * headline is never delayed.
+ *
+ * The fellowship is deliberately absent. Nothing on the homepage links to the
+ * application.
+ */
 export function Hero() {
-  const reduce = useReducedMotion();
-  const fade = (delay: number) => ({
-    initial: reduce ? false : { opacity: 0, y: 22 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.9, delay, ease: [0.22, 1, 0.36, 1] as const },
-  });
+  const opening = findOpening("chapter-leader");
+  const formPending = !opening || isFormPending(opening);
 
   return (
-    <section id="top" className="relative overflow-hidden">
-      <div className="mx-auto max-w-6xl px-6 pt-20 pb-16 md:pt-28 md:pb-20">
-        <motion.p {...fade(0.05)} className="meta-label text-navy-500 mb-7">
-          A for-youth nonprofit · Global education access · Grades 9–12
-        </motion.p>
-        <h1 className="font-serif text-navy-900 text-[13vw] sm:text-6xl md:text-8xl leading-[1.02] tracking-tight max-w-5xl">
-          <StaggerWords text="Research that gets published." delay={0.15} />
-        </h1>
-        <div className="mt-9 md:mt-12 grid md:grid-cols-[1.2fr_0.8fr] gap-10 items-end">
-          <motion.p
-            {...fade(0.6)}
-            className="max-w-xl text-lg md:text-xl text-navy-600 leading-relaxed"
-          >
-            Atlas trains high school students to study education inequality in
-            their own regions —{" "}
-            <em className="font-serif not-italic text-navy-800">
-              with real datasets, toward published work
-            </em>
-            . The Fellowship is a selective, four-week summer cohort — free,
-            remote, and open to grades 9–12.
-          </motion.p>
-          <motion.div {...fade(0.75)} className="flex flex-col items-start gap-4">
-            <Link
-              to="/fellowship"
-              className="rounded-full bg-navy-800 text-cream-100 pl-6 pr-5 py-3 text-[15px] inline-flex items-center gap-2.5 hover:bg-navy-700 transition-all hover:gap-3.5"
-            >
-              Stay involved
-              <span aria-hidden className="text-gold-300">→</span>
-            </Link>
-          </motion.div>
-        </div>
-        <motion.p {...fade(0.9)} className="meta-label text-navy-500 mt-10">
-          $0 — free, always · Four weeks · Selective · No prior research required
-        </motion.p>
-      </div>
-
-      {/* Credibility strip */}
-      <div className="border-y border-hairline-soft bg-cream-50">
-        <div className="mx-auto max-w-6xl px-6 py-6 flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+    <section id="top" className="bg-paper border-b border-line">
+      <div className="mx-auto max-w-6xl px-6 pt-16 pb-14 md:pt-20 md:pb-16">
+        <div className="grid items-center gap-10 lg:gap-14 lg:grid-cols-[55fr_45fr]">
           <div>
-            <p className="meta-label text-navy-500">Where fellows publish</p>
-            <p className="mt-1.5 text-sm text-navy-600 max-w-md">
-              The Atlas Journal of Education Policy{" "}
-              <span className="text-navy-400">(first issue Fall 2026)</span>, and
-              peer-reviewed partner journals.
+            <h1 className="type-hero font-display">
+              Atlas runs student research groups in any field.
+            </h1>
+
+            <p className="mt-6 max-w-xl type-body text-muted">
+              You pick the question, recruit three to ten members, and finish a
+              paper in one term.
             </p>
+
+            <div className="mt-8 flex flex-col sm:flex-row gap-3">
+              {formPending ? (
+                <span
+                  aria-disabled="true"
+                  className="rounded-control border border-line bg-surface px-6 py-3 text-[15px] text-muted text-center cursor-not-allowed"
+                >
+                  Applications opening soon
+                </span>
+              ) : (
+                <a
+                  href={opening.formUrl as string}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-control bg-ink text-paper px-6 py-3 text-[15px] text-center hover:bg-ink-hover transition-colors"
+                >
+                  Start a research group
+                </a>
+              )}
+
+              <Link
+                to="/research-groups"
+                className="rounded-control border border-line bg-paper text-ink px-6 py-3 text-[15px] text-center hover:bg-ink hover:text-paper transition-colors"
+              >
+                Browse research groups
+              </Link>
+            </div>
           </div>
-          <div className="flex items-center gap-3">
-            <span className="inline-flex items-center rounded-md bg-white border border-hairline px-3 py-2">
-              <img
-                src="/partners/ijhsr.png"
-                alt="International Journal of High School Research"
-                className="h-6 w-auto"
-              />
-            </span>
-            <span className="inline-flex items-center rounded-md bg-white border border-hairline px-3 py-2">
-              <img
-                src="/partners/curieux.png"
-                alt="The Curieux Review"
-                className="h-8 w-auto"
-              />
-            </span>
-            <span className="inline-flex items-center rounded-md bg-white border border-hairline px-3 py-2">
-              <img
-                src="/partners/lumiere.png"
-                alt="Lumiere Education"
-                className="h-6 w-auto"
-              />
-            </span>
-          </div>
-        </div>
-        <div className="border-t border-hairline-soft">
-          <div className="mx-auto max-w-6xl px-6 py-4">
-            <p className="text-sm text-navy-600">
-              Fellows and research leads receive thousands of dollars in
-              scholarships through our partnership with{" "}
-              <span className="text-navy-800">Lumiere Education</span>. Seminars
-              feature researchers from institutions like USC, the University of Melbourne, and Stanford.
-            </p>
-          </div>
+
+          <ReachGlobe className="order-first lg:order-none" />
         </div>
       </div>
     </section>

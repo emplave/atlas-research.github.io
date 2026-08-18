@@ -1,69 +1,59 @@
 import type { Config } from "tailwindcss";
 
 /**
- * Atlas design tokens — derived from the Antigravity identity extraction
- * (research/ANTIGRAVITY-IDENTITY-EXTRACTION.md): same grammar, different soul.
- * Ink = Atlas navy (not black). Surface = warm cream (not white).
- * One accent = signal gold, used with extreme restraint.
+ * Atlas design tokens — PURE MONOCHROME.
+ *
+ * There is NO ACCENT COLOR. Not for links, not for buttons, not for status.
+ * The only non-grey token is `alert`, and it is for form errors only.
+ *
+ * Links are ink with a 1px underline that thickens on hover. Never colour a
+ * link. Primary buttons are ink with paper text. Full-bleed bands are ink.
+ *
+ * If a design problem seems to need a colour, it needs size, weight, spacing,
+ * or a rule instead.
  */
 export default {
   content: ["./index.html", "./src/**/*.{ts,tsx}"],
   theme: {
     extend: {
       colors: {
-        // warm cream ramp (surfaces)
-        cream: {
-          50: "#FBFAF5",
-          100: "#F5F2E9",
-          200: "#EEEADD",
-          300: "#E9E5DA",
-          400: "#DDD7C4",
-        },
-        // navy ramp (ink + dark surfaces)
-        navy: {
-          300: "#8B9BB4",
-          400: "#5D7089",
-          500: "#3C5068",
-          600: "#2C405A",
-          700: "#22384F",
-          800: "#1C2E45",
-          900: "#16253A",
-          950: "#101B2C",
-        },
-        gold: {
-          300: "#E3C87F",
-          400: "#D4B562",
-          500: "#C9A54E",
-          600: "#A98A3C",
-        },
+        /** page background */
+        paper: "#FFFFFF",
+        /** cards, raised surfaces, alternating sections */
+        surface: "#F5F5F6",
+        /** hairline borders */
+        line: "#E4E4E6",
+        /** primary text, primary buttons, dark bands */
+        ink: "#0E0E10",
+        /** primary button hover only */
+        "ink-hover": "#26262A",
+        /** secondary text */
+        muted: "#57575C",
+        /** eyebrows, meta labels, tertiary text */
+        faint: "#8A8A92",
+        /** form errors ONLY. Never decoration, never a status. */
+        alert: "#B3402F",
       },
       fontFamily: {
-        serif: ['"Playfair Display"', "Didot", "Bodoni MT", "Georgia", "serif"],
-        sans: ["Inter", "system-ui", "sans-serif"],
-        mono: ['"JetBrains Mono"', "Consolas", "monospace"],
+        /**
+         * Headings. Instrument Serif has ONE weight (400) — there is no bold.
+         * Where the old system leaned on a heavier heading, compensate with
+         * size and spacing. Never reach for font-weight here.
+         */
+        display: ['"Instrument Serif"', "Georgia", "serif"],
+        serif: ['"Instrument Serif"', "Georgia", "serif"],
+        sans: ["Archivo", "system-ui", "sans-serif"],
       },
       letterSpacing: {
         caps: "0.18em",
+        meta: "0.14em",
+        lockup: "0.22em",
       },
-      borderColor: {
-        hairline: "rgba(28, 46, 69, 0.12)",
-        "hairline-soft": "rgba(28, 46, 69, 0.06)",
-        "hairline-inverse": "rgba(233, 229, 218, 0.14)",
-        "hairline-inverse-soft": "rgba(233, 229, 218, 0.07)",
-      },
-      animation: {
-        "fade-up": "fadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) both",
-        "pulse-node": "pulseNode 2.6s ease-in-out infinite",
-      },
-      keyframes: {
-        fadeUp: {
-          "0%": { opacity: "0", transform: "translateY(24px)" },
-          "100%": { opacity: "1", transform: "translateY(0)" },
-        },
-        pulseNode: {
-          "0%, 100%": { opacity: "0.5", transform: "scale(1)" },
-          "50%": { opacity: "1", transform: "scale(1.35)" },
-        },
+      borderRadius: {
+        /** cards and panels */
+        card: "10px",
+        /** buttons, inputs, selects */
+        control: "6px",
       },
     },
   },

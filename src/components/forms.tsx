@@ -1,37 +1,43 @@
 import { ReactNode, useState } from "react";
-import { FORM_ENDPOINT, APPLY_EMAIL } from "@/lib/dates";
+import { FORM_ENDPOINT } from "@/lib/dates";
 
 export function Field({
   label,
   required,
   hint,
+  error,
   children,
 }: {
   label: string;
   required?: boolean;
   hint?: string;
+  /** Inline validation message, shown under the control when set. */
+  error?: string;
   children: ReactNode;
 }) {
   return (
     <label className="block">
       <span className="flex items-baseline gap-2">
-        <span className="text-sm text-navy-800">{label}</span>
+        <span className="text-sm text-ink">{label}</span>
         {required ? (
-          <span className="text-gold-600 text-xs" aria-hidden>
-            required
-          </span>
+          <span className="text-muted text-xs">required</span>
         ) : (
-          <span className="text-navy-400 text-xs">optional</span>
+          <span className="text-muted text-xs">optional</span>
         )}
       </span>
-      {hint && <span className="block mt-0.5 text-xs text-navy-500">{hint}</span>}
+      {hint && <span className="block mt-0.5 text-xs text-muted">{hint}</span>}
       <span className="block mt-2">{children}</span>
+      {error && (
+        <span role="alert" className="block mt-1.5 text-xs text-alert">
+          {error}
+        </span>
+      )}
     </label>
   );
 }
 
 export const inputCls =
-  "w-full rounded-xl border border-hairline bg-cream-50 px-4 py-2.5 text-[15px] text-navy-900 placeholder:text-navy-400 focus:outline-none focus:border-navy-400 transition-colors";
+  "w-full rounded-control border border-line bg-paper px-4 py-2.5 text-[15px] text-ink placeholder:text-muted focus:outline-none focus:border-ink transition-colors";
 
 export function WordCountArea({
   name,
@@ -62,8 +68,8 @@ export function WordCountArea({
       />
       <p
         className={
-          "mt-1 text-right font-mono text-[11px] " +
-          (bad ? "text-gold-600" : "text-navy-400")
+          "mt-1 text-right font-sans text-[11px] " +
+          (bad ? "text-alert" : "text-muted")
         }
       >
         {words} words · target {min}–{max}
@@ -75,34 +81,42 @@ export function WordCountArea({
 export type SubmitState = "idle" | "sending" | "sent" | "error";
 
 /**
- * Submits to FORM_ENDPOINT when configured; otherwise opens a prefilled
- * email draft (guaranteed-functional fallback, no fake door).
+ * Submits to FORM_ENDPOINT.
+ *
+ * THERE IS NO MAILTO FALLBACK. A mailto: handler is a dead end for anyone
+ * without a configured desktop mail client, and it silently loses the
+ * submission — which is worse than telling the reader the form is not open.
+ *
+ * When FORM_ENDPOINT is null, callers must render the form visibly DISABLED
+ * (see isFormEndpointConfigured below) rather than call this. Calling it
+ * without an endpoint is a programming error and reports "error".
  */
 export async function submitApplication(
   kind: string,
   data: Record<string, string>,
   setState: (s: SubmitState) => void
 ): Promise<void> {
-  setState("sending");
-  if (FORM_ENDPOINT) {
-    try {
-      const res = await fetch(FORM_ENDPOINT, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ kind, ...data, submittedAt: new Date().toISOString() }),
-      });
-      setState(res.ok ? "sent" : "error");
-      return;
-    } catch {
-      setState("error");
-      return;
-    }
+  if (!FORM_ENDPOINT) {
+    setState("error");
+    return;
   }
-  const body = Object.entries(data)
-    .map(([k, v]) => `${k}:\n${v}`)
-    .join("\n\n");
-  window.location.href = `mailto:${APPLY_EMAIL}?subject=${encodeURIComponent(
-    `${kind} submission`
-  )}&body=${encodeURIComponent(body.slice(0, 1800))}`;
-  setState("sent");
+  setState("sending");
+  try {
+    const res = await fetch(FORM_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ kind, ...data, submittedAt: new Date().toISOString() }),
+    });
+    setState(res.ok ? "sent" : "error");
+  } catch {
+    setState("error");
+  }
+}
+
+/**
+ * True when a real submission endpoint exists. Pages gate their forms on this
+ * and render a disabled state when it is false.
+ */
+export function isFormEndpointConfigured(): boolean {
+  return Boolean(FORM_ENDPOINT);
 }

@@ -1,17 +1,28 @@
 import { useState } from "react";
-import { Reveal } from "@/components/Reveal";
-import { Field, inputCls, submitApplication, SubmitState } from "@/components/forms";
+import {
+  Field,
+  inputCls,
+  isFormEndpointConfigured,
+  submitApplication,
+  SubmitState,
+} from "@/components/forms";
+import { PARTNERS_EMAIL } from "@/lib/dates";
 
 /**
- * Partners — start a conversation. Collects name, title/research group
- * (optional), the sender's email, and a short message, then sends it to
- * Atlas (via FORM_ENDPOINT when configured, otherwise a prefilled email).
+ * Partners — partnership enquiries.
+ *
+ * NO MAILTO. When FORM_ENDPOINT is not configured the form renders visibly
+ * DISABLED with the contact address shown as plain text, rather than handing
+ * the reader a mailto: link that silently fails without a desktop mail client.
+ * A disabled control that explains itself beats a dead end.
  */
 export function Partners() {
   const [state, setState] = useState<SubmitState>("idle");
+  const enabled = isFormEndpointConfigured();
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!enabled) return;
     const fd = new FormData(e.currentTarget);
     const data: Record<string, string> = {};
     fd.forEach((v, k) => (data[k] = String(v)));
@@ -19,84 +30,115 @@ export function Partners() {
   };
 
   return (
-    <div className="bg-cream-100">
-      <section className="border-b border-hairline-soft">
+    <div className="bg-paper">
+      <section className="border-b border-line">
         <div className="mx-auto max-w-3xl px-6 pt-16 md:pt-24 pb-12">
-          <Reveal>
-            <p className="meta-label text-navy-500">
-              Partners · Journals · Funders · NGOs
-            </p>
-            <h1 className="mt-4 font-serif text-4xl md:text-6xl text-navy-900 leading-[1.05]">
-              Start a conversation.
-            </h1>
-            <p className="mt-6 text-lg text-navy-600 leading-relaxed">
-              Atlas is a for-youth nonprofit. If your organization works on
-              education access, research integrity, or youth publishing — or
-              you're a researcher who'd speak to a cohort — tell us a little and
-              we'll write back.
-            </p>
-          </Reveal>
+          <p className="meta-label">Partners</p>
+          <h1 className="mt-4 font-display text-4xl md:text-5xl leading-[1.06]">
+            Work with Atlas.
+          </h1>
+          <p className="mt-6 text-lg text-muted leading-relaxed">
+            Atlas runs student research groups in eight fields. We work with
+            journals on submission routes, with researchers who run guest
+            sessions, and with organisations that mentor student teams.
+          </p>
         </div>
       </section>
 
       <section className="mx-auto max-w-2xl px-6 py-14 md:py-20">
         {state === "sent" ? (
-          <div className="border border-hairline bg-cream-50 rounded-2xl p-10 text-center">
-            <p className="font-serif text-3xl text-navy-900">Message on its way.</p>
-            <p className="mt-4 text-navy-600">
-              Thanks for reaching out — we read every note and reply
-              personally. (If your email client opened, hit send there to
-              finish.)
-            </p>
+          <div className="rounded-card border border-line bg-surface p-10 text-center">
+            <h2 className="font-display text-2xl">Message received.</h2>
+            <p className="mt-3 text-muted">We reply to every enquiry.</p>
           </div>
         ) : (
-          <form onSubmit={onSubmit} className="space-y-6">
-            <Reveal>
-              <div className="grid md:grid-cols-2 gap-6">
-                <Field label="Your name" required>
-                  <input name="name" required className={inputCls} autoComplete="name" />
-                </Field>
-                <Field label="Your email" required>
-                  <input name="email" type="email" required className={inputCls} autoComplete="email" />
-                </Field>
+          <>
+            {!enabled && (
+              <div className="mb-8 rounded-card border border-line bg-surface p-6">
+                <h2 className="font-display text-lg">
+                  This form is not open yet.
+                </h2>
+                <p className="mt-2.5 text-[15px] text-muted leading-relaxed">
+                  Submissions are not being accepted through the site right now.
+                  Write to{" "}
+                  <span className="text-ink">{PARTNERS_EMAIL}</span> and we will
+                  reply.
+                </p>
               </div>
-            </Reveal>
-            <Reveal>
-              <Field
-                label="Title / research group"
-                hint="e.g. Professor of Education, Stanford · or a lab / journal / NGO name"
-              >
-                <input name="title_group" className={inputCls} placeholder="Optional" />
-              </Field>
-            </Reveal>
-            <Reveal>
-              <Field label="What would you like to explore together?">
-                <textarea
-                  name="message"
-                  rows={5}
-                  className={inputCls + " resize-y"}
-                  placeholder="A sentence or two is plenty — mentorship, a partnership, speaking to a cohort, publishing…"
-                />
-              </Field>
-            </Reveal>
-            <Reveal>
-              <div className="flex flex-wrap items-center gap-4 pt-2">
-                <button
-                  type="submit"
-                  disabled={state === "sending"}
-                  className="rounded-full bg-navy-800 text-cream-100 pl-7 pr-6 py-3.5 text-[15px] inline-flex items-center gap-2.5 hover:bg-navy-700 transition-all hover:gap-3.5 disabled:opacity-60"
+            )}
+
+            <form
+              onSubmit={onSubmit}
+              className={enabled ? "space-y-6" : "space-y-6 opacity-60"}
+              aria-disabled={!enabled}
+            >
+              <fieldset disabled={!enabled} className="space-y-6 border-0 p-0">
+                <div className="grid md:grid-cols-2 gap-6">
+                  <Field label="Your name" required>
+                    <input
+                      name="name"
+                      required
+                      className={inputCls}
+                      autoComplete="name"
+                    />
+                  </Field>
+                  <Field label="Your email" required>
+                    <input
+                      name="email"
+                      type="email"
+                      required
+                      className={inputCls}
+                      autoComplete="email"
+                    />
+                  </Field>
+                </div>
+
+                <Field
+                  label="Title and organisation"
+                  hint="e.g. Professor of Chemistry, or a journal or NGO name"
                 >
-                  {state === "sending" ? "Sending…" : "Send to Atlas"}
-                  <span aria-hidden className="text-gold-300">→</span>
-                </button>
-                {state === "error" && (
-                  <p className="text-sm text-gold-600">
-                    Something failed — please retry.
-                  </p>
-                )}
-              </div>
-            </Reveal>
-          </form>
+                  <input
+                    name="title_group"
+                    className={inputCls}
+                    placeholder="Optional"
+                  />
+                </Field>
+
+                <Field label="What would you like to explore together?">
+                  <textarea
+                    name="message"
+                    rows={5}
+                    className={inputCls + " resize-y"}
+                    placeholder="Mentorship, a submission route, a guest session"
+                  />
+                </Field>
+
+                <div className="flex flex-wrap items-center gap-4 pt-2">
+                  {enabled ? (
+                    <button
+                      type="submit"
+                      disabled={state === "sending"}
+                      className="rounded-control bg-ink text-paper px-6 py-3 text-[15px] hover:bg-ink-hover transition-colors disabled:opacity-60"
+                    >
+                      {state === "sending" ? "Sending" : "Send to Atlas"}
+                    </button>
+                  ) : (
+                    <span
+                      aria-disabled="true"
+                      className="rounded-control border border-line px-6 py-3 text-[15px] text-muted cursor-not-allowed"
+                    >
+                      Form not open
+                    </span>
+                  )}
+                  {state === "error" && (
+                    <p className="text-sm text-alert">
+                      Something failed. Please retry.
+                    </p>
+                  )}
+                </div>
+              </fieldset>
+            </form>
+          </>
         )}
       </section>
     </div>
