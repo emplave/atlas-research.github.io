@@ -1,155 +1,136 @@
-# Waitlist now sends every field the Apps Script expects
+# Working Papers hidden behind a flag
 
 Branch `chapters-rebuild`, PR #2. `tsc --noEmit` clean, `vite build` succeeds, all routes serve
-with no dev warnings, **52 checks pass** (45 payload/validation/markup + 7 logging gate).
+with no dev warnings, **38 checks pass** (27 hidden-state, 11 restore-path).
 
 ---
 
-## 1. Location split into City and Country
+## I could not push this to main, and it is not only the standing rule
 
-The single "City + country" input is replaced by two separately required inputs. Both carry
-`required`, `aria-invalid`, an inline alert-coloured message, and count toward the summary line —
-identical treatment to the other required fields.
-
-Country is its own field because it is the column that feeds `src/data/reach.ts`, and a combined
-free-text string cannot be split back apart reliably. `"Lagos, Nigeria"` splits cleanly;
-`"Washington, DC, USA"` and `"Cork, Ireland"` do not split the same way. Guessing the country
-from the tail of a string is exactly the kind of silent data corruption that would show up later
-as a wrong dot on the globe.
-
-Also added matching `autoComplete` hints — `address-level2` and `country-name` — so browsers can
-fill both correctly.
-
-## 2. The POST body now carries all fifteen keys
-
-The old body sent `kind`, the raw form fields, and `submittedAt` — none of which matched the
-script's key names beyond `name` and `email`. It now sends exactly the keys the script reads, in
-the order it appends them:
-
-```json
-{
-  "name": "Ada Lovelace",
-  "email": "ada@example.org",
-  "school": "Placeholder School",
-  "city": "Kathmandu",
-  "country": "Nepal",
-  "grade": "",
-  "timezone": "",
-  "prompt": "",
-  "datasource": "",
-  "completion": "",
-  "research": "",
-  "research_desc": "Bus reliability & timetables",
-  "consent": "yes",
-  "referral": "Waitlist for next cohort",
-  "referral_other": ""
-}
-```
-
-- **Collected:** `name`, `email`, `school`, `city`, `country`, `research_desc` (trimmed).
-- **`consent`** is `"yes"`. Submission is already blocked when the box is unchecked, so a posted
-  row can only ever represent granted consent — hardcoding it is the honest encoding of that,
-  not a shortcut.
-- **`referral`** is `"Waitlist for next cohort"`. The stale
-  `"Future interest (applications closed)"` is gone, and there is an explicit check asserting it
-  never reappears.
-- **Seven uncollected fields** — `grade`, `timezone`, `prompt`, `datasource`, `completion`,
-  `research`, `referral_other` — are `""`.
-
-**On never sending `undefined`:** you noted a missing key writes a blank. Worth being precise
-about why it matters here — `JSON.stringify` **drops** a key whose value is `undefined`
-entirely, so it does not arrive as a blank, it does not arrive at all. The payload is built from
-an explicitly typed `WaitlistPayload` with all fifteen keys as `string`, so TypeScript will not
-compile a missing one, and a test asserts all fifteen survive a JSON round-trip.
-
-Nothing about the `no-cors` handling changed. `mode: "no-cors"`, `application/json`, and the
-comment explaining why the response is unreadable are all intact.
-
-`buildWaitlistPayload(fd)` is exported and pure, because the POST response is opaque — that
-function is the only place the body can actually be asserted.
-
-## 3. Logging — and a correction to what you asked for
-
-You asked for the body logged **in dev only**, so you could read it on the preview. Those two
-things are in conflict: **a Vercel preview is a production build**, so `import.meta.env.DEV` is
-`false` there. I built it that way first and confirmed the log was stripped from the production
-bundle — which would have left you with nothing to read on the exact environment you plan to
-test in.
-
-So the gate is on **hostname** instead: logs on localhost and on any preview URL, silent on the
-live domain. That serves the stated intent rather than the literal wording.
+You asked me to commit and push to main. **Main does not contain the journal.** Checked rather
+than assumed:
 
 ```
-PASS  localhost            localhost                              logs=true
-PASS  127.0.0.1            127.0.0.1                              logs=true
-PASS  vercel preview       atlas-abc123-emplave.vercel.app        logs=true
-PASS  vercel branch alias  atlas-git-chapters-rebuild.vercel.app  logs=true
-PASS  PRODUCTION apex      atlas-research.org                     logs=false
-PASS  PRODUCTION www       www.atlas-research.org                 logs=false
-PASS  empty hostname       (empty)                                logs=false
+src/pages/Journal.tsx           ABSENT on main
+src/pages/JournalArticle.tsx    ABSENT on main
+src/data/publications.ts        ABSENT on main
+src/pages/Publish.tsx           on main        ← the old page it replaced
+/journal route                  not on main
 ```
 
-This matters beyond convenience: the body contains a real person's name, email, and school, so
-it must never reach a visitor's console on the live site.
+There is nothing on main to add this flag to. `Journal.tsx`, `JournalArticle.tsx` and
+`publications.ts` exist only on `chapters-rebuild`, still behind PR #2. A commit to main would
+either add three orphan files with no route, or fail to apply at all.
 
-The host rule is split into `isLoggableHost(hostname)` so it can be asserted on its own —
-testing `shouldLogWaitlistPayload()` directly is useless, since any test runner runs in dev and
-short-circuits on the first line. I only noticed that because the first two production cases
-"passed" as `true`, which was the test lying to me rather than the code being wrong.
+So the work is on `chapters-rebuild` and pushed there, which also keeps your standing "never
+commit directly to main" rule from the original plan. **The flag reaches production when PR #2
+merges** — see the question at the end.
 
-On the preview, submit the form and you will see:
+## 1. The flag
 
-```
-[waitlist] POST body
-{ …all fifteen keys… }
-```
+`src/lib/flags.ts`, a new file, so it is the obvious place to look rather than buried in a
+component or a data file:
 
-## 4. Verification
-
-45 checks on the payload, validation, and markup:
-
-```
-PASS  has exactly 15 keys
-PASS  keys match the script exactly, in order
-PASS  no key is undefined
-PASS  every value is a string
-PASS  survives JSON round-trip with all 15 keys
-PASS  city populated and trimmed
-PASS  country populated separately
-PASS  consent is "yes"
-PASS  referral is the new string
-PASS  referral is NOT the stale "Future interest" string
-PASS  grade/timezone/prompt/datasource/completion/research/referral_other === ""
-PASS  research_desc is '' when the field is absent
-PASS  blank city blocks          PASS  blank country blocks
-PASS  whitespace city blocks     PASS  whitespace country blocks
-PASS  absent country blocks      PASS  both reported together
-PASS  old 'location' key is gone from validation
-PASS  consent still blocks
-PASS  old combined location input gone
-PASS  "City + country" label gone
-PASS  textarea renamed to research_desc
-PASS  both new labels marked required
-
-all 45 checks passed
+```ts
+export const SHOW_WORKING_PAPERS = false;
 ```
 
-## Still not verified by me
+The comment states that flipping it to `true` is the only change needed, lists exactly what
+happens while it is `false`, and names every file that still holds the hidden code so nobody
+concludes the feature was deleted.
 
-**No row has been written by this code.** The POST is opaque, and I did not submit against the
-live sheet — sending test rows to a sheet with 85 real entries is not mine to do casually. Two
-things to confirm on the preview:
+## 2. Nothing from the track renders
 
-1. **Read the console log** and check all fifteen keys are present and the five collected ones
-   are populated.
-2. **Then check the sheet** and confirm the columns line up — `school`, `city`, `country`,
-   `research_desc`, `consent`, `referral` all landing in the right places rather than shifted.
+With the flag off, `/journal` renders no working-papers heading, no "Not externally peer
+reviewed" badge, no disclosure paragraph, no cards, and no empty state. The section is wrapped in
+`{SHOW_WORKING_PAPERS && ( … )}` rather than having pieces removed, so the whole block is intact
+in the source.
 
-If a column is off by one, the payload keys are right (asserted) so the thing to look at is
-whether the script reads by key name or by position in the received object.
+The peer-reviewed track and all the review-process content are untouched: the three steps, the
+six criteria, and the revision and rejection copy all still render exactly as before.
 
-One thing I cannot check from here: **the 85 existing rows will still have blanks** in those
-columns. This fixes new submissions only; it does not backfill.
+## 3. Direct URLs 404
 
-Also still open from before: the `{"kind":"probe"}` row my earlier endpoint probe may have
-written.
+`/journal/placeholder-working-paper` now renders the not-found page.
+
+This mattered more than it might look. The Journal no longer links to that paper, but the slug is
+guessable and the record is still in `publications.ts`, so without the check the page would have
+stayed live by direct URL — a published claim with no route into it. 404 is the honest answer:
+as far as the site is concerned it is not published. Peer-reviewed articles are unaffected.
+
+## 4. Nothing deleted, and the restore path is proven
+
+The `Publication` type, `publications.ts` and its seeded paper, `workingPapers()`,
+`peerReviewedArticles()`, `findPublication()`, `JournalArticle.tsx`, and the "not externally peer
+reviewed" disclosure copy are all still present. Asserted, including by reading the source files
+back to confirm the copy strings survive.
+
+I did not just claim one boolean restores it — **I flipped the flag to `true`, re-rendered, and
+checked**, then flipped it back:
+
+```
+SHOW_WORKING_PAPERS = true  (temporarily flipped)
+
+PASS  heading restored                    PASS  badge restored
+PASS  disclosure paragraph restored       PASS  working-paper card restored
+PASS  link to the paper restored          PASS  intro back to 'two separate tracks'
+PASS  reviewed section border-t restored  PASS  peer-reviewed track still intact
+PASS  article page renders instead of 404
+PASS  working-paper standing stated on the article
+
+all 11 restore checks passed
+```
+
+## 5. Two layout problems hiding the section would have caused
+
+Neither was visible from the instruction, and both would have made the page read as broken.
+
+**The intro copy advertised the missing section.** It opened *"The Journal runs two separate
+tracks. Working papers are founding contributions from the Atlas team…"* — describing, in the
+first paragraph, a section that is no longer on the page. That is worse than a gap: it tells the
+reader something is missing. The intro is now conditional and, while the flag is off, reads:
+
+> The Journal publishes student research that has completed external review. The first reviewed
+> issue has not been published yet, so what follows is how review actually works.
+
+That also gives the process content a reason to be there, rather than leaving it as the only
+thing on a page that promised two tracks.
+
+**The hairline would have doubled.** The header carries `border-b border-line` and the
+peer-reviewed section carried `border-t border-line`. With the working-papers section gone those
+two rules became adjacent — a visible double line under the header. The `border-t` is now applied
+only when a section actually precedes it.
+
+Both revert with the flag. Verified in the restore pass above.
+
+## The page reads as complete
+
+Rendered reading order with the flag off:
+
+```
+The Atlas Journal
+Student research, published in the open.
+The Journal publishes student research that has completed external review. The first
+  reviewed issue has not been published yet, so what follows is how review actually works.
+Peer-Reviewed Articles — First issue not yet published
+01 Submission / 02 Review / 03 Decision
+What review looks for — six criteria
+What revision means / What rejection means
+```
+
+No dangling heading, no orphan reference, and no mention of working papers anywhere — asserted,
+not eyeballed. It reads as a page about how review works, which is what it now is.
+
+---
+
+## One thing to decide
+
+This flag is on `chapters-rebuild`, so **it does not affect the live site until PR #2 merges**.
+The live site currently runs main, which has the old `Publish.tsx` and no `/journal` at all — so
+there is no working-papers section in production to hide right now.
+
+If the intent was "make sure Working Papers is not visible when the rebuild goes live", that is
+done. If the intent was "hide something visible on atlas-research.org today", nothing there
+matches — tell me what you are seeing and I will look.
+
+I have not merged PR #2. Say the word if you want it merged.
