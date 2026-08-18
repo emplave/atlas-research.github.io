@@ -1,139 +1,163 @@
-# Phase 13 — member application wired to every research group
+# Phase 14 — events from a live Sheet, plus individual event pages
 
-Branch: `chapters-rebuild`. Prior: … P10 `026eca6` · P11 `cd417d8` · P12 `94a48c1`.
+Branch: `chapters-rebuild`. Prior: … P11 `cd417d8` · P12 `94a48c1` · P13 `ab2a7bd`.
 
-Verification: `tsc --noEmit` clean, `vite build` succeeds, `npm run dev` starts clean (200 on
-all nine routes, no warnings), **27/27 checks pass** (13 render/audit + 14 URL encoding).
+Verification: `tsc --noEmit` clean, `vite build` succeeds, `npm run dev` starts clean with
+`EVENTS_CSV_URL` null and fallback events rendering (200 on all 11 routes, no warnings),
+**47/47 checks pass**.
 
 ---
 
-## 1. `src/lib/memberApplication.ts`
+## 1. Event type extended
 
-Three exports, as specified:
+All twelve fields added: `dateStatus`, nullable `date`, `endTime`, `timezone`, `location`,
+`joinUrl`, `speakerBio`, `speakerUrl`, `audience`, `longDescription`, `recordingUrl`,
+`capacity`. Existing fields kept.
 
-- `MEMBER_APPLICATION_BASE_URL` — the given URL, ending in `=`.
-- `MEMBER_APPLICATION_ENTRY_ID` — `"244092308"`.
-- `memberApplicationUrl(group)` — the base URL plus the `encodeURIComponent`'d
-  `projectTitle`, or the group's own `memberApplicationUrl` when the Sheet supplies one.
+`date` becoming nullable is the change that touches everything. Rather than leave each caller
+to guard it, the type ships a narrowing predicate and two formatters:
 
-The entry-ID comment distinguishes the two ways the prefill breaks, because they fail
-differently and one is silent:
+- `hasDate(event)` — a type guard narrowing `date` to `string`, so sorting and comparison code
+  cannot reach a null.
+- `formatEventDate(iso | null)` — the single place a date becomes text. Returns
+  `DATE_TBD_LABEL` for null **and for an unparseable string**, so no caller can emit
+  "Invalid Date" even if bad data reaches it.
+- `formatEventWhen(event)` — the card/header line. A TBD event returns only the label; a time
+  appended to "Date to be announced" would read as a partial answer.
 
-- Deleting and re-adding question 1 issues a **new** field ID, so the group name fills
-  nothing at all.
-- Reordering questions keeps the ID resolving but lands the group name **in the wrong
-  field** — worse, because it looks like it worked.
+## 2. `src/lib/eventsSource.ts`
 
-Editing question 1's *wording* is safe. Editing its *identity* is not.
+**The CSV parser is now shared, not duplicated.** I extracted it to `src/lib/csv.ts` along
+with the header reader, slug helpers, `isPublished`, `orNull`, and the fetch-with-timeout, and
+refactored `groupsSource.ts` onto it — that file dropped from ~390 to 292 lines. A second
+parser would have drifted, and these are exactly the edge cases that only surface in
+production.
 
-The parameter type is structural (`Pick<ResearchGroup, "projectTitle"> & { memberApplicationUrl?: … }`)
-rather than the full record, so it works with both fallback and Sheet-derived groups.
+`eventsSource` mirrors `groupsSource`: null URL falls back, `Published` = `yes` only, skip-and-
+log validation, promise-level caching, 8s `AbortController` timeout, HTML-response detection
+for an un-published Sheet, and the same slug derivation and collision suffixing.
 
-I also added `memberApplicationUrl?: string | null` as an optional field on the base
-`ResearchGroup` type. Without it the override was carried by `SheetResearchGroup` but invisible
-to the card and brief, which are typed against `ResearchGroup` — so the per-group override
-would have parsed correctly out of the Sheet and then been silently ignored at the point of
-use.
+Column contract documented verbatim at the top of the file.
 
-## 2. Form audit — two wrong pointers found and fixed
+## 3. Date handling
 
-I audited every `<a href>` on every route by label, rather than only checking the two files I
-expected to change. **Exactly two actions pointed at the wrong form**, and both were the ones
-this phase targets:
+This was the part that needed care, and there were a few decisions worth stating.
 
-| Location | Label | Was pointing at | Now |
-| --- | --- | --- | --- |
-| `ResearchGroupCard.tsx:183` | "Apply to join" | start-a-group form | member form |
-| `ResearchGroupBrief.tsx:174` | "Apply to join" | start-a-group form | member form |
+**TBD is a first-class state, not an error.** `DateStatus: tbd` with a blank `Date` validates,
+is kept, and lands in its own group. Asserted directly: `confirmed` with no date is skipped,
+`tbd` with no date is kept.
 
-Everything else was already correct: Hero, Nav, Closing, the directory's start band, its
-empty-state CTA, and "Apply to lead a group" all point at the Research Group Leader opening;
-Get Involved's per-role buttons point at their own role forms.
+**A TBD event can never be past.** `isPast` returns false without a date rather than comparing
+against `NaN` — otherwise `Date.parse("nullT23:59:59Z")` would produce `NaN`, the comparison
+would be false by accident, and the behaviour would be right for the wrong reason and break
+on the next refactor.
 
-The audit output, which I kept in the test rather than reasoning about it by hand:
+**Three sections, empty ones omitted:** "Date to be announced" → "Upcoming" → "Past sessions".
+Undated sits *above* upcoming because an event without a date is still forthcoming, not
+lesser. Dated upcoming ascends, dated past descends, undated sorts by title since there is no
+date and spreadsheet row order is arbitrary.
 
-```
-ok   JOIN   Apply to join           -> member form          (/)
-ok   JOIN   Apply to join           -> member form          (/research-groups)
-ok   JOIN   Apply to join           -> member form          (/research-groups/placeholder-transit-reliability)
-ok   START  Start a group           -> start-a-group form   (/)
-ok   START  Apply to lead a group   -> start-a-group form   (/research-groups)
-…19 actions, all correct
-```
+**Two details beyond the brief:**
 
-Both components dropped their `findOpening("chapter-leader")` import entirely, so the join path
-no longer has any reference to the start form to regress toward.
+- **An impossible date is rejected.** `2026-02-31` passes a regex but is not a real day, so
+  validation round-trips through `Date` and compares the ISO string back. Without that, the
+  event would render as 2 March.
+- **A TBD row that already has a valid date keeps it.** That lets you type the date in first
+  and flip `DateStatus` afterwards without silently losing it. It stays in the TBD section
+  until `DateStatus` says `confirmed`.
 
-**One behaviour change worth naming.** The join actions previously inherited the start form's
-"Opening soon" disabled state from `isFormPending(opening)`. That state is now gone from the
-join path: the member form is a constant, not a nullable field, so there is nothing to be
-pending. Closing a group to new members is done by changing its **Status** away from
-`Recruiting`, which removes the button — documented in the new docs section.
+I also **added a past event to the fallback data**. The seed previously had no past event, so
+the past section, the recording control, and the no-join-link-on-past rule were unreachable
+without a live Sheet. Now all three date states ship in the fallback and every render path is
+exercised.
 
-`canApply()` still gates the action, so only `Recruiting` groups show it. Asserted: the join
-count on the directory equals the recruiting-group count, and a non-recruiting brief renders no
-join action.
+## 4. Individual event pages
 
-## 3. What happens next
+`/events/:slug`, using `Prose` like the briefs. Order as specified: kind and date line, title,
+speaker with affiliation (linked to `speakerUrl` when present), `longDescription` through
+Prose, then a details block omitting whatever is blank.
 
-On the brief, under the join button:
+- Registration uses `registrationUrl`, or a disabled "Details coming soon".
+- `joinUrl` renders **only for upcoming** events. A meeting link on a finished session is a
+  dead end for anyone arriving later.
+- `recordingUrl` renders **only for past** events — held back beforehand, since there is
+  nothing to watch yet. A past event with no recording says so plainly rather than showing a
+  broken control.
+- Unknown slug renders the 404 **after** the fetch resolves, with a matching skeleton before.
+- Back link to `/events`.
 
-> This group's lead reviews applications and decides who joins.
+`longDescription` falls back to `description` when blank, so a short event still gets a working
+page rather than an empty column.
 
-One sentence, no response time. A comment records why: leads are students, and a promised
-turnaround nobody owns becomes a broken promise. A check asserts no response-time language
-crept in.
+## 5. Cards clickable
 
-## 4. Docs
+Titles on `/events` and in the homepage strip link to the detail page. The registration and
+recording controls are **siblings**, not nested — a link inside a link is invalid HTML and
+browsers resolve it unpredictably. There is an explicit regex check that no anchor is nested
+inside another anywhere on the events page.
 
-`notes/managing-research-groups.md` gains section 12, "The two application forms": a table of
-which form is for whom and where each is set, how the prefill works and that it follows a
-renamed ProjectTitle automatically, the safe-vs-breaking edits to question 1 with the recovery
-steps (**Send → Get pre-filled link**), and how to override the join form for a single group
-via `MemberApplicationUrl`.
+Each row also carries a plain "Event details" link, so the destination is reachable without
+relying on the title being recognised as clickable.
 
-Two things I added beyond the brief because an operator will hit them: that closing a group to
-members is a **Status** change rather than a form change, and that a custom override form gets
-no prefill, so it needs to ask which group the applicant means.
+The homepage strip now includes undated events after dated ones, so a TBD session is not
+invisible on the homepage while sitting on `/events`.
 
-## 5. Encoding verified
+## 6. Template and docs
 
-The required case — a title with both an ampersand and a colon:
+`scripts/generate-events-template.mjs` → `notes/events-template.csv`: 23 columns, three rows
+covering exactly the cases that behave differently — confirmed upcoming with a named speaker,
+TBD with a blank date, past with a recording. Round-tripped through the real parser rather than
+eyeballed; it produced the correct three-way grouping and `"Date to be announced"` for the TBD
+row.
 
-```
-title : Placeholder: Costs & Pricing in Open-Air Markets
-url   : …/viewform?usp=pp_url&entry.244092308=Placeholder%3A%20Costs%20%26%20Pricing%20in%20Open-Air%20Markets
-```
+The example speaker is labelled `EXAMPLE NAME — replace or leave blank`, and the docs say to
+delete all three example rows before publishing, because a placeholder name on a live site
+reads as a real claim.
 
-Colon → `%3A`, ampersand → `%26`, spaces → `%20`. Checked structurally, not just by eye:
-`new URL(...).searchParams.get("entry.244092308")` returns the **exact original title**, there
-is exactly one raw `&` in the whole URL (the `usp` separator), and none after the entry
-parameter. All six seeded titles round-trip.
+`notes/managing-events.md` covers publishing and the CSV URL, adding an event, setting TBD and
+confirming later, automatic upcoming/past, Zoom links, recordings after the fact, renamed
+columns, and Google's five-minute cache. It states plainly:
 
-The unencoded ampersand is the real failure mode here: a raw `&` would terminate the query
-parameter and Google would receive "Placeholder: Costs" with the rest dropped.
+> **Do not put a speaker's name in the Sheet until that person has agreed to appear.**
+
+Plus three things an operator will hit: the difference between `RegistrationUrl` and `JoinUrl`,
+that Sheets will reformat a typed date unless the column is set to plain text, and that
+`Timezone` should always be filled for an online session because a bare "5:00 PM" is unusable
+across time zones.
+
+## Constraints honoured
+
+No dependency added (`@vercel/analytics, clsx, cobe, react, react-dom, react-router-dom,
+tailwind-merge` — unchanged). No auth. No admin UI.
 
 ---
 
 ## Verification
 
 ```
-PASS  every join action targets the member form
-PASS  no join action targets the start form
-PASS  every start action targets the start form
-PASS  no start action targets the member form
-PASS  join count equals recruiting-group count on the directory
-PASS  non-recruiting brief shows no join action
-PASS  prefill carries the group title, encoded
-PASS  brief states who decides
-PASS  no response time promised
-PASS  helper honours a per-group override
-…all 13 render checks + 14 encoding checks passed
+PASS  /events                                        8216b
+PASS  /events/placeholder-analysis-clinic            5637b   (TBD)
+PASS  /events/placeholder-methods-webinar            5885b   (upcoming)
+PASS  /events/placeholder-past-sources-workshop      5769b   (past)
+PASS  /events/does-not-exist                         3945b   (404)
+…all 12 routes clean
+
+PASS  TBD sorts into its own group        PASS  TBD is never past
+PASS  formatEventDate(null) is the label  PASS  formatEventDate(garbage) is the label
+PASS  no Invalid Date anywhere            PASS  confirmed without a date is skipped
+PASS  tbd without a date is KEPT          PASS  impossible date is rejected
+PASS  past detail has no meeting link     PASS  upcoming detail has no recording control
+PASS  no anchor nested inside an anchor   PASS  one shared CSV parser
+
+all checks passed
 ```
 
-Three checks failed on first run. All three were artifacts of my own harness reading raw
-serialised HTML, where React writes `&amp;` in hrefs and `&#x27;` in text — the browser DOM has
-neither. Added entity decoding to the harness; no product code was at fault.
+Every page also scanned for `Invalid Date`, `NaN`, `undefined`, off-token hex values, and the
+standing banned-string list.
+
+One check failed on the first run: a stale assertion of mine claiming the seed had no past
+event, which stopped being true when I added one. Replaced with a correct
+heading-appears-iff-group-is-non-empty check in both directions.
 
 ---
 
@@ -141,8 +165,6 @@ neither. Added entity decoding to the harness; no product code was at fault.
 
 - **`reach.ts`** still asserts a real fellow in each of 20 countries. Unverifiable by me,
   ships visible. Unchanged since Phase 7.
-- **The member form's question 1 has not been exercised end to end** — I verified the URL is
-  correctly formed and round-trips, but not that Google accepts this specific entry ID against
-  the live form. Worth one manual click: open a Recruiting group's brief, hit "Apply to join",
-  and confirm the group name is prefilled.
+- **Two Sheet URLs to fill in** when ready: `RESEARCH_GROUPS_CSV_URL` and `EVENTS_CSV_URL`.
+  Each is one line and one deploy, after which both datasets are Sheet-only.
 - **"Research Group Leader" vs "Research Group Lead"** — still unrenamed, from Phase 11.

@@ -17,6 +17,7 @@ import { ResearchGroupBrief } from "./pages/ResearchGroupBrief";
 import { Journal } from "./pages/Journal";
 import { JournalArticle } from "./pages/JournalArticle";
 import { Events } from "./pages/Events";
+import { EventDetail } from "./pages/EventDetail";
 import { Privacy } from "./pages/Privacy";
 import { GetInvolved } from "./pages/GetInvolved";
 
@@ -64,6 +65,7 @@ export default function App() {
             />
 
             <Route path="/events" element={<Events />} />
+            <Route path="/events/:slug" element={<EventDetail />} />
             <Route path="/journal" element={<Journal />} />
             <Route path="/journal/:slug" element={<JournalArticle />} />
             <Route path="/fellowship" element={<Fellowship />} />

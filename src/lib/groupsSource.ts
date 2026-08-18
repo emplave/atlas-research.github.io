@@ -41,6 +41,16 @@ import {
   type Setting,
   type Status,
 } from "@/data/research-groups";
+import {
+  fetchSheetRows,
+  headerReader,
+  isPublished,
+  parseCount,
+  pipeList,
+  slugify,
+  uniqueSlug,
+} from "./csv";
+export { parseCsv } from "./csv";
 
 /**
  * The published-to-web CSV URL for the research groups Sheet.
@@ -52,96 +62,7 @@ import {
  */
 export const RESEARCH_GROUPS_CSV_URL: string | null = null;
 
-/** How long to wait for the Sheet before falling back. */
-const FETCH_TIMEOUT_MS = 8000;
-
-/* ------------------------------------------------------------------------- */
-/* CSV parsing                                                                */
-/* ------------------------------------------------------------------------- */
-
-/**
- * Parse CSV into rows of cells.
- *
- * Written by hand rather than pulled from a package, and it is a real parser
- * rather than a split on commas: it handles quoted fields containing commas,
- * newlines, and escaped double quotes ("" inside a quoted field), plus CRLF
- * line endings. Google Sheets emits all of these — an abstract with a comma in
- * it is enough to break a naive split.
- */
-export function parseCsv(text: string): string[][] {
-  const rows: string[][] = [];
-  let row: string[] = [];
-  let cell = "";
-  let inQuotes = false;
-  let i = 0;
-
-  // Strip a UTF-8 BOM, which Sheets sometimes prefixes.
-  if (text.charCodeAt(0) === 0xfeff) i = 1;
-
-  const endCell = () => {
-    row.push(cell);
-    cell = "";
-  };
-  const endRow = () => {
-    endCell();
-    rows.push(row);
-    row = [];
-  };
-
-  while (i < text.length) {
-    const c = text[i];
-
-    if (inQuotes) {
-      if (c === '"') {
-        if (text[i + 1] === '"') {
-          cell += '"'; // escaped quote
-          i += 2;
-          continue;
-        }
-        inQuotes = false;
-        i++;
-        continue;
-      }
-      cell += c;
-      i++;
-      continue;
-    }
-
-    if (c === '"') {
-      inQuotes = true;
-      i++;
-      continue;
-    }
-    if (c === ",") {
-      endCell();
-      i++;
-      continue;
-    }
-    if (c === "\r") {
-      // CRLF or a lone CR both terminate the row.
-      if (text[i + 1] === "\n") i++;
-      endRow();
-      i++;
-      continue;
-    }
-    if (c === "\n") {
-      endRow();
-      i++;
-      continue;
-    }
-    cell += c;
-    i++;
-  }
-
-  // Flush the trailing cell/row unless the file ended on a newline.
-  if (cell.length > 0 || row.length > 0) endRow();
-
-  // Drop rows that are entirely empty — a trailing blank line is normal.
-  return rows.filter((r) => r.some((v) => v.trim() !== ""));
-}
-
-/* ------------------------------------------------------------------------- */
-/* Validation                                                                 */
+/* ---------------- Validation                                                                 */
 /* ------------------------------------------------------------------------- */
 
 const FIELDS: readonly Field[] = [
@@ -187,27 +108,6 @@ export type SheetResearchGroup = ResearchGroup & {
   memberApplicationUrl: string | null;
 };
 
-function slugify(input: string): string {
-  return input
-    .toLowerCase()
-    .replace(/&/g, " and ")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 80);
-}
-
-function pickInt(raw: string): number {
-  const n = Number.parseInt(raw.trim(), 10);
-  return Number.isFinite(n) && n >= 0 ? n : 0;
-}
-
-function pipeList(raw: string): string[] {
-  return raw
-    .split("|")
-    .map((s) => s.trim())
-    .filter(Boolean);
-}
-
 /**
  * Convert parsed CSV rows into research groups.
  *
@@ -217,89 +117,62 @@ function pipeList(raw: string): string[] {
 export function rowsToGroups(rows: string[][]): SheetResearchGroup[] {
   if (rows.length === 0) return [];
 
-  const header = rows[0].map((h) => h.trim());
-  const idx = (name: string) => header.indexOf(name);
-
-  const col = {
-    published: idx("Published"),
-    slug: idx("Slug"),
-    projectTitle: idx("ProjectTitle"),
-    field: idx("Field"),
-    status: idx("Status"),
-    setting: idx("Setting"),
-    oneLine: idx("OneLine"),
-    leadName: idx("LeadName"),
-    school: idx("SchoolOrCommunityName"),
-    location: idx("Location"),
-    memberCount: idx("MemberCount"),
-    abstract: idx("Abstract"),
-    outputType: idx("OutputType"),
-    methods: idx("Methods"),
-    milestones: idx("Milestones"),
-    startedAt: idx("StartedAt"),
-    reviewStatus: idx("ReviewStatus"),
-    imageSrc: idx("ImageSrc"),
-    imageAlt: idx("ImageAlt"),
-    memberApplicationUrl: idx("MemberApplicationUrl"),
-  };
-
+  const read = headerReader(rows[0]);
   const out: SheetResearchGroup[] = [];
   const seenSlugs = new Set<string>();
 
   for (let r = 1; r < rows.length; r++) {
     const row = rows[r];
-    const at = (i: number) => (i >= 0 && i < row.length ? row[i].trim() : "");
+    const at = (name: string) => read(row, name);
     const label = `row ${r + 1}`;
 
-    if (at(col.published).toLowerCase() !== "yes") continue;
+    if (!isPublished(at("Published"))) continue;
 
-    const projectTitle = at(col.projectTitle);
+    const projectTitle = at("ProjectTitle");
     if (!projectTitle) {
       warn(`${label} skipped: ProjectTitle is blank`);
       continue;
     }
 
-    const field = at(col.field) as Field;
+    const field = at("Field") as Field;
     if (!FIELDS.includes(field)) {
-      warn(`${label} skipped: Field "${at(col.field)}" is not a known field`);
+      warn(`${label} skipped: Field "${at("Field")}" is not a known field`);
       continue;
     }
 
-    const status = at(col.status) as Status;
+    const status = at("Status") as Status;
     if (!STATUSES.includes(status)) {
-      warn(`${label} skipped: Status "${at(col.status)}" is not a known status`);
+      warn(`${label} skipped: Status "${at("Status")}" is not a known status`);
       continue;
     }
 
-    const setting = at(col.setting).toLowerCase() as Setting;
+    const setting = at("Setting").toLowerCase() as Setting;
     if (!SETTINGS.includes(setting)) {
-      warn(
-        `${label} skipped: Setting "${at(col.setting)}" is not a known setting`
-      );
+      warn(`${label} skipped: Setting "${at("Setting")}" is not a known setting`);
       continue;
     }
 
-    const outputType = at(col.outputType) as OutputType;
+    const outputType = at("OutputType") as OutputType;
     if (!OUTPUT_TYPES.includes(outputType)) {
       warn(
-        `${label} skipped: OutputType "${at(col.outputType)}" is not a known output type`
+        `${label} skipped: OutputType "${at("OutputType")}" is not a known output type`
       );
       continue;
     }
 
-    const rawReview = at(col.reviewStatus).toLowerCase();
+    const rawReview = at("ReviewStatus").toLowerCase();
     const reviewStatus = (rawReview || "none") as ReviewStatus;
     if (!REVIEW_STATUSES.includes(reviewStatus)) {
       warn(
-        `${label} skipped: ReviewStatus "${at(col.reviewStatus)}" is not a known review status`
+        `${label} skipped: ReviewStatus "${at("ReviewStatus")}" is not a known review status`
       );
       continue;
     }
 
-    const oneLine = at(col.oneLine);
-    const leadName = at(col.leadName);
-    const abstract = at(col.abstract);
-    const startedAt = at(col.startedAt);
+    const oneLine = at("OneLine");
+    const leadName = at("LeadName");
+    const abstract = at("Abstract");
+    const startedAt = at("StartedAt");
     const missing = [
       !oneLine && "OneLine",
       !leadName && "LeadName",
@@ -311,19 +184,14 @@ export function rowsToGroups(rows: string[][]): SheetResearchGroup[] {
       continue;
     }
 
-    // Slug: given, or derived. Unique either way.
-    let slug = slugify(at(col.slug) || projectTitle);
-    if (!slug) slug = `group-${r}`;
-    if (seenSlugs.has(slug)) {
-      let n = 2;
-      while (seenSlugs.has(`${slug}-${n}`)) n++;
-      warn(`${label}: slug "${slug}" already used, using "${slug}-${n}"`);
-      slug = `${slug}-${n}`;
-    }
-    seenSlugs.add(slug);
+    const slug = uniqueSlug(
+      slugify(at("Slug") || projectTitle) || `group-${r}`,
+      seenSlugs,
+      (from, to) => warn(`${label}: slug "${from}" already used, using "${to}"`)
+    );
 
-    const imageSrc = at(col.imageSrc);
-    const imageAlt = at(col.imageAlt);
+    const imageSrc = at("ImageSrc");
+    const imageAlt = at("ImageAlt");
 
     out.push({
       slug,
@@ -333,17 +201,17 @@ export function rowsToGroups(rows: string[][]): SheetResearchGroup[] {
       setting,
       oneLine,
       leadName,
-      schoolOrCommunityName: at(col.school) || undefined,
-      location: at(col.location) || undefined,
-      memberCount: pickInt(at(col.memberCount)),
+      schoolOrCommunityName: at("SchoolOrCommunityName") || undefined,
+      location: at("Location") || undefined,
+      memberCount: parseCount(at("MemberCount")),
       abstract,
       outputType,
-      methods: pipeList(at(col.methods)),
-      milestones: pipeList(at(col.milestones)),
+      methods: pipeList(at("Methods")),
+      milestones: pipeList(at("Milestones")),
       startedAt,
       reviewStatus,
       image: imageSrc && imageAlt ? { src: imageSrc, alt: imageAlt } : null,
-      memberApplicationUrl: at(col.memberApplicationUrl) || null,
+      memberApplicationUrl: at("MemberApplicationUrl") || null,
     });
   }
 
@@ -375,35 +243,14 @@ const FALLBACK: SheetResearchGroup[] = FALLBACK_GROUPS.map((g) => ({
 let cache: Promise<SheetResearchGroup[]> | null = null;
 
 async function fetchGroups(url: string): Promise<SheetResearchGroup[]> {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
-  try {
-    const res = await fetch(url, {
-      signal: controller.signal,
-      redirect: "follow",
-    });
-    if (!res.ok) {
-      warn(`sheet fetch returned ${res.status}; using fallback data`);
-      return FALLBACK;
-    }
-    const text = await res.text();
-    // A published-to-web URL that has been unshared returns an HTML error page.
-    if (/^\s*</.test(text)) {
-      warn("sheet returned HTML rather than CSV; using fallback data");
-      return FALLBACK;
-    }
-    const groups = rowsToGroups(parseCsv(text));
-    if (groups.length === 0) {
-      warn("sheet parsed to zero published groups; using fallback data");
-      return FALLBACK;
-    }
-    return groups;
-  } catch {
-    warn("sheet unreachable or timed out; using fallback data");
+  const rows = await fetchSheetRows(url, warn);
+  if (!rows) return FALLBACK;
+  const groups = rowsToGroups(rows);
+  if (groups.length === 0) {
+    warn("sheet parsed to zero published groups; using fallback data");
     return FALLBACK;
-  } finally {
-    clearTimeout(timer);
   }
+  return groups;
 }
 
 /**
