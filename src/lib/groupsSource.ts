@@ -60,7 +60,8 @@ export { parseCsv } from "./csv";
  *
  * Format: https://docs.google.com/spreadsheets/d/e/<long-id>/pub?gid=0&single=true&output=csv
  */
-export const RESEARCH_GROUPS_CSV_URL: string | null = null;
+export const RESEARCH_GROUPS_CSV_URL: string | null =
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vS5pSpmYVKBtIe9-F5EZ19r2mJMrRAYh-d-VW8z-r_iRk-iBlHo2pZ4Z28iEkjsCOOKXEiRZyj9cCtb/pub?gid=1185748239&single=true&output=csv";
 
 /* ---------------- Validation                                                                 */
 /* ------------------------------------------------------------------------- */

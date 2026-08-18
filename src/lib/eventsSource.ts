@@ -62,7 +62,8 @@ import {
  *
  * Format: https://docs.google.com/spreadsheets/d/e/<long-id>/pub?gid=0&single=true&output=csv
  */
-export const EVENTS_CSV_URL: string | null = null;
+export const EVENTS_CSV_URL: string | null =
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vQz8CTA0Pnp8eBsg56shVfGLfbyi8_lr4TPedWI1QBCjLSQX1TTFoPWgtJk1MaSwMaa83V-ne-kq-Kc/pub?gid=953737550&single=true&output=csv";
 
 const KINDS: readonly EventKind[] = [
   "webinar",
