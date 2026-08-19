@@ -43,8 +43,8 @@ limitations are stated honestly. Revision is the normal outcome. Some work is
 declined, with reasons given in writing.
 
 The Atlas Journal runs two separate tracks. Atlas Working Papers are founding
-contributions from the Atlas team, published without external peer review.
-Peer-Reviewed Articles have completed external review; the first reviewed issue
+contributions from the Atlas team, published without peer review.
+Peer-Reviewed Articles have completed peer review; the first reviewed issue
 has not yet been published. These two tracks are not equivalent and are not
 presented as though they are.
 

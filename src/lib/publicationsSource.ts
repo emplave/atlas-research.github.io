@@ -13,7 +13,8 @@
  * EXPECTED SHEET COLUMNS — the header row must contain exactly these names:
  *
  * Published, Slug, Title, Authors, Track, Field, Abstract, FullTextUrl,
- * PublishedAt, ReviewedAt
+ * PublishedAt, ReviewedAt, Affiliation, ArticleType, Keywords, License,
+ * ConflictOfInterest, EditorialNote
  *
  * Column ORDER does not matter — columns are matched by header name. Renaming a
  * column breaks only the field it feeds: required fields cause the row to be
@@ -35,6 +36,16 @@
  *   PublishedAt  YYYY-MM-DD. Required.
  *   ReviewedAt   YYYY-MM-DD. Set ONLY on peer-reviewed rows. IGNORED on a
  *                working-paper row, with a warning — see the track rules below.
+ *
+ * The last six are ALL OPTIONAL, and a blank cell omits the field and its label
+ * from the article page rather than printing an empty row:
+ *   Affiliation        One line, e.g. a school or institution.
+ *   ArticleType        Free text, e.g. "Research article". Shown as a chip.
+ *   Keywords           Pipe-separated in one cell: "polarization | media".
+ *   License            VERBATIM licence terms. Nothing is invented in code — if
+ *                      this is blank, the article shows no licence at all.
+ *   ConflictOfInterest VERBATIM statement, same rule.
+ *   EditorialNote      VERBATIM note, same rule.
  * ============================================================================
  *
  * See notes/managing-publications.md for the operator workflow.
@@ -286,6 +297,17 @@ export function rowsToPublications(rows: string[][]): Publication[] {
       ),
       publishedAt,
       reviewedAt,
+      /*
+       * The optional fields. cleanOrNull, not orNull, so "N/A" and "TBD" become
+       * null here too — a licence field reading "N/A" would render as though
+       * Atlas had stated something about licensing when nobody had.
+       */
+      affiliation: cleanOrNull(at("Affiliation")),
+      articleType: cleanOrNull(at("ArticleType")),
+      keywords: pipeList(at("Keywords")).filter((k) => isMeaningfulValue(k)),
+      license: cleanOrNull(at("License")),
+      conflictOfInterest: cleanOrNull(at("ConflictOfInterest")),
+      editorialNote: cleanOrNull(at("EditorialNote")),
     });
   }
 

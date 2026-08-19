@@ -1,9 +1,9 @@
-Published,Slug,Title,Authors,Track,Field,Abstract,FullTextUrl,PublishedAt,ReviewedAt
+Published,Slug,Title,Authors,Track,Field,Abstract,FullTextUrl,PublishedAt,ReviewedAt,Affiliation,ArticleType,Keywords,License,ConflictOfInterest,EditorialNote
 no,placeholder-working-paper,"PLACEHOLDER: What student research groups produce, and what gets in the way",Atlas Research Institute,working-paper,Social Sciences,"PLACEHOLDER ABSTRACT. This working paper describes the conditions under which small student research groups complete a project rather than abandoning it.
 
 It sets out what a group needs in place before work starts — a defined question, a named lead, a meeting cadence, and access to sources it can actually reach — and identifies the points at which projects most often stall.
 
-As a working paper, this has not been externally peer reviewed.",https://drive.google.com/file/d/PLACEHOLDER_FILE_ID/view?usp=sharing,2026-06-01,
-no,placeholder-reviewed-article,PLACEHOLDER: Title of an article that completed external review,Placeholder Author | Placeholder Co-Author,peer-reviewed,Environment & Sustainability,"PLACEHOLDER ABSTRACT. Replace this with the article's real abstract before publishing the row.
+As a working paper, this has not been peer reviewed.",https://drive.google.com/file/d/PLACEHOLDER_FILE_ID/view?usp=sharing,2026-06-01,,,,,,,
+no,placeholder-reviewed-article,PLACEHOLDER: Title of an article that completed peer review,Placeholder Author | Placeholder Co-Author,peer-reviewed,Environment & Sustainability,"PLACEHOLDER ABSTRACT. Replace this with the article's real abstract before publishing the row.
 
-Blank lines separate paragraphs. Keep the abstract to what the paper actually establishes, including its limitations.",,2026-09-01,2026-08-20
+Blank lines separate paragraphs. Keep the abstract to what the paper actually establishes, including its limitations.",,2026-09-01,2026-08-20,Placeholder School,Research article,placeholder keyword | second keyword | third keyword,"PLACEHOLDER: replace with the licence terms Atlas grants, or leave blank","PLACEHOLDER: replace with the authors' conflict of interest statement, or leave blank","PLACEHOLDER: replace with any editorial note for this article, or leave blank"

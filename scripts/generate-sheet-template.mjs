@@ -162,6 +162,17 @@ const PUBLICATION_HEADERS = [
   "FullTextUrl",
   "PublishedAt",
   "ReviewedAt",
+  // All six below are OPTIONAL. A blank cell omits the field AND its label from
+  // the article page — it never prints a label with nothing after it.
+  "Affiliation",
+  "ArticleType",
+  "Keywords",
+  // License, ConflictOfInterest and EditorialNote are rendered VERBATIM. No
+  // wording for them exists in the code, deliberately: an invented licence is a
+  // legal claim Atlas never made. Blank means the section is absent.
+  "License",
+  "ConflictOfInterest",
+  "EditorialNote",
 ];
 
 /**
@@ -171,7 +182,7 @@ const PUBLICATION_HEADERS = [
  * TEMPLATES. The groups and events templates ship "yes" rows because a
  * placeholder group going live is untidy. A placeholder PEER-REVIEWED row going
  * live is not untidy, it is a false claim: it would sit on the site under "This
- * article completed external peer review" having been reviewed by nobody. So
+ * article completed peer review" having been reviewed by nobody. So
  * these import as hidden, and the operator sets Published to "yes" per row once
  * the row holds a real paper.
  *
@@ -207,17 +218,25 @@ const PUBLICATION_ROWS = [
     Track: "working-paper",
     Field: "Social Sciences",
     Abstract:
-      "PLACEHOLDER ABSTRACT. This working paper describes the conditions under which small student research groups complete a project rather than abandoning it.\n\nIt sets out what a group needs in place before work starts — a defined question, a named lead, a meeting cadence, and access to sources it can actually reach — and identifies the points at which projects most often stall.\n\nAs a working paper, this has not been externally peer reviewed.",
+      "PLACEHOLDER ABSTRACT. This working paper describes the conditions under which small student research groups complete a project rather than abandoning it.\n\nIt sets out what a group needs in place before work starts — a defined question, a named lead, a meeting cadence, and access to sources it can actually reach — and identifies the points at which projects most often stall.\n\nAs a working paper, this has not been peer reviewed.",
     FullTextUrl:
       "https://drive.google.com/file/d/PLACEHOLDER_FILE_ID/view?usp=sharing",
     PublishedAt: "2026-06-01",
     // EMPTY ON PURPOSE. Working papers are not reviewed. A date here is ignored.
     ReviewedAt: "",
+    // Every optional cell left blank on this row, to show that a sparse record
+    // is valid: the article page simply omits each missing field and its label.
+    Affiliation: "",
+    ArticleType: "",
+    Keywords: "",
+    License: "",
+    ConflictOfInterest: "",
+    EditorialNote: "",
   },
   {
     Published: "no",
     Slug: "placeholder-reviewed-article",
-    Title: "PLACEHOLDER: Title of an article that completed external review",
+    Title: "PLACEHOLDER: Title of an article that completed peer review",
     Authors: "Placeholder Author | Placeholder Co-Author",
     Track: "peer-reviewed",
     Field: "Environment & Sustainability",
@@ -228,6 +247,18 @@ const PUBLICATION_ROWS = [
     PublishedAt: "2026-09-01",
     // The date review completed. This is the date the site shows for this track.
     ReviewedAt: "2026-08-20",
+    // This row fills the optional columns, to show the full record layout.
+    Affiliation: "Placeholder School",
+    ArticleType: "Research article",
+    // Pipe-separated, same convention as Authors. Rendered as chips.
+    Keywords: "placeholder keyword | second keyword | third keyword",
+    // PLACEHOLDER TEXT ONLY. Replace with the terms Atlas actually grants, or
+    // leave blank. Do not ship this wording.
+    License: "PLACEHOLDER: replace with the licence terms Atlas grants, or leave blank",
+    ConflictOfInterest:
+      "PLACEHOLDER: replace with the authors' conflict of interest statement, or leave blank",
+    EditorialNote:
+      "PLACEHOLDER: replace with any editorial note for this article, or leave blank",
   },
 ];
 

@@ -1,3 +1,4 @@
+import { SITE_ORIGIN } from "@/lib/seo";
 import type { Field } from "./research-groups";
 
 /**
@@ -15,12 +16,12 @@ import type { Field } from "./research-groups";
  * TWO TRACKS, NEVER MERGED:
  *
  *   "working-paper"  — Founding contributions from the Atlas team, published
- *                      WITHOUT external peer review. A working paper must
+ *                      WITHOUT peer review. A working paper must
  *                      never be labelled peer reviewed, described as
  *                      reviewed, or presented alongside reviewed articles as
  *                      though the two carry the same standing.
  *
- *   "peer-reviewed"  — Articles that have completed external review. Empty
+ *   "peer-reviewed"  — Articles that have completed peer review. Empty
  *                      until the first reviewed issue is actually published.
  *                      Do not seed placeholders in this track: an empty
  *                      reviewed list is honest, a fake one is not.
@@ -42,7 +43,7 @@ export type Publication = {
   /** ISO date (YYYY-MM-DD). */
   publishedAt: string;
   /**
-   * ISO date external review completed, or null.
+   * ISO date peer review completed, or null.
    *
    * MEANINGFUL ONLY ON THE PEER-REVIEWED TRACK. A working paper has not been
    * reviewed, so this is null on every working paper — and the source drops a
@@ -51,7 +52,72 @@ export type Publication = {
    * hand cannot render a working paper as reviewed either.
    */
   reviewedAt: string | null;
+
+  /*
+   * EVERY FIELD BELOW IS OPTIONAL AND SHEET-DRIVEN.
+   *
+   * null means the cell was blank, and a blank cell must omit the field AND its
+   * label from the page — never a label with nothing after it. There is no
+   * default text for any of them: the licence and conflict-of-interest wording
+   * in particular is Atlas's to write in the Sheet, not this file's to invent.
+   */
+
+  /** Author affiliation, as one line. */
+  affiliation: string | null;
+  /** Free-text article type, e.g. "Research article". Shown as a chip. */
+  articleType: string | null;
+  /** Keywords, from a pipe-separated cell. Empty array renders no chips. */
+  keywords: string[];
+  /** Licence terms, verbatim from the Sheet. Never authored here. */
+  license: string | null;
+  /** Conflict-of-interest statement, verbatim from the Sheet. */
+  conflictOfInterest: string | null;
+  /** Editorial note, verbatim from the Sheet. */
+  editorialNote: string | null;
 };
+
+/**
+ * THE REVIEW STATUS WORDING — ONE CONSTANT PER TRACK, AND THE ONLY COPY OF IT.
+ *
+ * This text was duplicated between the Journal index and the article page, which
+ * is exactly how the two drift apart: a wording change lands on one page and the
+ * other keeps making the old claim about the same paper. Both pages now read
+ * these, so there is no second place to update.
+ *
+ * "external" is deliberately absent. Review is done by the Atlas research and
+ * editorial team, so calling it external was inaccurate. The working-paper line
+ * drops it for the same reason — contrasting a working paper against "external
+ * peer review" would imply an external tier that does not exist.
+ *
+ * NEVER state or imply that publication is guaranteed. Review decides.
+ */
+export const REVIEW_STATUS: Record<
+  Track,
+  {
+    /** Chip text. Short enough for a badge. */
+    chip: string;
+    /** One-line status, for the publication record and the index meta line. */
+    short: string;
+    /** The full statement shown on the article page. */
+    statement: string;
+  }
+> = {
+  "peer-reviewed": {
+    chip: "Peer reviewed",
+    short: "Completed peer review",
+    statement:
+      "This article completed peer review. It was evaluated by the Atlas research and editorial team against the Journal's published criteria.",
+  },
+  "working-paper": {
+    chip: "Working paper",
+    short: "Not peer reviewed",
+    statement:
+      "This is a working paper. It is a founding contribution from the Atlas team, published while the first open call for submissions is underway. It has not been through peer review.",
+  },
+};
+
+/** The name the Journal is cited under. */
+export const JOURNAL_NAME = "The Atlas Journal";
 
 /**
  * PLACEHOLDER DATA — NOT A REAL PAPER.
@@ -61,8 +127,8 @@ export type Publication = {
  * PDFs through the Sheet. The authors array deliberately does not name a person.
  *
  * The peer-reviewed track is deliberately EMPTY here. Seeding a fake reviewed
- * article would put an unreviewed placeholder behind a "completed external peer
- * review" badge, which is the one thing this file must never do.
+ * article would put an unreviewed placeholder behind a "completed peer review"
+ * badge, which is the one thing this file must never do.
  */
 export const PUBLICATIONS: Publication[] = [
   {
@@ -73,10 +139,22 @@ export const PUBLICATIONS: Publication[] = [
     track: "working-paper",
     field: "Social Sciences",
     abstract:
-      "PLACEHOLDER ABSTRACT. This working paper describes the conditions under which small student research groups complete a project rather than abandoning it, drawing on the operating model Atlas uses to support them.\n\nIt sets out what a group needs in place before work starts — a defined question, a named lead, a meeting cadence, and access to sources it can actually reach — and identifies the points at which projects most often stall.\n\nAs a working paper, this has not been externally peer reviewed. It is published as a founding contribution while the first open call for submissions is underway.",
+      "PLACEHOLDER ABSTRACT. This working paper describes the conditions under which small student research groups complete a project rather than abandoning it, drawing on the operating model Atlas uses to support them.\n\nIt sets out what a group needs in place before work starts — a defined question, a named lead, a meeting cadence, and access to sources it can actually reach — and identifies the points at which projects most often stall.\n\nAs a working paper, this has not been peer reviewed. It is published as a founding contribution while the first open call for submissions is underway.",
     fullTextUrl: null,
     publishedAt: "2026-06-01",
     reviewedAt: null,
+    /*
+     * Every optional field is null/empty in the fallback ON PURPOSE. This is the
+     * data shown when the Sheet is unreachable, so anything invented here would
+     * be an unsourced claim about a paper — a licence Atlas never granted, an
+     * affiliation nobody stated. Blank means the page omits the field.
+     */
+    affiliation: null,
+    articleType: null,
+    keywords: [],
+    license: null,
+    conflictOfInterest: null,
+    editorialNote: null,
   },
 ];
 
@@ -92,7 +170,7 @@ export function reviewedDate(publication: Publication): string | null {
   return publication.track === "peer-reviewed" ? publication.reviewedAt : null;
 }
 
-/** True when this record completed external review AND says when. */
+/** True when this record completed peer review AND says when. */
 export function isReviewed(publication: Publication): boolean {
   return reviewedDate(publication) !== null;
 }
@@ -128,7 +206,7 @@ function sortKey(publication: Publication): string {
   return publicationDate(publication).iso;
 }
 
-/** Working papers, newest first. Published without external peer review. */
+/** Working papers, newest first. Published without peer review. */
 export function workingPapers(publications: Publication[]): Publication[] {
   return publications
     .filter((p) => p.track === "working-paper")
@@ -156,4 +234,33 @@ export function findPublication(
   slug: string
 ): Publication | undefined {
   return publications.find((p) => p.slug === slug);
+}
+
+/** The canonical public URL of a paper. Uses the host SEO already resolved. */
+export function articleUrl(publication: Publication): string {
+  return `${SITE_ORIGIN}/journal/${publication.slug}`;
+}
+
+/**
+ * The citation string, GENERATED rather than stored.
+ *
+ * Format, exactly:
+ *
+ *   Authors (Year). Title. The Atlas Journal. Retrieved from <canonical URL>
+ *
+ * Generated so it cannot go stale. A stored citation would keep the old title
+ * after a title fix and the old URL after a slug change, and would have to be
+ * re-typed by hand in the Sheet for every edit.
+ *
+ * The year is the PUBLICATION year, not the review year, which is the
+ * convention every citation style follows — the review date is a fact about the
+ * article's history, not its date of record.
+ *
+ * NO ARTICLE ID, NO DOI, NO ISSN. None of those exist for this Journal and
+ * inventing an identifier would be inventing a registration.
+ */
+export function citationFor(publication: Publication): string {
+  const year = publication.publishedAt.slice(0, 4);
+  const authors = publication.authors.join(", ");
+  return `${authors} (${year}). ${publication.title}. ${JOURNAL_NAME}. Retrieved from ${articleUrl(publication)}`;
 }

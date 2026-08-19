@@ -20,7 +20,7 @@ If you have set up either of those, this will be familiar.
    track.
 2. **Both example rows arrive with `Published` set to `no`.** That is
    deliberate and different from the other two templates. The reviewed example
-   would otherwise go live claiming to have completed external peer review when
+   would otherwise go live claiming to have completed peer review when
    nobody reviewed it. Leave them hidden, and set `Published` to `yes` only on
    rows holding a real paper.
 3. Delete the two example rows once you have real papers. Do not delete the
@@ -62,8 +62,8 @@ Until that URL is filled in, the site renders the fallback publication in
 
 ## 3. The columns
 
-Ten columns, in this order in the template. Order does not matter to the site;
-names do.
+Sixteen columns, in this order in the template. Order does not matter to the
+site; names do.
 
 | Column | Required | Notes |
 | --- | --- | --- |
@@ -77,6 +77,14 @@ names do.
 | `FullTextUrl` | no | Google Drive link. Blank → "Full text coming soon". |
 | `PublishedAt` | yes | `YYYY-MM-DD` |
 | `ReviewedAt` | no | `YYYY-MM-DD`. **Peer-reviewed rows only.** |
+| `Affiliation` | no | One line, e.g. a school or institution. |
+| `ArticleType` | no | Free text, e.g. `Research article`. Shown as a chip. |
+| `Keywords` | no | Pipe-separated. Rendered as chips. |
+| `License` | no | **Verbatim.** No wording exists in the code. |
+| `ConflictOfInterest` | no | **Verbatim.** |
+| `EditorialNote` | no | **Verbatim.** Blank lines separate paragraphs. |
+
+The last six are the publication-record fields, all optional — see section 6.
 
 If a required field is missing or misspelled, **the row is skipped** rather than
 half-rendered. Nothing breaks, but the paper will not appear. Open the browser
@@ -113,8 +121,8 @@ Environment & Sustainability
 The Journal keeps two tracks and never lets a reader mistake one for the other.
 
 - **Working papers** are founding contributions from the Atlas team, published
-  **without** external peer review.
-- **Peer-reviewed articles** have completed external review.
+  **without** peer review.
+- **Peer-reviewed articles** have completed peer review.
 
 A working paper must never render as reviewed. The site enforces that in two
 places — the parser discards a review date on a working-paper row, and the
@@ -196,7 +204,83 @@ restricted. Go back to step 3 above and set **Anyone with the link → Viewer**.
 The site cannot detect this — the link will look fine and be dead for everyone
 but you.
 
-## 6. Leave cells blank — never type "N/A"
+## 6. The publication record fields
+
+Six optional columns feed the formal record on an article's page: `Affiliation`,
+`ArticleType`, `Keywords`, `License`, `ConflictOfInterest`, `EditorialNote`.
+
+**A blank cell omits the field and its label completely.** The page does not print
+`License` followed by nothing. A record with all six blank renders as a shorter,
+complete page — it does not look broken, and it does not look like something is
+missing. So leave anything you do not have blank rather than filling it in to
+"complete the record".
+
+| Column | Where it appears | Format |
+| --- | --- | --- |
+| `Affiliation` | under the authors, in the record, in the sidebar | one line of text |
+| `ArticleType` | a chip at the top, in the record, in the sidebar | free text, e.g. `Research article` |
+| `Keywords` | its own Keywords section, as chips | pipe-separated |
+| `License` | Publication details, and the sidebar | verbatim text |
+| `ConflictOfInterest` | Publication details | verbatim text |
+| `EditorialNote` | its own Editorial note section | verbatim, blank lines = paragraphs |
+
+### License, ConflictOfInterest and EditorialNote are verbatim
+
+**There is no default wording for these anywhere in the code, on purpose.**
+Whatever you type is what appears; if you type nothing, nothing appears.
+
+A licence is a legal grant. Software must not invent one on Atlas's behalf, so
+the code contains no licence text to fall back on. The same goes for a conflict
+of interest statement — it is a claim by the authors about themselves, and only
+they can make it.
+
+Write these yourself, or leave them blank.
+
+### `ArticleType` is free text, not a fixed list
+
+Unlike `Track` and `Field`, this is not validated. Whatever you type is shown as
+a chip. Keep it short and keep it consistent between papers — `Research article`
+on one and `research paper` on another will read as two different things.
+
+`Track` and `ArticleType` are different: `Track` is the review standing and is
+validated; `ArticleType` is what kind of piece it is.
+
+## 7. The citation
+
+**The citation is generated, not stored. There is no column for it.**
+
+The format is:
+
+```
+Authors (Year). Title. The Atlas Journal. Retrieved from <the article URL>
+```
+
+For example:
+
+```
+A. Author, B. Author (2026). The title of the paper. The Atlas Journal. Retrieved from https://atlas-research.org/journal/your-slug
+```
+
+- **Year** is the year from `PublishedAt`, not `ReviewedAt`. That is the
+  convention every citation style follows: the review date is a fact about the
+  article's history, not its date of record.
+- **Authors** are joined with commas, in the order you list them in the Sheet.
+- **The URL** is built from the slug, so it is always the live address.
+
+It is generated so it cannot go stale. A stored citation would keep the old title
+after you fix a typo and the old URL after a slug change, and you would have to
+retype it in the Sheet on every edit.
+
+There is a **Copy citation** button at the top of the article and another beside
+the citation block. Both copy the same string.
+
+### No identifiers
+
+There is **no article ID, no DOI, and no ISSN**, and none should be added to the
+Sheet. Those are registrations with external bodies. Atlas does not hold them, and
+printing one it does not hold would be a false claim about the Journal's standing.
+
+## 8. Leave cells blank — never type "N/A"
 
 Leave an optional cell **empty**. Do not type `N/A`, `NA`, `none`, `nil`, `TBD`,
 `TBA`, `-`, or `null`.
@@ -210,7 +294,7 @@ empty cell is still the correct input.** Relying on the site to clean up after
 you is worse, because a placeholder still sits in the cell, still looks like an
 answer to whoever reads the Sheet next, and still has to be removed eventually.
 
-## 7. Abstract paragraphs
+## 9. Abstract paragraphs
 
 Press **Alt+Enter** (Option+Enter on a Mac) twice inside the cell to make a blank
 line. Blank lines become paragraph breaks on the site. A single newline does not.
@@ -218,7 +302,7 @@ line. Blank lines become paragraph breaks on the site. A single newline does not
 Only the **first paragraph** is shown in the Journal list. The full abstract
 appears on the paper's own page. Write the first paragraph so it stands alone.
 
-## 8. Authors: use pipes
+## 10. Authors: use pipes
 
 One cell, entries separated by `|`:
 
@@ -233,7 +317,7 @@ publishable.
 Do not invent authors, affiliations, or credentials. Write the names as the
 authors want them printed.
 
-## 9. Slugs
+## 11. Slugs
 
 The slug is the URL: `/journal/your-slug`.
 
@@ -244,7 +328,7 @@ leave it.
 
 Duplicate slugs get a numeric suffix and a console warning.
 
-## 10. Unpublish a paper
+## 12. Unpublish a paper
 
 Set `Published` to anything other than `yes`. Blank works.
 
@@ -254,7 +338,7 @@ setting it back to `yes` restores it exactly.
 Consider whether you should. A paper that has been public and cited should
 normally stay up; withdrawing one is a real editorial act, not a tidy-up.
 
-## 11. If a column gets renamed
+## 13. If a column gets renamed
 
 Columns are matched by **name**, not position. Reordering them is safe. Renaming
 one is not.
@@ -262,12 +346,16 @@ one is not.
 - A renamed **required** column (`Title`, `Track`, `Field`, `Abstract`,
   `PublishedAt`, `Authors`) makes every row fail that check, so every row is
   skipped and the Journal falls back to the seed data.
-- A renamed **optional** column (`Slug`, `FullTextUrl`, `ReviewedAt`) silently
-  goes blank. Papers still appear, without links or review dates.
+- A renamed **optional** column (`Slug`, `FullTextUrl`, `ReviewedAt`,
+  `Affiliation`, `ArticleType`, `Keywords`, `License`, `ConflictOfInterest`,
+  `EditorialNote`) silently goes blank. Papers still appear, just without that
+  field — and because a blank field is omitted rather than shown empty, a renamed
+  optional column looks exactly like a cell you left blank. If a field you filled
+  in is not showing, check the header spelling first.
 
 Nothing crashes either way. Fix the header name and reload.
 
-## 12. When something looks wrong
+## 14. When something looks wrong
 
 **Open the browser console first.** Every skipped row and every dropped value is
 logged there, prefixed `[publications]`, with the row number and the reason.
@@ -280,24 +368,33 @@ logged there, prefixed `[publications]`, with the row number and the reason.
 | Link works for you, not for readers | File sharing is not "Anyone with the link". Test in a private window. |
 | A working paper shows no review date | Correct and deliberate. Working papers are not reviewed. |
 | A reviewed article shows "Published" not "Reviewed" | `ReviewedAt` is blank or not `YYYY-MM-DD`. |
+| A field you filled in is missing from the article | Header renamed or misspelled, or the cell holds a placeholder token like `N/A`. |
+| No Keywords section | `Keywords` is blank. The whole section is omitted, by design. |
+| No License or Conflict of interest line | Those cells are blank. There is no default wording. |
+| Copy button says "Copy failed" | The browser blocked clipboard access. Select the citation text and copy it manually. |
 | Changes not showing | Google's CSV cache. Wait about five minutes. |
 
 The site never shows a visitor a parse error. A broken Sheet degrades to the
 fallback publication; it does not produce a broken page.
 
-## 13. What still needs code
+## 15. What still needs code
 
 Sheet-only, no deploy:
 
 - adding, editing, unpublishing a paper
 - changing a track, a field, a date, an author list
 - adding or replacing a PDF link
+- affiliation, article type, keywords
+- licence terms, the conflict of interest statement, the editorial note
 
 Needs a code change:
 
 - the one-time CSV URL in step 2
 - adding a new `Field` to the eight
 - adding a third track
+- the citation format, and the review status wording — the wording lives in
+  `REVIEW_STATUS` in `src/data/publications.ts`, one constant per track, so that
+  the Journal index and the article page cannot drift apart
 - showing the working-papers section at all — it is currently behind
   `SHOW_WORKING_PAPERS` in `src/lib/flags.ts`, which is `false`. While it is
   off, working-paper rows are parsed but neither listed nor reachable by URL.
