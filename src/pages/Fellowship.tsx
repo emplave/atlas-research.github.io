@@ -4,6 +4,7 @@ import { Outcomes } from "@/components/Outcomes";
 import { Field, inputCls, SubmitState } from "@/components/forms";
 import { CONTACT_EMAIL, DATES, WAITLIST_ENDPOINT } from "@/lib/dates";
 import { ELIGIBILITY_LABEL, FELLOWSHIP_WEEKS } from "@/lib/stats";
+import { logPayload } from "@/lib/payloadLog";
 
 /** Text fields that must be non-blank, with the message shown when they are not. */
 const REQUIRED_TEXT_FIELDS = {
@@ -112,34 +113,6 @@ export function buildWaitlistPayload(fd: FormData): WaitlistPayload {
   };
 }
 
-/** The live domain. Everything else — localhost, Vercel previews — is not it. */
-const PRODUCTION_HOSTS = ["atlas-research.org", "www.atlas-research.org"];
-
-/**
- * Whether to log the outgoing POST body.
- *
- * NOT gated on import.meta.env.DEV alone. A Vercel preview is a PRODUCTION
- * build, so DEV is false there and the log would be missing from precisely the
- * environment it exists to be read in.
- *
- * Gated on hostname instead: logs on localhost and on any preview URL, silent
- * on the live domain. The body contains what the visitor just typed, so it must
- * never appear in a real user's console.
- *
- * The host rule is split into isLoggableHost so it can be asserted on its own —
- * testing shouldLogWaitlistPayload directly is useless, because a test runner
- * runs in dev and short-circuits on the first line.
- */
-export function isLoggableHost(hostname: string): boolean {
-  return hostname !== "" && !PRODUCTION_HOSTS.includes(hostname);
-}
-
-export function shouldLogWaitlistPayload(): boolean {
-  if (import.meta.env.DEV) return true;
-  if (typeof window === "undefined") return false;
-  return isLoggableHost(window.location.hostname);
-}
-
 /**
  * The waitlist validation rule, as a pure function of the submitted FormData.
  *
@@ -198,12 +171,10 @@ export function Fellowship() {
 
     const payload = buildWaitlistPayload(fd);
 
-    if (shouldLogWaitlistPayload()) {
-      // The POST is no-cors, so this is the only way to see what actually left
-      // the browser and confirm every column is populated. Silent on the live
-      // domain — see shouldLogWaitlistPayload.
-      console.log("[waitlist] POST body\n" + JSON.stringify(payload, null, 2));
-    }
+    // The POST is no-cors, so this is the only way to see what actually left
+    // the browser and confirm every column is populated. Silent on the live
+    // domain — see src/lib/payloadLog.ts.
+    logPayload("waitlist", payload);
 
     setErrors({});
     setState("sending");

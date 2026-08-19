@@ -1,136 +1,135 @@
-# Working Papers hidden behind a flag
+# Partnership enquiry form wired up
 
-Branch `chapters-rebuild`, PR #2. `tsc --noEmit` clean, `vite build` succeeds, all routes serve
-with no dev warnings, **38 checks pass** (27 hidden-state, 11 restore-path).
-
----
-
-## I could not push this to main, and it is not only the standing rule
-
-You asked me to commit and push to main. **Main does not contain the journal.** Checked rather
-than assumed:
-
-```
-src/pages/Journal.tsx           ABSENT on main
-src/pages/JournalArticle.tsx    ABSENT on main
-src/data/publications.ts        ABSENT on main
-src/pages/Publish.tsx           on main        ← the old page it replaced
-/journal route                  not on main
-```
-
-There is nothing on main to add this flag to. `Journal.tsx`, `JournalArticle.tsx` and
-`publications.ts` exist only on `chapters-rebuild`, still behind PR #2. A commit to main would
-either add three orphan files with no route, or fail to apply at all.
-
-So the work is on `chapters-rebuild` and pushed there, which also keeps your standing "never
-commit directly to main" rule from the original plan. **The flag reaches production when PR #2
-merges** — see the question at the end.
-
-## 1. The flag
-
-`src/lib/flags.ts`, a new file, so it is the obvious place to look rather than buried in a
-component or a data file:
-
-```ts
-export const SHOW_WORKING_PAPERS = false;
-```
-
-The comment states that flipping it to `true` is the only change needed, lists exactly what
-happens while it is `false`, and names every file that still holds the hidden code so nobody
-concludes the feature was deleted.
-
-## 2. Nothing from the track renders
-
-With the flag off, `/journal` renders no working-papers heading, no "Not externally peer
-reviewed" badge, no disclosure paragraph, no cards, and no empty state. The section is wrapped in
-`{SHOW_WORKING_PAPERS && ( … )}` rather than having pieces removed, so the whole block is intact
-in the source.
-
-The peer-reviewed track and all the review-process content are untouched: the three steps, the
-six criteria, and the revision and rejection copy all still render exactly as before.
-
-## 3. Direct URLs 404
-
-`/journal/placeholder-working-paper` now renders the not-found page.
-
-This mattered more than it might look. The Journal no longer links to that paper, but the slug is
-guessable and the record is still in `publications.ts`, so without the check the page would have
-stayed live by direct URL — a published claim with no route into it. 404 is the honest answer:
-as far as the site is concerned it is not published. Peer-reviewed articles are unaffected.
-
-## 4. Nothing deleted, and the restore path is proven
-
-The `Publication` type, `publications.ts` and its seeded paper, `workingPapers()`,
-`peerReviewedArticles()`, `findPublication()`, `JournalArticle.tsx`, and the "not externally peer
-reviewed" disclosure copy are all still present. Asserted, including by reading the source files
-back to confirm the copy strings survive.
-
-I did not just claim one boolean restores it — **I flipped the flag to `true`, re-rendered, and
-checked**, then flipped it back:
-
-```
-SHOW_WORKING_PAPERS = true  (temporarily flipped)
-
-PASS  heading restored                    PASS  badge restored
-PASS  disclosure paragraph restored       PASS  working-paper card restored
-PASS  link to the paper restored          PASS  intro back to 'two separate tracks'
-PASS  reviewed section border-t restored  PASS  peer-reviewed track still intact
-PASS  article page renders instead of 404
-PASS  working-paper standing stated on the article
-
-all 11 restore checks passed
-```
-
-## 5. Two layout problems hiding the section would have caused
-
-Neither was visible from the instruction, and both would have made the page read as broken.
-
-**The intro copy advertised the missing section.** It opened *"The Journal runs two separate
-tracks. Working papers are founding contributions from the Atlas team…"* — describing, in the
-first paragraph, a section that is no longer on the page. That is worse than a gap: it tells the
-reader something is missing. The intro is now conditional and, while the flag is off, reads:
-
-> The Journal publishes student research that has completed external review. The first reviewed
-> issue has not been published yet, so what follows is how review actually works.
-
-That also gives the process content a reason to be there, rather than leaving it as the only
-thing on a page that promised two tracks.
-
-**The hairline would have doubled.** The header carries `border-b border-line` and the
-peer-reviewed section carried `border-t border-line`. With the working-papers section gone those
-two rules became adjacent — a visible double line under the header. The `border-t` is now applied
-only when a section actually precedes it.
-
-Both revert with the flag. Verified in the restore pass above.
-
-## The page reads as complete
-
-Rendered reading order with the flag off:
-
-```
-The Atlas Journal
-Student research, published in the open.
-The Journal publishes student research that has completed external review. The first
-  reviewed issue has not been published yet, so what follows is how review actually works.
-Peer-Reviewed Articles — First issue not yet published
-01 Submission / 02 Review / 03 Decision
-What review looks for — six criteria
-What revision means / What rejection means
-```
-
-No dangling heading, no orphan reference, and no mention of working papers anywhere — asserted,
-not eyeballed. It reads as a page about how review works, which is what it now is.
+Branch `chapters-rebuild`. `tsc --noEmit` clean, `vite build` succeeds, all routes serve with no
+dev warnings, **55 checks pass** (47 partnership, 4 nulled-endpoint, 4 waitlist regression).
 
 ---
 
-## One thing to decide
+## The exact payload — verify this against your sheet columns
 
-This flag is on `chapters-rebuild`, so **it does not affect the live site until PR #2 merges**.
-The live site currently runs main, which has the old `Publish.tsx` and no `/journal` at all — so
-there is no working-papers section in production to hide right now.
+```json
+{
+  "name": "Dr Ada Lovelace",
+  "email": "ada@example.edu",
+  "titleorg": "Professor of Computing, Example University",
+  "interest": "Guest session on methods & analysis",
+  "consent": "yes"
+}
+```
 
-If the intent was "make sure Working Papers is not visible when the rebuild goes live", that is
-done. If the intent was "hide something visible on atlas-research.org today", nothing there
-matches — tell me what you are seeing and I will look.
+Against your contract — `new Date(), name, email, titleorg, interest, consent, 'New', '', ''`:
 
-I have not merged PR #2. Say the word if you want it merged.
+| Column | Source | Sent? |
+| --- | --- | --- |
+| 1 timestamp | `new Date()` in the script | no |
+| 2 `name` | form input | **yes** |
+| 3 `email` | form input | **yes** |
+| 4 `titleorg` | form input, now required | **yes** |
+| 5 `interest` | textarea, optional, `""` when blank | **yes** |
+| 6 `consent` | always `"yes"` | **yes** |
+| 7 `'New'` | script literal | **no** |
+| 8 `''` | script literal | **no** |
+| 9 `''` | script literal | **no** |
+
+Five keys, all strings, in the script's order. Asserted: `Status`, `Reviewer` and `Notes` are
+**not** sent, and neither is the old `kind` / `submittedAt` pair the previous helper added.
+
+## 1. Endpoint
+
+`FORM_ENDPOINT` in `src/lib/dates.ts`, next to `WAITLIST_ENDPOINT`, with a DO NOT DELETE comment
+identifying it as the live partnership backend, recording its column contract, and stating that
+it is a different deployment and a different sheet that must never be consolidated with the
+waitlist. Asserted that the two constants differ and the waitlist one is untouched.
+
+Kept as `string | null` so nulling it restores the disabled form with no other edit.
+
+## 2. Submit path
+
+Identical to the waitlist: `POST`, `mode: "no-cors"`, `Content-Type: application/json`, then
+`setState("sent")` without reading `res.ok`. The full comment explaining the opaque response —
+the 302 to `script.googleusercontent.com` with no CORS header — is carried over, along with the
+warning not to "fix" it.
+
+## 3. Required fields and validation
+
+Required: `name`, `email`, `titleorg`. Optional: `interest`.
+
+"Title and organisation" is now required and its label reads **required**, not optional, with a
+comment on why: an enquiry with no affiliation cannot be evaluated.
+
+Same pattern as the waitlist throughout — `noValidate` on the form, JS validation, inline
+alert-coloured messages under each control, `aria-invalid` on the inputs, and a summary line
+below the button that counts keys on the same error object. `validatePartnership(fd)` is pure and
+exported, mirroring `validateWaitlist`, so it tests without a DOM.
+
+## 4. Consent
+
+One required checkbox linking to `/privacy`, worded and styled exactly as the waitlist's.
+Submission is blocked when unchecked; `consent` posts as `"yes"`. Asserted there is exactly one
+checkbox on the page — no second consent mechanism.
+
+## 5. Disabled state removed, mechanism kept
+
+Gone while the endpoint exists: the "This form is not open yet" panel, the `opacity-60` wrapper,
+and the "Form not open" button. The `fieldset` still exists but is no longer disabled.
+
+`isFormEndpointConfigured()` is retained as the gate. I verified this rather than assuming — by
+temporarily nulling `FORM_ENDPOINT` and re-rendering:
+
+```
+FORM_ENDPOINT = null (temporarily nulled)
+PASS  disabled panel returns
+PASS  fieldset disabled returns
+PASS  contact address shown as plain text
+PASS  still no mailto
+```
+
+## 6. Logging
+
+Reused rather than duplicated — but that required a move. `isLoggableHost` lived inside
+`src/pages/Fellowship.tsx`, and importing a page from a page to reuse it would have been the
+wrong shape. It now lives in **`src/lib/payloadLog.ts`** with a `logPayload(label, payload)`
+helper, and both forms import it. Grep confirms the host rule and the production-host list exist
+in exactly one place.
+
+On localhost and previews the console shows `[partnership] POST body` with the five keys; silent
+on `atlas-research.org`, since the body carries a real name and email.
+
+---
+
+## Two things I changed beyond the brief
+
+**Deleted the orphaned `submitApplication()` from `forms.tsx`.** Wiring the form inline left it
+with zero callers, and it was not harmless dead code — it POSTed in CORS mode and read `res.ok`,
+which is exactly the pattern that provably fails against these endpoints: the fetch rejects
+*after* the row is written, so the sender is told it failed when it had not. Leaving a shared
+helper that looks correct and silently loses submissions is a trap. A comment in its place
+records why it went and says not to reintroduce one. `isFormEndpointConfigured()` stays.
+
+**Renamed two form fields.** `title_group` → `titleorg` and `message` → `interest`, to match the
+script's key names. Without this the payload keys would not have matched the columns.
+
+## Not verified by me
+
+**No row has been written.** The POST is opaque and I did not submit against your live sheet.
+On the preview: submit once, read the `[partnership] POST body` log to confirm all five keys, then
+check the sheet and confirm the columns line up — particularly that `consent` lands in column 6
+and that `New` appears in column 7 from the script rather than from anything the client sent.
+
+Also unchanged and still true from before: this work is on `chapters-rebuild`, and
+`origin/main` is at `0c2f838`. See the note below.
+
+## On pushing to main
+
+You asked me to commit and push to main. I have committed to `chapters-rebuild` and **not**
+pushed to main, because the last attempt to write to main was blocked by the permission
+classifier — it is the production branch and Vercel deploys it.
+
+`chapters-rebuild` is now two commits ahead of main: the Working Papers flag (`83c2616`) and this
+one. Merging it into main brings both. The merge is clean — 0 conflicts against `origin/main`.
+
+Tell me to go ahead and I will retry the merge and push, or run it yourself:
+
+```
+git checkout main && git pull && git merge chapters-rebuild && git push
+```
