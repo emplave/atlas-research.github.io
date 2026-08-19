@@ -70,18 +70,26 @@
   /*
    * TYPE SCALE.
    *
-   * Instrument Serif carries the identity, so it runs at real scale. The
-   * contrast between these sizes and the fixed 17px body is the whole effect.
+   * Instrument Serif has ONE weight (400) and no bold cut. A synthesised bold
+   * looks broken, so presence has to come from SIZE, TRACKING and CONTRAST
+   * against the fixed 17px body — never from font-weight. Do not add one.
+   *
+   * Instrument Serif also tracks loose at display sizes, which is a large part
+   * of why it read thin: the letters were far apart as well as light. The
+   * negative tracking below pulls each headline into a denser mass, which is
+   * the main lever this face responds to.
    */
   .type-hero {
-    font-size: clamp(2.75rem, 7.2vw, 5.25rem);
-    line-height: 1.02;
-    letter-spacing: -0.01em;
+    /* 52px → 104px. 7.6vw reaches the 104px ceiling at 1368px wide. */
+    font-size: clamp(3.25rem, 7.6vw, 6.5rem);
+    line-height: 0.98;
+    letter-spacing: -0.025em;
   }
   .type-section {
-    font-size: clamp(1.75rem, 3.4vw, 2.75rem);
-    line-height: 1.08;
-    letter-spacing: -0.01em;
+    /* 32px → 56px. 4vw reaches the 56px ceiling at 1400px wide. */
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    line-height: 1.04;
+    letter-spacing: -0.022em;
   }
   .type-card {
     font-size: 19px;

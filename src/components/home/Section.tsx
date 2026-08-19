@@ -59,7 +59,7 @@ export function Section({
           )}
 
           {(title || action) && (
-            <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-3">
+            <div className="mb-2 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-3">
               {title && <h2 className="type-section font-display">{title}</h2>}
               {action}
             </div>

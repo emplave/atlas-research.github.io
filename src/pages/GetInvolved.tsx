@@ -102,7 +102,7 @@ export function GetInvolved() {
             teaching obligation with prep. Answer it in the first paragraph
             rather than at the bottom of the page.
           */}
-          <p className="mt-5 max-w-2xl type-body text-muted">
+          <p className="mt-7 max-w-2xl type-body text-muted">
             Atlas is a student-led research program. Guest sessions are
             conversational — no lecture, no slides, no preparation expected. You
             talk about your work and answer questions.
@@ -158,7 +158,7 @@ export function GetInvolved() {
         <div className="mx-auto max-w-5xl px-6 py-12 md:py-16">
           <p className="meta-label">Track two</p>
           <h2 className="type-section font-display mt-3">Students</h2>
-          <p className="mt-5 max-w-2xl type-body text-muted">
+          <p className="mt-7 max-w-2xl type-body text-muted">
             Two separate pathways. You may hold both.
           </p>
 

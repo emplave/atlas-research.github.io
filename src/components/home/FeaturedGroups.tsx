@@ -44,7 +44,12 @@ export function FeaturedGroups() {
         </Link>
       }
     >
-      <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+      {/*
+        items-start so a card sizes to its own content. Without it the grid
+        stretches every card in a row to the tallest one, which is what padded
+        the featured card with empty space.
+      */}
+      <div className="mt-8 grid items-start gap-5 md:grid-cols-2 lg:grid-cols-3">
         {loading ? (
           <>
             <div className="md:col-span-2">

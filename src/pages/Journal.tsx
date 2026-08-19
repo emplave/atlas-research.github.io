@@ -5,6 +5,7 @@ import {
   workingPapers,
   type Publication,
 } from "@/data/publications";
+import { SHOW_WORKING_PAPERS } from "@/lib/flags";
 
 /**
  * The Atlas Journal.
@@ -12,9 +13,14 @@ import {
  * TWO TRACKS, KEPT VISUALLY AND STRUCTURALLY SEPARATE.
  *
  * Working papers are founding contributions published without external peer
- * review. Peer-reviewed articles have completed review. The page must never
- * let a reader mistake one for the other, and must never imply that
- * submission leads to publication.
+ * review. Peer-reviewed articles have completed review. The page must never let
+ * a reader mistake one for the other, and must never imply that submission
+ * leads to publication.
+ *
+ * The working-papers track is currently hidden behind SHOW_WORKING_PAPERS. When
+ * it is off the page has to read as a complete page about the reviewed track
+ * rather than one with a hole in it, which is why the intro copy and the first
+ * section's top border are both conditional. Flip the flag and both revert.
  */
 export function Journal() {
   const working = workingPapers();
@@ -28,18 +34,34 @@ export function Journal() {
           <h1 className="mt-4 font-display text-4xl md:text-6xl leading-[1.05] max-w-3xl">
             Student research, published in the open.
           </h1>
-          <p className="mt-6 max-w-2xl text-lg text-muted leading-relaxed">
-            The Journal runs two separate tracks. Working papers are founding
-            contributions from the Atlas team. Peer-reviewed articles have
-            completed external review. They are not the same thing, and the
-            Journal does not present them as though they are.
-          </p>
+          {SHOW_WORKING_PAPERS ? (
+            <p className="mt-6 max-w-2xl text-lg text-muted leading-relaxed">
+              The Journal runs two separate tracks. Working papers are founding
+              contributions from the Atlas team. Peer-reviewed articles have
+              completed external review. They are not the same thing, and the
+              Journal does not present them as though they are.
+            </p>
+          ) : (
+            /*
+              With working papers hidden there is only one track, so describing
+              "two separate tracks" would point at a section that is not on the
+              page. This says what the reader can actually see.
+            */
+            <p className="mt-6 max-w-2xl text-lg text-muted leading-relaxed">
+              The Journal publishes student research that has completed external
+              review. The first reviewed issue has not been published yet, so
+              what follows is how review actually works.
+            </p>
+          )}
         </div>
       </section>
 
       {/* ---------------------------------------------------------------- */}
       {/* TRACK 1 — Working papers. Published WITHOUT external peer review. */}
+      {/* Hidden entirely behind SHOW_WORKING_PAPERS. Nothing here is dead   */}
+      {/* code — flipping the flag restores it exactly as written.           */}
       {/* ---------------------------------------------------------------- */}
+      {SHOW_WORKING_PAPERS && (
       <section className="mx-auto max-w-5xl px-6 py-12 md:py-16">
         <div className="flex flex-wrap items-baseline gap-x-4 gap-y-2">
           <h2 className="font-display text-2xl md:text-3xl">
@@ -50,7 +72,7 @@ export function Journal() {
           </span>
         </div>
 
-        <p className="mt-4 max-w-2xl text-[15px] text-muted leading-relaxed">
+        <p className="mt-6 max-w-2xl text-[15px] text-muted leading-relaxed">
           These are founding contributions from the Atlas team, published while
           the first open call for submissions is underway. They have not been
           through external peer review, and nothing in this track should be
@@ -69,11 +91,17 @@ export function Journal() {
           </p>
         )}
       </section>
+      )}
 
       {/* ---------------------------------------------------------------- */}
       {/* TRACK 2 — Peer-reviewed articles. Empty until the first issue.    */}
       {/* ---------------------------------------------------------------- */}
-      <section className="border-t border-line">
+      {/*
+        The top border only belongs here when a section precedes this one.
+        Without it, this rule would sit directly against the header's border-b
+        and render as a doubled hairline.
+      */}
+      <section className={SHOW_WORKING_PAPERS ? "border-t border-line" : ""}>
         <div className="mx-auto max-w-5xl px-6 py-12 md:py-16">
           <div className="flex flex-wrap items-baseline gap-x-4 gap-y-2">
             <h2 className="font-display text-2xl md:text-3xl">

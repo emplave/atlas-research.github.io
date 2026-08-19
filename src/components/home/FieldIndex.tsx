@@ -14,7 +14,7 @@ import { Section } from "./Section";
 export function FieldIndex() {
   return (
     <Section number="04" title="Eight fields" tone="surface">
-      <p className="mt-4 max-w-2xl type-body text-muted">
+      <p className="mt-6 max-w-2xl type-body text-muted">
         A group's field is whatever its question needs. None of these is the
         default.
       </p>

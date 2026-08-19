@@ -5,6 +5,7 @@ import {
   type Publication,
 } from "@/data/publications";
 import { Prose, ProseParagraphs } from "@/components/Prose";
+import { SHOW_WORKING_PAPERS } from "@/lib/flags";
 import { formatPublishedDate } from "./Journal";
 
 /**
@@ -20,6 +21,20 @@ export function JournalArticle() {
   const publication = slug ? findPublication(slug) : undefined;
 
   if (!publication) return <ArticleNotFound />;
+
+  /*
+   * A working paper is unreachable while SHOW_WORKING_PAPERS is off. The
+   * Journal does not link to it, but the slug is guessable and the record is
+   * still in the data file, so without this the page would be live by direct
+   * URL — a published claim with no route into it. 404 is the honest answer:
+   * as far as the site is concerned, it is not published.
+   *
+   * Peer-reviewed articles are unaffected by the flag.
+   */
+  if (!SHOW_WORKING_PAPERS && publication.track === "working-paper") {
+    return <ArticleNotFound />;
+  }
+
   return <Article publication={publication} />;
 }
 

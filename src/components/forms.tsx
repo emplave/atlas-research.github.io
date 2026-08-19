@@ -80,38 +80,18 @@ export function WordCountArea({
 
 export type SubmitState = "idle" | "sending" | "sent" | "error";
 
-/**
- * Submits to FORM_ENDPOINT.
+/*
+ * submitApplication() was removed here when /partners was wired up.
  *
- * THERE IS NO MAILTO FALLBACK. A mailto: handler is a dead end for anyone
- * without a configured desktop mail client, and it silently loses the
- * submission — which is worse than telling the reader the form is not open.
+ * It POSTed in CORS mode and read `res.ok`, which does not work against these
+ * Apps Script endpoints: /exec answers with a 302 to a target that sends no
+ * Access-Control-Allow-Origin header, so the fetch rejects AFTER the row has
+ * been written and the sender is told it failed when it had not.
  *
- * When FORM_ENDPOINT is null, callers must render the form visibly DISABLED
- * (see isFormEndpointConfigured below) rather than call this. Calling it
- * without an endpoint is a programming error and reports "error".
+ * Both forms now post inline with `mode: "no-cors"` — see the comments in
+ * src/pages/Fellowship.tsx and src/pages/Partners.tsx. Do not reintroduce a
+ * shared CORS-mode helper; it would be a trap that looks correct.
  */
-export async function submitApplication(
-  kind: string,
-  data: Record<string, string>,
-  setState: (s: SubmitState) => void
-): Promise<void> {
-  if (!FORM_ENDPOINT) {
-    setState("error");
-    return;
-  }
-  setState("sending");
-  try {
-    const res = await fetch(FORM_ENDPOINT, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ kind, ...data, submittedAt: new Date().toISOString() }),
-    });
-    setState(res.ok ? "sent" : "error");
-  } catch {
-    setState("error");
-  }
-}
 
 /**
  * True when a real submission endpoint exists. Pages gate their forms on this

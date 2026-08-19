@@ -111,6 +111,93 @@ export type ResearchGroup = {
   memberApplicationUrl?: string | null;
 };
 
+/**
+ * Values operators sometimes type into a cell that is meant to be blank.
+ *
+ * These are NOT data. "N/A" in SchoolOrCommunityName is someone answering the
+ * column rather than leaving it empty, and printing it produces lines like
+ * "Online · N/A · Online". Compared case-insensitively with whitespace and
+ * punctuation stripped, so "N/A", "n.a.", and " NA " all match.
+ */
+const PLACEHOLDER_VALUES = new Set([
+  "na",
+  "n/a",
+  "n.a.",
+  "none",
+  "nil",
+  "tbd",
+  "tba",
+  "-",
+  "--",
+  "null",
+  "undefined",
+  "notapplicable",
+]);
+
+/** True when a cell holds real content rather than blank or a placeholder. */
+export function isMeaningfulValue(value?: string | null): boolean {
+  if (!value) return false;
+  const trimmed = value.trim();
+  if (trimmed === "") return false;
+  return !PLACEHOLDER_VALUES.has(trimmed.toLowerCase().replace(/[\s.]/g, ""));
+}
+
+/** Short setting labels, used on cards and in the directory. */
+export const SETTING_LABEL: Record<Setting, string> = {
+  school: "School",
+  community: "Community",
+  hybrid: "Hybrid",
+  online: "Online",
+};
+
+/** Longer setting labels, for the brief page's details sidebar. */
+export const SETTING_LABEL_LONG: Record<Setting, string> = {
+  school: "School-based",
+  community: "Community-based",
+  hybrid: "Hybrid",
+  online: "Online",
+};
+
+/**
+ * The one-line "where this group is" string: setting, host, location.
+ *
+ * Three rules, all of which the naive join broke:
+ *
+ *   1. Blank and placeholder segments are dropped. SchoolOrCommunityName does
+ *      not apply to a fully online group, so it is legitimately empty there.
+ *   2. No value is printed twice. An online group whose Location is also
+ *      "Online" produced "Online · Online".
+ *   3. Order is fixed — setting, host, location — so the line reads the same
+ *      way for every group regardless of which parts exist.
+ *
+ * An online group with nothing else set therefore reads just "Online".
+ */
+export function settingLine(
+  group: Pick<
+    ResearchGroup,
+    "setting" | "schoolOrCommunityName" | "location"
+  >,
+  labels: Record<Setting, string> = SETTING_LABEL
+): string {
+  const segments = [
+    labels[group.setting],
+    group.schoolOrCommunityName,
+    group.location,
+  ];
+
+  const out: string[] = [];
+  const seen = new Set<string>();
+  for (const segment of segments) {
+    if (!isMeaningfulValue(segment)) continue;
+    const value = (segment as string).trim();
+    const key = value.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(value);
+  }
+  return out.join(" · ");
+}
+
 /** Statuses hidden from the directory unless explicitly filtered for. */
 export const HIDDEN_BY_DEFAULT: readonly Status[] = ["Archived"];
 

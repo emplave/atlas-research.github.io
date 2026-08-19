@@ -1,21 +1,14 @@
 import { Link } from "react-router-dom";
 import {
   canApply,
+  settingLine,
   type Field,
   type ResearchGroup,
-  type Setting,
 } from "@/data/research-groups";
 import { memberApplicationUrl } from "@/lib/memberApplication";
 import { FieldIcon } from "@/components/FieldIcon";
 import { StatusChip } from "./StatusChip";
 import { cn } from "@/lib/utils";
-
-const SETTING_LABEL: Record<Setting, string> = {
-  school: "School",
-  community: "Community",
-  hybrid: "Hybrid",
-  online: "Online",
-};
 
 /**
  * Four greys from ink (#0E0E10) up to #3A3A40.
@@ -67,9 +60,7 @@ export function ResearchGroupCard({
   const applyable = canApply(group);
   const hasImage = Boolean(group.image);
 
-  const place = [group.schoolOrCommunityName, group.location]
-    .filter(Boolean)
-    .join(" · ");
+  const where = settingLine(group);
 
   return (
     <article className="card-hover flex flex-col overflow-hidden rounded-card border border-line bg-surface">
@@ -86,7 +77,17 @@ export function ResearchGroupCard({
         <div
           className={cn(
             "flex flex-col justify-between p-6",
-            featured ? "min-h-[15rem] md:min-h-[17rem]" : "min-h-[11.5rem]"
+            /*
+             * BOUNDED, not proportional. A literal 16:9 is wrong here: the
+             * featured card spans two of three columns, so at ~740px wide 16:9
+             * computes to ~416px — which is the void, not the fix. These are
+             * capped heights instead, and the title sits at the bottom of that
+             * capped box rather than at the bottom of a stretched one.
+             *
+             * min-h rather than a fixed h so a long title can still push the
+             * box taller instead of being clipped.
+             */
+            featured ? "min-h-[12rem] md:min-h-[13rem]" : "min-h-[11.5rem]"
           )}
           style={{ backgroundColor: inkForField(group.field) }}
         >
@@ -154,10 +155,7 @@ export function ResearchGroupCard({
 
         <dl className="mt-5 space-y-1 text-sm">
           <Row label="Lead">{group.leadName}</Row>
-          <Row label="Setting">
-            {SETTING_LABEL[group.setting]}
-            {place && <span className="text-muted"> · {place}</span>}
-          </Row>
+          <Row label="Setting">{where}</Row>
           <Row label="Members">{group.memberCount}</Row>
         </dl>
 

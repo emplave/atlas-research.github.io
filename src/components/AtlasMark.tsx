@@ -62,9 +62,27 @@ export function AtlasMark({
  *
  * NOTHING SITS BENEATH THE WORDMARK. A descriptor line here repeated "Research
  * Institute" twice in the same lockup. Do not reintroduce one.
+ *
+ * BALANCE, measured rather than eyeballed. The mark is a solid filled wedge and
+ * the wordmark is a light serif, so at equal height the mark always wins. What
+ * matters is the mark's INK height against the wordmark's CAP height:
+ *
+ *   Instrument Serif capHeight = 0.720 em (from OS/2)
+ *   the mark's ink spans y8–146 of a 160 viewBox = 0.863 of rendered height
+ *
+ *   mark 32 / word 17  →  ink 27.6px vs cap 12.2px  =  2.25×   (was: competing)
+ *   mark 24 / word 20  →  ink 20.7px vs cap 14.4px  =  1.44×   (now: one unit)
+ *
+ * The mark came down and the wordmark went up, because doing only one of the
+ * two left the pair either weightless or too wide for the nav — the wordmark at
+ * 21px costs 31px of nav width, at 20px only 24px, and the bar also carries five
+ * links and a CTA.
+ *
+ * Slight negative tracking on the wordmark for the same reason the headings have
+ * it: this face sets loose, and a lockup should read as one dense mark.
  */
 export function AtlasLockup({
-  size = 32,
+  size = 24,
   tone = "light",
   variant = "horizontal",
   className,
@@ -90,7 +108,7 @@ export function AtlasLockup({
       <AtlasMark size={size} tone={tone} />
       <span
         className={cn(
-          "font-display text-[17px] leading-none",
+          "font-display text-[20px] leading-none tracking-[-0.015em]",
           onInk ? "text-paper" : "text-ink"
         )}
       >

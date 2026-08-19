@@ -1,22 +1,16 @@
 import { Link, useParams } from "react-router-dom";
 import {
   canApply,
+  settingLine,
+  SETTING_LABEL_LONG,
   type ResearchGroup,
   type ReviewStatus,
-  type Setting,
 } from "@/data/research-groups";
 import { useResearchGroups } from "@/lib/useResearchGroups";
 import { memberApplicationUrl } from "@/lib/memberApplication";
 import { StatusChip } from "@/components/research-groups/StatusChip";
 import { FieldIcon } from "@/components/FieldIcon";
 import { Prose, ProseParagraphs } from "@/components/Prose";
-
-const SETTING_LABEL: Record<Setting, string> = {
-  school: "School-based",
-  community: "Community-based",
-  hybrid: "Hybrid",
-  online: "Online",
-};
 
 /**
  * How each review state is described to a reader.
@@ -87,9 +81,7 @@ function BriefSkeleton() {
 function Brief({ group }: { group: ResearchGroup }) {
   const applyable = canApply(group);
 
-  const place = [group.schoolOrCommunityName, group.location]
-    .filter(Boolean)
-    .join(" · ");
+  const where = settingLine(group, SETTING_LABEL_LONG);
 
   return (
     <article className="bg-paper">
@@ -145,10 +137,7 @@ function Brief({ group }: { group: ResearchGroup }) {
           <dl className="mt-4 space-y-4 text-[15px]">
             <Detail label="Lead">{group.leadName}</Detail>
             <Detail label="Members">{group.memberCount}</Detail>
-            <Detail label="Setting">
-              {SETTING_LABEL[group.setting]}
-              {place && <span className="block text-muted">{place}</span>}
-            </Detail>
+            <Detail label="Setting">{where}</Detail>
             <Detail label="Output">{group.outputType}</Detail>
             <Detail label="Started">{formatDate(group.startedAt)}</Detail>
             <Detail label="Review status">

@@ -9,3 +9,8 @@ yes,placeholder-market-vendor-costs,Placeholder: Input Costs and Pricing Among O
 Interviews were summarized rather than recorded, at the vendors' request, and no vendor is identified by name.
 
 The completed study describes delayed and partial pass-through. The group is direct about the limits: one market, one year, recalled figures rather than records.",Survey or interview study,Semi-structured vendor interviews with a fixed question set | Paired recall of price changes on staple items | Thematic coding of interview summaries,Market association approval and vendor outreach | Question set drafted and piloted | Interview round completed | Thematic analysis and write-up | Final study submitted for review,2025-03-10,in review,,,
+yes,placeholder-model-card-review,Placeholder: What Public Model Cards Actually Disclose,Computer Science & AI,Recruiting,online,Placeholder group reviewing published model cards to see which disclosures appear consistently and which do not.,Placeholder Lead,,Distributed / online,6,"PLACEHOLDER ABSTRACT. This group reviews publicly available model cards to identify which categories of disclosure recur and which are routinely absent.
+
+Two members independently code each document so disagreement can be measured rather than assumed away. Only public documents are used.
+
+The group notes that the sample reflects what organizations chose to publish, which is not the same as what those organizations know.",Literature review,Systematic document sampling with stated inclusion criteria | Independent double-coding against a shared scheme | Inter-coder agreement measurement,Define inclusion criteria | Draft and pilot the coding scheme | Independent coding | Synthesis and drafting | Submit for review,2026-01-20,none,,,

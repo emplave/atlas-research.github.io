@@ -63,9 +63,24 @@ export const WAITLIST_ENDPOINT =
 
 
 /**
- * Where the partnership form POSTs. Point this at a real endpoint
- * (Formspree, Google Apps Script, your own API) to activate direct
- * submission. While it is null, pages render their form visibly disabled —
- * there is no mailto fallback.
+ * DO NOT DELETE — LIVE PARTNERSHIP ENQUIRY BACKEND.
+ *
+ * This is the deployed Google Apps Script that receives every partnership
+ * enquiry submitted from /partners. It is a real, in-production endpoint
+ * writing to a live Google Sheet. Deleting, renaming, or pointing this
+ * elsewhere silently drops enquiries on the floor with no error surface.
+ *
+ * A DIFFERENT DEPLOYMENT AND A DIFFERENT SHEET from WAITLIST_ENDPOINT above.
+ * The two are not interchangeable and must never be consolidated — they have
+ * different column contracts. Partnership rows are:
+ *
+ *   new Date(), name, email, titleorg, interest, consent, 'New', '', ''
+ *
+ * The last three columns are written by the script itself. The client must not
+ * send Status, Reviewer, or Notes.
+ *
+ * Typed as `string | null` so nulling it restores the disabled form state via
+ * isFormEndpointConfigured() with no other edit.
  */
-export const FORM_ENDPOINT: string | null = null;
+export const FORM_ENDPOINT: string | null =
+  "https://script.google.com/macros/s/AKfycbz9ef5zv5geRWZXklzo-tbO9gNV6ix2UcLTsgXOB2n-qT1Rjj6qL10yloM2fOVbIm-ZzA/exec";

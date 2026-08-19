@@ -55,7 +55,7 @@ export function EventsStrip() {
               )}
             </p>
           )}
-          <p className="mt-3 max-w-xl text-[15px] text-muted leading-relaxed">
+          <p className="mt-5 max-w-xl text-[15px] text-muted leading-relaxed">
             {next.description}
           </p>
         </article>

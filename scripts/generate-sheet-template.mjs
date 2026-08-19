@@ -4,7 +4,7 @@
  *   node scripts/generate-sheet-template.mjs
  *
  * Writes notes/research-groups-template.csv: the exact header row the site
- * expects, plus two example rows taken from the fallback seed data so the
+ * expects, plus three example rows taken from the fallback seed data so the
  * expected format is visible rather than described.
  *
  * The header list is duplicated here deliberately. This script must run under
@@ -40,12 +40,21 @@ const HEADERS = [
 ];
 
 /**
- * Two example rows drawn from the fallback seed data.
+ * Three example rows drawn from the fallback seed data.
  *
- * The first shows a Recruiting group with no image. The second shows a
- * Completed group with a review status set, so both ends of the lifecycle are
- * visible. Multi-paragraph abstracts use a real blank line inside the quoted
- * cell, which is what Sheets produces when you press Alt+Enter twice.
+ * The first is a Recruiting school-based group with no image. The second is a
+ * Completed community group with a review status set, so both ends of the
+ * lifecycle are visible. The third is a fully ONLINE group, included
+ * specifically to show that SchoolOrCommunityName is left EMPTY for those.
+ *
+ * LEAVE OPTIONAL CELLS BLANK. Never type "N/A", "NA", "none", "TBD" or "-" into
+ * any column. Those get printed as though they were data: an online group with
+ * "N/A" as its host rendered as "Online · N/A · Online". The site now skips
+ * placeholder tokens and never repeats a value, but an empty cell is still the
+ * correct input.
+ *
+ * Multi-paragraph abstracts use a real blank line inside the quoted cell, which
+ * is what Sheets produces when you press Alt+Enter twice.
  */
 const ROWS = [
   {
@@ -98,6 +107,35 @@ const ROWS = [
       "Market association approval and vendor outreach | Question set drafted and piloted | Interview round completed | Thematic analysis and write-up | Final study submitted for review",
     StartedAt: "2025-03-10",
     ReviewStatus: "in review",
+    ImageSrc: "",
+    ImageAlt: "",
+    MemberApplicationUrl: "",
+  },
+  // 3. A fully ONLINE group. SchoolOrCommunityName is deliberately EMPTY —
+  //    there is no school or community hosting it. Do not write "N/A" here.
+  //    This row renders as "Online · Distributed / online".
+  {
+    Published: "yes",
+    Slug: "placeholder-model-card-review",
+    ProjectTitle: "Placeholder: What Public Model Cards Actually Disclose",
+    Field: "Computer Science & AI",
+    Status: "Recruiting",
+    Setting: "online",
+    OneLine:
+      "Placeholder group reviewing published model cards to see which disclosures appear consistently and which do not.",
+    LeadName: "Placeholder Lead",
+    SchoolOrCommunityName: "",
+    Location: "Distributed / online",
+    MemberCount: "6",
+    Abstract:
+      "PLACEHOLDER ABSTRACT. This group reviews publicly available model cards to identify which categories of disclosure recur and which are routinely absent.\n\nTwo members independently code each document so disagreement can be measured rather than assumed away. Only public documents are used.\n\nThe group notes that the sample reflects what organizations chose to publish, which is not the same as what those organizations know.",
+    OutputType: "Literature review",
+    Methods:
+      "Systematic document sampling with stated inclusion criteria | Independent double-coding against a shared scheme | Inter-coder agreement measurement",
+    Milestones:
+      "Define inclusion criteria | Draft and pilot the coding scheme | Independent coding | Synthesis and drafting | Submit for review",
+    StartedAt: "2026-01-20",
+    ReviewStatus: "none",
     ImageSrc: "",
     ImageAlt: "",
     MemberApplicationUrl: "",

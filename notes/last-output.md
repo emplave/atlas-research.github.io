@@ -1,155 +1,118 @@
-# Waitlist now sends every field the Apps Script expects
+# Featured card block and the setting line
 
-Branch `chapters-rebuild`, PR #2. `tsc --noEmit` clean, `vite build` succeeds, all routes serve
-with no dev warnings, **52 checks pass** (45 payload/validation/markup + 7 logging gate).
+Branch `chapters-rebuild`. `tsc --noEmit` clean, `vite build` succeeds, all routes serve with no
+dev warnings, **50 checks pass** (46 setting-line and card, 4 template round-trip).
 
 ---
 
-## 1. Location split into City and Country
+## 1. The featured card's empty block
 
-The single "City + country" input is replaced by two separately required inputs. Both carry
-`required`, `aria-invalid`, an inline alert-coloured message, and count toward the summary line —
-identical treatment to the other required fields.
+Two separate causes, which is why it looked worse than the numbers suggested.
 
-Country is its own field because it is the column that feeds `src/data/reach.ts`, and a combined
-free-text string cannot be split back apart reliably. `"Lagos, Nigeria"` splits cleanly;
-`"Washington, DC, USA"` and `"Cork, Ireland"` do not split the same way. Guessing the country
-from the tail of a string is exactly the kind of silent data corruption that would show up later
-as a wrong dot on the globe.
+**Cause A — the block's own minimum was too tall.** The featured header was
+`min-h-[15rem] md:min-h-[17rem]` (240/272px) with `justify-between`: an icon row pinned to the
+top, the title pinned to the bottom. With a one- or two-line title in a card spanning two of
+three columns, that leaves roughly 200px of nothing between them. Reduced to
+`min-h-[12rem] md:min-h-[13rem]` (192/208px), which still reads as larger than the 184px normal
+block without the void.
 
-Also added matching `autoComplete` hints — `address-level2` and `country-name` — so browsers can
-fill both correctly.
+**Cause B — the grid was stretching it.** `grid` defaults to `align-items: stretch`, so every card
+in a row was forced to the height of the tallest. Added `items-start` to the homepage grid so each
+card sizes to its own content — which is what you said to do rather than padding one with empty
+space.
 
-## 2. The POST body now carries all fifteen keys
+### Why not a literal 16:9
 
-The old body sent `kind`, the raw form fields, and `submittedAt` — none of which matched the
-script's key names beyond `name` and `email`. It now sends exactly the keys the script reads, in
-the order it appends them:
+You offered "around 16:9 or a fixed max height". **16:9 would have made it worse**, and it's worth
+being explicit about why: the featured card spans two of three columns, so it is about 740px wide
+at 1440px. 16:9 on 740px is **416px tall** — which is the ~400px void you reported, not a fix.
+An aspect ratio is only safe on the normal-width card.
 
-```json
-{
-  "name": "Ada Lovelace",
-  "email": "ada@example.org",
-  "school": "Placeholder School",
-  "city": "Kathmandu",
-  "country": "Nepal",
-  "grade": "",
-  "timezone": "",
-  "prompt": "",
-  "datasource": "",
-  "completion": "",
-  "research": "",
-  "research_desc": "Bus reliability & timetables",
-  "consent": "yes",
-  "referral": "Waitlist for next cohort",
-  "referral_other": ""
-}
-```
+So it's a bounded height, and `min-h` rather than a fixed `h` or a `max-h`, so a genuinely long
+title can still push the box taller instead of being clipped. The title stays bottom-anchored via
+`justify-between` — now at the bottom of a capped box rather than a stretched one. A comment in the
+component records the 416px arithmetic so nobody "corrects" it back to an aspect ratio.
 
-- **Collected:** `name`, `email`, `school`, `city`, `country`, `research_desc` (trimmed).
-- **`consent`** is `"yes"`. Submission is already blocked when the box is unchecked, so a posted
-  row can only ever represent granted consent — hardcoding it is the honest encoding of that,
-  not a shortcut.
-- **`referral`** is `"Waitlist for next cohort"`. The stale
-  `"Future interest (applications closed)"` is gone, and there is an explicit check asserting it
-  never reappears.
-- **Seven uncollected fields** — `grade`, `timezone`, `prompt`, `datasource`, `completion`,
-  `research`, `referral_other` — are `""`.
+I left the **directory** grid stretching. Every card there is the same variant, so uniform row
+heights are correct; the stretch only produced a void where a featured and a normal card shared a
+row.
 
-**On never sending `undefined`:** you noted a missing key writes a blank. Worth being precise
-about why it matters here — `JSON.stringify` **drops** a key whose value is `undefined`
-entirely, so it does not arrive as a blank, it does not arrive at all. The payload is built from
-an explicitly typed `WaitlistPayload` with all fifteen keys as `string`, so TypeScript will not
-compile a missing one, and a test asserts all fifteen survive a JSON round-trip.
+## 2. The setting line
 
-Nothing about the `no-cors` handling changed. `mode: "no-cors"`, `application/json`, and the
-comment explaining why the response is unreadable are all intact.
+`"Online · N/A · Online"` came from three separate faults compounding: a placeholder printed as
+data, a duplicate printed twice, and no handling for a field that legitimately does not apply.
 
-`buildWaitlistPayload(fd)` is exported and pure, because the POST response is opaque — that
-function is the only place the body can actually be asserted.
+Replaced the two ad-hoc `[school, location].filter(Boolean).join(" · ")` expressions — one in the
+card, one in the brief — with a single exported `settingLine(group, labels?)` in
+`src/data/research-groups.ts`. Grep confirms it is now the **only** render path for
+`schoolOrCommunityName` and `location`; nothing prints them raw.
 
-## 3. Logging — and a correction to what you asked for
+Three rules, all of which the old join broke:
 
-You asked for the body logged **in dev only**, so you could read it on the preview. Those two
-things are in conflict: **a Vercel preview is a production build**, so `import.meta.env.DEV` is
-`false` there. I built it that way first and confirmed the log was stripped from the production
-bundle — which would have left you with nothing to read on the exact environment you plan to
-test in.
+1. **Blank and placeholder segments are dropped.** `N/A`, `NA`, `n.a.`, `none`, `nil`, `tbd`,
+   `tba`, `-`, `--`, `null`, `undefined`, `not applicable` — matched case-insensitively with
+   whitespace and dots stripped, so `" NA "` and `"N.A."` both catch.
+2. **No value is printed twice**, compared case-insensitively. Setting wins position, so an online
+   group whose Location is also "Online" prints `Online` once.
+3. **Order is fixed** — setting, host, location — so the line reads the same way regardless of
+   which parts exist.
 
-So the gate is on **hostname** instead: logs on localhost and on any preview URL, silent on the
-live domain. That serves the stated intent rather than the literal wording.
+| Setting | Host | Location | Renders |
+| --- | --- | --- | --- |
+| online | *(blank)* | *(blank)* | `Online` |
+| online | `N/A` | `Online` | `Online` |
+| online | *(blank)* | `Distributed / online` | `Online · Distributed / online` |
+| school | `Placeholder School` | `Kathmandu, Nepal` | `School · Placeholder School · Kathmandu, Nepal` |
+| school | `N/A` | `Kathmandu, Nepal` | `School · Kathmandu, Nepal` |
+| school | *(blank)* | *(blank)* | `School` |
+| community | `Lagos` | `Lagos` | `Community · Lagos` |
 
-```
-PASS  localhost            localhost                              logs=true
-PASS  127.0.0.1            127.0.0.1                              logs=true
-PASS  vercel preview       atlas-abc123-emplave.vercel.app        logs=true
-PASS  vercel branch alias  atlas-git-chapters-rebuild.vercel.app  logs=true
-PASS  PRODUCTION apex      atlas-research.org                     logs=false
-PASS  PRODUCTION www       www.atlas-research.org                 logs=false
-PASS  empty hostname       (empty)                                logs=false
-```
+**A trap I checked for deliberately.** Normalising by stripping whitespace and dots means `"N.A."`
+→ `"na"`, which is what makes the detector work — but it also means a real name could collide.
+Asserted that **"Nairobi", "Nassau", "Nantes" and "National Academy" are all still meaningful**.
+Only exact matches against the token list are dropped, never prefixes.
 
-This matters beyond convenience: the body contains a real person's name, email, and school, so
-it must never reach a visitor's console on the live site.
+I also unified the duplicated `SETTING_LABEL` maps, which had drifted: the card said "School",
+the brief said "School-based". Both are now exported from the data module (`SETTING_LABEL` and
+`SETTING_LABEL_LONG`) and the brief passes the long one, so each page keeps its register from a
+single source.
 
-The host rule is split into `isLoggableHost(hostname)` so it can be asserted on its own —
-testing `shouldLogWaitlistPayload()` directly is useless, since any test runner runs in dev and
-short-circuits on the first line. I only noticed that because the first two production cases
-"passed" as `true`, which was the test lying to me rather than the code being wrong.
+### Display-level, not ingest-level — deliberately
 
-On the preview, submit the form and you will see:
+I did **not** strip placeholders in `groupsSource` on the way in. One rule in one place is easier
+to reason about, and mutating a Sheet value on ingest would mean the stored data silently differs
+from the Sheet. The trade-off: a placeholder still sits in the cell and still has to be cleaned
+out. Which is why the docs now say not to type one.
 
-```
-[waitlist] POST body
-{ …all fifteen keys… }
-```
+## Docs and template
 
-## 4. Verification
+`notes/managing-research-groups.md` gains **section 6, "Leave cells blank — never type N/A"** —
+sections renumbered to 14. It states that SchoolOrCommunityName does not apply to a fully online
+group and must be left blank, shows the exact bug that produced, carries the rendering table
+above, and says relying on the site's defence is worse than an empty cell because a placeholder
+still occupies the cell and still looks like content to anyone reading the Sheet.
 
-45 checks on the payload, validation, and markup:
+`scripts/generate-sheet-template.mjs` now emits a **third example row**: a fully online group with
+`SchoolOrCommunityName` empty, with an inline comment saying not to write "N/A" there. The
+generator's header comment carries the same rule.
+
+Round-tripped the regenerated CSV through the real parser rather than trusting it:
 
 ```
-PASS  has exactly 15 keys
-PASS  keys match the script exactly, in order
-PASS  no key is undefined
-PASS  every value is a string
-PASS  survives JSON round-trip with all 15 keys
-PASS  city populated and trimmed
-PASS  country populated separately
-PASS  consent is "yes"
-PASS  referral is the new string
-PASS  referral is NOT the stale "Future interest" string
-PASS  grade/timezone/prompt/datasource/completion/research/referral_other === ""
-PASS  research_desc is '' when the field is absent
-PASS  blank city blocks          PASS  blank country blocks
-PASS  whitespace city blocks     PASS  whitespace country blocks
-PASS  absent country blocks      PASS  both reported together
-PASS  old 'location' key is gone from validation
-PASS  consent still blocks
-PASS  old combined location input gone
-PASS  "City + country" label gone
-PASS  textarea renamed to research_desc
-PASS  both new labels marked required
-
-all 45 checks passed
+rows 3, validated 3
+  school     school="Placeholder Secondary School"   → "School · Placeholder Secondary School · Placeholder City, Placeholder Region"
+  community  school="Placeholder Market Association" → "Community · Placeholder Market Association · Placeholder District, Placeholder Region"
+  online     school=null                             → "Online · Distributed / online"
 ```
 
-## Still not verified by me
+---
 
-**No row has been written by this code.** The POST is opaque, and I did not submit against the
-live sheet — sending test rows to a sheet with 85 real entries is not mine to do casually. Two
-things to confirm on the preview:
+## Not verified
 
-1. **Read the console log** and check all fifteen keys are present and the five collected ones
-   are populated.
-2. **Then check the sheet** and confirm the columns line up — `school`, `city`, `country`,
-   `research_desc`, `consent`, `referral` all landing in the right places rather than shifted.
+**I have not seen the card rendered.** The block heights are arithmetic and the setting line is
+tested as a pure function against 46 cases, but whether the featured block now looks
+*deliberately* larger rather than *slightly* larger is a judgement by eye. Check the homepage at
+1440px, where the featured card sits beside a normal one and the height difference is visible.
 
-If a column is off by one, the payload keys are right (asserted) so the thing to look at is
-whether the script reads by key name or by position in the received object.
-
-One thing I cannot check from here: **the 85 existing rows will still have blanks** in those
-columns. This fixes new submissions only; it does not backfill.
-
-Also still open from before: the `{"kind":"probe"}` row my earlier endpoint probe may have
-written.
+**Your live Sheet still has the `N/A`.** The site now renders it correctly regardless, but the
+cell should be emptied — it is in the online group's `SchoolOrCommunityName`.
