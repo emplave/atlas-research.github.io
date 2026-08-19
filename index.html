@@ -75,9 +75,13 @@
       block is the most quotable thing on the page and a wrong figure in it gets
       repeated by search engines.
 
-      sameAs holds ONE placeholder for the LinkedIn company page. Replace the
-      whole string; do not leave the placeholder live, and delete the sameAs
-      array entirely if there is no URL to put in it.
+      sameAs holds the LinkedIn company page, and only pages Atlas actually
+      controls belong in it. Delete the array rather than leaving a dead or
+      placeholder URL in it — a wrong sameAs merges this organisation with
+      someone else's in a knowledge graph.
+
+      The www on that linkedin.com URL is LinkedIn's own canonical host and has
+      nothing to do with this site's apex-over-www rule. Do not strip it.
     -->
     <script type="application/ld+json">
       {
@@ -87,7 +91,7 @@
         "url": "https://atlas-research.org/",
         "logo": "https://atlas-research.org/icon-512.png",
         "description": "Atlas runs student research groups in eight fields. Three to ten students, one research question, one term. Free, and open worldwide.",
-        "sameAs": ["REPLACE_WITH_LINKEDIN_COMPANY_URL"],
+        "sameAs": ["https://www.linkedin.com/company/atlas-research-institute/"],
         "contactPoint": {
           "@type": "ContactPoint",
           "contactType": "general enquiries",
