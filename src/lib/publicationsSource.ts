@@ -63,7 +63,8 @@ import {
  *
  * Format: https://docs.google.com/spreadsheets/d/e/<long-id>/pub?gid=0&single=true&output=csv
  */
-export const PUBLICATIONS_CSV_URL: string | null = null;
+export const PUBLICATIONS_CSV_URL: string | null =
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vTuaX-SdX7dSlxtropJkn_rAfZPJYUNMs2NOeDPOhTX8hjbh_6YtMntnF-kyfz4xgAjdIcwV_c07V-N/pub?gid=0&single=true&output=csv";
 
 const FIELDS: readonly Field[] = [
   "Computer Science & AI",
