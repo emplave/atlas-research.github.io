@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  HOST IS www, matching the canonical tags and what Vercel actually serves. The
-  apex 308-redirects to www, so listing apex URLs here would point a crawler at
-  a redirect instead of the canonical page.
+  HOST IS THE APEX, matching the canonical tags and what Vercel actually serves.
+  www 308-redirects to the apex, so listing www URLs here would point a crawler
+  at a redirect instead of the canonical page.
+
+  This was the other way round until 18 August 2026. If the Vercel primary
+  domain is switched again, rewrite every loc below and SITE_ORIGIN in
+  src/lib/seo.ts together — a sitemap disagreeing with the canonical tags is
+  worse than either being wrong alone.
 
   LISTED: only the eight real, indexable routes.
 
@@ -19,42 +24,42 @@
 -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://www.atlas-research.org/</loc>
+    <loc>https://atlas-research.org/</loc>
     <lastmod>2026-08-18</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://www.atlas-research.org/research-groups</loc>
+    <loc>https://atlas-research.org/research-groups</loc>
     <lastmod>2026-08-18</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.atlas-research.org/get-involved</loc>
+    <loc>https://atlas-research.org/get-involved</loc>
     <lastmod>2026-08-18</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.atlas-research.org/journal</loc>
+    <loc>https://atlas-research.org/journal</loc>
     <lastmod>2026-08-18</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.atlas-research.org/events</loc>
+    <loc>https://atlas-research.org/events</loc>
     <lastmod>2026-08-18</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.atlas-research.org/fellowship</loc>
+    <loc>https://atlas-research.org/fellowship</loc>
     <lastmod>2026-08-18</lastmod>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://www.atlas-research.org/partners</loc>
+    <loc>https://atlas-research.org/partners</loc>
     <lastmod>2026-08-18</lastmod>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://www.atlas-research.org/privacy</loc>
+    <loc>https://atlas-research.org/privacy</loc>
     <lastmod>2026-08-18</lastmod>
     <priority>0.3</priority>
   </url>

@@ -79,13 +79,13 @@ join a research group and apply to the fellowship.
 
 ## Key Details
 
-- Website: https://www.atlas-research.org
-- Research group directory: https://www.atlas-research.org/research-groups
-- Events: https://www.atlas-research.org/events
-- Journal: https://www.atlas-research.org/journal
-- Fellowship and waitlist: https://www.atlas-research.org/fellowship
-- Partners: https://www.atlas-research.org/partners
-- Privacy policy: https://www.atlas-research.org/privacy
+- Website: https://atlas-research.org
+- Research group directory: https://atlas-research.org/research-groups
+- Events: https://atlas-research.org/events
+- Journal: https://atlas-research.org/journal
+- Fellowship and waitlist: https://atlas-research.org/fellowship
+- Partners: https://atlas-research.org/partners
+- Privacy policy: https://atlas-research.org/privacy
 - Contact: admin@atlas-research.org
 - Partnership enquiries: nirav.goenka@atlas-research.org
 - Cost: free

@@ -5,25 +5,27 @@
  * static strings — a single effect that writes the tags directly does the same
  * job, and the tags in index.html remain the crawler-visible defaults.
  *
- * CANONICAL HOST. Every canonical points at https://www.atlas-research.org,
- * because that is what the deployment actually serves. Verified rather than
- * assumed:
+ * CANONICAL HOST. Every canonical points at https://atlas-research.org, the
+ * apex, because that is what the deployment actually serves. Verified rather
+ * than assumed:
  *
- *   dig NS atlas-research.org      → *.ns.cloudflare.com   (DNS only; no cf-ray
- *                                     in responses, so Cloudflare is not
- *                                     proxying — it just answers DNS)
- *   GET https://atlas-research.org/     → 308 → https://www.atlas-research.org/
- *   GET https://www.atlas-research.org/ → 200, server: Vercel
+ *   GET https://www.atlas-research.org/ → 308 → https://atlas-research.org/
+ *   GET https://atlas-research.org/     → 200, server: Vercel
  *
- * So Vercel is configured with www as the primary domain and the apex
- * redirecting to it. Pointing canonicals at the apex would name a host that
+ * So Vercel is configured with the apex as the primary domain and www
+ * redirecting to it. Pointing canonicals at www would name a host that
  * immediately 308s, which is the opposite of a canonical.
  *
- * If the Vercel primary domain is ever switched to the apex, change SITE_ORIGIN
- * here and regenerate public/sitemap.xml — those are the only two places the
- * host is written.
+ * THIS WAS THE OTHER WAY ROUND. Until 18 August 2026 the apex redirected to www
+ * and everything here named www. The direction is a Vercel domain setting, not a
+ * property of the code, so re-check it with curl rather than trusting this
+ * comment if anything looks off.
+ *
+ * If the primary domain is switched again, change SITE_ORIGIN here and rewrite
+ * public/sitemap.xml, public/robots.txt, public/llms.txt and the tags in
+ * index.html — those are the places the host is written.
  */
-export const SITE_ORIGIN = "https://www.atlas-research.org";
+export const SITE_ORIGIN = "https://atlas-research.org";
 
 /** The bare site name. Nothing is appended to it on the home page. */
 export const SITE_NAME = "Atlas Research Institute";
