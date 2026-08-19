@@ -1,148 +1,118 @@
-# Display type rebalanced
+# Featured card block and the setting line
 
 Branch `chapters-rebuild`. `tsc --noEmit` clean, `vite build` succeeds, all routes serve with no
-dev warnings. No `font-weight` added anywhere — the only two in the stylesheet are the existing
-`400` declarations.
-
-Numbers below are **measured**, not estimated. I parsed the installed
-`InstrumentSerif-Regular.ttf` for `unitsPerEm`, `OS/2` cap height, and per-glyph advance widths,
-then computed line breaking at each viewport. Any line count or block height here is from that,
-not from eyeballing.
+dev warnings, **50 checks pass** (46 setting-line and card, 4 template round-trip).
 
 ---
 
-## 1–2. Scale raised
+## 1. The featured card's empty block
 
-| | Before | After |
-| --- | --- | --- |
-| `.type-hero` | `clamp(2.75rem, 7.2vw, 5.25rem)` — 44→84px | `clamp(3.25rem, 7.6vw, 6.5rem)` — **52→104px** |
-| hero tracking | `-0.01em` | **`-0.025em`** |
-| hero line-height | 1.02 | 0.98 |
-| `.type-section` | `clamp(1.75rem, 3.4vw, 2.75rem)` — 28→44px | `clamp(2rem, 4vw, 3.5rem)` — **32→56px** |
-| section tracking | `-0.01em` | **`-0.022em`** |
+Two separate causes, which is why it looked worse than the numbers suggested.
 
-I raised the section *minimum* too (28→32px), which you did not ask for. Reason is item 3: at
-375px a 28px heading against 17px body is only 1.6× — not enough separation to read as a
-different level. 32px gets it to 1.9×.
+**Cause A — the block's own minimum was too tall.** The featured header was
+`min-h-[15rem] md:min-h-[17rem]` (240/272px) with `justify-between`: an icon row pinned to the
+top, the title pinned to the bottom. With a one- or two-line title in a card spanning two of
+three columns, that leaves roughly 200px of nothing between them. Reduced to
+`min-h-[12rem] md:min-h-[13rem]` (192/208px), which still reads as larger than the 184px normal
+block without the void.
 
-**On tracking specifically:** this was doing as much damage as the size. Instrument Serif sets
-loose at display sizes, so the old headlines were both light *and* airy — the letters weren't
-touching. Pulling to `-0.025em` condenses each headline into a single mass, which is the lever
-this face actually responds to. It is the change I'd keep if I could only keep one.
+**Cause B — the grid was stretching it.** `grid` defaults to `align-items: stretch`, so every card
+in a row was forced to the height of the tallest. Added `items-start` to the homepage grid so each
+card sizes to its own content — which is what you said to do rather than padding one with empty
+space.
 
-## 3. Heading-to-body contrast
+### Why not a literal 16:9
 
-| | 1440px | 375px |
-| --- | --- | --- |
-| hero vs body | 4.9× → **6.1×** | 2.6× → **3.1×** |
-| section vs body | 2.6× → **3.3×** | 1.6× → **1.9×** |
+You offered "around 16:9 or a fixed max height". **16:9 would have made it worse**, and it's worth
+being explicit about why: the featured card spans two of three columns, so it is about 740px wide
+at 1440px. 16:9 on 740px is **416px tall** — which is the ~400px void you reported, not a fix.
+An aspect ratio is only safe on the normal-width card.
 
-Body stays 17px. Gaps widened where a heading meets its copy: hero subhead `mt-6`→`mt-8`, hero
-buttons `mt-8`→`mt-10`, section intros `mt-3/4`→`mt-5/6`, plus `mb-2` under the `Section` heading
+So it's a bounded height, and `min-h` rather than a fixed `h` or a `max-h`, so a genuinely long
+title can still push the box taller instead of being clipped. The title stays bottom-anchored via
+`justify-between` — now at the bottom of a capped box rather than a stretched one. A comment in the
+component records the 416px arithmetic so nobody "corrects" it back to an aspect ratio.
+
+I left the **directory** grid stretching. Every card there is the same variant, so uniform row
+heights are correct; the stretch only produced a void where a featured and a normal card shared a
 row.
 
-## 4. No font-weight
+## 2. The setting line
 
-Confirmed by grep. The comment in `index.css` now says presence comes from size, tracking and
-contrast, and not to add one.
+`"Online · N/A · Online"` came from three separate faults compounding: a placeholder printed as
+data, a duplicate printed twice, and no handling for a field that legitimately does not apply.
 
-## 5. Lockup rebalanced — and it was measurably wrong
+Replaced the two ad-hoc `[school, location].filter(Boolean).join(" · ")` expressions — one in the
+card, one in the brief — with a single exported `settingLine(group, labels?)` in
+`src/data/research-groups.ts`. Grep confirms it is now the **only** render path for
+`schoolOrCommunityName` and `location`; nothing prints them raw.
 
-You were right that the mark was competing. The number:
+Three rules, all of which the old join broke:
+
+1. **Blank and placeholder segments are dropped.** `N/A`, `NA`, `n.a.`, `none`, `nil`, `tbd`,
+   `tba`, `-`, `--`, `null`, `undefined`, `not applicable` — matched case-insensitively with
+   whitespace and dots stripped, so `" NA "` and `"N.A."` both catch.
+2. **No value is printed twice**, compared case-insensitively. Setting wins position, so an online
+   group whose Location is also "Online" prints `Online` once.
+3. **Order is fixed** — setting, host, location — so the line reads the same way regardless of
+   which parts exist.
+
+| Setting | Host | Location | Renders |
+| --- | --- | --- | --- |
+| online | *(blank)* | *(blank)* | `Online` |
+| online | `N/A` | `Online` | `Online` |
+| online | *(blank)* | `Distributed / online` | `Online · Distributed / online` |
+| school | `Placeholder School` | `Kathmandu, Nepal` | `School · Placeholder School · Kathmandu, Nepal` |
+| school | `N/A` | `Kathmandu, Nepal` | `School · Kathmandu, Nepal` |
+| school | *(blank)* | *(blank)* | `School` |
+| community | `Lagos` | `Lagos` | `Community · Lagos` |
+
+**A trap I checked for deliberately.** Normalising by stripping whitespace and dots means `"N.A."`
+→ `"na"`, which is what makes the detector work — but it also means a real name could collide.
+Asserted that **"Nairobi", "Nassau", "Nantes" and "National Academy" are all still meaningful**.
+Only exact matches against the token list are dropped, never prefixes.
+
+I also unified the duplicated `SETTING_LABEL` maps, which had drifted: the card said "School",
+the brief said "School-based". Both are now exported from the data module (`SETTING_LABEL` and
+`SETTING_LABEL_LONG`) and the brief passes the long one, so each page keeps its register from a
+single source.
+
+### Display-level, not ingest-level — deliberately
+
+I did **not** strip placeholders in `groupsSource` on the way in. One rule in one place is easier
+to reason about, and mutating a Sheet value on ingest would mean the stored data silently differs
+from the Sheet. The trade-off: a placeholder still sits in the cell and still has to be cleaned
+out. Which is why the docs now say not to type one.
+
+## Docs and template
+
+`notes/managing-research-groups.md` gains **section 6, "Leave cells blank — never type N/A"** —
+sections renumbered to 14. It states that SchoolOrCommunityName does not apply to a fully online
+group and must be left blank, shows the exact bug that produced, carries the rendering table
+above, and says relying on the site's defence is worse than an empty cell because a placeholder
+still occupies the cell and still looks like content to anyone reading the Sheet.
+
+`scripts/generate-sheet-template.mjs` now emits a **third example row**: a fully online group with
+`SchoolOrCommunityName` empty, with an inline comment saying not to write "N/A" there. The
+generator's header comment carries the same rule.
+
+Round-tripped the regenerated CSV through the real parser rather than trusting it:
 
 ```
-Instrument Serif capHeight = 0.720 em   (OS/2 table)
-mark ink spans y8–146 of a 160 viewBox  = 0.863 of rendered height
-
-mark 32 / word 17  →  ink 27.6px  vs cap 12.2px  =  2.25×
-mark 24 / word 20  →  ink 20.7px  vs cap 14.4px  =  1.44×
+rows 3, validated 3
+  school     school="Placeholder Secondary School"   → "School · Placeholder Secondary School · Placeholder City, Placeholder Region"
+  community  school="Placeholder Market Association" → "Community · Placeholder Market Association · Placeholder District, Placeholder Region"
+  online     school=null                             → "Online · Distributed / online"
 ```
-
-The mark's ink was **more than twice** the wordmark's cap height, while also being a solid black
-wedge next to light serif type. Two compounding reasons it dominated.
-
-**I did both** rather than one, because each alone failed:
-
-- Only shrinking the mark left the lockup weightless in a 64px nav bar.
-- Only growing the wordmark cost nav width — measured at **165px at 21px** vs 134px at 17px, and
-  that bar also carries five links and a CTA. At 20px it's 158px, so +24px total. That is why the
-  wordmark is 20px and not 21px.
-
-Also added `-0.015em` to the wordmark, for the same reason as the headings.
-
----
-
-## The hero, described
-
-**At 1440px.** Headline renders at the **104px ceiling**, three lines, ending "any field." — no
-widow. Text block ≈ **306px tall**, up from 257px. It sits in a 629px column beside the globe,
-which is ~419px. The headline is the largest thing on the page by a factor of six over body copy
-and is now clearly the first thing the eye lands on.
-
-**At 375px.** Headline renders at the **52px floor**, still three lines, block ≈ **153px**, up
-from 135px. Ratio to body 3.1×. It does not gain a line, so it costs almost no extra vertical
-space — I checked this specifically, because a bigger minimum usually adds one.
-
-**Does the headline now dominate?** Yes at 1440px, clearly. Yes at 375px, though less
-emphatically — a 375px viewport caps how much any headline can dominate, and 52px is near the
-sensible ceiling before the text block starts pushing the buttons below the fold.
-
-### One thing I had to fix that the numbers surfaced
-
-At 104px in the old **55/45** hero split, the 576px column broke the headline into **four** lines
-and left **"field." alone** as a widow. I widened the split to **60/40** (629px), which sets it in
-three lines ending "any field.". Verified at every breakpoint:
-
-```
-1440px  104.0px  col 629px  3 lines  block 306px  last="any field."
-1024px   77.8px  col 552px  3 lines  block 229px  last="any field."
- 768px   58.4px  col 720px  2 lines  block 114px  last="any field."
- 375px   52.0px  col 327px  3 lines  block 153px  last="any field."
-```
-
-A comment in `Hero.tsx` records that narrowing the column again reintroduces the widow.
-
----
-
-## Is size and spacing enough, or do you need a different typeface?
-
-**Honest answer: it is enough for the hero, and it is marginal for section headings.**
-
-The hero at 104px with `-0.025em` has real presence. At that size the stroke contrast in
-Instrument Serif becomes an asset rather than a liability — the thin strokes read as refinement
-because the thick strokes are finally thick enough in absolute terms. I would not change the face
-on the hero's account.
-
-Section headings are the weaker case, and I want to be straight about why. At **56px** they are
-fine. At the **32px** floor on mobile they are still noticeably light, because Instrument Serif's
-thin strokes fall to roughly a hair under 1px at that size and start to disappear against white.
-Size cannot fix that — 32px is already as large as a section heading can go at 375px without
-crowding, and there is no heavier cut to reach for.
-
-So: **if the thinness still bothers you specifically at small-to-mid heading sizes, the answer is
-a different typeface, not more of this.** What would fix it is a display serif with a second
-weight or lower stroke contrast — something like Fraunces (variable, has real weight axis),
-Newsreader, or Source Serif. Any of those would let section headings carry weight at 32px without
-touching the hero.
-
-I have not pushed further than size, tracking and spacing, because the next step after this is
-faking weight — text-shadow, stroke, or synthetic bold — and all three look broken on a
-high-contrast serif. Tell me if you want me to trial an alternate face; it is a
-`tailwind.config.ts` + `index.html` change and a font swap, not a rebuild.
 
 ---
 
 ## Not verified
 
-**I have not seen this rendered in a browser.** Everything above is computed from the font's own
-metrics, which is reliable for sizes, tracking, line counts and block heights — but it cannot
-tell you how the page *feels*, and "does the headline dominate" is ultimately a judgement made by
-eye. Check the preview at both widths.
+**I have not seen the card rendered.** The block heights are arithmetic and the setting line is
+tested as a pure function against 46 cases, but whether the featured block now looks
+*deliberately* larger rather than *slightly* larger is a judgement by eye. Check the homepage at
+1440px, where the featured card sits beside a normal one and the height difference is visible.
 
-Two specific things to look at:
-
-1. **The 1024px breakpoint.** The headline is 77.8px there and the globe column is 552px — the
-   tightest pairing of the four. If anything looks cramped it will be there.
-2. **The nav lockup at md (768px)**, where the links first appear alongside it. The lockup grew
-   ~15px; I calculated that it fits, but I estimated the Archivo link widths rather than measuring
-   them, so that one is arithmetic rather than measurement.
+**Your live Sheet still has the `N/A`.** The site now renders it correctly regardless, but the
+cell should be emptied — it is in the online group's `SchoolOrCommunityName`.

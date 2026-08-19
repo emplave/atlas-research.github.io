@@ -131,7 +131,43 @@ Two ways to remove something, and they mean different things:
 Do not delete rows to hide a group. Set `Published` to `no` instead — a deleted
 row loses the record, and if anyone linked to that group's brief the link dies.
 
-## 6. Add an image
+## 6. Leave cells blank — never type "N/A"
+
+**Do not type `N/A`, `NA`, `none`, `TBD`, or `-` into any column.** Leave the cell
+empty instead.
+
+Those are answers to a question the site never asked, and they get printed as
+though they were data. A fully online group with `N/A` in
+**SchoolOrCommunityName** produced a card reading:
+
+```
+Online · N/A · Online
+```
+
+**SchoolOrCommunityName does not apply to a fully online group.** Leave it blank
+for those. The site knows the group is online from the **Setting** column and
+prints just `Online`.
+
+The site now defends against this — blank, whitespace-only, and the common
+placeholder tokens are all skipped, and no value is printed twice, so an online
+group whose Location is also "Online" renders once. But relying on that is worse
+than leaving the cell empty: a placeholder still occupies the cell, still looks
+like content to anyone reading the Sheet, and still has to be cleaned out later.
+
+What the setting line prints, in order, skipping whatever is blank:
+
+| Setting | SchoolOrCommunityName | Location | Renders as |
+| --- | --- | --- | --- |
+| `online` | *(blank)* | *(blank)* | `Online` |
+| `online` | *(blank)* | `Distributed / online` | `Online · Distributed / online` |
+| `school` | `Placeholder School` | `Kathmandu, Nepal` | `School · Placeholder School · Kathmandu, Nepal` |
+| `school` | `Placeholder School` | *(blank)* | `School · Placeholder School` |
+| `community` | `Lagos` | `Lagos` | `Community · Lagos` |
+
+Real place names are safe. "Nairobi", "Nantes" and "National Academy" are not
+mistaken for `NA`.
+
+## 7. Add an image
 
 Two columns, and **you need both**:
 
@@ -147,7 +183,7 @@ need a deploy, because the Sheet holds the path, not the file. See
 `public/images/README.md` for dimensions (16:9, at least 960×540) and the rules
 on photographing students.
 
-## 7. Methods and Milestones: use pipes
+## 8. Methods and Milestones: use pipes
 
 Both go in a **single cell**, separated by `|`:
 
@@ -161,7 +197,7 @@ entries are dropped, so a trailing pipe is harmless.
 Do not use commas to separate them — a comma is a column break in CSV, and the
 list would spill into the next column.
 
-## 8. Abstract paragraphs
+## 9. Abstract paragraphs
 
 Press **Alt+Enter** (Option+Enter on Mac) inside the cell to make a line break,
 twice to make a blank line. Blank lines become paragraph breaks on the brief
@@ -169,7 +205,7 @@ page. A single line break is ignored.
 
 Two to three paragraphs reads best.
 
-## 9. Slugs
+## 10. Slugs
 
 The **Slug** is the group's URL: `/research-groups/<slug>`.
 
@@ -181,7 +217,7 @@ The **Slug** is the group's URL: `/research-groups/<slug>`.
 - Two rows with the same slug: the second gets `-2` appended and a console
   warning. Give it a distinct slug.
 
-## 10. If a column gets renamed
+## 11. If a column gets renamed
 
 Columns are matched **by header name**, not position. So reordering columns is
 safe, and renaming one is not.
@@ -198,7 +234,7 @@ safe, and renaming one is not.
 If the directory suddenly shows the old placeholder groups, a renamed or
 deleted column is the first thing to check.
 
-## 11. When something looks wrong
+## 12. When something looks wrong
 
 Open the browser console. Every skipped row is logged with its row number and
 the reason, like:
@@ -222,7 +258,7 @@ Common causes:
 - **"Publish to web" was undone** — Google then serves an HTML error page
   instead of CSV, which is detected and treated as unreachable.
 
-## 12. The two application forms
+## 13. The two application forms
 
 There are **two different Google Forms**, and they are for different people.
 
@@ -288,7 +324,7 @@ the normal case.
 Note that a custom form gets no group-name prefill, so it should ask which group
 the applicant means, or be specific to one group by its wording.
 
-## 13. What still needs code
+## 14. What still needs code
 
 Everything else is the Sheet. These are not:
 
