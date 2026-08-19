@@ -42,8 +42,7 @@ export function Events() {
             Webinars, workshops, and guest sessions.
           </h1>
           <p className="mt-6 max-w-2xl type-body text-muted">
-            Open to research group leads and members. Sessions cover methods,
-            sources, scoping, and writing.
+            Available to research groups, and occasionally the public.
           </p>
         </div>
       </section>
