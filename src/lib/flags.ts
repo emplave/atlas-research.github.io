@@ -21,8 +21,13 @@
  *     not reachable by direct URL. Peer-reviewed articles are unaffected.
  *
  * Nothing is removed to achieve this. The Publication type, the
- * src/data/publications.ts data, workingPapers(), the article page, and the
+ * src/data/publications.ts selectors, workingPapers(), the article page, and the
  * "not externally peer reviewed" disclosure copy are all still present and
  * still correct — see src/pages/Journal.tsx and src/pages/JournalArticle.tsx.
+ *
+ * This flag is independent of the Sheet. Working-paper rows in the publications
+ * Sheet are still fetched and parsed while it is `false` — they are simply
+ * neither listed nor reachable. Setting a row's Published to `no` is how you
+ * unpublish one paper; this flag hides the whole track.
  */
 export const SHOW_WORKING_PAPERS = false;

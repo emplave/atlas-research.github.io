@@ -2,10 +2,12 @@ import { Link } from "react-router-dom";
 import {
   isFullTextPending,
   peerReviewedArticles,
+  publicationDate,
   workingPapers,
   type Publication,
 } from "@/data/publications";
 import { SHOW_WORKING_PAPERS } from "@/lib/flags";
+import { usePublications } from "@/lib/usePublications";
 
 /**
  * The Atlas Journal.
@@ -23,8 +25,9 @@ import { SHOW_WORKING_PAPERS } from "@/lib/flags";
  * section's top border are both conditional. Flip the flag and both revert.
  */
 export function Journal() {
-  const working = workingPapers();
-  const reviewed = peerReviewedArticles();
+  const { publications, loading } = usePublications();
+  const working = workingPapers(publications);
+  const reviewed = peerReviewedArticles(publications);
 
   return (
     <div className="bg-paper">
@@ -79,7 +82,9 @@ export function Journal() {
           read as reviewed work.
         </p>
 
-        {working.length > 0 ? (
+        {loading ? (
+          <PublicationListSkeleton />
+        ) : working.length > 0 ? (
           <ul className="mt-8 space-y-4">
             {working.map((paper) => (
               <PublicationRow key={paper.slug} publication={paper} />
@@ -107,12 +112,20 @@ export function Journal() {
             <h2 className="font-display text-2xl md:text-3xl">
               Peer-Reviewed Articles
             </h2>
-            <span className="meta-label">
-              First issue not yet published
-            </span>
+            {/*
+              Conditional, not decoration. Once the Sheet carries a reviewed
+              article this badge would be a false statement sitting directly
+              above the thing that disproves it. Hidden while loading too, so it
+              cannot flash on and off as the fetch resolves.
+            */}
+            {!loading && reviewed.length === 0 && (
+              <span className="meta-label">First issue not yet published</span>
+            )}
           </div>
 
-          {reviewed.length > 0 ? (
+          {loading ? (
+            <PublicationListSkeleton />
+          ) : reviewed.length > 0 ? (
             <ul className="mt-8 space-y-4">
               {reviewed.map((article) => (
                 <PublicationRow key={article.slug} publication={article} />
@@ -243,13 +256,19 @@ function Criterion({ children }: { children: React.ReactNode }) {
  */
 function PublicationRow({ publication }: { publication: Publication }) {
   const pending = isFullTextPending(publication);
+  /*
+   * "Reviewed <date>" on the peer-reviewed track, "Published <date>" on working
+   * papers. The word is carried with the date rather than assumed from which
+   * list this row is in, because this component renders in both.
+   */
+  const { label, iso } = publicationDate(publication);
 
   return (
     <li className="card-hover rounded-card border border-line bg-surface p-6">
       <div className="flex flex-wrap items-center gap-3">
         <span className="meta-label">{publication.field}</span>
         <span className="meta-label">
-          {formatPublishedDate(publication.publishedAt)}
+          {label} {formatPublishedDate(iso)}
         </span>
       </div>
 
@@ -278,6 +297,23 @@ function PublicationRow({ publication }: { publication: Publication }) {
         )}
       </div>
     </li>
+  );
+}
+
+/** Matches the row layout so nothing shifts when publications arrive. */
+function PublicationListSkeleton() {
+  return (
+    <ul aria-hidden className="mt-8 space-y-4">
+      {Array.from({ length: 2 }, (_, i) => (
+        <li key={i} className="rounded-card border border-line bg-surface p-6">
+          <div className="h-3 w-44 rounded bg-line" />
+          <div className="mt-4 h-5 w-3/5 rounded bg-line" />
+          <div className="mt-3 h-3 w-32 rounded bg-line" />
+          <div className="mt-4 h-3 w-full rounded bg-line" />
+          <div className="mt-2 h-3 w-4/5 rounded bg-line" />
+        </li>
+      ))}
+    </ul>
   );
 }
 

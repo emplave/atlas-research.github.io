@@ -1,16 +1,20 @@
 /**
- * Generate the research groups Sheet template.
+ * Generate the research groups and publications Sheet templates.
  *
  *   node scripts/generate-sheet-template.mjs
  *
- * Writes notes/research-groups-template.csv: the exact header row the site
- * expects, plus three example rows taken from the fallback seed data so the
- * expected format is visible rather than described.
+ * Writes two files:
+ *   notes/research-groups-template.csv   from src/lib/groupsSource.ts
+ *   notes/publications-template.csv      from src/lib/publicationsSource.ts
  *
- * The header list is duplicated here deliberately. This script must run under
+ * Each is the exact header row the site expects plus example rows, so the
+ * expected format is visible rather than described. Events have their own
+ * script, scripts/generate-events-template.mjs.
+ *
+ * The header lists are duplicated here deliberately. This script must run under
  * plain node with no build step and no dependencies, so it cannot import the
- * TypeScript source. If the columns in src/lib/groupsSource.ts change, change
- * them here too — the check at the bottom of this file will not catch it.
+ * TypeScript source. If the columns in either source module change, change them
+ * here too — nothing in this file will catch it.
  */
 import { writeFileSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -142,22 +146,130 @@ const ROWS = [
   },
 ];
 
+/* ------------------------------------------------------------------------- */
+/* Publications                                                               */
+/* ------------------------------------------------------------------------- */
+
+/** Must match the column list in src/lib/publicationsSource.ts. */
+const PUBLICATION_HEADERS = [
+  "Published",
+  "Slug",
+  "Title",
+  "Authors",
+  "Track",
+  "Field",
+  "Abstract",
+  "FullTextUrl",
+  "PublishedAt",
+  "ReviewedAt",
+];
+
+/**
+ * Two example rows, one per track.
+ *
+ * BOTH ARE Published: "no", WHICH IS DELIBERATE AND DIFFERENT FROM THE OTHER
+ * TEMPLATES. The groups and events templates ship "yes" rows because a
+ * placeholder group going live is untidy. A placeholder PEER-REVIEWED row going
+ * live is not untidy, it is a false claim: it would sit on the site under "This
+ * article completed external peer review" having been reviewed by nobody. So
+ * these import as hidden, and the operator sets Published to "yes" per row once
+ * the row holds a real paper.
+ *
+ * TRACK RULES the rows demonstrate:
+ *   working-paper  → ReviewedAt is EMPTY. A working paper has not been
+ *                    reviewed. If you type a date here the site ignores it and
+ *                    logs a warning; it does not quietly become a reviewed
+ *                    article.
+ *   peer-reviewed  → ReviewedAt holds the date review completed. That is the
+ *                    date the site displays for this track, in place of
+ *                    PublishedAt.
+ *
+ * LEAVE OPTIONAL CELLS BLANK. Never type "N/A", "NA", "none", "TBD" or "-" into
+ * any column. Those get treated as content: "N/A" in FullTextUrl would be a
+ * link to nothing. The site skips placeholder tokens using the same rule that
+ * cleans a group's setting line, but an empty cell is still the correct input.
+ *
+ * FullTextUrl below is a Drive SHARE link with a fake file id, to show the shape
+ * the site accepts. It is rewritten to a uc?export=download URL so the PDF
+ * downloads rather than opening Drive's viewer. Never paste a Drive FOLDER link
+ * — the site drops it and the paper renders "Full text coming soon".
+ *
+ * Multi-paragraph abstracts use a real blank line inside the quoted cell, which
+ * is what Sheets produces when you press Alt+Enter twice.
+ */
+const PUBLICATION_ROWS = [
+  {
+    Published: "no",
+    Slug: "placeholder-working-paper",
+    Title:
+      "PLACEHOLDER: What student research groups produce, and what gets in the way",
+    Authors: "Atlas Research Institute",
+    Track: "working-paper",
+    Field: "Social Sciences",
+    Abstract:
+      "PLACEHOLDER ABSTRACT. This working paper describes the conditions under which small student research groups complete a project rather than abandoning it.\n\nIt sets out what a group needs in place before work starts — a defined question, a named lead, a meeting cadence, and access to sources it can actually reach — and identifies the points at which projects most often stall.\n\nAs a working paper, this has not been externally peer reviewed.",
+    FullTextUrl:
+      "https://drive.google.com/file/d/PLACEHOLDER_FILE_ID/view?usp=sharing",
+    PublishedAt: "2026-06-01",
+    // EMPTY ON PURPOSE. Working papers are not reviewed. A date here is ignored.
+    ReviewedAt: "",
+  },
+  {
+    Published: "no",
+    Slug: "placeholder-reviewed-article",
+    Title: "PLACEHOLDER: Title of an article that completed external review",
+    Authors: "Placeholder Author | Placeholder Co-Author",
+    Track: "peer-reviewed",
+    Field: "Environment & Sustainability",
+    Abstract:
+      "PLACEHOLDER ABSTRACT. Replace this with the article's real abstract before publishing the row.\n\nBlank lines separate paragraphs. Keep the abstract to what the paper actually establishes, including its limitations.",
+    // Blank is valid: the row publishes and shows its published date instead.
+    FullTextUrl: "",
+    PublishedAt: "2026-09-01",
+    // The date review completed. This is the date the site shows for this track.
+    ReviewedAt: "2026-08-20",
+  },
+];
+
+/* ------------------------------------------------------------------------- */
+/* Emit                                                                      */
+/* ------------------------------------------------------------------------- */
+
 /** Quote a cell if it contains a comma, quote, or newline. RFC 4180 rules. */
 function cell(value) {
   const v = String(value ?? "");
   return /[",\n\r]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v;
 }
 
-const csv =
-  [
-    HEADERS.join(","),
-    ...ROWS.map((row) => HEADERS.map((h) => cell(row[h])).join(",")),
-  ].join("\r\n") + "\r\n";
+function toCsv(headers, rows) {
+  return (
+    [
+      headers.join(","),
+      ...rows.map((row) => headers.map((h) => cell(row[h])).join(",")),
+    ].join("\r\n") + "\r\n"
+  );
+}
 
 const here = dirname(fileURLToPath(import.meta.url));
-const out = join(here, "..", "notes", "research-groups-template.csv");
-mkdirSync(dirname(out), { recursive: true });
-writeFileSync(out, csv, "utf8");
 
-console.log(`Wrote ${out}`);
-console.log(`${HEADERS.length} columns, ${ROWS.length} example rows.`);
+for (const { file, headers, rows, label } of [
+  {
+    file: "research-groups-template.csv",
+    headers: HEADERS,
+    rows: ROWS,
+    label: "research groups",
+  },
+  {
+    file: "publications-template.csv",
+    headers: PUBLICATION_HEADERS,
+    rows: PUBLICATION_ROWS,
+    label: "publications",
+  },
+]) {
+  const out = join(here, "..", "notes", file);
+  mkdirSync(dirname(out), { recursive: true });
+  writeFileSync(out, toCsv(headers, rows), "utf8");
+  console.log(
+    `Wrote ${out}\n  ${label}: ${headers.length} columns, ${rows.length} example rows.`
+  );
+}

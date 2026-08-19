@@ -2,10 +2,12 @@ import { Link, useParams } from "react-router-dom";
 import {
   findPublication,
   isFullTextPending,
+  publicationDate,
   type Publication,
 } from "@/data/publications";
 import { Prose, ProseParagraphs } from "@/components/Prose";
 import { SHOW_WORKING_PAPERS } from "@/lib/flags";
+import { usePublications } from "@/lib/usePublications";
 import { formatPublishedDate } from "./Journal";
 
 /**
@@ -18,8 +20,16 @@ import { formatPublishedDate } from "./Journal";
  */
 export function JournalArticle() {
   const { slug } = useParams<{ slug: string }>();
-  const publication = slug ? findPublication(slug) : undefined;
+  const { publications, loading } = usePublications();
 
+  /*
+   * The 404 renders only AFTER the fetch resolves. Rendering it while the
+   * request is outstanding would tell a reader a paper does not exist when it
+   * does — the same rule EventDetail follows.
+   */
+  if (loading) return <ArticleSkeleton />;
+
+  const publication = slug ? findPublication(publications, slug) : undefined;
   if (!publication) return <ArticleNotFound />;
 
   /*
@@ -41,6 +51,8 @@ export function JournalArticle() {
 function Article({ publication }: { publication: Publication }) {
   const pending = isFullTextPending(publication);
   const isWorkingPaper = publication.track === "working-paper";
+  // "Reviewed <date>" only on the peer-reviewed track — see publicationDate.
+  const { label, iso } = publicationDate(publication);
 
   return (
     <article className="bg-paper">
@@ -56,7 +68,7 @@ function Article({ publication }: { publication: Publication }) {
           <div className="mt-7 flex flex-wrap items-center gap-3">
             <span className="meta-label">{publication.field}</span>
             <span className="meta-label">
-              {formatPublishedDate(publication.publishedAt)}
+              {label} {formatPublishedDate(iso)}
             </span>
             <span className="inline-flex rounded-full border border-line px-2.5 py-1 meta-label text-muted">
               {isWorkingPaper ? "Working paper" : "Peer reviewed"}
@@ -127,6 +139,37 @@ function Article({ publication }: { publication: Publication }) {
         </div>
       </div>
     </article>
+  );
+}
+
+/** Matches the article layout so nothing shifts when the fetch resolves. */
+function ArticleSkeleton() {
+  return (
+    <div aria-hidden className="bg-paper">
+      <header className="border-b border-line">
+        <div className="mx-auto max-w-4xl px-6 pt-12 md:pt-16 pb-10">
+          <div className="h-3 w-40 rounded bg-line" />
+          <div className="mt-7 h-3 w-56 rounded bg-line" />
+          <div className="mt-5 h-9 w-4/5 rounded bg-line" />
+          <div className="mt-5 h-4 w-1/3 rounded bg-line" />
+        </div>
+      </header>
+      <div className="mx-auto max-w-4xl px-6 py-12">
+        <div className="max-w-[68ch] rounded-card border border-line bg-surface px-5 py-4 space-y-2">
+          <div className="h-3 w-full rounded bg-line" />
+          <div className="h-3 w-2/3 rounded bg-line" />
+        </div>
+        <div className="mt-10 max-w-[68ch] space-y-3">
+          {Array.from({ length: 8 }, (_, i) => (
+            <div
+              key={i}
+              className="h-3 rounded bg-line"
+              style={{ width: `${95 - i * 5}%` }}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }
 
