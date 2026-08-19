@@ -1,247 +1,221 @@
-# Publications Google Sheets pipeline
+# Journal article page: review wording, and a publication record layout
 
-Branch **`publications-sheet`**, one commit. Not merged to main, not pushed.
+Branch **`journal-article-record`**, one commit. Not merged to main, not pushed.
 
-(No commit hash cited here on purpose: this report is inside the commit it would name, so any hash
-written here is wrong the moment the commit is amended. `git log -1 publications-sheet` is the
-authority.)
-
-Built on the existing pattern rather than a second approach: `publicationsSource.ts` mirrors
-`eventsSource.ts` line for line in structure, shares the one CSV parser in `src/lib/csv.ts`, and
-`usePublications.ts` mirrors `useEvents.ts`. No new parser, no new fetch helper, no new cache
-strategy.
+(No commit hash cited: this report is inside the commit that would name it, so any hash written here
+is wrong the moment the commit is amended. `git log -1 journal-article-record` is the authority.)
 
 ---
 
-## What changed, by file
+## CHANGE 1 — review status wording
 
-| File | |
-| --- | --- |
-| `src/data/publications.ts` | M — added `reviewedAt`; selectors now take a list; added `reviewedDate()`, `isReviewed()`, `publicationDate()` |
-| `src/lib/publicationsSource.ts` | **new** — the live source, plus `normalizeFullTextUrl` |
-| `src/lib/usePublications.ts` | **new** — the hook |
-| `src/pages/Journal.tsx` | M — reads through the hook; skeleton; date label; conditional "first issue" badge |
-| `src/pages/JournalArticle.tsx` | M — reads through the hook; 404 only after load; skeleton; date label |
-| `src/lib/flags.ts` | M — comment only: notes the flag is independent of the Sheet |
-| `scripts/generate-sheet-template.mjs` | M — now emits the publications template too |
-| `notes/publications-template.csv` | **new** — generated |
-| `notes/managing-publications.md` | **new** — 13 sections |
-
-`PUBLICATIONS_CSV_URL` is `null`, so nothing changes on the live site until you paste the URL. The
-Journal renders the fallback seed exactly as it does today.
-
----
-
-## 4. The Sheet column headers you need to create, in order
+### The new wording
 
 ```
-Published
-Slug
-Title
-Authors
-Track
-Field
-Abstract
-FullTextUrl
-PublishedAt
-ReviewedAt
+This article completed peer review. It was evaluated by the Atlas research and
+editorial team against the Journal's published criteria.
 ```
 
-Ten columns. As one header row:
+### It now lives in one constant per track
 
-```
-Published,Slug,Title,Authors,Track,Field,Abstract,FullTextUrl,PublishedAt,ReviewedAt
-```
+`REVIEW_STATUS` in `src/data/publications.ts` — three strings per track, because three different
+lengths were needed in three places and separate literals are how the drift started:
 
-Order does not matter to the site — columns are matched by name. Names do matter.
-
-| Column | Required | Notes |
+| | `peer-reviewed` | `working-paper` |
 | --- | --- | --- |
-| `Published` | yes | `yes` publishes; anything else hides the row |
-| `Slug` | no | blank derives from `Title` |
-| `Title` | yes | |
-| `Authors` | yes | pipe-separated |
-| `Track` | yes | `working-paper` \| `peer-reviewed`, no default |
-| `Field` | yes | one of the existing eight, exactly |
-| `Abstract` | yes | blank line = paragraph break |
-| `FullTextUrl` | no | Drive link; blank → "Full text coming soon" |
-| `PublishedAt` | yes | `YYYY-MM-DD` |
-| `ReviewedAt` | no | `YYYY-MM-DD`, peer-reviewed rows only |
+| `chip` | Peer reviewed | Working paper |
+| `short` | Completed peer review | Not peer reviewed |
+| `statement` | *the sentence above* | This is a working paper. … It has not been through peer review. |
+
+It **was** duplicated. The article page carried the full statement and the Journal index carried its
+own separate wording of the same claim (`Not externally peer reviewed`, plus a disclosure paragraph).
+Both now read the constant, so there is no second copy to update.
+
+### Every hit, as requested
+
+**`"external peer review"` — 10 hits:**
+
+| File | Line | Disposition |
+| --- | --- | --- |
+| `src/pages/JournalArticle.tsx` | 101, 106 | replaced by `REVIEW_STATUS[track].statement` |
+| `src/pages/Journal.tsx` | 63, 81 | comment + disclosure paragraph, "external" removed |
+| `src/data/publications.ts` | 18, 131 | comments, "external" removed |
+| `public/llms.txt` | 46 | copy, "external" removed |
+| `notes/managing-publications.md` | 23, 116 | docs, "external" removed |
+| `scripts/generate-sheet-template.mjs` | 174 | comment, "external" removed |
+
+**`"external review"` — 8 hits:**
+
+| File | Line | Disposition |
+| --- | --- | --- |
+| `src/pages/Journal.tsx` | 44 | intro copy, "external" removed |
+| `src/data/publications.ts` | 23, 45, 95 | comments, "external" removed |
+| `public/llms.txt` | 47 | copy, "external" removed |
+| `notes/managing-publications.md` | 117 | docs, "external" removed |
+| `scripts/generate-sheet-template.mjs` | 220 | placeholder title, "external" removed |
+| `notes/publications-template.csv` | 7 | regenerated from the script |
+
+**`"externally"` — 4 further hits**, all the same claim in adjective form, all updated:
+`src/pages/Journal.tsx:74`, `src/lib/flags.ts:25`, `src/data/publications.ts:76` (seed abstract),
+`scripts/generate-sheet-template.mjs:210`.
+
+**Deliberately left:** `public/apply.html:17` and `public/robots.txt:4` both say "external links",
+which is an unrelated sense of the word. And the comment in `REVIEW_STATUS` explaining *why*
+"external" is absent necessarily contains it — the same exemption the redirect comment in `seo.ts`
+has.
+
+Verified: **zero** occurrences of "external" remain in shipping source or user-facing copy, other
+than that explanatory comment.
+
+### One decision beyond the literal instruction
+
+You asked me to remove "external" from the **peer-reviewed** copy. I removed it from the
+**working-paper** copy too: `has not been through external peer review` → `has not been through peer
+review`.
+
+Reason: once reviewed articles no longer claim *external* review, contrasting a working paper against
+"external peer review" implies an external tier that does not exist, and it would have reintroduced
+exactly the inconsistency the single-constant requirement is meant to prevent. Easy to revert if you
+disagree — it is one string in one place now.
 
 ---
 
-## The track rule, enforced twice on purpose
+## CHANGE 2 — the publication record layout
 
-A working paper must never render as reviewed, so the rule is applied in two independent places:
+`/journal/:slug` rebuilt. Existing design system only: monochrome tokens, Instrument Serif via
+`font-display`, Archivo body. Verified mechanically — **0 raw hex colours, 0 non-token colour
+utilities**; the only colour/font classes used are `bg-ink`, `bg-ink-hover`, `bg-line`, `bg-paper`,
+`bg-surface`, `border-line`, `text-faint`, `text-ink`, `text-muted`, `text-paper`, `font-display`.
 
-1. **At parse.** `rowsToPublications` discards a `ReviewedAt` supplied on a `working-paper` row and
-   logs that it ignored it. The value is never stored.
-2. **At render.** `reviewedDate()` returns `null` for any `working-paper` record regardless of what
-   the field holds, and `publicationDate()` is the only thing the pages call.
+### Structure, in order
 
-One layer would have been enough for the Sheet. Two means a `Publication` built by hand, or a future
-caller reaching for `publication.reviewedAt` directly, still cannot put a review date on an
-unreviewed paper.
+1. **Breadcrumb** — The Atlas Journal / article title. Current page is not a link, and truncates at
+   `18rem` so a long title does not wrap to three lines on a phone.
+2. **Status chips** — article type (omitted when blank), then track.
+3. **Title → Authors → Affiliation**, then the record: Authors, Affiliation, Article type, Field,
+   Publication date, Review date.
+4. **Action row** — Open PDF (or the disabled "Full text coming soon"), Copy citation, Copy link.
+5. **Review standing block** — the `statement` for the track.
+6. **Abstract** `#abstract`
+7. **Keywords** `#keywords`, as chips
+8. **Citation** `#citation`, bordered block with its own copy button
+9. **Publication details** `#details` — Full text, Review status, License, Conflict of interest
+10. **Editorial note** `#editorial-note`
+11. **Back to The Atlas Journal**
+12. **Right sidebar** — the record fields repeated, plus "On this page" anchors
 
-### What renders for each combination
+### The sidebar
 
-| `Track` | `ReviewedAt` in Sheet | Stored | Badge | Date shown |
-| --- | --- | --- | --- | --- |
-| `working-paper` | blank | `null` | Working paper | `Published <PublishedAt>` |
-| `working-paper` | `2026-07-15` | `null` — discarded + warned | Working paper | `Published <PublishedAt>` |
-| `peer-reviewed` | `2026-08-20` | `2026-08-20` | Peer reviewed | `Reviewed 2026-08-20` |
-| `peer-reviewed` | blank | `null` — warned | Peer reviewed | `Published <PublishedAt>` |
-| `peer-reviewed` | `not-a-date` | `null` — warned | Peer reviewed | `Published <PublishedAt>` |
+`grid lg:grid-cols-[1fr_18rem]` with `order-1 lg:order-2` on the aside, so it sits **above** the
+content on mobile and **right** of it on desktop, sticky at `lg:top-24`. The anchor list is built from
+the sections that actually exist, so a paper with no keywords and no editorial note gets three
+anchors, not five pointing at two dead ids. Headings carry `scroll-mt-24` so an anchor jump does not
+tuck the heading under the sticky nav.
 
-Lists sort by whichever date the row displays, newest first.
+### Copy buttons
 
-A peer-reviewed row with no `ReviewedAt` **still publishes** rather than being skipped. It shows its
-published date, which is true of every record, and warns. Skipping it would hide a real reviewed
-article over a missing optional cell.
+`navigator.clipboard.writeText`, confirming "Copied" for 2s. Failure is **surfaced as "Copy failed"**
+rather than swallowed — `navigator.clipboard` is unavailable in a non-secure context and can be
+permission-denied, and a copy button that silently does nothing is worse than one that admits it. The
+timer is cleared on unmount and before replacement, so navigating away mid-confirmation cannot set
+state on an unmounted component. `aria-live="polite"` so the confirmation is announced.
+
+### Omit-when-blank
+
+Every optional field renders through `RecordRow` / `SidebarRow`, which **return `null` when the value
+is empty** — label included. Verified against the template: the sparse row reports
+`OMITTED (label+value hidden): affiliation, articleType, license, conflictOfInterest, editorialNote`
+and `keywords section rendered: false`. The full row omits nothing.
 
 ---
 
-## 6. FullTextUrl validation
+## New Sheet columns
 
-`normalizeFullTextUrl` runs at parse time, so what is stored is already safe and every render path
-inherits it.
+You named three. I added **six**, because your rules also required licence and conflict of interest to
+be Sheet-driven optional columns, and the Editorial Note section needs a source — writing that content
+in code would have meant authoring editorial and licence language, which the rules forbid.
 
-| Input | Output |
+| Column | Renders as |
 | --- | --- |
-| `.../file/d/FILE_ID/view?usp=sharing` | `https://drive.google.com/uc?export=download&id=FILE_ID` |
-| `.../file/d/FILE_ID/view` | same rewrite |
-| `.../file/d/FILE_ID/preview` | same rewrite |
-| `.../uc?export=download&id=FILE_ID` | unchanged |
-| `.../drive/folders/...` | **`null`** + warning |
-| any other URL | unchanged |
-| blank, `N/A`, `TBD`, `-` | `null` |
+| `Affiliation` | under the authors, in the record, in the sidebar |
+| `ArticleType` | chip at top, in the record, in the sidebar |
+| `Keywords` | Keywords section, pipe-separated → chips |
+| `License` | Publication details + sidebar, **verbatim** |
+| `ConflictOfInterest` | Publication details, **verbatim** |
+| `EditorialNote` | Editorial note section, **verbatim** |
 
-I match `/file/d/([^/?#]+)` rather than requiring a literal `/view`, so `/view`, `/view?usp=sharing`,
-`/preview` and `/edit` all normalise. The spec said "of the form `.../view...`"; matching the id
-segment covers that and the other suffixes Drive hands out, which seemed the useful reading.
+`EditorialNote` is my inference rather than your instruction — flagging it as the one column you did
+not name.
 
-Placeholder-dropping reuses `isMeaningfulValue` from `src/data/research-groups.ts` — the same
-predicate `settingLine` uses — rather than a second token list.
+All six are optional and parsed with `cleanOrNull`, so `N/A` and `TBD` become absent rather than
+printing as content. **No wording for the last three exists anywhere in the code.** Blank means the
+field is absent, full stop; there is no fallback text to invent a licence Atlas never granted.
+
+**Full header row, 16 columns:**
+
+```
+Published,Slug,Title,Authors,Track,Field,Abstract,FullTextUrl,PublishedAt,ReviewedAt,Affiliation,ArticleType,Keywords,License,ConflictOfInterest,EditorialNote
+```
+
+Added to the schema, `scripts/generate-sheet-template.mjs`, and
+`notes/managing-publications.md` (new §6 "The publication record fields", new §7 "The citation";
+subsequent sections renumbered to §15).
 
 ---
 
-## 5. Round-trip through the real parser
+## Citation
 
-Not asserted — executed. The generated CSV was bundled with the project's own esbuild against
-`src/lib/csv.ts` and `src/lib/publicationsSource.ts`, so this is the shipped code, not a copy.
-
-### parseCsv on the generated file
+Generated, never stored. No column for it.
 
 ```
-rows returned (incl. header): 3
-header cells: 10
-headers: ["Published","Slug","Title","Authors","Track","Field","Abstract","FullTextUrl","PublishedAt","ReviewedAt"]
-
-Multi-paragraph abstract survived the quoted newlines:
-  paragraphs in row 2 Abstract: 3
-Field with an ampersand survived un-split:
-  row 3 Field = "Environment & Sustainability"
+Authors (Year). Title. The Atlas Journal. Retrieved from <canonical URL>
 ```
 
-### The template as shipped
+Real output from the live Sheet's article:
 
 ```
-published publications: 0
+Hamaad Mahmood (2026). The Political Disinformation Epidemic: How Algorithms and Cable News Drive US
+Polarization. The Atlas Journal. Retrieved from
+https://atlas-research.org/journal/the-political-disinformation-epidemic-how-algorithms-and-cable-news-drive-us-pol
 ```
 
-Correct: both example rows are `Published=no`, so importing the template publishes nothing.
+The **year comes from `PublishedAt`, not `ReviewedAt`** — confirmed on the template's reviewed row,
+which has `publishedAt 2026-09-01` and `reviewedAt 2026-08-20` and cites `(2026)` from the former.
+That is the convention every citation style follows: the review date is a fact about the article's
+history, not its date of record.
 
-### With Published flipped to yes
+The URL uses `SITE_ORIGIN` from `src/lib/seo.ts`, so it is the apex host and stays correct if the
+canonical host changes again.
 
-```
-  slug        placeholder-working-paper
-  track       working-paper
-  authors     ["Atlas Research Institute"]
-  field       Social Sciences
-  publishedAt 2026-06-01
-  reviewedAt  null
-  DISPLAYS AS → "Published 2026-06-01"
-  fullTextUrl "https://drive.google.com/uc?export=download&id=PLACEHOLDER_FILE_ID"
-  abstract    3 paragraphs
-
-  slug        placeholder-reviewed-article
-  track       peer-reviewed
-  authors     ["Placeholder Author","Placeholder Co-Author"]
-  field       Environment & Sustainability
-  publishedAt 2026-09-01
-  reviewedAt  "2026-08-20"
-  DISPLAYS AS → "Reviewed 2026-08-20"
-  fullTextUrl null
-  abstract    2 paragraphs
-
-workingPapers():        placeholder-working-paper
-peerReviewedArticles(): placeholder-reviewed-article
-```
-
-Note the Drive share link arrived as `/file/d/PLACEHOLDER_FILE_ID/view?usp=sharing` and came out as a
-`uc?export=download` URL.
-
-### Track rule, probed adversarially
-
-A `working-paper` row given `ReviewedAt=2026-07-15`:
-
-```
-[publications] row 2: ReviewedAt "2026-07-15" ignored because Track is "working-paper" — a working paper has not been peer reviewed
-stored reviewedAt : null
-reviewedDate()    : null
-displays as       : "Published 2026-06-01"
-```
-
-The date is **discarded**, not merely hidden.
-
-A `peer-reviewed` row with a blank `ReviewedAt`:
-
-```
-[publications] row 3: Track is "peer-reviewed" but ReviewedAt is blank; showing the published date instead
-stored reviewedAt : null
-displays as       : "Published 2026-09-01"
-```
-
-### Every normalizeFullTextUrl branch
-
-```
-  Drive share link         → "https://drive.google.com/uc?export=download&id=1AbC_dEf-123"
-  Drive share, no query    → "https://drive.google.com/uc?export=download&id=1AbC_dEf-123"
-  Drive /preview suffix    → "https://drive.google.com/uc?export=download&id=1AbC_dEf-123"
-  already direct download  → "https://drive.google.com/uc?export=download&id=1AbC_dEf-123"
-  Drive FOLDER (invalid)   → null
-  non-Drive URL            → "https://example.org/papers/paper.pdf"
-  blank                    → null
-  placeholder N/A          → null
-  placeholder TBD          → null
-  placeholder -            → null
-```
-
-Normalising twice is stable — the direct form round-trips to itself.
+**No article ID, no DOI, no ISSN, no impact factor, no invented licence terms.** Nothing was added
+that would imply a registration Atlas does not hold.
 
 ---
 
-## Two judgement calls I made, and why
+## Backward compatibility — checked, because it would have been easy to break
 
-**1. The template's example rows are `Published: no`.** The groups and events templates both ship
-`yes`. I deviated here because the peer-reviewed example row would otherwise go live on import,
-sitting under "This article completed external peer review" having been reviewed by nobody. A stray
-placeholder group is untidy; a stray placeholder reviewed article is a false claim. Documented in the
-template's inline comment and in section 1 of the notes. Say the word if you want it back to `yes`.
+**The live Sheet still has only 10 columns.** The new code expects 16. Run against the real live CSV:
 
-**2. I wired the two Journal pages through the hook.** The deliverables listed the source module but
-not the page changes. A source module nothing reads is dead code, and the existing pattern is that
-pages consume the hook — so without this "build the pipeline" would not have been done. The changes
-follow `Events.tsx` and `EventDetail.tsx` exactly, including rendering the 404 only *after* the fetch
-resolves, so a real paper is never reported missing while its request is outstanding.
+```
+live sheet header cells: 10
+missing new columns: Affiliation, ArticleType, Keywords, License, ConflictOfInterest, EditorialNote
+rows parsed: 1  (must still be 1)
+  track peer-reviewed | displays "Published 2026-03-09"
+  new fields all absent: true
+  chip shown: "Peer reviewed"
+```
 
-That rewiring forced two smaller changes worth flagging:
+Missing columns read as empty via `headerReader` → `null` → omitted. **The live article keeps working
+with no Sheet change**, just without the new fields. Add the six columns when you want them.
 
-- `workingPapers()`, `peerReviewedArticles()` and `findPublication()` now take the publications array,
-  matching how `upcomingEvents(events)` and `findEvent(events, slug)` already work.
-- The **"First issue not yet published"** badge is now conditional. It was hardcoded. Once the Sheet
-  carries a reviewed article that badge would have been a false statement printed directly above the
-  article disproving it.
+That existing warning is still outstanding and unrelated to this work:
+
+```
+[publications] row 2: ReviewedAt "27 April 2026" is not a valid YYYY-MM-DD date
+```
+
+The three Sheet fixes from last time still apply — `ReviewedAt` → `2026-04-27`, set an explicit
+`Slug`, and break the abstract into paragraphs.
 
 ---
 
@@ -249,32 +223,26 @@ That rewiring forced two smaller changes worth flagging:
 
 ```
 npx tsc --noEmit   clean, no errors
-npx vite build     ✓ built in 717ms, 104 modules
+npx vite build     ✓ built in 737ms
                    dist/index.html                   5.19 kB │ gzip:   1.97 kB
-                   dist/assets/index-Bh2OPDDT.css   26.28 kB │ gzip:   5.94 kB
-                   dist/assets/index-mYUBNS9S.js   347.81 kB │ gzip: 108.49 kB
+                   dist/assets/index-C_Hba8Vt.css   26.91 kB │ gzip:   6.11 kB
+                   dist/assets/index-kQbDCK77.js   356.72 kB │ gzip: 110.98 kB
 ```
 
-No real paper content anywhere. Every example is labelled `PLACEHOLDER`, the peer-reviewed track in
-`src/data/publications.ts` is still deliberately empty, and no author, affiliation, metric, or ISSN
-was invented.
+Also verified by executing the real parser: `REVIEW_STATUS` contains no "external" on either track;
+the 16-column template parses with the sparse row omitting five fields and the full row omitting none;
+citations generate correctly for both tracks.
 
----
-
-## What you need to do
-
-1. Import `notes/publications-template.csv` into a new Sheet tab.
-2. **File → Share → Publish to web**, that tab, CSV.
-3. Paste the URL into `PUBLICATIONS_CSV_URL` in `src/lib/publicationsSource.ts` and deploy that one
-   line. Everything after is Sheet-only.
-4. Set each PDF to **Anyone with the link → Viewer**, and test the link in a private window. The
-   site cannot detect a restricted file — the link will look fine to you and be dead for readers.
-5. Working papers stay hidden until `SHOW_WORKING_PAPERS` in `src/lib/flags.ts` is flipped to `true`.
-   Rows still parse while it is off; they are just not listed or reachable.
+`SHOW_WORKING_PAPERS` untouched at `false`.
 
 ## Not verified
 
-- No live Sheet exists yet, so the fetch path is exercised only through the fallback branch. The
-  parse path is verified above against the real generated CSV.
-- `PLACEHOLDER_FILE_ID` is not a real Drive id, so the rewrite is verified by shape, not by
-  downloading a file. Step 4 above is how that gets confirmed.
+The rendered page. I cannot drive a browser, so the layout — sidebar collapsing above content at the
+`lg` breakpoint, sticky behaviour, anchor scrolling, and the copy-button confirmation — is verified by
+type-check, build, and construction rather than by looking at it. **Worth loading
+`/journal/<slug>` and checking on both a wide window and a phone width before merging.**
+
+Note that with the live Sheet as it stands the page will show a fairly sparse record: no article type
+chip, no keywords, no licence, no conflict statement, no editorial note, and "Published" rather than
+"Reviewed". That is correct behaviour for blank cells, not a layout fault — fill the columns in to see
+the full record.

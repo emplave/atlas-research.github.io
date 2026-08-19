@@ -22,7 +22,7 @@
  *
  * Nothing is removed to achieve this. The Publication type, the
  * src/data/publications.ts selectors, workingPapers(), the article page, and the
- * "not externally peer reviewed" disclosure copy are all still present and
+ * "not peer reviewed" disclosure copy are all still present and
  * still correct — see src/pages/Journal.tsx and src/pages/JournalArticle.tsx.
  *
  * This flag is independent of the Sheet. Working-paper rows in the publications

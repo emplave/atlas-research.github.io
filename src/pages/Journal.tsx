@@ -3,6 +3,7 @@ import {
   isFullTextPending,
   peerReviewedArticles,
   publicationDate,
+  REVIEW_STATUS,
   workingPapers,
   type Publication,
 } from "@/data/publications";
@@ -14,8 +15,8 @@ import { usePublications } from "@/lib/usePublications";
  *
  * TWO TRACKS, KEPT VISUALLY AND STRUCTURALLY SEPARATE.
  *
- * Working papers are founding contributions published without external peer
- * review. Peer-reviewed articles have completed review. The page must never let
+ * Working papers are founding contributions published without peer review.
+ * Peer-reviewed articles have completed review. The page must never let
  * a reader mistake one for the other, and must never imply that submission
  * leads to publication.
  *
@@ -41,7 +42,7 @@ export function Journal() {
             <p className="mt-6 max-w-2xl text-lg text-muted leading-relaxed">
               The Journal runs two separate tracks. Working papers are founding
               contributions from the Atlas team. Peer-reviewed articles have
-              completed external review. They are not the same thing, and the
+              completed peer review. They are not the same thing, and the
               Journal does not present them as though they are.
             </p>
           ) : (
@@ -51,7 +52,7 @@ export function Journal() {
               page. This says what the reader can actually see.
             */
             <p className="mt-6 max-w-2xl text-lg text-muted leading-relaxed">
-              The Journal publishes student research that has completed external
+              The Journal publishes student research that has completed peer
               review. The first reviewed issue has not been published yet, so
               what follows is how review actually works.
             </p>
@@ -60,7 +61,7 @@ export function Journal() {
       </section>
 
       {/* ---------------------------------------------------------------- */}
-      {/* TRACK 1 — Working papers. Published WITHOUT external peer review. */}
+      {/* TRACK 1 — Working papers. Published WITHOUT peer review.           */}
       {/* Hidden entirely behind SHOW_WORKING_PAPERS. Nothing here is dead   */}
       {/* code — flipping the flag restores it exactly as written.           */}
       {/* ---------------------------------------------------------------- */}
@@ -70,16 +71,17 @@ export function Journal() {
           <h2 className="font-display text-2xl md:text-3xl">
             Atlas Working Papers
           </h2>
+          {/* From the shared constant, so it cannot drift from the article page. */}
           <span className="meta-label">
-            Not externally peer reviewed
+            {REVIEW_STATUS["working-paper"].short}
           </span>
         </div>
 
         <p className="mt-6 max-w-2xl text-[15px] text-muted leading-relaxed">
           These are founding contributions from the Atlas team, published while
           the first open call for submissions is underway. They have not been
-          through external peer review, and nothing in this track should be
-          read as reviewed work.
+          through peer review, and nothing in this track should be read as
+          reviewed work.
         </p>
 
         {loading ? (
