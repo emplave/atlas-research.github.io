@@ -32,7 +32,7 @@ function mailto(subject: string): string {
 const WAYS = [
   {
     title: "Run a guest session",
-    body: "A 30 to 40 minute conversation with student researchers about how you actually work: how you choose questions, what you do when data disappoints, how you handle a result you did not expect. Recorded with your permission so groups in other time zones can watch it. Atlas handles scheduling, the invite, and the recording.",
+    body: "A 30 to 40 minute session teaching one part of the research process through your experience. What you struggled with and how you approached it. Topics can include how to build a question, how to choose a method, how to read a paper, how to handle a result you did not expect, and speakers can suggest their own. Recorded with your permission so groups in other time zones can watch. Atlas handles scheduling, the invite, and the recording.",
     cta: "Offer a guest session",
     subject: "Guest session — offer to speak with Atlas research groups",
   },
@@ -98,14 +98,14 @@ export function GetInvolved() {
           </h2>
 
           {/*
-            The real objection a busy researcher has is that this will become a
-            teaching obligation with prep. Answer it in the first paragraph
-            rather than at the bottom of the page.
+            States the shape of the ask before the boxes: one thing, taught
+            well, to an audience that is mid-project. The scope and the topic
+            list live in the "Run a guest session" box rather than here, so this
+            paragraph does not restate what the box is about to say.
           */}
           <p className="mt-7 max-w-2xl type-body text-muted">
-            Atlas is a student-led research program. Guest sessions are
-            conversational — no lecture, no slides, no preparation expected. You
-            talk about your work and answer questions.
+            Sessions are professional and focused. You teach one thing you know
+            well to students doing research right now.
           </p>
 
           <div className="mt-10 grid gap-px border border-line bg-line md:grid-cols-2">

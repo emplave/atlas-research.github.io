@@ -25,7 +25,7 @@ export type OpeningCategory = "chapter" | "team";
  */
 export const CATEGORY_LABEL: Record<OpeningCategory, string> = {
   chapter: "Research Group",
-  team: "Atlas Team",
+  team: "Atlas Youth Team",
 };
 
 /**
