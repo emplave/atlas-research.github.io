@@ -74,9 +74,9 @@ export function GetInvolved() {
             Two ways in.
           </h1>
           <p className="mt-6 max-w-2xl type-body text-muted">
-            Researchers and professionals can teach, mentor, and review.
-            Research group leadership and the Atlas Student Team are separate
-            pathways. Both start below.
+            Researchers and professionals can teach, mentor, and review. Lead a
+            research group, or join the Atlas Student Team. Each applies through
+            its own form. Both start below.
           </p>
           <p className="mt-5 flex flex-wrap gap-x-6 gap-y-2 text-[15px]">
             <a href="#researchers" className="link">
