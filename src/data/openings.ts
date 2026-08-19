@@ -11,7 +11,7 @@
  *                        deliberately keep their original names. They are
  *                        internal identifiers, not display copy; the label
  *                        shown to readers is CATEGORY_LABEL below.
- *   category "team"    — Atlas team and leadership positions.
+ *   category "team"    — Atlas Student Team and leadership positions.
  * A student may hold both. They are applied for separately, through
  * different forms.
  */
@@ -25,7 +25,7 @@ export type OpeningCategory = "chapter" | "team";
  */
 export const CATEGORY_LABEL: Record<OpeningCategory, string> = {
   chapter: "Research Group",
-  team: "Atlas Youth Team",
+  team: "Atlas Student Team",
 };
 
 /**
@@ -103,7 +103,7 @@ export function isFormPending(opening: Opening): boolean {
 }
 
 const RESEARCH_GROUP_FORM_URL = "https://forms.gle/s2qpP3XX3ydLc58k6";
-const TEAM_FORM_URL = "https://forms.gle/XiLxGwedVS32LLNc9";
+const TEAM_FORM_URL = "https://forms.gle/aPG2PfhexDJLz8e58";
 const TEAM_FORM_NOTE =
   "One role per submission. Select this role inside the form.";
 

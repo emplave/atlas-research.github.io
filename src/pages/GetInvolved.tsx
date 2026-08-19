@@ -75,8 +75,8 @@ export function GetInvolved() {
           </h1>
           <p className="mt-6 max-w-2xl type-body text-muted">
             Researchers and professionals can teach, mentor, and review.
-            Students can lead a research group or join the Atlas team. Both
-            start below.
+            Research group leadership and the Atlas Student Team are separate
+            pathways. Both start below.
           </p>
           <p className="mt-5 flex flex-wrap gap-x-6 gap-y-2 text-[15px]">
             <a href="#researchers" className="link">
@@ -276,7 +276,7 @@ function RoleCard({ opening }: { opening: Opening }) {
             rel="noopener noreferrer"
             className="rounded-control bg-ink text-paper px-5 py-2.5 text-sm hover:bg-ink-hover transition-colors"
           >
-            Apply
+            Open the application form
           </a>
         )}
         {!closed && opening.formNote && (

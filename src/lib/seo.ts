@@ -85,7 +85,7 @@ export const ROUTE_SEO: Record<string, RouteSeo> = {
   "/get-involved": {
     title: "Get Involved",
     description:
-      "Researchers can run a guest session, mentor a group, or review for the journal. Students can lead a group or join the Atlas team.",
+      "Researchers can run a guest session, mentor a group, or review for the journal. Research group leadership and the Atlas Student Team apply separately.",
   },
   "/privacy": {
     title: "Privacy",
