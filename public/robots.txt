@@ -6,8 +6,9 @@ Allow: /
 Disallow: /apply.html
 Disallow: /privacy.html
 
-Sitemap: https://atlas-research.org/sitemap.xml
+# Host is www, matching the canonical tags. The apex 308-redirects to www.
+Sitemap: https://www.atlas-research.org/sitemap.xml
 
 # Structured context for language models.
 # See https://llmstxt.org for the llms.txt standard.
-# https://atlas-research.org/llms.txt
+# https://www.atlas-research.org/llms.txt

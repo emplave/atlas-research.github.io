@@ -3,41 +3,99 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Atlas Research Institute — Student Research Groups</title>
+
+    <!--
+      These are the DEFAULTS, and they are what a crawler that does not execute
+      JS will see. src/components/Seo.tsx overwrites title, description, og/
+      twitter title and description, og:url and canonical per route at runtime.
+      Keep the tag set here complete: a route with no JS then degrades to the
+      site-level values rather than to nothing.
+    -->
+    <title>Atlas Research Institute</title>
     <meta
       name="description"
-      content="Atlas runs student research groups in eight fields. Three to ten students, one research question, one term. Mentor feedback at set checkpoints, weekly logs, and a route to submit finished work to the Atlas Journal for review. Free."
+      content="Atlas runs student research groups in eight fields. Three to ten students, one research question, one term. Free, and open worldwide."
     />
     <meta name="theme-color" content="#FFFFFF" />
-    <meta property="og:title" content="Atlas Research Institute — Student Research Groups" />
+
+    <!--
+      CANONICAL HOST is www, verified rather than assumed: the apex 308-redirects
+      to www and www serves 200 from Vercel, so www is the primary domain. See
+      the note at the top of src/lib/seo.ts before changing this.
+    -->
+    <link rel="canonical" href="https://www.atlas-research.org/" />
+
+    <meta property="og:site_name" content="Atlas Research Institute" />
+    <meta property="og:title" content="Atlas Research Institute" />
     <meta
       property="og:description"
-      content="Atlas runs student research groups in eight fields. Three to ten students, one research question, one term. Free. Finished work may be submitted to the Atlas Journal for review."
+      content="Atlas runs student research groups in eight fields. Three to ten students, one research question, one term. Free, and open worldwide."
     />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="/og.png" />
+    <meta property="og:url" content="https://www.atlas-research.org/" />
+    <meta property="og:image" content="https://www.atlas-research.org/og.png" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content="/og.png" />
+    <meta name="twitter:title" content="Atlas Research Institute" />
+    <meta
+      name="twitter:description"
+      content="Atlas runs student research groups in eight fields. Three to ten students, one research question, one term. Free, and open worldwide."
+    />
+    <meta name="twitter:image" content="https://www.atlas-research.org/og.png" />
+
     <!--
-      Favicon set is the Atlas mark (src/components/AtlasMark.tsx), kept in sync
-      by hand — every file below carries the same two paths. If the mark geometry
-      changes, regenerate favicon.svg, favicon.ico, favicon-32.png,
-      apple-touch-icon.png, og.svg, and og.png together.
+      Favicon set is the Atlas mark (src/components/AtlasMark.tsx). Every file
+      below is the SAME two paths rendered at a different size — no separate
+      artwork. If the mark geometry changes, regenerate all of these together:
+      favicon.svg, favicon.ico, favicon-16x16.png, favicon-32x32.png,
+      apple-touch-icon.png, icon-192.png, icon-512.png, og.svg, og.png.
 
       Multiple formats on purpose: SVG for current browsers, .ico for older ones
-      and for crawlers that only look for /favicon.ico, and a 32px PNG for the
-      ones that take neither.
+      and for crawlers that only probe /favicon.ico, and PNGs for the rest.
     -->
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Archivo:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
+
+    <!--
+      JSON-LD. Deliberately minimal.
+
+      NO awards, NO foundingDate, NO aggregateRating, NO numberOfEmployees, and
+      no counts of any kind. Every field below is something the site already
+      states elsewhere. Do not add a number here that is not confirmed — this
+      block is the most quotable thing on the page and a wrong figure in it gets
+      repeated by search engines.
+
+      sameAs holds ONE placeholder for the LinkedIn company page. Replace the
+      whole string; do not leave the placeholder live, and delete the sameAs
+      array entirely if there is no URL to put in it.
+    -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "EducationalOrganization",
+        "name": "Atlas Research Institute",
+        "url": "https://www.atlas-research.org/",
+        "logo": "https://www.atlas-research.org/icon-512.png",
+        "description": "Atlas runs student research groups in eight fields. Three to ten students, one research question, one term. Free, and open worldwide.",
+        "sameAs": ["REPLACE_WITH_LINKEDIN_COMPANY_URL"],
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "contactType": "general enquiries",
+          "email": "admin@atlas-research.org",
+          "url": "https://www.atlas-research.org/get-involved"
+        }
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
