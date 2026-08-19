@@ -3,7 +3,12 @@ import { findOpening, isFormPending } from "@/data/openings";
 import { ReachGlobe } from "./ReachGlobe";
 
 /**
- * Homepage hero. Asymmetric: text on the left at ~55%, globe on the right.
+ * Homepage hero. Asymmetric: text on the left at 60%, globe on the right.
+ *
+ * The 60/40 split is measured, not chosen by feel. At the 104px headline size,
+ * a 55% column (576px) breaks the headline into four lines and leaves "field."
+ * alone as a widow. 60% (629px) sets it in three lines ending "any field.".
+ * Narrowing this column again will reintroduce the widow.
  *
  * No entrance animation — the globe's rotation is the only motion, and the
  * headline is never delayed.
@@ -18,18 +23,18 @@ export function Hero() {
   return (
     <section id="top" className="bg-paper border-b border-line">
       <div className="mx-auto max-w-6xl px-6 pt-16 pb-14 md:pt-20 md:pb-16">
-        <div className="grid items-center gap-10 lg:gap-14 lg:grid-cols-[55fr_45fr]">
+        <div className="grid items-center gap-10 lg:gap-14 lg:grid-cols-[60fr_40fr]">
           <div>
             <h1 className="type-hero font-display">
               Atlas runs student research groups in any field.
             </h1>
 
-            <p className="mt-6 max-w-xl type-body text-muted">
+            <p className="mt-8 max-w-xl type-body text-muted">
               You pick the question, recruit three to ten members, and finish a
               paper in one term.
             </p>
 
-            <div className="mt-8 flex flex-col sm:flex-row gap-3">
+            <div className="mt-10 flex flex-col sm:flex-row gap-3">
               {formPending ? (
                 <span
                   aria-disabled="true"

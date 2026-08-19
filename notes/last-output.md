@@ -1,135 +1,148 @@
-# Partnership enquiry form wired up
+# Display type rebalanced
 
 Branch `chapters-rebuild`. `tsc --noEmit` clean, `vite build` succeeds, all routes serve with no
-dev warnings, **55 checks pass** (47 partnership, 4 nulled-endpoint, 4 waitlist regression).
+dev warnings. No `font-weight` added anywhere — the only two in the stylesheet are the existing
+`400` declarations.
+
+Numbers below are **measured**, not estimated. I parsed the installed
+`InstrumentSerif-Regular.ttf` for `unitsPerEm`, `OS/2` cap height, and per-glyph advance widths,
+then computed line breaking at each viewport. Any line count or block height here is from that,
+not from eyeballing.
 
 ---
 
-## The exact payload — verify this against your sheet columns
+## 1–2. Scale raised
 
-```json
-{
-  "name": "Dr Ada Lovelace",
-  "email": "ada@example.edu",
-  "titleorg": "Professor of Computing, Example University",
-  "interest": "Guest session on methods & analysis",
-  "consent": "yes"
-}
-```
-
-Against your contract — `new Date(), name, email, titleorg, interest, consent, 'New', '', ''`:
-
-| Column | Source | Sent? |
+| | Before | After |
 | --- | --- | --- |
-| 1 timestamp | `new Date()` in the script | no |
-| 2 `name` | form input | **yes** |
-| 3 `email` | form input | **yes** |
-| 4 `titleorg` | form input, now required | **yes** |
-| 5 `interest` | textarea, optional, `""` when blank | **yes** |
-| 6 `consent` | always `"yes"` | **yes** |
-| 7 `'New'` | script literal | **no** |
-| 8 `''` | script literal | **no** |
-| 9 `''` | script literal | **no** |
+| `.type-hero` | `clamp(2.75rem, 7.2vw, 5.25rem)` — 44→84px | `clamp(3.25rem, 7.6vw, 6.5rem)` — **52→104px** |
+| hero tracking | `-0.01em` | **`-0.025em`** |
+| hero line-height | 1.02 | 0.98 |
+| `.type-section` | `clamp(1.75rem, 3.4vw, 2.75rem)` — 28→44px | `clamp(2rem, 4vw, 3.5rem)` — **32→56px** |
+| section tracking | `-0.01em` | **`-0.022em`** |
 
-Five keys, all strings, in the script's order. Asserted: `Status`, `Reviewer` and `Notes` are
-**not** sent, and neither is the old `kind` / `submittedAt` pair the previous helper added.
+I raised the section *minimum* too (28→32px), which you did not ask for. Reason is item 3: at
+375px a 28px heading against 17px body is only 1.6× — not enough separation to read as a
+different level. 32px gets it to 1.9×.
 
-## 1. Endpoint
+**On tracking specifically:** this was doing as much damage as the size. Instrument Serif sets
+loose at display sizes, so the old headlines were both light *and* airy — the letters weren't
+touching. Pulling to `-0.025em` condenses each headline into a single mass, which is the lever
+this face actually responds to. It is the change I'd keep if I could only keep one.
 
-`FORM_ENDPOINT` in `src/lib/dates.ts`, next to `WAITLIST_ENDPOINT`, with a DO NOT DELETE comment
-identifying it as the live partnership backend, recording its column contract, and stating that
-it is a different deployment and a different sheet that must never be consolidated with the
-waitlist. Asserted that the two constants differ and the waitlist one is untouched.
+## 3. Heading-to-body contrast
 
-Kept as `string | null` so nulling it restores the disabled form with no other edit.
+| | 1440px | 375px |
+| --- | --- | --- |
+| hero vs body | 4.9× → **6.1×** | 2.6× → **3.1×** |
+| section vs body | 2.6× → **3.3×** | 1.6× → **1.9×** |
 
-## 2. Submit path
+Body stays 17px. Gaps widened where a heading meets its copy: hero subhead `mt-6`→`mt-8`, hero
+buttons `mt-8`→`mt-10`, section intros `mt-3/4`→`mt-5/6`, plus `mb-2` under the `Section` heading
+row.
 
-Identical to the waitlist: `POST`, `mode: "no-cors"`, `Content-Type: application/json`, then
-`setState("sent")` without reading `res.ok`. The full comment explaining the opaque response —
-the 302 to `script.googleusercontent.com` with no CORS header — is carried over, along with the
-warning not to "fix" it.
+## 4. No font-weight
 
-## 3. Required fields and validation
+Confirmed by grep. The comment in `index.css` now says presence comes from size, tracking and
+contrast, and not to add one.
 
-Required: `name`, `email`, `titleorg`. Optional: `interest`.
+## 5. Lockup rebalanced — and it was measurably wrong
 
-"Title and organisation" is now required and its label reads **required**, not optional, with a
-comment on why: an enquiry with no affiliation cannot be evaluated.
-
-Same pattern as the waitlist throughout — `noValidate` on the form, JS validation, inline
-alert-coloured messages under each control, `aria-invalid` on the inputs, and a summary line
-below the button that counts keys on the same error object. `validatePartnership(fd)` is pure and
-exported, mirroring `validateWaitlist`, so it tests without a DOM.
-
-## 4. Consent
-
-One required checkbox linking to `/privacy`, worded and styled exactly as the waitlist's.
-Submission is blocked when unchecked; `consent` posts as `"yes"`. Asserted there is exactly one
-checkbox on the page — no second consent mechanism.
-
-## 5. Disabled state removed, mechanism kept
-
-Gone while the endpoint exists: the "This form is not open yet" panel, the `opacity-60` wrapper,
-and the "Form not open" button. The `fieldset` still exists but is no longer disabled.
-
-`isFormEndpointConfigured()` is retained as the gate. I verified this rather than assuming — by
-temporarily nulling `FORM_ENDPOINT` and re-rendering:
+You were right that the mark was competing. The number:
 
 ```
-FORM_ENDPOINT = null (temporarily nulled)
-PASS  disabled panel returns
-PASS  fieldset disabled returns
-PASS  contact address shown as plain text
-PASS  still no mailto
+Instrument Serif capHeight = 0.720 em   (OS/2 table)
+mark ink spans y8–146 of a 160 viewBox  = 0.863 of rendered height
+
+mark 32 / word 17  →  ink 27.6px  vs cap 12.2px  =  2.25×
+mark 24 / word 20  →  ink 20.7px  vs cap 14.4px  =  1.44×
 ```
 
-## 6. Logging
+The mark's ink was **more than twice** the wordmark's cap height, while also being a solid black
+wedge next to light serif type. Two compounding reasons it dominated.
 
-Reused rather than duplicated — but that required a move. `isLoggableHost` lived inside
-`src/pages/Fellowship.tsx`, and importing a page from a page to reuse it would have been the
-wrong shape. It now lives in **`src/lib/payloadLog.ts`** with a `logPayload(label, payload)`
-helper, and both forms import it. Grep confirms the host rule and the production-host list exist
-in exactly one place.
+**I did both** rather than one, because each alone failed:
 
-On localhost and previews the console shows `[partnership] POST body` with the five keys; silent
-on `atlas-research.org`, since the body carries a real name and email.
+- Only shrinking the mark left the lockup weightless in a 64px nav bar.
+- Only growing the wordmark cost nav width — measured at **165px at 21px** vs 134px at 17px, and
+  that bar also carries five links and a CTA. At 20px it's 158px, so +24px total. That is why the
+  wordmark is 20px and not 21px.
+
+Also added `-0.015em` to the wordmark, for the same reason as the headings.
 
 ---
 
-## Two things I changed beyond the brief
+## The hero, described
 
-**Deleted the orphaned `submitApplication()` from `forms.tsx`.** Wiring the form inline left it
-with zero callers, and it was not harmless dead code — it POSTed in CORS mode and read `res.ok`,
-which is exactly the pattern that provably fails against these endpoints: the fetch rejects
-*after* the row is written, so the sender is told it failed when it had not. Leaving a shared
-helper that looks correct and silently loses submissions is a trap. A comment in its place
-records why it went and says not to reintroduce one. `isFormEndpointConfigured()` stays.
+**At 1440px.** Headline renders at the **104px ceiling**, three lines, ending "any field." — no
+widow. Text block ≈ **306px tall**, up from 257px. It sits in a 629px column beside the globe,
+which is ~419px. The headline is the largest thing on the page by a factor of six over body copy
+and is now clearly the first thing the eye lands on.
 
-**Renamed two form fields.** `title_group` → `titleorg` and `message` → `interest`, to match the
-script's key names. Without this the payload keys would not have matched the columns.
+**At 375px.** Headline renders at the **52px floor**, still three lines, block ≈ **153px**, up
+from 135px. Ratio to body 3.1×. It does not gain a line, so it costs almost no extra vertical
+space — I checked this specifically, because a bigger minimum usually adds one.
 
-## Not verified by me
+**Does the headline now dominate?** Yes at 1440px, clearly. Yes at 375px, though less
+emphatically — a 375px viewport caps how much any headline can dominate, and 52px is near the
+sensible ceiling before the text block starts pushing the buttons below the fold.
 
-**No row has been written.** The POST is opaque and I did not submit against your live sheet.
-On the preview: submit once, read the `[partnership] POST body` log to confirm all five keys, then
-check the sheet and confirm the columns line up — particularly that `consent` lands in column 6
-and that `New` appears in column 7 from the script rather than from anything the client sent.
+### One thing I had to fix that the numbers surfaced
 
-Also unchanged and still true from before: this work is on `chapters-rebuild`, and
-`origin/main` is at `0c2f838`. See the note below.
-
-## On pushing to main
-
-You asked me to commit and push to main. I have committed to `chapters-rebuild` and **not**
-pushed to main, because the last attempt to write to main was blocked by the permission
-classifier — it is the production branch and Vercel deploys it.
-
-`chapters-rebuild` is now two commits ahead of main: the Working Papers flag (`83c2616`) and this
-one. Merging it into main brings both. The merge is clean — 0 conflicts against `origin/main`.
-
-Tell me to go ahead and I will retry the merge and push, or run it yourself:
+At 104px in the old **55/45** hero split, the 576px column broke the headline into **four** lines
+and left **"field." alone** as a widow. I widened the split to **60/40** (629px), which sets it in
+three lines ending "any field.". Verified at every breakpoint:
 
 ```
-git checkout main && git pull && git merge chapters-rebuild && git push
+1440px  104.0px  col 629px  3 lines  block 306px  last="any field."
+1024px   77.8px  col 552px  3 lines  block 229px  last="any field."
+ 768px   58.4px  col 720px  2 lines  block 114px  last="any field."
+ 375px   52.0px  col 327px  3 lines  block 153px  last="any field."
 ```
+
+A comment in `Hero.tsx` records that narrowing the column again reintroduces the widow.
+
+---
+
+## Is size and spacing enough, or do you need a different typeface?
+
+**Honest answer: it is enough for the hero, and it is marginal for section headings.**
+
+The hero at 104px with `-0.025em` has real presence. At that size the stroke contrast in
+Instrument Serif becomes an asset rather than a liability — the thin strokes read as refinement
+because the thick strokes are finally thick enough in absolute terms. I would not change the face
+on the hero's account.
+
+Section headings are the weaker case, and I want to be straight about why. At **56px** they are
+fine. At the **32px** floor on mobile they are still noticeably light, because Instrument Serif's
+thin strokes fall to roughly a hair under 1px at that size and start to disappear against white.
+Size cannot fix that — 32px is already as large as a section heading can go at 375px without
+crowding, and there is no heavier cut to reach for.
+
+So: **if the thinness still bothers you specifically at small-to-mid heading sizes, the answer is
+a different typeface, not more of this.** What would fix it is a display serif with a second
+weight or lower stroke contrast — something like Fraunces (variable, has real weight axis),
+Newsreader, or Source Serif. Any of those would let section headings carry weight at 32px without
+touching the hero.
+
+I have not pushed further than size, tracking and spacing, because the next step after this is
+faking weight — text-shadow, stroke, or synthetic bold — and all three look broken on a
+high-contrast serif. Tell me if you want me to trial an alternate face; it is a
+`tailwind.config.ts` + `index.html` change and a font swap, not a rebuild.
+
+---
+
+## Not verified
+
+**I have not seen this rendered in a browser.** Everything above is computed from the font's own
+metrics, which is reliable for sizes, tracking, line counts and block heights — but it cannot
+tell you how the page *feels*, and "does the headline dominate" is ultimately a judgement made by
+eye. Check the preview at both widths.
+
+Two specific things to look at:
+
+1. **The 1024px breakpoint.** The headline is 77.8px there and the globe column is 552px — the
+   tightest pairing of the four. If anything looks cramped it will be there.
+2. **The nav lockup at md (768px)**, where the links first appear alongside it. The lockup grew
+   ~15px; I calculated that it fits, but I estimated the Archivo link widths rather than measuring
+   them, so that one is arithmetic rather than measurement.

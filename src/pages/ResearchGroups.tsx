@@ -100,7 +100,7 @@ export function ResearchGroups() {
           <h1 className="type-hero font-display max-w-3xl">
             Every Atlas research group.
           </h1>
-          <p className="mt-6 max-w-2xl type-body text-muted">
+          <p className="mt-8 max-w-2xl type-body text-muted">
             Groups open to new members are marked Recruiting.
           </p>
         </div>

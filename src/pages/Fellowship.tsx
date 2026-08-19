@@ -261,7 +261,7 @@ export function Fellowship() {
         <div className="mx-auto max-w-2xl px-6 py-12 md:py-16">
           <p className="meta-label">Next cohort</p>
           <h2 className="type-section font-display mt-4">{DATES.waitlist}</h2>
-          <p className="mt-4 text-[15px] text-muted leading-relaxed">
+          <p className="mt-6 text-[15px] text-muted leading-relaxed">
             {DATES.nextCycle}. Joining the waitlist is not an application and
             does not affect selection. It means you hear when the next cycle
             opens.

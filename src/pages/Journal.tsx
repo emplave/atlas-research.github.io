@@ -72,7 +72,7 @@ export function Journal() {
           </span>
         </div>
 
-        <p className="mt-4 max-w-2xl text-[15px] text-muted leading-relaxed">
+        <p className="mt-6 max-w-2xl text-[15px] text-muted leading-relaxed">
           These are founding contributions from the Atlas team, published while
           the first open call for submissions is underway. They have not been
           through external peer review, and nothing in this track should be

@@ -106,7 +106,7 @@ function EventSection({
       <div className="mx-auto max-w-5xl px-6 py-12 md:py-14">
         <h2 className="type-section font-display">{title}</h2>
         {note && (
-          <p className="mt-3 max-w-xl text-[15px] text-muted leading-relaxed">
+          <p className="mt-5 max-w-xl text-[15px] text-muted leading-relaxed">
             {note}
           </p>
         )}
