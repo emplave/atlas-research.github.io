@@ -30,7 +30,7 @@ export function Hero() {
             </h1>
 
             <p className="mt-8 max-w-xl type-body text-muted">
-              You pick the question, recruit three to ten members, and finish a
+              You pick the question, recruit three or more members, and finish a
               paper in one term.
             </p>
 

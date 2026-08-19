@@ -1,7 +1,7 @@
 {
   "name": "Atlas Research Institute",
   "short_name": "Atlas",
-  "description": "Atlas runs student research groups in eight fields. Three to ten students, one research question, one term. Free, and open worldwide.",
+  "description": "Atlas runs student research groups in eight fields. Three or more students, one research question, one term. Free, and open worldwide.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#FFFFFF",

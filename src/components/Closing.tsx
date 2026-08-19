@@ -18,7 +18,7 @@ export function Closing() {
           Start a research group this term.
         </h2>
         <p className="mt-5 text-lg text-paper/75 leading-relaxed">
-          Pick a question, recruit three to ten members, and submit the finished
+          Pick a question, recruit three or more members, and submit the finished
           paper for review.
         </p>
 

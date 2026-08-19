@@ -118,7 +118,7 @@ export function ResearchGroups() {
               No group here doing your question? Start one.
             </h2>
             <p className="mt-2 text-[15px] text-muted leading-relaxed">
-              You need three to ten members and one question. Atlas provides the
+              You need three or more members and one question. Atlas provides the
               rest.
             </p>
           </div>

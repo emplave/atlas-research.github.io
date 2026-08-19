@@ -38,7 +38,7 @@ export const SITE_NAME = "Atlas Research Institute";
  * the secondary programme and its applications are closed.
  */
 export const SITE_DESCRIPTION =
-  "Atlas runs student research groups in eight fields. Three to ten students, one research question, one term. Free, and open worldwide.";
+  "Atlas runs student research groups in eight fields. Three or more students, one research question, one term. Free, and open worldwide.";
 
 export type RouteSeo = {
   /** Rendered as "<title> | Atlas Research Institute". Omit for the home page. */
@@ -85,7 +85,7 @@ export const ROUTE_SEO: Record<string, RouteSeo> = {
   "/get-involved": {
     title: "Get Involved",
     description:
-      "Researchers can run a guest session, mentor a group, or review for the journal. Two ways in. Lead a research group in your field, or join the Atlas Student Team. Both open to high school and college students worldwide.",
+      "Two ways in. Lead a research group in your field, or join the Atlas Student Team. Both open to high school and college students worldwide.",
   },
   "/privacy": {
     title: "Privacy",

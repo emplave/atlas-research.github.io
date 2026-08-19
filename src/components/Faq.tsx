@@ -8,7 +8,7 @@
 const faqs = [
   {
     q: "What is a research group?",
-    a: "Three to ten students working one research question, run by a student lead. The lead recruits members, holds a weekly meeting, keeps the log, and is the contact point with Atlas.",
+    a: "Three or more students working one research question, run by a student lead. The lead recruits members, holds a weekly meeting, keeps the log, and is the contact point with Atlas.",
   },
   {
     q: "Who can start one?",

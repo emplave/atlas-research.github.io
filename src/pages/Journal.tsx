@@ -53,8 +53,8 @@ export function Journal() {
             */
             <p className="mt-6 max-w-2xl text-lg text-muted leading-relaxed">
               The Journal publishes student research that has completed peer
-              review. The first reviewed issue has not been published yet, so
-              what follows is how review actually works.
+              review. Below are the articles that have cleared it, and how review
+              works.
             </p>
           )}
         </div>
