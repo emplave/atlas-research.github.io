@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
 import {
+  audienceOnlyLabel,
   DATE_TBD_LABEL,
   formatEventWhen,
+  isAudienceRestricted,
   isRegistrationPending,
   pastEvents,
   undatedEvents,
@@ -128,6 +130,7 @@ function EventSection({
  */
 function EventRow({ event, past = false }: { event: AtlasEvent; past?: boolean }) {
   const pending = isRegistrationPending(event);
+  const restricted = isAudienceRestricted(event);
 
   return (
     <li className="card-hover rounded-card border border-line bg-surface p-6">
@@ -136,6 +139,14 @@ function EventRow({ event, past = false }: { event: AtlasEvent; past?: boolean }
           <div className="flex flex-wrap items-center gap-3">
             <span className="meta-label">{event.kind}</span>
             <span className="meta-label">{formatEventWhen(event)}</span>
+            {/*
+              Audience shown here, not only on the detail page. This list is
+              where the registration control is most prominent, so a reader who
+              cannot attend needs to see that before they click, not after.
+            */}
+            {event.audience && (
+              <span className="meta-label text-ink">{event.audience}</span>
+            )}
           </div>
 
           <h3 className="mt-3 type-card font-display leading-snug">
@@ -180,17 +191,34 @@ function EventRow({ event, past = false }: { event: AtlasEvent; past?: boolean }
                 </a>
               </div>
             )
-          : !pending && (
+          : /*
+              RESTRICTED WINS OVER A LIVE LINK. A Fellows-only session may still
+              carry a RegistrationUrl, and offering it to a general visitor sends
+              them to a form they cannot use — so the closed label replaces the
+              button rather than sitting next to it.
+            */
+            restricted ? (
               <div className="shrink-0">
-                <a
-                  href={event.registrationUrl as string}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex rounded-control bg-ink text-paper px-4 py-2 text-sm hover:bg-ink-hover transition-colors"
+                <span
+                  aria-disabled="true"
+                  className="inline-flex rounded-control border border-line px-4 py-2 text-sm text-muted cursor-not-allowed"
                 >
-                  Register
-                </a>
+                  {audienceOnlyLabel(event)}
+                </span>
               </div>
+            ) : (
+              !pending && (
+                <div className="shrink-0">
+                  <a
+                    href={event.registrationUrl as string}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex rounded-control bg-ink text-paper px-4 py-2 text-sm hover:bg-ink-hover transition-colors"
+                  >
+                    Register
+                  </a>
+                </div>
+              )
             )}
       </div>
     </li>

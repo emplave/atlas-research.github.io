@@ -1,10 +1,12 @@
 import { Link, useParams } from "react-router-dom";
 import {
+  audienceOnlyLabel,
   DATE_TBD_LABEL,
   effectiveEventStatus,
   findEvent,
   formatEventDate,
   hasDate,
+  isAudienceRestricted,
   isRegistrationPending,
   type AtlasEvent,
 } from "@/data/events";
@@ -32,6 +34,7 @@ export function EventDetail() {
 function Detail({ event }: { event: AtlasEvent }) {
   const isPastEvent = effectiveEventStatus(event) === "past";
   const registrationPending = isRegistrationPending(event);
+  const restricted = isAudienceRestricted(event);
   const dated = hasDate(event);
 
   // Clock line, assembled so a missing endTime or timezone leaves no stray
@@ -138,7 +141,20 @@ function Detail({ event }: { event: AtlasEvent }) {
               )
             ) : (
               <>
-                {registrationPending ? (
+                {/*
+                  RESTRICTED IS CHECKED FIRST, before the pending state and
+                  before any live link. A closed session may still carry a
+                  RegistrationUrl and a JoinUrl; handing either to a general
+                  visitor is worse than telling them it is not for them.
+                */}
+                {restricted ? (
+                  <span
+                    aria-disabled="true"
+                    className="block text-center rounded-control border border-line px-4 py-2.5 text-sm text-muted cursor-not-allowed"
+                  >
+                    {audienceOnlyLabel(event)}
+                  </span>
+                ) : registrationPending ? (
                   <span
                     aria-disabled="true"
                     className="block text-center rounded-control border border-line px-4 py-2.5 text-sm text-muted cursor-not-allowed"
@@ -156,7 +172,8 @@ function Detail({ event }: { event: AtlasEvent }) {
                   </a>
                 )}
 
-                {event.joinUrl && (
+                {/* The meeting link is suppressed on a restricted event too. */}
+                {!restricted && event.joinUrl && (
                   <a
                     href={event.joinUrl}
                     target="_blank"

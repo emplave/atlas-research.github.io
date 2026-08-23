@@ -24,7 +24,8 @@
  *                including blank, hides it.
  *   Slug         Blank derives one from Title. Collisions get a numeric suffix
  *                and a console warning.
- *   Kind         webinar | guest session | workshop | deadline | info session
+ *   Kind         webinar | guest session | workshop | lesson | deadline |
+ *                info session
  *   DateStatus   confirmed | tbd. Blank counts as confirmed.
  *   Date         YYYY-MM-DD. REQUIRED when DateStatus is confirmed. May be
  *                blank when DateStatus is tbd — that is valid, not an error.
@@ -65,10 +66,12 @@ import {
 export const EVENTS_CSV_URL: string | null =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vQz8CTA0Pnp8eBsg56shVfGLfbyi8_lr4TPedWI1QBCjLSQX1TTFoPWgtJk1MaSwMaa83V-ne-kq-Kc/pub?gid=953737550&single=true&output=csv";
 
+/** Must stay in step with the EventKind union in src/data/events.ts. */
 const KINDS: readonly EventKind[] = [
   "webinar",
   "guest session",
   "workshop",
+  "lesson",
   "deadline",
   "info session",
 ];

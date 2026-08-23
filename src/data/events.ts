@@ -13,10 +13,21 @@
  * against the unions below and skips rows that do not match.
  */
 
+/**
+ * The kinds an event may be.
+ *
+ * THIS IS AN ALLOW-LIST TO CATCH TYPOS, NOT TO RESTRICT VOCABULARY. A misspelled
+ * Kind in the Sheet skips the row with a console warning, which is the whole
+ * value: without it "webinarr" would publish silently and be found by noticing it
+ * on the site. Adding a genuinely new kind is a two-line change — this union and
+ * KINDS in src/lib/eventsSource.ts — and needs nothing else, because `kind`
+ * renders as a free label in every view with no per-kind styling or copy.
+ */
 export type EventKind =
   | "webinar"
   | "guest session"
   | "workshop"
+  | "lesson"
   | "deadline"
   | "info session";
 
@@ -115,6 +126,64 @@ export function effectiveEventStatus(
 /** True when the registration control must render disabled. */
 export function isRegistrationPending(event: AtlasEvent): boolean {
   return !event.registrationUrl;
+}
+
+/* ------------------------------------------------------------------------- */
+/* Audience                                                                   */
+/* ------------------------------------------------------------------------- */
+
+/**
+ * Phrases in an Audience cell that mean "a stranger may attend".
+ *
+ * DELIBERATELY NOT A VOCABULARY SYSTEM. Audience is free text in the Sheet and
+ * stays that way; this is a small list of open-access signals, and everything
+ * else is treated as closed. Erring closed is the safe direction — describing an
+ * open event as restricted disappoints one reader, while showing a live Register
+ * button for a Fellows-only session sends a stranger to a form or a meeting link
+ * they cannot use.
+ *
+ * "open" ALONE IS NOT IN HERE, on purpose. "Open to research groups" contains it
+ * and is not open access, so matching a bare "open" would invert the rule on
+ * exactly the values it matters for.
+ */
+const OPEN_ACCESS_SIGNALS = [
+  "public",
+  "anyone",
+  "everyone",
+  "all welcome",
+  "open to all",
+];
+
+/**
+ * True when the Audience names a closed group, so registration must not be
+ * offered to a general visitor.
+ *
+ * THE RULE, in full:
+ *   - Audience blank  → NOT restricted. No restriction was stated, so none is
+ *                       invented. This is what every event did before.
+ *   - Contains an open-access signal → NOT restricted.
+ *   - Anything else   → RESTRICTED.
+ *
+ * Compared lowercased, so "Fellows" and "FELLOWS" behave alike.
+ */
+export function isAudienceRestricted(event: AtlasEvent): boolean {
+  if (!event.audience) return false;
+  const value = event.audience.toLowerCase();
+  return !OPEN_ACCESS_SIGNALS.some((signal) => value.includes(signal));
+}
+
+/**
+ * The disabled control's text for a restricted event — "Fellows only".
+ *
+ * Built from the cell rather than from a lookup, so a new Audience value needs no
+ * code change. The cost is that a long cell makes a long label: "Groups with data
+ * already collected only" is a sentence on a button. That is an argument for a
+ * short controlled column in the Sheet, not for a mapping table here that would
+ * silently mislabel anything not in it.
+ */
+export function audienceOnlyLabel(event: AtlasEvent): string | null {
+  if (!isAudienceRestricted(event) || !event.audience) return null;
+  return `${event.audience.trim()} only`;
 }
 
 /* ------------------------------------------------------------------------- */

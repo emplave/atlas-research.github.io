@@ -62,7 +62,17 @@ export function EventsStrip() {
         */}
         <article className="on-ink card-hover rounded-card bg-ink p-7 md:p-8">
           <p className="meta-label">Next</p>
-          <p className="mt-3 meta-label">{formatEventWhen(next)}</p>
+          {/*
+            Audience sits with the date, not buried on the detail page. This
+            strip has no registration control, so the only thing it owes a
+            reader who cannot attend is saying so before they click through.
+          */}
+          <div className="mt-3 flex flex-wrap items-center gap-3">
+            <p className="meta-label">{formatEventWhen(next)}</p>
+            {next.audience && (
+              <p className="meta-label text-paper/70">{next.audience}</p>
+            )}
+          </div>
           <h3 className="mt-2.5 font-display text-2xl md:text-3xl leading-tight text-paper">
             <Link
               to={`/events/${next.slug}`}
@@ -93,7 +103,12 @@ export function EventsStrip() {
                 key={event.slug}
                 className="card-hover rounded-card border border-line bg-paper p-5"
               >
-                <p className="meta-label">{formatEventWhen(event)}</p>
+                <div className="flex flex-wrap items-center gap-3">
+                  <p className="meta-label">{formatEventWhen(event)}</p>
+                  {event.audience && (
+                    <p className="meta-label text-ink">{event.audience}</p>
+                  )}
+                </div>
                 <h3 className="mt-2 font-display text-lg leading-snug">
                   <Link
                     to={`/events/${event.slug}`}

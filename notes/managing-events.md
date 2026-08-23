@@ -62,7 +62,7 @@ else, including blank, keeps it hidden. Case does not matter.
 Required for the row to appear at all:
 
 - **Title**
-- **Kind** — `webinar`, `guest session`, `workshop`, `deadline`, or
+- **Kind** — `webinar`, `guest session`, `workshop`, `lesson`, `deadline`, or
   `info session`
 - **Description** — the short summary used on cards
 - **Date** — required only when **DateStatus** is `confirmed`. See below.
