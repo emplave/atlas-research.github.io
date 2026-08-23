@@ -264,7 +264,7 @@ There are **two different Google Forms**, and they are for different people.
 
 | Form | Who it is for | Where it is set |
 | --- | --- | --- |
-| **Research Group Application** | Someone who wants to **start** a group and lead it | `formUrl` on the Research Group Leader role in `src/data/openings.ts` |
+| **Research Group Application** | Someone who wants to **start** a group and lead it | `formUrl` on the Principal Researcher role in `src/data/openings.ts` |
 | **Member application** | Someone who wants to **join** an existing group | `src/lib/memberApplication.ts` |
 
 Every "Start a research group" button uses the first. Every "Apply to join" on a

@@ -6,7 +6,8 @@
  * edit the entry below — never a page.
  *
  * Two separate application pathways, never merged:
- *   category "chapter" — the student who runs a local Atlas research group.
+ *   category "chapter" — the Principal Researcher, the student who runs a
+ *                        local Atlas research group.
  *                        NOTE: the stored value and the "chapter-leader" slug
  *                        deliberately keep their original names. They are
  *                        internal identifiers, not display copy; the label
@@ -20,11 +21,17 @@ export type OpeningCategory = "chapter" | "team";
 
 /**
  * Display labels for the stored category values. Pages render THESE, never
- * the raw value — which is how the internal "chapter" identifier can stay
- * put while the site reads "Research Group" everywhere.
+ * the raw value — which is how the internal "chapter" identifier can stay put
+ * while the site reads "Principal Researcher" everywhere.
+ *
+ * THE LABEL AND THE ROLE TITLE ARE THE SAME STRING on the chapter pathway, and
+ * that is not an oversight: the pathway has exactly one opening, and naming the
+ * pathway anything other than the role invented a second name for one thing.
+ * /research-groups already calls this person the Principal Researcher, so the
+ * three now agree.
  */
 export const CATEGORY_LABEL: Record<OpeningCategory, string> = {
-  chapter: "Research Group",
+  chapter: "Principal Researcher",
   team: "Atlas Student Team",
 };
 
@@ -110,9 +117,9 @@ const TEAM_FORM_NOTE =
 export const OPENINGS: Opening[] = [
   {
     slug: "chapter-leader",
-    title: "Research Group Leader",
+    title: "Principal Researcher",
     category: "chapter",
-    area: "Research Group leadership",
+    area: "Research group leadership",
     status: "rolling",
     selectivity: null,
     commitment: null,
@@ -121,21 +128,30 @@ export const OPENINGS: Opening[] = [
     description:
       "You pick the question and recruit the members. Atlas gives you the structure, a mentor to check your work, and somewhere to submit it at the end. Groups run three or more members over one semester; three is a minimum, not a cap. You are responsible for whether it finishes.",
     responsibilities: [
-      "Find somewhere to meet, in person or online",
-      "Recruit members and tell them what you expect",
-      "Narrow the question until it is answerable",
-      "Run meetings and keep the log current",
+      "Recruit your members and pick your question",
+      "Run the meetings and keep the log current",
       "Check sources and citations before anything goes out",
-      "Tell Atlas early when something slips",
       "Submit the finished work for review",
     ],
-    lookingFor: [
-      "You finish things",
-      "You write clearly",
-      "You can run a group without controlling everyone in it",
-      "You take feedback without arguing",
-      "You say when you are behind instead of going quiet",
-    ],
+    /*
+     * EMPTY ON PURPOSE — the "What we look for" column is not shown for this
+     * role, and RoleCard drops the column when this array is empty.
+     *
+     * This is the highest-friction point in the funnel: it is the one page where
+     * a student decides whether to run a group at all. Seven responsibilities
+     * beside five criteria they had to measure themselves against read as a
+     * warning notice rather than an offer, and the criteria were the worse half —
+     * "You finish things", "You take feedback without arguing" — a list of ways
+     * to be found wanting, at the exact moment the reader is deciding.
+     *
+     * The four responsibilities that remain are the job. Do not add a fifth
+     * without removing one, and do not put the criteria back here.
+     *
+     * The five Atlas Student Team openings KEEP their lookingFor — those are
+     * applications to join a team that selects, where stated criteria are fair
+     * warning rather than a deterrent.
+     */
+    lookingFor: [],
     regions: null,
     deadline: null,
     formUrl: RESEARCH_GROUP_FORM_URL,
@@ -310,7 +326,7 @@ export const OPENINGS: Opening[] = [
   },
 ];
 
-/** Openings for the Research Group Leader pathway. Separate from the team pathway. */
+/** Openings for the Principal Researcher pathway. Separate from the team pathway. */
 export function researchGroupOpenings(): Opening[] {
   return OPENINGS.filter((o) => o.category === "chapter");
 }

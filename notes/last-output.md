@@ -1,142 +1,147 @@
-# Value props restructured; speaker headshots wired up
+# Principal Researcher rename; responsibilities trimmed
 
 Both done. `npx tsc --noEmit` clean, `npx vite build` clean.
 
 ---
 
-# ITEM 1 — Value props
+# ITEM 1 — Renamed to Principal Researcher
 
-## What was wrong
+## Every instance found, and what happened to it
 
-Both pages set the heading in `.type-card` (**19px**) against **15px** body in a two-column grid. That is a **1.27× type jump** with no rules and no anchor — so every element carried the same weight and the section read as a wall, exactly as you described. Two other problems compounded it:
+| File | Line | Was | Now |
+| --- | --- | --- | --- |
+| `src/data/openings.ts` | 113 | `title: "Research Group Leader"` | `title: "Principal Researcher"` |
+| `src/data/openings.ts` | 27 | `chapter: "Research Group"` *(category label)* | `chapter: "Principal Researcher"` |
+| `src/data/openings.ts` | 115 | `area: "Research Group leadership"` | `area: "Research group leadership"` |
+| `src/data/openings.ts` | 313 | comment: "the Research Group Leader pathway" | "the Principal Researcher pathway" |
+| `src/data/openings.ts` | 24 | doc comment: *the site reads "Research Group" everywhere* | rewritten — it named the old label |
+| `src/data/openings.ts` | 9 | doc: `category "chapter" — the student who runs a local group` | now names the role |
+| `src/lib/memberApplication.ts` | 8 | "the Research Group Leader opening in…" | "the Principal Researcher opening in…" |
+| `src/components/BringAtlasCta.tsx` | 26 | "read from the Research Group Leader opening" | "read from the Principal Researcher opening" |
+| `notes/managing-research-groups.md` | 267 | "`formUrl` on the Research Group Leader role" | "…on the Principal Researcher role" |
 
-- **Five items in two columns leaves an orphan.** The set was hard to count, and the fifth prop sat alone looking like an afterthought.
-- **The markup was duplicated.** Same data, two hand-written renderings, already diverging on gap and `max-width`. The data was shared and the presentation was not.
+**Zero occurrences of "Research Group Leader" remain anywhere in the repo.**
 
-## What I chose
-
-**A hairline-ruled ledger: one row per prop, heading in a fixed left column, body in a wider right column, rules above every row and one closing the set.** Four levers, contrast and structure only:
-
-| Lever | Change |
-| --- | --- |
-| **Size** | New `.type-prop` step, **22px → 28px** clamped. Against the same 15px body that is **1.87×**, up from 1.27×. This is the single biggest change. |
-| **Hairlines** | `border-t` on every row plus `border-b` on the list, so the five read as a bounded, countable set rather than text that stopped. |
-| **Asymmetric rows** | `md:grid-cols-[minmax(0,17rem)_minmax(0,1fr)]`, baseline-aligned. All five headings stack into **one vertical line** the eye can run down; two equal columns scattered them across four positions. |
-| **Rhythm** | `py-7 md:py-8` between rows, `gap-y-2` inside one — so a heading and its body couple as a unit and the units separate. |
-
-`.type-prop` deliberately sits between `.type-card` (19px) and `.type-section` (32px+), filling the gap in the existing scale rather than inventing an unrelated size. Verified in the built CSS:
+Confirmed live:
 
 ```
-.type-prop{font-size:clamp(1.375rem,2.2vw,1.75rem);line-height:1.15;letter-spacing:-.014em}
+CATEGORY_LABEL: {"chapter":"Principal Researcher","team":"Atlas Student Team"}
+
+/get-involved, Principal Researcher pathway:
+  heading (label) : Principal Researcher
+  card title      : Principal Researcher
+  area            : Research group leadership
+  slug (internal) : chapter-leader   <- unchanged on purpose
 ```
 
-**Also extracted to one component**, `src/components/ValuePropList.tsx`, used by both pages. That was not cosmetic: two copies of the most important section on the site is how it drifts, and it had already started.
+`/research-groups` already said Principal Researcher, so all three now agree.
 
-Monochrome throughout — `ink`, `muted`, `line`, `paper`. No icons, no illustration, no colour.
+## Two judgement calls
 
-## What I rejected, and why
+**`slug: "chapter-leader"` is unchanged.** It is an internal identifier, not display copy, and `openings.ts` documents that deliberately. Changing it would change the form's identity key for no reader-visible benefit. Same reasoning as the `category: "chapter"` value, which also stays.
 
-**Numbering the props 01–05 — rejected, and this is the interesting one.** It is the obvious move and it collides twice on the homepage:
+**`area` lowercased to "Research group leadership".** It never contained the role name, so it did not strictly need to change — but "Research Group" was capitalised as a proper-noun label to match the old category label, and that label is gone. It renders uppercased through `.meta-label`, so this is invisible on the page; it just stops the file implying a label that no longer exists.
 
-- The **marginal spine already numbers the sections** 01–06. The value props live inside section **01**.
-- **`ProcessTrack` in section 03 already numbers its five steps 01–05.**
+## One consequence you should decide on
 
-A third 01–05 sequence would make "03" mean three different things depending on which column of the page you are reading, and two five-item numbered lists on one page look like the same list rendered twice. The hairlines do the counting job without competing. I left a `numbered?: never` prop on the component purely to carry that reasoning, so the next person reaches for it and finds the explanation instead of adding it.
+**The pathway heading and the card title are now the same string.** On `/get-involved` the chapter pathway renders:
 
-**An ink band — rejected.** `Landing.tsx` documents the rule: three dark surfaces, spaced so no two are adjacent. Section 01 is immediately above `EventsStrip`, whose "Next" card is ink. A full ink band there would stack two dark masses, and the statement panel two sections later is the third. It would also have to differ between the two pages (on `/research-groups` section 04 is already ink), which breaks the shared component.
+```
+Principal Researcher          ← RoleGroup heading, from CATEGORY_LABEL.chapter
+  ┌────────────────────────
+  │ Principal Researcher     ← the card's own title
+  │ RESEARCH GROUP LEADERSHIP
+```
 
-**Cards or bordered boxes — rejected.** Five boxes give every prop an identical frame, which is the same "everything weighs the same" failure in a heavier form. Rules separate without framing.
+You asked for the category label renamed, so I renamed it — but with exactly one opening in that pathway, the words appear twice in a row. I noted in the code that this is intentional rather than an oversight, since the alternative was inventing a second name for one thing.
 
-**Keeping two columns with a bigger heading — rejected.** At 28px the headings would wrap awkwardly in a half-width column, and the orphan fifth item remains.
+If it reads badly, the cleanest fix is to **drop the heading when a pathway has one opening whose title matches the label** — a two-line change in `RoleGroup`. I did not do it because it changes layout you did not ask me to touch. The other option is a distinct pathway name ("Lead a group", "Start a group"), which reintroduces the second name.
 
 ---
 
-# ITEM 2 — Speaker headshots
+# ITEM 2 — Responsibilities trimmed, criteria removed
 
-The `ImageSrc` / `ImageAlt` columns were **already parsed** into `event.image` and never rendered by anything. This is the first thing that uses them. The field's comment described it as a "16:9 image", which was the original spec and wrong for a portrait — corrected.
-
-## The rendering rule
-
-**Three cells must all be filled for anything to appear: `ImageSrc`, `ImageAlt`, and `SpeakerName`.**
+## The four responsibilities, exactly as specified
 
 ```
-image + speaker      -> portrait SHOWN
-image, NO speaker    -> nothing rendered (no placeholder)
-NO image, speaker    -> nothing rendered (no placeholder)
-neither              -> nothing rendered (no placeholder)
+Recruit your members and pick your question
+Run the meetings and keep the log current
+Check sources and citations before anything goes out
+Submit the finished work for review
 ```
 
-`SpeakerName` is part of the condition because this is a *speaker* portrait — a face on a card with no name attached is worse than no face. Flagging it as my call: it means a filled `ImageSrc` can render nothing, which is why it is documented in three places.
+Down from seven. The three dropped were "Find somewhere to meet, in person or online", "Narrow the question until it is answerable", and "Tell Atlas early when something slips".
 
-**No placeholder, ever.** No initials, no silhouette, no grey circle. The component returns `null` and the speaker's name renders exactly as it does today, so the card is not missing a slot — there was never a slot. All three live events have an empty `ImageSrc`, so the no-image case is the common one and is the one that had to look right:
+## "What we look for" removed — scoped to this role only
+
+`lookingFor` is now `[]` on the Principal Researcher opening. The five removed criteria were:
 
 ```
-stanford-webinar-pope      image=null  speaker=set  -> portrait not rendered
-stanford-webinar-levine    image=null  speaker=set  -> portrait not rendered
-berkeley-lesson-fuller     image=null  speaker=set  -> portrait not rendered
+You finish things
+You write clearly
+You can run a group without controlling everyone in it
+You take feedback without arguing
+You say when you are behind instead of going quiet
 ```
 
-Small and secondary by construction: round, on the speaker's name line, never above or beside the title. `width`/`height` attributes are set as well as classes so the box is reserved before the file loads and the card does not reflow.
+**The five Atlas Student Team openings keep theirs**, verified:
 
-| View | Size |
-| --- | --- |
-| Homepage strip, small cards | 36px |
-| `/events` list cards | 44px |
-| Homepage strip, "Next" card | 56px |
-| `/events/:slug` header | 64px |
+```
+Regional Youth Director    resp=5  lookingFor=5 -> two columns
+Logistics Analyst Intern   resp=5  lookingFor=4 -> two columns
+Marketing Associate        resp=4  lookingFor=4 -> two columns
+Social Media Manager       resp=5  lookingFor=4 -> two columns
+Youth Research TA          resp=5  lookingFor=4 -> two columns
+```
 
-One shared component, `src/components/SpeakerPortrait.tsx`, so the three views cannot drift.
+That scoping is deliberate and I recorded the reasoning in the data file: those are applications to join a team that selects, where stated criteria are fair warning. This one is a student deciding whether to run a group at all, and a list of ways to be found wanting at that moment reads as a warning notice rather than an offer.
 
-## Dimensions to request from speakers
+## The layout adapts rather than being hardcoded
 
-> **Square, 400×400 pixels minimum. 800×800 is ideal.** Head and shoulders, face roughly centred. JPG or PNG.
+`RoleCard` was `grid gap-6 md:grid-cols-2` with both lists unconditionally. It now drops the second column **and** collapses to a single column when `lookingFor` is empty:
 
-Reasoning: the largest render is 64px, so at 3× device pixel ratio that is 192px — 400×400 covers it with room, and 800×800 survives a larger treatment later without re-collecting photos.
+```tsx
+<div className={cn("mt-6 grid gap-6", opening.lookingFor.length > 0 && "md:grid-cols-2")}>
+  <BulletList title="Responsibilities" items={opening.responsibilities} />
+  {opening.lookingFor.length > 0 && (
+    <BulletList title="What we look for" items={opening.lookingFor} />
+  )}
+</div>
+```
 
-**Square matters more than the pixel count.** It is displayed in a circle, and `object-cover` centre-crops a non-square file rather than squashing it — so a landscape photo loses its sides, usually including part of the head. A speaker sending a wide group photo will get a crop of their shoulder.
+Both halves matter. Hiding the list alone would have left the responsibilities in a half-width column with dead space beside them; collapsing the grid alone would have left an empty "What we look for" heading. Driving it off `lookingFor.length` rather than off the slug means the next role that omits criteria gets the same treatment for free.
 
-`ImageAlt` should be the person's name, e.g. `Dr Jane Fuller` — not "headshot of…", since a screen reader already announces it as an image.
+## Kept, as instructed
 
-Written up for operators in `notes/managing-events.md` under a new "Speaker headshots" section, and in the column notes at the top of `eventsSource.ts`.
+- **The summary paragraph**, verbatim: *"You pick the question and recruit the members. Atlas gives you the structure, a mentor to check your work, and somewhere to submit it at the end. Groups run three or more members over one semester; three is a minimum, not a cap. You are responsible for whether it finishes."*
+- **The deadline** — `null`, so it renders "Rolling", along with the Rolling status chip.
+- `selectivity` and `commitment` are both `null` on this role and were already omitted from the card.
 
 ---
 
 ## Files changed
 
 ```
-A  src/components/ValuePropList.tsx        the ledger, shared by both pages
-A  src/components/SpeakerPortrait.tsx      the portrait, shared by three views
-M  src/index.css                           .type-prop scale step
-M  src/components/home/ResearchGroupsPitch.tsx   uses ValuePropList
-M  src/pages/ResearchGroups.tsx            uses ValuePropList
-M  src/data/events.ts                      image field comment corrected
-M  src/pages/Events.tsx                    portrait on list cards
-M  src/pages/EventDetail.tsx               portrait in the header
-M  src/components/home/EventsStrip.tsx     portrait on next + small cards
-M  src/lib/eventsSource.ts                 image column notes
-M  notes/managing-events.md                headshot section for operators
+M  src/data/openings.ts                title, category label, area, 4 responsibilities,
+                                       lookingFor emptied, three comments
+M  src/pages/GetInvolved.tsx           RoleCard adapts to one column; cn imported
+M  src/lib/memberApplication.ts        comment
+M  src/components/BringAtlasCta.tsx    comment
+M  notes/managing-research-groups.md   form-routing table
 ```
 
 ## Verification
 
 ```
 npx tsc --noEmit   clean, no errors
-npx vite build     ✓ built in 701ms
+npx vite build     ✓ built in 724ms
                    dist/index.html                   5.82 kB │ gzip:  2.23 kB
                    dist/assets/index-lZLwxEDb.css   26.52 kB │ gzip:  6.07 kB
-                   dist/assets/index-BiDKE3gT.js   337.36 kB │ gzip: 106.48 kB
+                   dist/assets/index-yN4Vdclv.js   337.10 kB │ gzip: 106.40 kB
 ```
 
-`.type-prop` confirmed present in the built CSS. Portrait rule asserted across all four input combinations plus the three live events.
+Ran the openings data through its own selectors to confirm the rename, the four responsibilities, the single-column path, and that the team pathway is untouched.
 
 ## Not verified
 
-The rendered pages — I cannot drive a browser, so the visual claims rest on the type maths and the markup.
-
-Three things worth your eye before you consider item 1 settled, since it is a deliberate visual change:
-
-- **The 17rem heading column at tablet width.** "A research framework and curriculum." is the longest heading; check it does not wrap to three lines just above the `md` breakpoint.
-- **Baseline alignment** between heading and body on the first row of each — `md:items-baseline` aligns the first lines, which is right when the body is one or two lines and can look loose on the longest one.
-- **Whether 28px is enough.** I chose the conservative end of the range deliberately: the next step up is `.type-section` at 32px+, which would compete with the section heading directly above it. If it still reads flat, the fix is more vertical space per row rather than more size.
-
-I also have not seen a real headshot in place — no live event has one, so the portrait path is verified by rule and by build, not by looking at a photo in a circle.
+The rendered page. Two things worth a look: the doubled "Principal Researcher" heading described above, and the single-column responsibilities block at desktop width, where four short items now sit in a full-width column and may want a `max-w` to stop the lines running long.

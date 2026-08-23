@@ -8,6 +8,7 @@ import {
 } from "@/data/openings";
 import { CONTACT_EMAIL } from "@/lib/dates";
 import { HatchDivider } from "@/components/visuals/HatchDivider";
+import { cn } from "@/lib/utils";
 
 /**
  * Get Involved — the front door for anyone who is not starting a research
@@ -252,9 +253,22 @@ function RoleCard({ opening }: { opening: Opening }) {
         </div>
       )}
 
-      <div className="mt-6 grid gap-6 md:grid-cols-2">
+      {/*
+        ONE COLUMN OR TWO, depending on whether the role states criteria. An
+        empty lookingFor drops the second column rather than rendering an empty
+        heading, and the grid collapses to one column so the responsibilities do
+        not sit in a half-width gutter with dead space beside them.
+      */}
+      <div
+        className={cn(
+          "mt-6 grid gap-6",
+          opening.lookingFor.length > 0 && "md:grid-cols-2"
+        )}
+      >
         <BulletList title="Responsibilities" items={opening.responsibilities} />
-        <BulletList title="What we look for" items={opening.lookingFor} />
+        {opening.lookingFor.length > 0 && (
+          <BulletList title="What we look for" items={opening.lookingFor} />
+        )}
       </div>
 
       <div className="mt-7 pt-5 border-t border-line flex flex-wrap items-center gap-4">

@@ -23,7 +23,7 @@ import { cn } from "@/lib/utils";
  * so a "browse groups" button next to this one sent readers to a page that could
  * not act on their intent.
  *
- * The link is always read from the Research Group Leader opening, never
+ * The link is always read from the Principal Researcher opening, never
  * hardcoded, so closing the form closes every entry point at once. When the form
  * has no URL this renders a disabled control rather than a dead link.
  */

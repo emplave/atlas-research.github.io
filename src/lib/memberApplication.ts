@@ -5,7 +5,7 @@
  * THERE ARE TWO SEPARATE FORMS ON THIS SITE. Do not confuse them:
  *
  *   JOIN a specific group   → this file. Prefilled with the group's title.
- *   START a research group   → the Research Group Leader opening in
+ *   START a research group   → the Principal Researcher opening in
  *                              src/data/openings.ts (`formUrl`).
  *
  * A card or brief that shows "Apply to join" must use this module. Anything
