@@ -38,7 +38,7 @@ export const SITE_NAME = "Atlas Research Institute";
  * the secondary programme and its applications are closed.
  */
 export const SITE_DESCRIPTION =
-  "Atlas runs student research groups in eight fields. Three or more students, one research question, one term. Free, and open worldwide.";
+  "Atlas runs student research groups in eight fields. Three or more students, one research question, one semester. Free, and open worldwide.";
 
 export type RouteSeo = {
   /** Rendered as "<title> | Atlas Research Institute". Omit for the home page. */

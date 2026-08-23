@@ -1,138 +1,191 @@
-# Homepage and research groups rewrite
+# Purge placeholder groups, align semester, delete dead components
 
-All nine items done. `npx tsc --noEmit` clean, `npx vite build` clean. 15 files, +441/−398.
+All three done. `npx tsc --noEmit` clean, `npx vite build` clean. 7 files, 3 deleted.
 
----
-
-## Files changed
-
-| File | What |
-| --- | --- |
-| `src/components/BringAtlasCta.tsx` | **new** — the one sitewide CTA, plus `CostLine` |
-| `src/data/value-props.ts` | **new** — the five value props and the five requirements, shared |
-| `src/components/home/ResearchGroupsPitch.tsx` | **new** — homepage section 01, replaces the listing |
-| `src/components/home/FeaturedGroups.tsx` | **deleted** — it listed the placeholder cards |
-| `src/pages/ResearchGroups.tsx` | rebuilt into the four founder sections (−334/+ the new page) |
-| `src/components/Hero.tsx` | cost line, single CTA, new copy |
-| `src/components/Closing.tsx` | single CTA, new copy |
-| `src/components/home/EventsStrip.tsx` | promoted (item 9) |
-| `src/components/ReachGlobe.tsx` | globe caption scoped to the Fellowship |
-| `src/data/reach.ts` | added `FELLOW_COUNT` |
-| `src/pages/Landing.tsx` | rewired section 01, documented the new order |
-| `src/pages/Fellowship.tsx` | cross-link no longer says "Browse" |
-| `src/data/openings.ts` | group-size copy aligned |
-| `src/lib/seo.ts` | `/research-groups` meta rewritten — it described a directory |
-| `src/lib/memberApplication.ts` | comment updated; notes the join path now has no UI entry |
+**Read the first section below before treating item 1 as closed.** The fabricated
+briefs you were worried about are not all gone, and the ones that remain are not in the code.
 
 ---
 
-## 1–2. Listings and secondary CTAs removed
+## ⚠ The two COMPLETED briefs are still live — they come from the Sheet, not the code
 
-The group grid is gone from the homepage and from `/research-groups`. **No empty grid, no "no groups yet"** — an empty state still advertises absence. `FeaturedGroups.tsx` is deleted rather than emptied, because a component named FeaturedGroups that features nothing is a trap for the next reader.
+I purged the six placeholder records from `src/data/research-groups.ts`, which is what you asked
+for. But I then checked what actually resolves at `/research-groups/:slug` through the real runtime
+path, and the two COMPLETED briefs are still there. They were never in the code:
 
-Also gone: "Browse research groups" from the hero, "See all research groups" from the section header, and the same button from the closing band. One primary CTA sitewide now, implemented once.
+```
+LIVE SHEET groups that still render full briefs:
+  /research-groups/transit-reliability
+      title  : Bus Reliability and Late Arrivals in a Commuter Corridor
+      status : Completed
+      lead   : Rithik Ramkumar
+  /research-groups/market-vendor-costs
+      title  : Input Costs and Pricing Among Open-Air Market Vendors
+      status : Completed
+      lead   : Nirav Goenka
+```
 
-## 3. CTA copy
+The purged fallback records had the *same two titles* with a `Placeholder:` prefix and
+`Placeholder Lead` as the lead name — the fallback was modelled on these rows. So purging the code
+removed the imitations and left the originals.
 
-"Start a research group" → **"Bring Atlas to your school"**, in all four places it appeared. Same link (the Research Group Leader opening's `formUrl`, never hardcoded), same not-yet-open behaviour.
+**These two may well be real groups**, not fabrications: they carry real-looking lead names, no
+`Placeholder:` prefix, and one of them names the same person as the partnerships contact. I am not
+going to guess, and I have not touched your Sheet.
 
-I extracted it into `BringAtlasCta` rather than editing four anchors. The four copies had already drifted — different padding, different disabled text ("Applications opening soon" vs "Opening soon"), one with an arrow. One component means the next copy change is one edit.
+- **If they are real**, nothing more is needed. They are two genuine completed groups with no listing
+  pointing at them, reachable by URL only.
+- **If they are placeholders**, set `Published` to anything other than `yes` on those two rows, or
+  delete the rows. No deploy needed — the site reads the Sheet at runtime.
 
-## 4. Cost line
+Either way this is a Sheet edit, not a code change, which is why item 1 could not fully close it.
 
-> **Free.** No application fee, no tuition, no cost to your school.
+## 1. Placeholder records purged
 
-Directly under the hero subhead, above the button. Also on `/research-groups` in the header, and on the homepage section 01 above its CTA.
+Six records removed from `RESEARCH_GROUPS` in `src/data/research-groups.ts`, not just the two
+COMPLETED ones — all of them were invented:
 
-I did **not** put the $3,900–$6,650 comparison on the page. That is an unsourced claim about named competitors and the site has a standing rule against exactly that. The figures are recorded in the component's comment as the *reason* the line sits high, which is where they belong.
+```
+placeholder-transit-reliability     placeholder-model-card-review
+placeholder-clinic-wait-times       placeholder-market-vendor-costs
+placeholder-river-turbidity         placeholder-oral-history-archive
+```
 
-## 5. `/research-groups` rebuilt as four sections
+`export const RESEARCH_GROUPS: ResearchGroup[] = [];` — the array is now empty. 11,432 characters
+of invented abstracts, methods, milestones and lead names gone; the file dropped from 408 to 237 lines.
 
-Header (cost line) → **01 What you get** → **02 What running a group actually involves** → **03 You run it** → **04 the CTA**, in that order, with the founder's four questions written into the file's doc comment so the order does not get "tidied" later.
+The doc comment above it argued the *opposite* of this change — that a populated fallback was worth
+keeping so an unreachable Sheet "degrades to a populated directory instead of a blank page". That
+reasoning died with the directory, so I rewrote it rather than leaving a comment that contradicts the
+code. It now records why the records were removed and warns that anything added back here is live
+content served whenever the Sheet is unreachable.
 
-All copy verbatim as supplied. Section 04 is an ink band with the single CTA and "Takes about two minutes."
+`PLACEHOLDER_VALUES` in the same file is untouched — that is the `N/A`/`TBD` cell-cleaning token set,
+unrelated to these records.
 
-Removed with the directory: the filters, the `?field=` handler, the no-results empty state, and **both** bottom CTA blocks ("No group here doing your question? Start one." and "Nothing here fits? Start your own.") — three competing CTAs on one page.
+### The route and component are intact, and unknown slugs are handled
 
-## 6. Homepage condensed version
+`/research-groups/:slug` and `ResearchGroupBrief` are unchanged in behaviour. Verified by exercising
+the real path — `loadResearchGroups()` against the live Sheet, then the exact
+`groups.find(g => g.slug === slug)` the component runs:
 
-Section 01 carries the five value props, the cost line, and the CTA. **Sections two and three are not duplicated** — the commitment and the title live only on `/research-groups`.
+```
+RESEARCH_GROUPS (fallback) length: 0
+loadResearchGroups() returned:    2 records   (from the Sheet)
 
-Value props come from `src/data/value-props.ts`, imported by both, so the two cannot drift.
+placeholder-transit-reliability    -> undefined -> BriefNotFound
+placeholder-clinic-wait-times      -> undefined -> BriefNotFound
+placeholder-river-turbidity        -> undefined -> BriefNotFound
+placeholder-model-card-review      -> undefined -> BriefNotFound
+placeholder-market-vendor-costs    -> undefined -> BriefNotFound
+placeholder-oral-history-archive   -> undefined -> BriefNotFound
+totally-made-up-slug               -> undefined -> BriefNotFound
+""                                 -> undefined -> BriefNotFound
+```
 
-## 7. Group size copy — every instance found
+**Graceful: a not-found page, not a crash and not a blank page.** `BriefNotFound` renders a heading,
+an explanation, and a link back to `/research-groups`. It was already correct
+because the component's happy path is `find()` → `undefined`, and an empty array takes the same
+branch as a wrong slug. No guard needed; the empty case is not special.
 
-The `three to ten` → `three or more` standardisation had already landed in an earlier commit; this pass verified it and fixed the one remaining awkward phrasing.
+Three copy fixes there, since the page it links back to no longer browses anything: "All research
+groups" → "Research groups", "Browse all research groups" → "How research groups work", and "the
+group may have been archived" → "Atlas is not currently listing groups publicly". I also documented
+in the component that **unknown slugs are now the normal case**, and that it is the only remaining
+consumer of the group data.
 
-**Every instance, current state:**
+## 2. "one term" → "one semester"
 
-| File | Line | Text |
+Six instances, all replaced:
+
+| File | Line | Field |
 | --- | --- | --- |
-| `src/components/Hero.tsx` | 37 | "recruit three or more members" |
-| `src/components/Closing.tsx` | 20 | "recruit three or more members" |
-| `src/pages/ResearchGroups.tsx` | 46 | "recruit three or more members" |
-| `src/data/value-props.ts` | 60 | "Three or more members. That is the minimum. There is no maximum." |
-| `src/components/Faq.tsx` | 11 | "Three or more students working one research question" |
-| `src/data/openings.ts` | 122 | **changed** — was "Most groups run three or more people over one term", now "Groups run three or more members over one semester; three is a minimum, not a cap." |
-| `src/lib/seo.ts` | 41, 63 | "Three or more students" |
-| `index.html` | 17, 32, 41, 105 | "Three or more students" (meta, og, twitter, JSON-LD) |
-| `public/site.webmanifest` | 4 | "Three or more students" |
-| `public/llms.txt` | 3, 30 | "three or more students" / "three or more members" |
+| `index.html` | 17 | `<meta name="description">` |
+| `index.html` | 32 | `og:description` |
+| `index.html` | 41 | `twitter:description` |
+| `index.html` | 105 | JSON-LD `description` |
+| `public/site.webmanifest` | 4 | `description` |
+| `src/lib/seo.ts` | 41 | `SITE_DESCRIPTION` |
 
-**No upper limit is stated anywhere.** The only remaining `three to ten` in the repo is inside a comment in `value-props.ts` explaining why it must never come back.
+Zero `one term` left anywhere in the repo. Verified in the built output: `dist/index.html` has four
+`one semester` and zero `one term`.
 
-Searched variants: `three or more`, `three to ten`, `3 to 10`, `3–10`, `3-10`, `ten members`, `ten students`, `ten people`, `up to ten`, `maximum`, `no maximum`, `at most`, `between three and ten`. The `3-10` hits were all the date `2025-03-10`.
+**One correction to my previous report:** I listed `public/llms.txt` as one of the six. It never
+contained the phrase — it has no `term`/`semester` language at all. The six were `index.html` ×4 plus
+the webmanifest and `seo.ts`. Nothing was missed; my earlier list was just wrong about which file.
 
-## 8. Globe caption
+## 3. Dead components deleted
 
-Now **"FELLOWSHIP: 25 FELLOWS IN 20 COUNTRIES"** (`.meta-label` uppercases it).
+Three files, four exported components:
 
-`20` is still derived from `REACH_COUNTRIES.length`, never typed. `25` could not be derived — that array holds one entry per country and several countries have more than one fellow — so it is a new `FELLOW_COUNT` constant in `reach.ts`, typed `number | null`, documented as the one hand-entered figure in that file. If it ever cannot be confirmed, set it to `null` and the caption falls back to countries alone rather than asserting an unchecked number.
+| File | Exports removed |
+| --- | --- |
+| `ResearchGroupCard.tsx` | `ResearchGroupCard` |
+| `GroupCardSkeleton.tsx` | `GroupCardSkeleton`, `GroupGridSkeleton` |
+| `DirectoryFilters.tsx` | `DirectoryFilters`, plus `ALL`, `EMPTY_FILTERS`, `isFiltered`, `DirectoryFilterState` |
 
-The `aria-label` uses the same string in sentence case; uppercase in an aria-label gets spelled out letter-by-letter by some screen readers.
+Confirmed no importer for any of them before deleting. The four `DirectoryFilters` helper exports
+went with it — they existed only to serve the filter state and had no other consumer.
 
-## 9. Events made more prominent — what and why
-
-**Position unchanged at 02.** I considered moving it to 01 and rejected it: items 1–6 exist to make the offer the first thing on the page, and demoting the offer to promote the evidence would undercut them.
-
-What I changed instead, in order of effect:
-
-1. **The "Next" card is now an ink card** on the surface section. It is the only visually heavy element in the upper half of the page besides the hero, so the section now reads as the anchor between the pitch and the process track rather than as filler.
-2. **Added an intro line** — "Groups hear directly from researchers, with live Q&A. Every session below is open to Atlas research groups." This reframes the section from a calendar into *evidence for value prop #3*, which is the actual argument it makes.
-3. **Sits directly under the pitch**, so the claim ("sessions with researchers") is immediately followed by the checkable version of it.
-
-**Why this section deserves the weight:** it is the only part of the homepage whose content a stranger can verify. A named researcher, a named institution, and a date are evidence; every other section is Atlas describing itself.
-
-**One consequence you should know:** `EventsStrip` returns `null` when nothing is upcoming. Now that it carries more of the page's credibility, an empty events Sheet silently removes the homepage's only evidence *and* leaves an ink-card-shaped hole in the layout rhythm. I documented that in the component. Keep at least one forthcoming session in the Sheet, dated or TBD.
-
-This is also the one change that touches the visual system: the ink card is a fourth dark surface on the page. It is a card inside a surface section, not a band, and the nearest ink *section* (the statement panel) is two sections further down, so the no-adjacent-ink-bands rule still holds. Easy to revert to `bg-paper` if you'd rather.
+`src/components/research-groups/` now contains only `StatusChip.tsx`, which the brief page still
+uses at line 102. `useResearchGroups` untouched, as instructed — still the brief page's data source.
 
 ---
 
-## Three things I did not do, that you should decide on
+## A wrong conclusion I reached and corrected
 
-**1. Fabricated group briefs are still reachable by URL.** Removing the listings means no card renders anywhere — but `/research-groups/placeholder-transit-reliability` and five siblings still render full fabricated briefs, including the two COMPLETED ones, via `ResearchGroupBrief`. They are not in the sitemap and nothing links to them, so they will not be indexed, but they are live to anyone with the URL. Options: purge the placeholder records from `src/data/research-groups.ts`, or drop the `/research-groups/:slug` route. Both are larger than this task and neither was asked for.
+Mid-task I fetched the three Sheet URLs with `curl` and got **HTTP 400 with an HTML error page from
+all three**. I was about to report that the site was serving fallback data everywhere, and that the
+homepage Events section — the one I made the most prominent element last turn — was rendering three
+events with literal `PLACEHOLDER:` titles from `src/data/events.ts`.
 
-**2. Four components are now dead code.** `ResearchGroupCard`, `GroupCardSkeleton`, `GroupGridSkeleton`, `DirectoryFilters` — nothing imports them (the one apparent reference is a comment). I left them because a directory plausibly returns and they represent real work. `useResearchGroups` is still live, used by the brief pages. Say the word and I'll delete them.
+**That was wrong.** Fetching through the app's own code path instead of curl, all three Sheets work:
 
-**3. "one term" vs "one semester" now disagree.** Your Section Two copy says "One semester to finish a paper", so I moved the hero and `/research-groups` to "one semester" to match. Six crawler-facing strings still say "one term": `index.html` ×4, `site.webmanifest`, `seo.ts:41`, plus `llms.txt`. I did not rewrite those — you didn't ask, and they are the strings Google and social previews read. One-line fix each if you want them aligned.
+```
+GROUPS  live: 2   (real Sheet rows, not the fallback)
+EVENTS  live: 2   is fallback? false
+   stanford-webinar-levine  "Guest session with Stanford researcher, Dr. Levine"
+   stanford-webinar-pope    "Guest session with Stanford researcher, Dr. Pope"
+PUBS    live: 1   is fallback? false
+```
 
----
+So the homepage Events section is showing two real Stanford guest sessions, which is exactly what
+that section is for. The curl 400 was an artefact of how I extracted the URL, not a broken Sheet.
+
+Recording it because the check that produced the false alarm — "does this render the fallback?" —
+is worth keeping, and because the fallback content for events and publications *is* still
+placeholder-titled, so the alarm would be real if a Sheet ever did go down. `src/data/events.ts`
+holds four `PLACEHOLDER:`-titled events and `src/data/publications.ts` one placeholder working paper.
+Not in scope here, and unlike the groups fallback they are a genuine safety net — but if you want
+those purged on the same reasoning, say so.
 
 ## Verification
 
 ```
 npx tsc --noEmit   clean, no errors
-npx vite build     ✓ built in 736ms
-                   dist/index.html                   5.80 kB │ gzip:  2.23 kB
-                   dist/assets/index-C-up8MqI.css   26.74 kB │ gzip:  6.10 kB
-                   dist/assets/index-RmqAk5Mc.js   349.58 kB │ gzip: 110.34 kB
+npx vite build     ✓ built in 591ms
+                   dist/index.html                   5.82 kB │ gzip:  2.23 kB
+                   dist/assets/index-DMpyM_Nr.css   25.97 kB │ gzip:  5.97 kB
+                   dist/assets/index-2FzWgZBq.js   339.85 kB │ gzip: 106.99 kB
 ```
 
-JS came down ~7kB — the removed directory, filters and card components outweigh what was added.
+JS down another ~10kB (349.58 → 339.85) and CSS down ~0.8kB from the three deleted components.
 
-Also checked: no `Start a research group`, `Browse research groups`, or `See all research groups` string remains in `src/` outside explanatory comments; the `/research-groups` meta description no longer promises a directory (149 chars, under the 155 limit).
+## Files changed
+
+```
+M  index.html                                        4 strings
+M  public/site.webmanifest                           1 string
+M  src/lib/seo.ts                                    1 string
+M  src/data/research-groups.ts                       6 records purged, comment rewritten
+M  src/pages/ResearchGroupBrief.tsx                  copy + unknown-slug contract
+D  src/components/research-groups/ResearchGroupCard.tsx
+D  src/components/research-groups/GroupCardSkeleton.tsx
+D  src/components/research-groups/DirectoryFilters.tsx
+```
 
 ## Not verified
 
-The rendered pages in a browser. Everything here is type-check, build, and reading the markup — I cannot drive a browser. Worth a look at two things specifically: the ink "Next" event card against its surface section, and the five value props in two columns at tablet width, where the fifth item wraps to a row of its own.
+The rendered pages in a browser. In particular `/research-groups/anything` returning the not-found
+page is confirmed at the data layer, not by loading it — worth one click to confirm the component
+renders as expected rather than erroring in React.

@@ -35,6 +35,18 @@ const REVIEW_LABEL: Record<ReviewStatus, string> = {
  * The 404 is only rendered AFTER the fetch resolves. Rendering it while the
  * request is outstanding would show "no research group at this address" for a
  * group that does exist.
+ *
+ * UNKNOWN SLUGS ARE THE NORMAL CASE NOW, not the exception. The placeholder
+ * groups were purged and the fallback array in src/data/research-groups.ts is
+ * empty, so until the Sheet carries real groups EVERY slug resolves to
+ * BriefNotFound — including the six placeholder-* URLs that used to render full
+ * invented briefs. That is the intended behaviour: a not-found page, never a
+ * blank one and never a crash. `groups` is simply an empty array and `.find()`
+ * returns undefined, which is already the path this component takes.
+ *
+ * THIS IS THE ONLY CONSUMER of the group data left. The directory, the cards and
+ * the homepage listing are all gone, so if this page stops resolving slugs
+ * nothing else will notice.
  */
 export function ResearchGroupBrief() {
   const { slug } = useParams<{ slug: string }>();
@@ -91,7 +103,7 @@ function Brief({ group }: { group: ResearchGroup }) {
             to="/research-groups"
             className="meta-label text-muted hover:text-ink transition-colors inline-flex items-center gap-1.5"
           >
-            <span aria-hidden>←</span> All research groups
+            <span aria-hidden>←</span> Research groups
           </Link>
 
           <div className="mt-7 flex flex-wrap items-center gap-3">
@@ -220,13 +232,14 @@ function BriefNotFound() {
           No research group at this address.
         </h1>
         <p className="mt-5 text-muted leading-relaxed">
-          The link may be out of date, or the group may have been archived.
+          The link may be out of date. Atlas is not currently listing groups
+          publicly.
         </p>
         <Link
           to="/research-groups"
           className="mt-8 inline-flex items-center gap-2 rounded-control bg-ink text-paper px-5 py-2.5 text-sm hover:bg-ink-hover transition-colors"
         >
-          Browse all research groups
+          How research groups work
           <span aria-hidden>→</span>
         </Link>
       </div>
