@@ -78,15 +78,33 @@ favicons do.
 
 To change the mark: edit `public/atlas-mark.svg`, run
 `node scripts/generate-icons.mjs`, then copy the new path into the `MARK`
-constant in `src/components/AtlasMark.tsx`. The generator writes
-`favicon-16x16.png`, `favicon-32x32.png`, `icon-192.png`, `icon-512.png` and
-`og.svg` from that one source, so they cannot drift from each other.
+constant in `src/components/AtlasMark.tsx`. The generator needs `sharp`, which is
+a devDependency, so it just runs.
 
-It deliberately does **not** overwrite `favicon.svg`, `favicon.ico`,
-`apple-touch-icon.png`, `og-image.png` or the `public/atlas-*` files — those are
-authored artwork, not derivatives, and have to be replaced by hand. The generator
-needs `sharp`, which is intentionally not a project dependency; it prints the
-one-line install command if it is missing.
+It reads two sources and writes six files:
+
+| Source | Writes |
+| --- | --- |
+| `atlas-mark.svg` | `favicon-16x16.png`, `favicon-32x32.png`, `icon-192.png`, `icon-512.png` |
+| `atlas-lockup-horizontal-white.svg` | `og.svg`, then `og-image.png` **from that same `og.svg`** |
+
+**`og.svg` is the editable source of `og-image.png`.** The raster is produced
+from the vector in the same run, so the file the site serves cannot disagree with
+the file you edit. It used to: `og.svg` carried a tagline on a light ground while
+`og-image.png` was dark with none.
+
+`og.svg` contains **no `<text>` elements** — the wordmark comes from the lockup as
+outlined paths, so rendering never depends on a font being installed. An earlier
+version used live text and silently rasterised in Georgia on a machine without
+Instrument Serif. Do not reintroduce live text there.
+
+The generator deliberately does **not** overwrite `favicon.svg`, `favicon.ico`,
+`apple-touch-icon.png` or the `public/atlas-*` files — those are authored
+artwork, not derivatives, and have to be replaced by hand.
+
+It also validates the lockup's measured ink box before writing anything, and
+fails with the correct numbers if the lockup has been redrawn, rather than
+quietly producing an off-centre card.
 
 ## Data layer — edit these, never a page
 

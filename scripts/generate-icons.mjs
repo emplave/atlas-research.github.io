@@ -1,55 +1,43 @@
 /**
- * Generate every raster icon and the OG vector from the one mark source.
+ * Generate every icon and the OG card from the brand source files.
  *
  *   node scripts/generate-icons.mjs
  *
- * THE SOURCE OF TRUTH IS public/atlas-mark.svg. Its path is read at run time,
- * so nothing here restates the geometry and nothing can drift from it. The same
- * path is copied verbatim into src/components/AtlasMark.tsx for the on-page
- * logo; if you change the mark, change that file, run this, and copy the path
- * across.
+ * TWO SOURCES OF TRUTH, both read at run time so nothing here restates them:
+ *
+ *   public/atlas-mark.svg                  the mark, for the icon tiles
+ *   public/atlas-lockup-horizontal-white.svg   mark + wordmark, for the OG card
+ *
+ * The mark path is also copied verbatim into src/components/AtlasMark.tsx for
+ * the on-page logo. If you change the mark, change that file, run this, and copy
+ * the path across.
  *
  * Writes:
- *   public/favicon-16x16.png    16    dark tile
- *   public/favicon-32x32.png    32    dark tile
- *   public/icon-192.png        192    dark tile, maskable-safe
- *   public/icon-512.png        512    dark tile, maskable-safe
- *   public/og.svg             1200x630  light ground, wordmark + tagline
+ *   public/favicon-16x16.png    16       dark tile
+ *   public/favicon-32x32.png    32       dark tile
+ *   public/icon-192.png        192       dark tile, maskable-safe
+ *   public/icon-512.png        512       dark tile, maskable-safe
+ *   public/og.svg             1200x630   dark ground, white lockup
+ *   public/og-image.png       1200x630   rasterised from og.svg
+ *
+ * og.svg AND og-image.png ARE NOW THE SAME ARTWORK. og.svg is the editable
+ * source and og-image.png is rasterised from it in the same run, so the vector
+ * and the file the site actually serves cannot drift. They used to: og.svg
+ * carried a tagline on a light ground while og-image.png was dark with none.
  *
  * Does NOT write, on purpose:
  *   favicon.svg, favicon.ico, apple-touch-icon.png  — supplied as brand assets
- *   og-image.png                                     — supplied as a brand asset
  *   public/atlas-*.{svg,png}                         — the source assets
  * Those are authored artwork, not derivatives. Overwriting them here would
  * quietly replace a designed file with a mechanically composed one.
- *
- * SHARP IS NOT A PROJECT DEPENDENCY, and that is deliberate. The other scripts
- * in this directory run under plain node with nothing installed, and this one is
- * needed only when the mark changes, which is close to never. Rather than put a
- * ~10MB native binary in package.json for that, install it when you need it:
- *
- *   npm i -D sharp && node scripts/generate-icons.mjs && npm un sharp
- *
- * The script says so itself if sharp is missing.
  */
 import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import sharp from "sharp";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const PUBLIC = join(here, "..", "public");
-
-let sharp;
-try {
-  sharp = (await import("sharp")).default;
-} catch {
-  console.error(
-    "sharp is not installed. It is intentionally not a project dependency —\n" +
-      "see the header of this file. To run this script:\n\n" +
-      "  npm i -D sharp && node scripts/generate-icons.mjs && npm un sharp\n"
-  );
-  process.exit(1);
-}
 
 /* ------------------------------------------------------------------------- */
 /* The mark                                                                   */
@@ -68,7 +56,6 @@ const INK = { x: 75.39, y: 65.0, w: 849.22, h: 870.0 };
 
 const GROUND = "#0E0E10";
 const PAPER = "#FFFFFF";
-const MUTED = "#57575C";
 
 /**
  * Fraction of a square tile the 1000-unit artwork box occupies.
@@ -141,53 +128,155 @@ for (const { name, size, fraction } of TILES) {
 }
 
 /* ------------------------------------------------------------------------- */
-/* OG vector                                                                  */
+/* Lockup source — read before the guard, which validates it                 */
+/* ------------------------------------------------------------------------- */
+
+const lockupSvg = readFileSync(
+  join(PUBLIC, "atlas-lockup-horizontal-white.svg"),
+  "utf8"
+);
+
+/** Everything inside the lockup's root <svg>, so its transforms come along. */
+const lockupInner = /<svg[^>]*>([\s\S]*)<\/svg>/.exec(lockupSvg)?.[1]?.trim();
+if (!lockupInner) {
+  console.error(
+    "Could not read the contents of public/atlas-lockup-horizontal-white.svg."
+  );
+  process.exit(1);
+}
+
+/**
+ * The lockup's INK box inside its own 1277x367 viewBox.
+ *
+ * MEASURED, not taken from the viewBox, because the file has ~40 units of
+ * padding on the left and top that would throw the centring off by 3% of the
+ * canvas. Obtained by rendering the file at density 600 (10642px wide, so 0.12
+ * viewBox units per pixel) and scanning for the ink bounds. Re-measure if the
+ * lockup is redrawn — the guard immediately below fails loudly, before anything is
+ * written, if these numbers stop matching the file.
+ */
+const LOCKUP_INK = { x: 40.079, y: 39.964, w: 1196.963, h: 287.071 };
+
+/**
+ * Lockup ink width as a fraction of the canvas.
+ *
+ * 0.6875 exactly, reverse-engineered from the supplied og-image.png rather than
+ * chosen: its content measured 825px wide on a 1200px canvas, centred on both
+ * axes to within half a pixel. Keeping that number means the regenerated card is
+ * the same composition that was already approved.
+ */
+const OG_LOCKUP_FRACTION = 0.6875;
+
+/* ------------------------------------------------------------------------- */
+/* Guard — must run before the OG card is written                            */
 /* ------------------------------------------------------------------------- */
 
 /**
- * public/og.svg — the editable OG composition.
+ * Fail loudly if LOCKUP_INK has drifted from the lockup file.
  *
- * Light ground, kept from the previous version: only the geometry changed here,
- * not the treatment. The mark is scaled so its INK stands 176px tall and is
- * positioned by its ink box rather than its viewBox, so the optical left edge
- * lines up with nothing depending on the transparent padding around it.
+ * RUNS BEFORE ANYTHING IS WRITTEN. The constant is measured, so a redrawn lockup
+ * silently invalidates it and the OG card quietly goes off-centre. Checking first
+ * costs one render and turns a subtle visual regression into an error message —
+ * and means a stale constant cannot leave a wrong og-image.png on disk.
+ */
+{
+  const probe = await sharp(
+    Buffer.from(
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1277 367" width="1277" height="367"><rect width="1277" height="367" fill="#000000"/>${lockupInner}</svg>`
+    )
+  )
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  const { width: pw, height: ph, channels: pc } = probe.info;
+  let minx = pw, maxx = -1, miny = ph, maxy = -1;
+  for (let y = 0; y < ph; y++) {
+    for (let x = 0; x < pw; x++) {
+      const i = (y * pw + x) * pc;
+      if (probe.data[i] + probe.data[i + 1] + probe.data[i + 2] > 60) {
+        if (x < minx) minx = x;
+        if (x > maxx) maxx = x;
+        if (y < miny) miny = y;
+        if (y > maxy) maxy = y;
+      }
+    }
+  }
+  const got = { x: minx, y: miny, w: maxx - minx + 1, h: maxy - miny + 1 };
+  // 2 units of slack: this probe renders at 1x, so it is coarser than the
+  // density-600 measurement the constant came from.
+  const off = ["x", "y", "w", "h"].filter(
+    (k) => Math.abs(got[k] - LOCKUP_INK[k]) > 2
+  );
+  if (off.length > 0) {
+    console.error(
+      `\nLOCKUP_INK is stale on ${off.join(", ")}.\n` +
+        `  constant: ${JSON.stringify(LOCKUP_INK)}\n` +
+        `  measured: ${JSON.stringify(got)}\n` +
+        `The lockup has been redrawn. Re-measure and update LOCKUP_INK, or the OG\n` +
+        `card will sit off-centre.\n`
+    );
+    process.exit(1);
+  }
+  console.log(`  ${"lockup ink check".padEnd(20)} ok`);
+}
+
+/* ------------------------------------------------------------------------- */
+/* OG card — vector, then raster from that same vector                        */
+/* ------------------------------------------------------------------------- */
+
+/**
+ * public/og.svg — the editable OG composition, and the source of og-image.png.
  *
- * NOTE: this file is not what the site serves. og:image points at
- * public/og-image.png, which is supplied artwork on a dark ground with no
- * tagline. This SVG keeps the tagline by request and therefore does not match
- * it. Do not assume rasterising this file reproduces the live preview image.
+ * NO TEXT ELEMENTS. The wordmark comes from
+ * public/atlas-lockup-horizontal-white.svg, which carries it as OUTLINED PATHS,
+ * so rendering does not depend on a font being installed. That matters: an
+ * earlier version of this file used <text font-family="Instrument Serif"> and
+ * silently rasterised in Georgia on a machine that did not have the font. Do not
+ * reintroduce live text here.
+ *
+ * NO TAGLINE. It was removed from the brand along with the old lockup.
+ *
+ * The whole lockup is nested verbatim, transforms and all, and scaled by an outer
+ * group. Its own internal transforms are left untouched so there is nothing to
+ * re-derive if the file is redrawn.
  */
 const OG = { w: 1200, h: 630 };
-const inkH = 176;
-const ogScale = inkH / INK.h;
 
-/*
- * Positioned by the INK box, not the viewBox, and vertically centred on the TEXT
- * block rather than on the canvas.
- *
- * Both matter. The mark carries ~7% transparent padding, so aligning by viewBox
- * would leave the mark's optical left edge short of the 96px margin. And the two
- * text lines sit above the canvas centre, so centring the mark on the canvas
- * instead of on them left it 17px low and visibly out of step with the wordmark.
- *
- * Text block: wordmark cap top (baseline 286 less capHeight 0.72em of 76px) down
- * to the tagline descender (baseline 344 plus roughly 8px).
- */
-const TEXT_TOP = 286 - 76 * 0.72;
-const TEXT_BOTTOM = 344 + 8;
-const textCenter = (TEXT_TOP + TEXT_BOTTOM) / 2;
 
-const ogX = 96 - INK.x * ogScale;
-const ogY = textCenter - inkH / 2 - INK.y * ogScale;
+
+const ogInkW = OG_LOCKUP_FRACTION * OG.w;
+const ogScale = ogInkW / LOCKUP_INK.w;
+const ogInkH = LOCKUP_INK.h * ogScale;
+const ogX = (OG.w - ogInkW) / 2 - LOCKUP_INK.x * ogScale;
+const ogY = (OG.h - ogInkH) / 2 - LOCKUP_INK.y * ogScale;
 
 const ogSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${OG.w} ${OG.h}" width="${OG.w}" height="${OG.h}">
-  <rect width="${OG.w}" height="${OG.h}" fill="${PAPER}"/>
-  <g transform="translate(${ogX.toFixed(2)} ${ogY.toFixed(2)}) scale(${ogScale.toFixed(5)})">
-    <path d="${MARK}" fill="${GROUND}" fill-rule="evenodd" clip-rule="evenodd"/>
+  <rect width="${OG.w}" height="${OG.h}" fill="${GROUND}"/>
+  <g transform="translate(${ogX.toFixed(3)} ${ogY.toFixed(3)}) scale(${ogScale.toFixed(6)})">
+    ${lockupInner}
   </g>
-  <text x="340" y="286" font-family="Instrument Serif, Georgia, serif" font-size="76" fill="${GROUND}">Atlas Research Institute</text>
-  <text x="340" y="344" font-family="Archivo, Helvetica, Arial, sans-serif" font-size="30" fill="${MUTED}">Student research groups in any field.</text>
 </svg>
 `;
 writeFileSync(join(PUBLIC, "og.svg"), ogSvg);
-console.log(`  ${"og.svg".padEnd(20)} ${OG.w}x${OG.h}`);
+console.log(
+  `  ${"og.svg".padEnd(20)} ${OG.w}x${OG.h}   lockup ink ${ogInkW.toFixed(0)}x${ogInkH.toFixed(0)}`
+);
+
+/*
+ * og-image.png, rasterised FROM og.svg — not composed separately.
+ *
+ * This is the file og:image and twitter:image point at. Generating it from the
+ * vector in the same run is the whole point of this section: the two cannot
+ * disagree about the mark, the ground, or whether there is a tagline.
+ *
+ * density 96 renders the 1200-unit viewBox at 1600px, then it comes down to 1200
+ * with lanczos3 — the outlined serif wordmark keeps its hairlines that way.
+ */
+const ogPng = await sharp(Buffer.from(ogSvg), { density: 96 })
+  .resize(OG.w, OG.h, { kernel: "lanczos3", fit: "fill" })
+  .flatten({ background: GROUND })
+  .png({ compressionLevel: 9 })
+  .toBuffer();
+writeFileSync(join(PUBLIC, "og-image.png"), ogPng);
+console.log(
+  `  ${"og-image.png".padEnd(20)} ${OG.w}x${OG.h}   from og.svg, ${(ogPng.length / 1024).toFixed(1)}kB`
+);

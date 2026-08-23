@@ -91,15 +91,18 @@ CORS mode.
 ## 3. OG image — ⚠ UNTESTED
 
 - [ ] Paste the preview URL into Slack, iMessage, and X/Twitter
-- [ ] Card shows the **new Atlas mark** and "Atlas Research Institute", not a globe and not a blank
-- [ ] Subhead reads "Student research groups in any field."
+- [ ] Card shows the **serif A with the pen nib** and "Atlas Research Institute", white on near-black
+- [ ] **No subhead.** The tagline was removed from the brand — a card showing "Student research
+      groups in any field." means a crawler is serving a cached copy of the old `og.png`
 
-The PNG is correct at 1200×630 and I verified it by reading the file back, but no crawler has
-fetched it. Note that some crawlers cache aggressively — if you see a stale card, try a fresh
-preview URL rather than assuming it is broken.
+`og:image` is `/og-image.png`, rasterised from `public/og.svg` by
+`scripts/generate-icons.mjs`, so the vector and the served file are the same artwork. Correct at
+1200×630 and verified by reading the file back, but no crawler has fetched it. Note that some
+crawlers cache aggressively, and the old `/og.png` URL now 404s — if you see a stale card, force a
+re-scrape rather than assuming it is broken.
 
-- [ ] Browser tab shows the new mark (not the old letter-in-a-box)
-- [ ] `/favicon.ico` loads (hand-built container wrapping 16px and 32px PNGs)
+- [ ] Browser tab shows the new mark (not the old two-block letter)
+- [ ] `/favicon.ico` loads
 - [ ] Add to Home Screen on iOS shows the new mark
 
 ---
