@@ -120,43 +120,28 @@ export const REVIEW_STATUS: Record<
 export const JOURNAL_NAME = "The Atlas Journal";
 
 /**
- * PLACEHOLDER DATA — NOT A REAL PAPER.
+ * FALLBACK DATA — DELIBERATELY EMPTY.
  *
- * The fallback shown when the Sheet is unreachable, and one working paper is
- * enough to exercise the journal UI. Hamaad supplies the real papers and their
- * PDFs through the Sheet. The authors array deliberately does not name a person.
+ * This held one invented working paper, titled "PLACEHOLDER: ...", to exercise
+ * the journal UI before a Sheet existed. A Sheet exists now and carries a real
+ * peer-reviewed article, so the only thing this array could still do is ship a
+ * fabricated paper on the day the Sheet is unreachable.
  *
- * The peer-reviewed track is deliberately EMPTY here. Seeding a fake reviewed
- * article would put an unreviewed placeholder behind a "completed peer review"
- * badge, which is the one thing this file must never do.
+ * A FABRICATED PAPER IS WORSE HERE THAN ANYWHERE ELSE ON THE SITE. The journal's
+ * whole claim is that publication is decided by review; an invented entry in it
+ * contradicts the one thing the page exists to assert.
+ *
+ * RENDERING NOTHING IS BETTER. With this empty, an unreachable Sheet leaves the
+ * peer-reviewed track showing its honest empty state — the review process
+ * explainer — and the working papers track empty behind SHOW_WORKING_PAPERS.
+ * Neither is broken and neither claims anything false.
+ *
+ * ANYTHING ADDED BACK HERE IS LIVE CONTENT, served to real visitors whenever the
+ * Sheet fails, with no indication it is a fallback. In particular NEVER seed the
+ * peer-reviewed track here: a placeholder in that track renders under "This
+ * article completed peer review" having been reviewed by nobody.
  */
-export const PUBLICATIONS: Publication[] = [
-  {
-    slug: "placeholder-working-paper",
-    title:
-      "PLACEHOLDER: What student research groups produce, and what gets in the way",
-    authors: ["Atlas Research Institute"],
-    track: "working-paper",
-    field: "Social Sciences",
-    abstract:
-      "PLACEHOLDER ABSTRACT. This working paper describes the conditions under which small student research groups complete a project rather than abandoning it, drawing on the operating model Atlas uses to support them.\n\nIt sets out what a group needs in place before work starts — a defined question, a named lead, a meeting cadence, and access to sources it can actually reach — and identifies the points at which projects most often stall.\n\nAs a working paper, this has not been peer reviewed. It is published as a founding contribution while the first open call for submissions is underway.",
-    fullTextUrl: null,
-    publishedAt: "2026-06-01",
-    reviewedAt: null,
-    /*
-     * Every optional field is null/empty in the fallback ON PURPOSE. This is the
-     * data shown when the Sheet is unreachable, so anything invented here would
-     * be an unsourced claim about a paper — a licence Atlas never granted, an
-     * affiliation nobody stated. Blank means the page omits the field.
-     */
-    affiliation: null,
-    articleType: null,
-    keywords: [],
-    license: null,
-    conflictOfInterest: null,
-    editorialNote: null,
-  },
-];
+export const PUBLICATIONS: Publication[] = [];
 
 /**
  * The review date to display, or null.

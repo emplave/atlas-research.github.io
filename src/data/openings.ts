@@ -117,11 +117,11 @@ export const OPENINGS: Opening[] = [
     selectivity: null,
     commitment: null,
     oneLine:
-      "Run a research group at your school or online.",
+      "Run a research group at a school, in a community, or online.",
     description:
       "You pick the question and recruit the members. Atlas gives you the structure, a mentor to check your work, and somewhere to submit it at the end. Groups run three or more members over one semester; three is a minimum, not a cap. You are responsible for whether it finishes.",
     responsibilities: [
-      "Get permission from your school if your school requires it",
+      "Find somewhere to meet, in person or online",
       "Recruit members and tell them what you expect",
       "Narrow the question until it is answerable",
       "Run meetings and keep the log current",

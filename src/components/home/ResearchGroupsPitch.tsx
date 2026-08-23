@@ -24,7 +24,7 @@ export function ResearchGroupsPitch() {
   return (
     <Section number="01" title="Research groups" tone="paper">
       <p className="mt-6 max-w-2xl type-body text-muted">
-        Bring Atlas to your school and run a research group with your classmates.
+        Lead a research group at a school, in a community, or entirely online.
         Here is what you get.
       </p>
 

@@ -39,11 +39,12 @@ export function ResearchGroups() {
         <div className="mx-auto max-w-6xl px-6 pt-16 md:pt-24 pb-12">
           <p className="meta-label">Research groups</p>
           <h1 className="type-hero font-display max-w-3xl">
-            Bring Atlas to your school.
+            Lead an Atlas research group.
           </h1>
           <p className="mt-8 max-w-2xl type-body text-muted">
-            Run a research group with your classmates. You pick the question,
-            recruit three or more members, and finish a paper in one semester.
+            You pick the question, recruit three or more members, and finish a
+            paper in one semester. At a school, in a community, or entirely
+            online.
           </p>
           <CostLine className="mt-5 max-w-2xl" />
         </div>

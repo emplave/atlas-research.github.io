@@ -60,6 +60,6 @@ export const REQUIREMENTS: string[] = [
   "Three or more members. That is the minimum. There is no maximum.",
   "Two to four hours a week, depending on how fast you want to move.",
   "One semester to finish a paper. Groups that want to keep going, keep going.",
-  "No faculty advisor required. No school approval required. No dues.",
+  "No faculty advisor, no school approval, no dues. Your group can be based at a school, in a community, or run entirely online.",
   "You pick the question. Any field.",
 ];

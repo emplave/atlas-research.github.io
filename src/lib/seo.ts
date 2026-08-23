@@ -60,7 +60,7 @@ export const ROUTE_SEO: Record<string, RouteSeo> = {
   "/research-groups": {
     title: "Research Groups",
     description:
-      "Bring Atlas to your school. Three or more students, one research question, one semester. Free, with a curriculum, mentors, and a publication pathway.",
+      "Lead an Atlas research group. Three or more students, one research question, one semester. Free, at a school, in a community, or entirely online.",
   },
   "/events": {
     title: "Events",

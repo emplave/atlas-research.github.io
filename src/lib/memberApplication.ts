@@ -9,7 +9,7 @@
  *                              src/data/openings.ts (`formUrl`).
  *
  * A card or brief that shows "Apply to join" must use this module. Anything
- * that says "Bring Atlas to your school" must use openings.ts, via
+ * that says "Lead an Atlas research group" must use openings.ts, via
  * src/components/BringAtlasCta.tsx. Pointing a join action at the start form
  * sends a prospective member to the wrong questions.
  *

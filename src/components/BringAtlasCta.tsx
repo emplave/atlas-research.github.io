@@ -10,10 +10,13 @@ import { cn } from "@/lib/utils";
  * this was duplicated across the hero, the closing band and two blocks on the
  * research groups page.
  *
- * "BRING ATLAS TO YOUR SCHOOL", not "start a research group". Starting implies
- * building something from nothing, which is the thing a student reading this is
- * afraid of. Bringing implies importing something that already runs. Same form,
- * same link, different proposition.
+ * "LEAD AN ATLAS RESEARCH GROUP". Two earlier versions were wrong in different
+ * ways. "Start a research group" implied building something from nothing, which
+ * is the thing a student reading this is afraid of. "Bring Atlas to your school"
+ * fixed that but presupposed a school — and a group can be based at a school, in
+ * a community, or run entirely online, so it excluded two of the three settings
+ * and contradicted the page's own "no school approval required" line. "Lead"
+ * carries the ownership without naming a venue.
  *
  * There is deliberately NO SECONDARY CTA anywhere beside this. Joining an
  * existing group is not currently a path — there is no group listing to browse —
@@ -72,7 +75,7 @@ export function BringAtlasCta({
         className
       )}
     >
-      Bring Atlas to your school
+      Lead an Atlas research group
     </a>
   );
 }
@@ -91,7 +94,7 @@ export function CostLine({ className }: { className?: string }) {
     <p className={cn("type-body", className)}>
       <span className="text-ink font-medium">Free.</span>{" "}
       <span className="text-muted">
-        No application fee, no tuition, no cost to your school.
+        No application fee, no tuition, no cost to anyone.
       </span>
     </p>
   );

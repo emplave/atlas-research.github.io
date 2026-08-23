@@ -206,119 +206,22 @@ export function formatEventWhen(event: AtlasEvent): string {
 }
 
 /**
- * FALLBACK DATA — NOT THE LIVE SOURCE, AND NOT REAL EVENTS.
+ * FALLBACK DATA — DELIBERATELY EMPTY.
  *
- * Shown only when the Sheet is unreachable or unconfigured. Speaker names and
- * affiliations are deliberately null: no researcher is named until they have
- * actually agreed to appear.
+ * This held four invented events, every title prefixed "PLACEHOLDER:", covering
+ * the upcoming / TBD / past date states so each render path was exercised before
+ * a Sheet existed. A Sheet exists now and carries real sessions, so the only
+ * thing this array could still do is ship fabricated events on the day the Sheet
+ * is unreachable — including onto the homepage, where the events strip is the
+ * most prominent section and the page's only checkable evidence.
  *
- * The set deliberately covers all three date states — one upcoming, one TBD, one
- * past with a recording — so every render path is exercised by the fallback
- * rather than only appearing once a real Sheet is wired up.
+ * RENDERING NOTHING IS BETTER THAN RENDERING SOMETHING INVENTED. With this empty,
+ * an unreachable Sheet makes EventsStrip return null and /events show its
+ * "nothing scheduled right now" copy. Both are true statements. A grid of
+ * invented sessions with invented dates is not.
+ *
+ * ANYTHING ADDED BACK HERE IS LIVE CONTENT. It is served to real visitors
+ * whenever the Sheet fails, with no banner and no indication it is a fallback.
+ * Only put real, already-published events in this array — or leave it empty.
  */
-export const EVENTS: AtlasEvent[] = [
-  {
-    slug: "placeholder-methods-webinar",
-    title: "PLACEHOLDER: Framing a research question you can actually answer",
-    kind: "webinar",
-    dateStatus: "confirmed",
-    date: "2026-10-14",
-    time: "5:00 PM",
-    endTime: "6:00 PM",
-    timezone: "UTC",
-    location: "Online (Zoom)",
-    joinUrl: null,
-    speakerName: null,
-    speakerAffiliation: null,
-    speakerBio: null,
-    speakerUrl: null,
-    audience: "Research group leads and members",
-    description:
-      "PLACEHOLDER EVENT. A working session on narrowing a broad interest into a question a small team can answer with the access it actually has.",
-    longDescription:
-      "PLACEHOLDER EVENT. A working session on narrowing a broad interest into a question a small team can answer with the access it actually has.\n\nWe work through scoping, feasibility, and how to tell when a question is too large. Bring a question you are stuck on.\n\nOpen to all research group leads and members.",
-    registrationUrl: null,
-    recordingUrl: null,
-    capacity: null,
-    status: "upcoming",
-    image: null,
-  },
-  {
-    slug: "placeholder-sources-workshop",
-    title: "PLACEHOLDER: Reading and citing sources without drowning",
-    kind: "workshop",
-    dateStatus: "confirmed",
-    date: "2026-11-11",
-    time: "5:00 PM",
-    endTime: null,
-    timezone: "UTC",
-    location: "Online (Zoom)",
-    joinUrl: null,
-    speakerName: null,
-    speakerAffiliation: null,
-    speakerBio: null,
-    speakerUrl: null,
-    audience: "Research group leads and members",
-    description:
-      "PLACEHOLDER EVENT. How to judge whether a source holds up, how to cite accurately, and how to write about limitations honestly.",
-    longDescription:
-      "PLACEHOLDER EVENT. How to judge whether a source holds up, how to cite accurately, and how to write about limitations honestly rather than hiding them.\n\nIncludes a walkthrough of a real literature review and where its argument is weakest.",
-    registrationUrl: null,
-    recordingUrl: null,
-    capacity: null,
-    status: "upcoming",
-    image: null,
-  },
-  {
-    slug: "placeholder-past-sources-workshop",
-    title: "PLACEHOLDER: Reading and citing sources without drowning",
-    kind: "workshop",
-    dateStatus: "confirmed",
-    date: "2025-11-11",
-    time: "5:00 PM",
-    endTime: "6:15 PM",
-    timezone: "UTC",
-    location: "Online (Zoom)",
-    joinUrl: null,
-    speakerName: null,
-    speakerAffiliation: null,
-    speakerBio: null,
-    speakerUrl: null,
-    audience: "Research group leads and members",
-    description:
-      "PLACEHOLDER EVENT. How to judge whether a source holds up, and how to cite accurately.",
-    longDescription:
-      "PLACEHOLDER EVENT. How to judge whether a source holds up, how to cite accurately, and how to write about limitations honestly rather than hiding them.\n\nIncludes a walkthrough of a real literature review and where its argument is weakest.",
-    registrationUrl: null,
-    recordingUrl: null,
-    capacity: null,
-    status: "upcoming",
-    image: null,
-  },
-  {
-    slug: "placeholder-analysis-clinic",
-    title: "PLACEHOLDER: Analysis clinic for groups mid-project",
-    kind: "workshop",
-    dateStatus: "tbd",
-    date: null,
-    time: null,
-    endTime: null,
-    timezone: null,
-    location: "Online (Zoom)",
-    joinUrl: null,
-    speakerName: null,
-    speakerAffiliation: null,
-    speakerBio: null,
-    speakerUrl: null,
-    audience: "Groups with data already collected",
-    description:
-      "PLACEHOLDER EVENT. Bring a dataset and a question you cannot answer with it yet.",
-    longDescription:
-      "PLACEHOLDER EVENT. An open clinic for groups that have collected data and are unsure what it supports.\n\nDate to be announced. Groups on the waitlist hear first.",
-    registrationUrl: null,
-    recordingUrl: null,
-    capacity: null,
-    status: "upcoming",
-    image: null,
-  },
-];
+export const EVENTS: AtlasEvent[] = [];
