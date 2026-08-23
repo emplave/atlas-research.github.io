@@ -86,7 +86,12 @@ export type AtlasEvent = {
   recordingUrl: string | null;
   capacity: string | null;
   status: EventStatus;
-  /** 16:9 image, or null to render the typographic fallback. */
+  /**
+   * The SPEAKER'S HEADSHOT, from ImageSrc / ImageAlt. Square, rendered as a
+   * small round portrait beside the speaker's name — not a 16:9 card image,
+   * which is what this field was originally specced as and never used for.
+   * null renders nothing at all: no placeholder, no silhouette.
+   */
   image: EventImage | null;
 };
 

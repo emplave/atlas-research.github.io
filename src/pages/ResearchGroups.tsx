@@ -1,5 +1,6 @@
 import { BringAtlasCta, CostLine } from "@/components/BringAtlasCta";
-import { REQUIREMENTS, VALUE_PROPS } from "@/data/value-props";
+import { ValuePropList } from "@/components/ValuePropList";
+import { REQUIREMENTS } from "@/data/value-props";
 
 /**
  * /research-groups — A FOUNDER-FACING PAGE.
@@ -58,16 +59,7 @@ export function ResearchGroups() {
           <p className="meta-label">01</p>
           <h2 className="type-section font-display mt-3">What you get.</h2>
 
-          <ul className="mt-10 grid gap-x-12 gap-y-9 md:grid-cols-2">
-            {VALUE_PROPS.map((prop) => (
-              <li key={prop.title}>
-                <h3 className="type-card font-display">{prop.title}</h3>
-                <p className="mt-2.5 max-w-xl text-[15px] text-muted leading-relaxed">
-                  {prop.body}
-                </p>
-              </li>
-            ))}
-          </ul>
+          <ValuePropList className="mt-10" />
         </div>
       </section>
 

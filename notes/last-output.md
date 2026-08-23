@@ -1,135 +1,142 @@
-# Event ordering fix
+# Value props restructured; speaker headshots wired up
 
-Found it. **One of the two views was wrong; the other was already correct.**
-`npx tsc --noEmit` clean, `npx vite build` clean.
+Both done. `npx tsc --noEmit` clean, `npx vite build` clean.
 
 ---
 
-## Current order, before the fix
+# ITEM 1 — Value props
 
-### `/events` — WRONG. This is the bug you saw.
+## What was wrong
 
-Sections rendered in this order:
+Both pages set the heading in `.type-card` (**19px**) against **15px** body in a two-column grid. That is a **1.27× type jump** with no rules and no anchor — so every element carried the same weight and the section read as a wall, exactly as you described. Two other problems compounded it:
 
-```
-1. "Date to be announced"   ← undated, FIRST
-2. "Upcoming"               ← dated
-3. "Past sessions"
-```
+- **Five items in two columns leaves an orphan.** The set was hard to count, and the fifth prop sat alone looking like an afterthought.
+- **The markup was duplicated.** Same data, two hand-written renderings, already diverging on gap and `max-width`. The data was shared and the presentation was not.
 
-So with the live Sheet:
+## What I chose
 
-```
-1. Date to be announced
-     stanford-webinar-levine    Date to be announced
-     stanford-webinar-pope      Date to be announced
-2. Upcoming
-     berkeley-lesson-fuller     Tue, Aug 25, 2026        ← a confirmed date, below two unscheduled sessions
-```
+**A hairline-ruled ledger: one row per prop, heading in a fixed left column, body in a wider right column, rules above every row and one closing the set.** Four levers, contrast and structure only:
 
-### Homepage `EventsStrip` — already correct
+| Lever | Change |
+| --- | --- |
+| **Size** | New `.type-prop` step, **22px → 28px** clamped. Against the same 15px body that is **1.87×**, up from 1.27×. This is the single biggest change. |
+| **Hairlines** | `border-t` on every row plus `border-b` on the list, so the five read as a bounded, countable set rather than text that stopped. |
+| **Asymmetric rows** | `md:grid-cols-[minmax(0,17rem)_minmax(0,1fr)]`, baseline-aligned. All five headings stack into **one vertical line** the eye can run down; two equal columns scattered them across four positions. |
+| **Rhythm** | `py-7 md:py-8` between rows, `gap-y-2` inside one — so a heading and its body couple as a unit and the units separate. |
+
+`.type-prop` deliberately sits between `.type-card` (19px) and `.type-section` (32px+), filling the gap in the existing scale rather than inventing an unrelated size. Verified in the built CSS:
 
 ```
-const events = [...upcomingEvents(all), ...undatedEvents(all)].slice(0, 3);
+.type-prop{font-size:clamp(1.375rem,2.2vw,1.75rem);line-height:1.15;letter-spacing:-.014em}
 ```
 
-Dated concatenated before undated, so `berkeley-lesson-fuller` was already the "Next" card. This view never had the bug.
+**Also extracted to one component**, `src/components/ValuePropList.tsx`, used by both pages. That was not cosmetic: two copies of the most important section on the site is how it drifts, and it had already started.
 
-## Cause
+Monochrome throughout — `ink`, `muted`, `line`, `paper`. No icons, no illustration, no colour.
 
-**Not the sorts.** All three selectors in `src/data/events.ts` were and are correct:
+## What I rejected, and why
 
-| Selector | Sort | Correct? |
-| --- | --- | --- |
-| `upcomingEvents` | `a.date.localeCompare(b.date)` — ascending, soonest first | yes |
-| `undatedEvents` | by title, since there is no date | yes |
-| `pastEvents` | `b.date.localeCompare(a.date)` — most recent first | yes |
+**Numbering the props 01–05 — rejected, and this is the interesting one.** It is the obvious move and it collides twice on the homepage:
 
-**The cause was the section order in the JSX of `src/pages/Events.tsx`**, and it was deliberate rather than accidental. The line above it read:
+- The **marginal spine already numbers the sections** 01–06. The value props live inside section **01**.
+- **`ProcessTrack` in section 03 already numbers its five steps 01–05.**
 
-```
-{/* Undated first: an event without a date is still forthcoming. */}
-```
+A third 01–05 sequence would make "03" mean three different things depending on which column of the page you are reading, and two five-item numbered lists on one page look like the same list rendered twice. The hairlines do the counting job without competing. I left a `numbered?: never` prop on the component purely to carry that reasoning, so the next person reaches for it and finds the explanation instead of adding it.
 
-That reasoning is half right and leads to the wrong conclusion. An undated event *is* forthcoming — but it cannot be acted on, so it must not outrank one that can. A reader scanning this page is looking for something to attend; putting "we haven't scheduled these yet" above "this is on 25 August" buries the only actionable item.
+**An ink band — rejected.** `Landing.tsx` documents the rule: three dark surfaces, spaced so no two are adjacent. Section 01 is immediately above `EventsStrip`, whose "Next" card is ink. A full ink band there would stack two dark masses, and the statement panel two sections later is the third. It would also have to differ between the two pages (on `/research-groups` section 04 is already ink), which breaks the shared component.
 
-The page's own doc comment also asserted the wrong order in writing — *"Three sections, in this order: undated, upcoming, past"* — so the file documented the bug as intended behaviour, which is why it survived.
+**Cards or bordered boxes — rejected.** Five boxes give every prop an identical frame, which is the same "everything weighs the same" failure in a heavier form. Rules separate without framing.
 
-**Root cause of the divergence:** the two views each built the order independently, one by concatenating arrays and one by sequencing JSX. Nothing stated the rule, so nothing caught that they disagreed.
+**Keeping two columns with a bigger heading — rejected.** At 28px the headings would wrap awkwardly in a half-width column, and the orphan fifth item remains.
 
-## The fix
+---
 
-**1. Section order swapped in `src/pages/Events.tsx`** — now `Upcoming` → `Date to be announced` → `Past sessions`. The misleading comment is replaced with one that states the rule and why dated wins, and the file's doc comment is corrected.
+# ITEM 2 — Speaker headshots
 
-**2. The rule is now stated once**, in `src/data/events.ts`, as the authority both views point at:
+The `ImageSrc` / `ImageAlt` columns were **already parsed** into `event.image` and never rendered by anything. This is the first thing that uses them. The field's comment described it as a "16:9 image", which was the original spec and wrong for a portrait — corrected.
 
-```
-1. dated upcoming, soonest first
-2. undated ("to be announced")
-3. past, most recent first
-```
+## The rendering rule
 
-**3. Added `forthcomingEvents(events)`** — returns `[...upcomingEvents, ...undatedEvents]` in that order. The homepage strip now calls it instead of concatenating by hand.
-
-That last part is the actual regression fix. The strip was right by luck of how someone typed a spread; now the ordering lives in one function, so a view cannot get it wrong by concatenating in the wrong sequence. `/events` still renders three separate sections rather than one flat list, because each needs its own heading and note — but it follows the same stated rule, and the comment says so.
-
-## After the fix, against the live Sheet
+**Three cells must all be filled for anything to appear: `ImageSrc`, `ImageAlt`, and `SpeakerName`.**
 
 ```
-HOMEPAGE EventsStrip (forthcomingEvents, first 3):
-  NEXT DATED    berkeley-lesson-fuller     Tue, Aug 25, 2026 · 9:00 PM–9:45 PM PDT
-       UNDATED  stanford-webinar-levine    Date to be announced
-       UNDATED  stanford-webinar-pope      Date to be announced
-
-/events sections, in render order:
-  1. Upcoming
-       DATED    berkeley-lesson-fuller     Tue, Aug 25, 2026 · 9:00 PM–9:45 PM PDT
-  2. Date to be announced
-       UNDATED  stanford-webinar-levine    Date to be announced
-       UNDATED  stanford-webinar-pope      Date to be announced
-  (Past sessions: omitted, empty)
-
-INVARIANT dated-before-undated: HOLDS
-INVARIANT upcoming ascending  : HOLDS
+image + speaker      -> portrait SHOWN
+image, NO speaker    -> nothing rendered (no placeholder)
+NO image, speaker    -> nothing rendered (no placeholder)
+neither              -> nothing rendered (no placeholder)
 ```
 
-### Proved with more than one dated event
+`SpeakerName` is part of the condition because this is a *speaker* portrait — a face on a card with no name attached is worse than no face. Flagging it as my call: it means a filled `ImageSrc` can render nothing, which is why it is documented in three places.
 
-The live Sheet has only one dated event, so "soonest first" is not actually exercised by it. I ran the selectors against a deliberately shuffled set mixing near-future, far-future, undated and past:
+**No placeholder, ever.** No initials, no silhouette, no grey circle. The component returns `null` and the speaker's name renders exactly as it does today, so the card is not missing a slot — there was never a slot. All three live events have an empty `ImageSrc`, so the no-image case is the common one and is the one that had to look right:
 
 ```
-input order: undated-zebra, far-2027, past-2025, near-2026-09, undated-apple, soonest-2026-08
-
-forthcomingEvents():
-  1. DATED    soonest-2026-08  2026-08-25
-  2. DATED    near-2026-09     2026-09-02
-  3. DATED    far-2027         2027-01-15
-  4. UNDATED  undated-apple    -
-  5. UNDATED  undated-zebra    -
-
-pastEvents():
-     past-2025  2025-05-01
-
-dated all before undated       : HOLDS
-dated ascending                : HOLDS
-past excluded from forthcoming : HOLDS
-undated sorted by title        : Apple session < Zebra session
+stanford-webinar-pope      image=null  speaker=set  -> portrait not rendered
+stanford-webinar-levine    image=null  speaker=set  -> portrait not rendered
+berkeley-lesson-fuller     image=null  speaker=set  -> portrait not rendered
 ```
+
+Small and secondary by construction: round, on the speaker's name line, never above or beside the title. `width`/`height` attributes are set as well as classes so the box is reserved before the file loads and the card does not reflow.
+
+| View | Size |
+| --- | --- |
+| Homepage strip, small cards | 36px |
+| `/events` list cards | 44px |
+| Homepage strip, "Next" card | 56px |
+| `/events/:slug` header | 64px |
+
+One shared component, `src/components/SpeakerPortrait.tsx`, so the three views cannot drift.
+
+## Dimensions to request from speakers
+
+> **Square, 400×400 pixels minimum. 800×800 is ideal.** Head and shoulders, face roughly centred. JPG or PNG.
+
+Reasoning: the largest render is 64px, so at 3× device pixel ratio that is 192px — 400×400 covers it with room, and 800×800 survives a larger treatment later without re-collecting photos.
+
+**Square matters more than the pixel count.** It is displayed in a circle, and `object-cover` centre-crops a non-square file rather than squashing it — so a landscape photo loses its sides, usually including part of the head. A speaker sending a wide group photo will get a crop of their shoulder.
+
+`ImageAlt` should be the person's name, e.g. `Dr Jane Fuller` — not "headshot of…", since a screen reader already announces it as an image.
+
+Written up for operators in `notes/managing-events.md` under a new "Speaker headshots" section, and in the column notes at the top of `eventsSource.ts`.
+
+---
 
 ## Files changed
 
 ```
-M  src/data/events.ts                    ordering rule documented; forthcomingEvents() added
-M  src/pages/Events.tsx                  section order swapped; comment and doc comment corrected
-M  src/components/home/EventsStrip.tsx   now uses forthcomingEvents() instead of hand-concatenating
+A  src/components/ValuePropList.tsx        the ledger, shared by both pages
+A  src/components/SpeakerPortrait.tsx      the portrait, shared by three views
+M  src/index.css                           .type-prop scale step
+M  src/components/home/ResearchGroupsPitch.tsx   uses ValuePropList
+M  src/pages/ResearchGroups.tsx            uses ValuePropList
+M  src/data/events.ts                      image field comment corrected
+M  src/pages/Events.tsx                    portrait on list cards
+M  src/pages/EventDetail.tsx               portrait in the header
+M  src/components/home/EventsStrip.tsx     portrait on next + small cards
+M  src/lib/eventsSource.ts                 image column notes
+M  notes/managing-events.md                headshot section for operators
 ```
 
-## Two things worth noting
+## Verification
 
-**The time now formats correctly.** It rendered `21:00:00–21:45:00 PDT` when I last reported; it now reads `9:00 PM–9:45 PM PDT`. You changed the Sheet cells — that resolves the cosmetic issue I flagged, and no code change was needed.
+```
+npx tsc --noEmit   clean, no errors
+npx vite build     ✓ built in 701ms
+                   dist/index.html                   5.82 kB │ gzip:  2.23 kB
+                   dist/assets/index-lZLwxEDb.css   26.52 kB │ gzip:  6.07 kB
+                   dist/assets/index-BiDKE3gT.js   337.36 kB │ gzip: 106.48 kB
+```
 
-**`Past sessions` was already in the right place** and is untouched. The bug was only the relative order of the two forthcoming sections.
+`.type-prop` confirmed present in the built CSS. Portrait rule asserted across all four input combinations plus the three live events.
 
 ## Not verified
 
-The rendered pages. The ordering is confirmed at the data layer for both views and the section sequence is now literal JSX order, but I have not loaded `/events` in a browser to see the two headings stacked.
+The rendered pages — I cannot drive a browser, so the visual claims rest on the type maths and the markup.
+
+Three things worth your eye before you consider item 1 settled, since it is a deliberate visual change:
+
+- **The 17rem heading column at tablet width.** "A research framework and curriculum." is the longest heading; check it does not wrap to three lines just above the `md` breakpoint.
+- **Baseline alignment** between heading and body on the first row of each — `md:items-baseline` aligns the first lines, which is right when the body is one or two lines and can look loose on the longest one.
+- **Whether 28px is enough.** I chose the conservative end of the range deliberately: the next step up is `.type-section` at 32px+, which would compete with the section heading directly above it. If it still reads flat, the fix is more vertical space per row rather than more size.
+
+I also have not seen a real headshot in place — no live event has one, so the portrait path is verified by rule and by build, not by looking at a photo in a circle.

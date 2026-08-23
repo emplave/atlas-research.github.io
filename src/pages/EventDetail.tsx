@@ -12,6 +12,7 @@ import {
 } from "@/data/events";
 import { useEvents } from "@/lib/useEvents";
 import { Prose, ProseParagraphs } from "@/components/Prose";
+import { SpeakerPortrait } from "@/components/SpeakerPortrait";
 
 /**
  * A single event. A reading page, so it uses Prose, same as research group
@@ -67,23 +68,28 @@ function Detail({ event }: { event: AtlasEvent }) {
           </h1>
 
           {event.speakerName && (
-            <p className="mt-5 type-body text-ink">
-              {event.speakerUrl ? (
-                <a
-                  href={event.speakerUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="link"
-                >
-                  {event.speakerName}
-                </a>
-              ) : (
-                event.speakerName
-              )}
-              {event.speakerAffiliation && (
-                <span className="text-muted">, {event.speakerAffiliation}</span>
-              )}
-            </p>
+            <div className="mt-6 flex items-center gap-4">
+              <SpeakerPortrait event={event} size="xl" />
+              <p className="type-body text-ink">
+                {event.speakerUrl ? (
+                  <a
+                    href={event.speakerUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="link"
+                  >
+                    {event.speakerName}
+                  </a>
+                ) : (
+                  event.speakerName
+                )}
+                {event.speakerAffiliation && (
+                  <span className="text-muted">
+                    , {event.speakerAffiliation}
+                  </span>
+                )}
+              </p>
+            </div>
           )}
         </div>
       </header>

@@ -105,6 +105,20 @@
     font-size: 17px;
     line-height: 1.7;
   }
+  /*
+   * VALUE PROP HEADING. 22px -> 28px.
+   *
+   * Sits deliberately between .type-card (19px) and .type-section (32px+). The
+   * value props were set in .type-card against 15px body, a 1.27x jump that
+   * reads as no hierarchy at all — the section became a wall of even text. At
+   * 28px against 15px the ratio is 1.87x, which is what makes the headings scan
+   * as a list of claims rather than as five paragraphs.
+   */
+  .type-prop {
+    font-size: clamp(1.375rem, 2.2vw, 1.75rem);
+    line-height: 1.15;
+    letter-spacing: -0.014em;
+  }
 
   /*
    * LINKS. Ink with a 1px underline that thickens on hover. Never coloured.

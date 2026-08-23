@@ -1,5 +1,5 @@
 import { BringAtlasCta, CostLine } from "@/components/BringAtlasCta";
-import { VALUE_PROPS } from "@/data/value-props";
+import { ValuePropList } from "@/components/ValuePropList";
 import { Section } from "./Section";
 
 /**
@@ -29,22 +29,12 @@ export function ResearchGroupsPitch() {
       </p>
 
       {/*
-        Two columns at md, so five items do not read as a long list. The fifth
-        wraps to a row of its own, which is fine — it is the least
-        load-bearing of the five.
+        Shared with /research-groups — see src/components/ValuePropList.tsx for
+        why this is a ruled ledger rather than the two-column grid it was.
       */}
-      <ul className="mt-9 grid gap-x-10 gap-y-7 md:grid-cols-2">
-        {VALUE_PROPS.map((prop) => (
-          <li key={prop.title}>
-            <h3 className="type-card font-display">{prop.title}</h3>
-            <p className="mt-2 text-[15px] text-muted leading-relaxed">
-              {prop.body}
-            </p>
-          </li>
-        ))}
-      </ul>
+      <ValuePropList className="mt-9" />
 
-      <div className="mt-10 pt-8 border-t border-line">
+      <div className="mt-10">
         <CostLine />
         <div className="mt-6">
           <BringAtlasCta />

@@ -75,6 +75,32 @@ Everything else is optional and simply does not render when blank: `EndTime`,
 `SpeakerBio`, `SpeakerUrl`, `Audience`, `LongDescription`, `RegistrationUrl`,
 `RecordingUrl`, `Capacity`, `ImageSrc`, `ImageAlt`.
 
+## Speaker headshots — `ImageSrc` and `ImageAlt`
+
+A headshot renders as a **small round portrait beside the speaker's name**, on the
+events list, the homepage strip, and the event's own page. It is deliberately
+small: it supports the attribution, it is not a banner.
+
+**What to ask a speaker for:** a **square** image, **400x400 pixels or larger**
+(800x800 is ideal and future-proof), head and shoulders, face roughly centred.
+JPG or PNG.
+
+Why square: it is displayed in a circle at 36-64px depending on the view. A
+non-square file is centre-cropped rather than squashed, so a landscape photo will
+lose the sides — usually including part of the head.
+
+**Three cells must all be filled for anything to appear:** `ImageSrc`,
+`ImageAlt`, and `SpeakerName`. Missing any one renders nothing. `SpeakerName` is
+required because this is a *speaker* portrait, and a face on a card with no name
+attached is worse than no face.
+
+**Leaving them blank is completely fine and is the normal case.** There is no
+placeholder, no initials, no silhouette — the speaker's name simply renders on
+its own, exactly as it does today. A card with no photo is not missing anything.
+
+`ImageAlt` should describe the person, e.g. `Dr Jane Fuller`. Do not write
+"headshot" or "photo of" — a screen reader already announces it as an image.
+
 ### Speaker names
 
 **Do not put a speaker's name in the Sheet until that person has agreed to

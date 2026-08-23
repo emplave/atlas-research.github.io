@@ -33,8 +33,11 @@
  *   LongDescription  Blank lines separate paragraphs, same as abstracts.
  *   JoinUrl      Rendered for upcoming events only.
  *   RecordingUrl Rendered for past events only.
- *   ImageSrc     Both are needed for an image to appear; otherwise the
- *   ImageAlt     typographic fallback renders.
+ *   ImageSrc     THE SPEAKER'S HEADSHOT, rendered as a small round portrait
+ *   ImageAlt     beside their name. Square, 400x400 or larger. BOTH cells are
+ *                required, AND SpeakerName must be filled — it is a speaker
+ *                portrait, so an unattributed face renders nothing. Blank is
+ *                the normal case and renders no placeholder at all.
  * ============================================================================
  *
  * See notes/managing-events.md for the operator workflow.

@@ -11,6 +11,7 @@ import {
   type AtlasEvent,
 } from "@/data/events";
 import { useEvents } from "@/lib/useEvents";
+import { SpeakerPortrait } from "@/components/SpeakerPortrait";
 
 /**
  * Events.
@@ -166,12 +167,17 @@ function EventRow({ event, past = false }: { event: AtlasEvent; past?: boolean }
           </h3>
 
           {event.speakerName && (
-            <p className="mt-2 text-sm text-ink">
-              {event.speakerName}
-              {event.speakerAffiliation && (
-                <span className="text-muted">, {event.speakerAffiliation}</span>
-              )}
-            </p>
+            <div className="mt-3 flex items-center gap-3">
+              <SpeakerPortrait event={event} size="md" />
+              <p className="text-sm text-ink">
+                {event.speakerName}
+                {event.speakerAffiliation && (
+                  <span className="text-muted">
+                    , {event.speakerAffiliation}
+                  </span>
+                )}
+              </p>
+            </div>
           )}
 
           <p className="mt-3 max-w-2xl text-[15px] text-muted leading-relaxed">

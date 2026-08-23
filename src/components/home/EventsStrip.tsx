@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { forthcomingEvents, formatEventWhen } from "@/data/events";
 import { useEvents } from "@/lib/useEvents";
+import { SpeakerPortrait } from "@/components/SpeakerPortrait";
 import { Section } from "./Section";
 
 /**
@@ -83,14 +84,17 @@ export function EventsStrip() {
             </Link>
           </h3>
           {next.speakerName && (
-            <p className="mt-3 text-[15px] text-paper">
-              {next.speakerName}
-              {next.speakerAffiliation && (
-                <span className="text-paper/70">
-                  , {next.speakerAffiliation}
-                </span>
-              )}
-            </p>
+            <div className="mt-4 flex items-center gap-3.5">
+              <SpeakerPortrait event={next} size="lg" />
+              <p className="text-[15px] text-paper">
+                {next.speakerName}
+                {next.speakerAffiliation && (
+                  <span className="text-paper/70">
+                    , {next.speakerAffiliation}
+                  </span>
+                )}
+              </p>
+            </div>
           )}
           <p className="mt-5 max-w-xl text-[15px] text-paper/75 leading-relaxed">
             {next.description}
@@ -119,14 +123,17 @@ export function EventsStrip() {
                   </Link>
                 </h3>
                 {event.speakerName && (
-                  <p className="mt-1.5 text-sm text-ink">
-                    {event.speakerName}
-                    {event.speakerAffiliation && (
-                      <span className="text-muted">
-                        , {event.speakerAffiliation}
-                      </span>
-                    )}
-                  </p>
+                  <div className="mt-2.5 flex items-center gap-2.5">
+                    <SpeakerPortrait event={event} size="sm" />
+                    <p className="text-sm text-ink">
+                      {event.speakerName}
+                      {event.speakerAffiliation && (
+                        <span className="text-muted">
+                          , {event.speakerAffiliation}
+                        </span>
+                      )}
+                    </p>
+                  </div>
                 )}
                 <p className="mt-1.5 meta-label text-muted">{event.kind}</p>
               </li>
