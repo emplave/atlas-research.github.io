@@ -1,147 +1,101 @@
-# Principal Researcher rename; responsibilities trimmed
+# /get-involved: duplicate heading suppressed, single-column measure capped
 
-Both done. `npx tsc --noEmit` clean, `npx vite build` clean.
-
----
-
-# ITEM 1 — Renamed to Principal Researcher
-
-## Every instance found, and what happened to it
-
-| File | Line | Was | Now |
-| --- | --- | --- | --- |
-| `src/data/openings.ts` | 113 | `title: "Research Group Leader"` | `title: "Principal Researcher"` |
-| `src/data/openings.ts` | 27 | `chapter: "Research Group"` *(category label)* | `chapter: "Principal Researcher"` |
-| `src/data/openings.ts` | 115 | `area: "Research Group leadership"` | `area: "Research group leadership"` |
-| `src/data/openings.ts` | 313 | comment: "the Research Group Leader pathway" | "the Principal Researcher pathway" |
-| `src/data/openings.ts` | 24 | doc comment: *the site reads "Research Group" everywhere* | rewritten — it named the old label |
-| `src/data/openings.ts` | 9 | doc: `category "chapter" — the student who runs a local group` | now names the role |
-| `src/lib/memberApplication.ts` | 8 | "the Research Group Leader opening in…" | "the Principal Researcher opening in…" |
-| `src/components/BringAtlasCta.tsx` | 26 | "read from the Research Group Leader opening" | "read from the Principal Researcher opening" |
-| `notes/managing-research-groups.md` | 267 | "`formUrl` on the Research Group Leader role" | "…on the Principal Researcher role" |
-
-**Zero occurrences of "Research Group Leader" remain anywhere in the repo.**
-
-Confirmed live:
-
-```
-CATEGORY_LABEL: {"chapter":"Principal Researcher","team":"Atlas Student Team"}
-
-/get-involved, Principal Researcher pathway:
-  heading (label) : Principal Researcher
-  card title      : Principal Researcher
-  area            : Research group leadership
-  slug (internal) : chapter-leader   <- unchanged on purpose
-```
-
-`/research-groups` already said Principal Researcher, so all three now agree.
-
-## Two judgement calls
-
-**`slug: "chapter-leader"` is unchanged.** It is an internal identifier, not display copy, and `openings.ts` documents that deliberately. Changing it would change the form's identity key for no reader-visible benefit. Same reasoning as the `category: "chapter"` value, which also stays.
-
-**`area` lowercased to "Research group leadership".** It never contained the role name, so it did not strictly need to change — but "Research Group" was capitalised as a proper-noun label to match the old category label, and that label is gone. It renders uppercased through `.meta-label`, so this is invisible on the page; it just stops the file implying a label that no longer exists.
-
-## One consequence you should decide on
-
-**The pathway heading and the card title are now the same string.** On `/get-involved` the chapter pathway renders:
-
-```
-Principal Researcher          ← RoleGroup heading, from CATEGORY_LABEL.chapter
-  ┌────────────────────────
-  │ Principal Researcher     ← the card's own title
-  │ RESEARCH GROUP LEADERSHIP
-```
-
-You asked for the category label renamed, so I renamed it — but with exactly one opening in that pathway, the words appear twice in a row. I noted in the code that this is intentional rather than an oversight, since the alternative was inventing a second name for one thing.
-
-If it reads badly, the cleanest fix is to **drop the heading when a pathway has one opening whose title matches the label** — a two-line change in `RoleGroup`. I did not do it because it changes layout you did not ask me to touch. The other option is a distinct pathway name ("Lead a group", "Start a group"), which reintroduces the second name.
+Both done, one file. `npx tsc --noEmit` clean, `npx vite build` clean.
 
 ---
 
-# ITEM 2 — Responsibilities trimmed, criteria removed
+## 1. The duplicate pathway heading
 
-## The four responsibilities, exactly as specified
-
-```
-Recruit your members and pick your question
-Run the meetings and keep the log current
-Check sources and citations before anything goes out
-Submit the finished work for review
-```
-
-Down from seven. The three dropped were "Find somewhere to meet, in person or online", "Narrow the question until it is answerable", and "Tell Atlas early when something slips".
-
-## "What we look for" removed — scoped to this role only
-
-`lookingFor` is now `[]` on the Principal Researcher opening. The five removed criteria were:
-
-```
-You finish things
-You write clearly
-You can run a group without controlling everyone in it
-You take feedback without arguing
-You say when you are behind instead of going quiet
-```
-
-**The five Atlas Student Team openings keep theirs**, verified:
-
-```
-Regional Youth Director    resp=5  lookingFor=5 -> two columns
-Logistics Analyst Intern   resp=5  lookingFor=4 -> two columns
-Marketing Associate        resp=4  lookingFor=4 -> two columns
-Social Media Manager       resp=5  lookingFor=4 -> two columns
-Youth Research TA          resp=5  lookingFor=4 -> two columns
-```
-
-That scoping is deliberate and I recorded the reasoning in the data file: those are applications to join a team that selects, where stated criteria are fair warning. This one is a student deciding whether to run a group at all, and a list of ways to be found wanting at that moment reads as a warning notice rather than an offer.
-
-## The layout adapts rather than being hardcoded
-
-`RoleCard` was `grid gap-6 md:grid-cols-2` with both lists unconditionally. It now drops the second column **and** collapses to a single column when `lookingFor` is empty:
+`RoleGroup` now drops its heading when the pathway holds **exactly one** opening whose title already equals the label:
 
 ```tsx
-<div className={cn("mt-6 grid gap-6", opening.lookingFor.length > 0 && "md:grid-cols-2")}>
-  <BulletList title="Responsibilities" items={opening.responsibilities} />
-  {opening.lookingFor.length > 0 && (
-    <BulletList title="What we look for" items={opening.lookingFor} />
-  )}
-</div>
+const norm = (v: string) => v.trim().toLowerCase();
+const headingIsRedundant =
+  openings.length === 1 && norm(openings[0].title) === norm(label);
 ```
 
-Both halves matter. Hiding the list alone would have left the responsibilities in a half-width column with dead space beside them; collapsing the grid alone would have left an empty "What we look for" heading. Driving it off `lookingFor.length` rather than off the slug means the next role that omits criteria gets the same treatment for free.
+Compared **trimmed and case-insensitively**, so a stray capital or a trailing space in either string cannot resurrect the duplicate — the label and the title come from two different places in `openings.ts` and nothing enforces that they match character-for-character.
 
-## Kept, as instructed
+**Conditional, not removed.** The Atlas Student Team pathway has five openings and needs its heading, and the Principal Researcher pathway will need one back the moment it gains a second role. Verified both:
 
-- **The summary paragraph**, verbatim: *"You pick the question and recruit the members. Atlas gives you the structure, a mentor to check your work, and somewhere to submit it at the end. Groups run three or more members over one semester; three is a minimum, not a cap. You are responsible for whether it finishes."*
-- **The deadline** — `null`, so it renders "Rolling", along with the Rolling status chip.
-- `selectivity` and `commitment` are both `null` on this role and were already omitted from the card.
+```
+pathway "chapter"
+  label     : "Principal Researcher"
+  openings  : 1  ["Principal Researcher"]
+  heading   : SUPPRESSED (duplicate)
+  renders   : just the card "Principal Researcher"
+
+pathway "team"
+  label     : "Atlas Student Team"
+  openings  : 5  [Regional Youth Director, Logistics Analyst Intern, …]
+  heading   : SHOWN
+  renders   : "Atlas Student Team" + 5 cards
+```
+
+And the guard cases:
+
+```
+exact match, 1 opening       -> heading suppressed
+case/space differs           -> heading suppressed
+1 opening, different title   -> heading shown
+2 openings, one matches      -> heading shown
+```
+
+That third case matters: a single opening whose title *differs* from the label still gets its heading, because then the label is carrying information the card does not.
+
+### One thing the fix had to handle
+
+The heading owned the `mt-6` that separated it from the cards. Removing it would have left that gap floating above the first card, so the card list is now `mt-6` **only when the heading is present**:
+
+```tsx
+<div className={cn("space-y-5", !headingIsRedundant && "mt-6")}>
+```
+
+The wrapper keeps `mt-12 first:mt-10`, so the two pathways stay separated from each other and from the intro line above.
+
+## 2. The single-column measure
+
+`RoleCard`'s grid now caps its width when there is no second column:
+
+```tsx
+className={cn(
+  "mt-6 grid gap-6",
+  opening.lookingFor.length > 0 ? "md:grid-cols-2" : "max-w-2xl"
+)}
+```
+
+**`max-w-2xl` (42rem / 672px)** — chosen because it is what the rest of the site uses for body text, not picked by eye. Counted across `src`:
+
+```
+32  max-w-2xl     ← dominant body measure
+15  max-w-4xl     (page containers)
+12  max-w-3xl
+ 5  max-w-xl
+ 4  max-w-[68ch]  (long-form prose only)
+```
+
+Applied to the grid container rather than to the `BulletList`, so it applies only in the single-column branch and the two-column layout still uses the full card width.
 
 ---
 
-## Files changed
+## File changed
 
 ```
-M  src/data/openings.ts                title, category label, area, 4 responsibilities,
-                                       lookingFor emptied, three comments
-M  src/pages/GetInvolved.tsx           RoleCard adapts to one column; cn imported
-M  src/lib/memberApplication.ts        comment
-M  src/components/BringAtlasCta.tsx    comment
-M  notes/managing-research-groups.md   form-routing table
+M  src/pages/GetInvolved.tsx    RoleGroup heading suppression; single-column max-width
 ```
 
 ## Verification
 
 ```
 npx tsc --noEmit   clean, no errors
-npx vite build     ✓ built in 724ms
+npx vite build     ✓ built in 704ms
                    dist/index.html                   5.82 kB │ gzip:  2.23 kB
                    dist/assets/index-lZLwxEDb.css   26.52 kB │ gzip:  6.07 kB
-                   dist/assets/index-yN4Vdclv.js   337.10 kB │ gzip: 106.40 kB
+                   dist/assets/index-5fwigz1n.js   337.21 kB │ gzip: 106.46 kB
 ```
 
-Ran the openings data through its own selectors to confirm the rename, the four responsibilities, the single-column path, and that the team pathway is untouched.
+The suppression rule was run against the real openings data plus four synthetic cases, rather than reasoned about.
 
 ## Not verified
 
-The rendered page. Two things worth a look: the doubled "Principal Researcher" heading described above, and the single-column responsibilities block at desktop width, where four short items now sit in a full-width column and may want a `max-w` to stop the lines running long.
+The rendered page. The Principal Researcher card is now the first thing under "Two separate pathways. You may hold both." with no heading between them — worth one look to confirm the `mt-10` on the wrapper is enough separation now that the heading is not there to provide it.

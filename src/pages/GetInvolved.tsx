@@ -174,6 +174,22 @@ export function GetInvolved() {
   );
 }
 
+/**
+ * One pathway: a heading, then its role cards.
+ *
+ * THE HEADING IS DROPPED when the pathway holds exactly one opening whose title
+ * already equals the label. That happens on the Principal Researcher pathway,
+ * where the role is the pathway — renaming the role to match the label put the
+ * same words on screen twice in a row. Suppressing the duplicate is better than
+ * inventing a second name for one thing.
+ *
+ * Compared case-insensitively and trimmed, so a stray capital or a trailing space
+ * in either string does not resurrect the duplicate.
+ *
+ * Deliberately conditional rather than removed: the Atlas Student Team pathway
+ * has five openings and needs its heading, and this pathway will need one again
+ * the moment it gains a second role.
+ */
 function RoleGroup({
   label,
   openings,
@@ -182,10 +198,17 @@ function RoleGroup({
   openings: Opening[];
 }) {
   if (openings.length === 0) return null;
+
+  const norm = (v: string) => v.trim().toLowerCase();
+  const headingIsRedundant =
+    openings.length === 1 && norm(openings[0].title) === norm(label);
+
   return (
     <div className="mt-12 first:mt-10">
-      <h3 className="font-display text-[26px]">{label}</h3>
-      <div className="mt-6 space-y-5">
+      {!headingIsRedundant && (
+        <h3 className="font-display text-[26px]">{label}</h3>
+      )}
+      <div className={cn("space-y-5", !headingIsRedundant && "mt-6")}>
         {openings.map((opening) => (
           <RoleCard key={opening.slug} opening={opening} />
         ))}
@@ -262,7 +285,11 @@ function RoleCard({ opening }: { opening: Opening }) {
       <div
         className={cn(
           "mt-6 grid gap-6",
-          opening.lookingFor.length > 0 && "md:grid-cols-2"
+          opening.lookingFor.length > 0
+            ? "md:grid-cols-2"
+            : // Single column: cap the measure. Full width let four short lines
+              // run the whole card. max-w-2xl is the site's body measure.
+              "max-w-2xl"
         )}
       >
         <BulletList title="Responsibilities" items={opening.responsibilities} />
