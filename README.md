@@ -60,16 +60,33 @@ Rules that are easy to break by accident:
 
 ### Brand mark
 
+**`public/atlas-mark.svg` is the source of truth for the mark.** One path on a
+`0 0 1000 1000` viewBox — a serif A whose crossbar resolves into a pen nib. Edit
+that file, never a copy of it.
+
 `src/components/AtlasMark.tsx` exports `AtlasMark` (mark alone) and
 `AtlasLockup` (mark plus the wordmark, horizontal or stacked). **Nothing sits
 beneath the wordmark** — a descriptor line there repeated "Research Institute"
-twice. The
-geometry is two fixed paths on a `0 0 170 160` viewBox — do not nudge them, the
-counter is what makes the pair read as an A and it is already tight at 16px.
+twice, and the tagline that used to sit under the wordmark in the artwork has
+been removed from the brand. The component copies the path from
+`public/atlas-mark.svg` verbatim; do not hand-edit the numbers.
 
-`public/favicon.svg`, `public/apple-touch-icon.png`, `public/og.svg` and
-`public/og.png` carry the same geometry by hand. Change the mark and all four
-need regenerating.
+Legibility floor is **24px**, and the nav and footer both sit exactly on it. At
+24px the counter and the nib still read; at 16px the nib closes into the
+crossbar. Below 24px use a tile (`public/atlas-mark-tile.svg`), which is what the
+favicons do.
+
+To change the mark: edit `public/atlas-mark.svg`, run
+`node scripts/generate-icons.mjs`, then copy the new path into the `MARK`
+constant in `src/components/AtlasMark.tsx`. The generator writes
+`favicon-16x16.png`, `favicon-32x32.png`, `icon-192.png`, `icon-512.png` and
+`og.svg` from that one source, so they cannot drift from each other.
+
+It deliberately does **not** overwrite `favicon.svg`, `favicon.ico`,
+`apple-touch-icon.png`, `og-image.png` or the `public/atlas-*` files — those are
+authored artwork, not derivatives, and have to be replaced by hand. The generator
+needs `sharp`, which is intentionally not a project dependency; it prints the
+one-line install command if it is missing.
 
 ## Data layer — edit these, never a page
 

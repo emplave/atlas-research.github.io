@@ -1,248 +1,252 @@
-# Journal article page: review wording, and a publication record layout
+# Logo migration — applying the audit fixes
 
-Branch **`journal-article-record`**, one commit. Not merged to main, not pushed.
-
-(No commit hash cited: this report is inside the commit that would name it, so any hash written here
-is wrong the moment the commit is amended. `git log -1 journal-article-record` is the authority.)
+All seven items done. `npx tsc --noEmit` clean, `npx vite build` clean.
 
 ---
 
-## CHANGE 1 — review status wording
+## 1. `AtlasMark.tsx` — new geometry, collapsed to one path
 
-### The new wording
+**Collapsed to a single path, yes.** The old mark needed `LARGE` and `SMALL` because it was two
+separate angular blocks whose counter was the negative space *between* them — the lighter grey leg was
+doing the work of keeping them apart. The new mark is one letterform that carries its own counter, so
+there is no second shape and no second fill. `FAINT` (`#8A8A92`) is gone with it.
 
-```
-This article completed peer review. It was evaluated by the Atlas research and
-editorial team against the Journal's published criteria.
-```
+The path is read verbatim from `public/atlas-mark.svg` — verified programmatically as byte-identical to
+the source, not retyped. 2050 chars, 3 subpaths (right stroke; left stroke with the nib; a hairline
+shaping the nib tip).
 
-### It now lives in one constant per track
+### API preserved
 
-`REVIEW_STATUS` in `src/data/publications.ts` — three strings per track, because three different
-lengths were needed in three places and separate literals are how the drift started:
-
-| | `peer-reviewed` | `working-paper` |
+| | Before | After |
 | --- | --- | --- |
-| `chip` | Peer reviewed | Working paper |
-| `short` | Completed peer review | Not peer reviewed |
-| `statement` | *the sentence above* | This is a working paper. … It has not been through peer review. |
+| `AtlasMark` props | `size`, `tone`, `className`, `title` | unchanged |
+| `AtlasLockup` props | `size`, `tone`, `variant`, `className` | unchanged |
+| `MarkTone` export | `"light" \| "ink"` | unchanged |
+| `size` semantics | rendered height in px | unchanged |
+| viewBox | `0 0 170 160` | `0 0 1000 1000` |
+| width | `size * 170/160` | `size` (viewBox is square) |
 
-It **was** duplicated. The article page carried the full statement and the Journal index carried its
-own separate wording of the same claim (`Not externally peer reviewed`, plus a disclosure paragraph).
-Both now read the constant, so there is no second copy to update.
+`Nav.tsx` and `Footer.tsx` are **untouched** — including the `aria-label="Atlas Research Institute —
+home"` on the nav link.
 
-### Every hit, as requested
+### Sizing behaviour is preserved, measured rather than assumed
 
-**`"external peer review"` — 10 hits:**
+I kept the full square viewBox rather than tightening it to the ink box, because that is what holds the
+optical size steady:
 
-| File | Line | Disposition |
-| --- | --- | --- |
-| `src/pages/JournalArticle.tsx` | 101, 106 | replaced by `REVIEW_STATUS[track].statement` |
-| `src/pages/Journal.tsx` | 63, 81 | comment + disclosure paragraph, "external" removed |
-| `src/data/publications.ts` | 18, 131 | comments, "external" removed |
-| `public/llms.txt` | 46 | copy, "external" removed |
-| `notes/managing-publications.md` | 23, 116 | docs, "external" removed |
-| `scripts/generate-sheet-template.mjs` | 174 | comment, "external" removed |
+```
+ink height as a fraction of rendered height:  old 0.8625 → new 0.8700  (+0.87%)
+ink width  as a fraction of rendered height:  old 0.9000 → new 0.8492  (−5.64%)
+```
 
-**`"external review"` — 8 hits:**
+At `size=24` the mark stands 20.9px tall against the old 20.7px. **That 1% is why neither the nav nor
+the footer needed adjusting**, and why the lockup balance note still holds: ink-to-capHeight is 1.45×,
+against the old 1.44×. The mark is ~6% narrower, which is the only visible layout change and it falls
+inside the existing `gap-2.5`.
 
-| File | Line | Disposition |
-| --- | --- | --- |
-| `src/pages/Journal.tsx` | 44 | intro copy, "external" removed |
-| `src/data/publications.ts` | 23, 45, 95 | comments, "external" removed |
-| `public/llms.txt` | 47 | copy, "external" removed |
-| `notes/managing-publications.md` | 117 | docs, "external" removed |
-| `scripts/generate-sheet-template.mjs` | 220 | placeholder title, "external" removed |
-| `notes/publications-template.csv` | 7 | regenerated from the script |
+### Nav and Footer verified by rendering
 
-**`"externally"` — 4 further hits**, all the same claim in adjective form, all updated:
-`src/pages/Journal.tsx:74`, `src/lib/flags.ts:25`, `src/data/publications.ts:76` (seed abstract),
-`scripts/generate-sheet-template.mjs:210`.
+Both render `<AtlasLockup />` with no props — **both are at the 24px default.** I reproduced exactly
+what the component emits (square viewBox at 24px, 10px gap, 20px Instrument Serif at −0.015em tracking)
+and rasterised it. The lockup reads correctly and the mark sits balanced against the wordmark.
 
-**Deliberately left:** `public/apply.html:17` and `public/robots.txt:4` both say "external links",
-which is an unrelated sense of the word. And the comment in `REVIEW_STATUS` explaining *why*
-"external" is absent necessarily contains it — the same exemption the redirect comment in `seo.ts`
-has.
+**The nib in the counter at nav size: legible, but only just.** Rendered at 16 / 24 / 32px and
+inspected pixel-by-pixel at 12× zoom:
 
-Verified: **zero** occurrences of "external" remain in shipping source or user-facing copy, other
-than that explanatory comment.
+- **24px (nav and footer)** — counter open, nib present as a distinct ~2px detail. It reads *as* a nib
+  rather than resolving fully into one.
+- **32px** — nib clean and unambiguous.
+- **16px** — nib closes into the crossbar and is gone. The A still reads.
 
-### One decision beyond the literal instruction
+So the legibility floor moved from 16px to **24px**, and the nav sits exactly on it. I documented that
+in the component with the instruction that if the nav ever gets shorter, drop the wordmark rather than
+shrink the mark.
 
-You asked me to remove "external" from the **peer-reviewed** copy. I removed it from the
-**working-paper** copy too: `has not been through external peer review` → `has not been through peer
-review`.
+### One thing I got wrong and corrected
 
-Reason: once reviewed articles no longer claim *external* review, contrasting a working paper against
-"external peer review" implies an external tier that does not exist, and it would have reintroduced
-exactly the inconsistency the single-constant requirement is meant to prevent. Easy to revert if you
-disagree — it is one string in one place now.
+I first wrote a comment claiming `fill-rule="evenodd"` was load-bearing and that `nonzero` would fill
+the counter. **That is false.** I rendered the path both ways and diffed: **0 of 120,000 bytes differ.**
+The three subpaths do not overlap and the counter is an open shape, not a punched hole. The attribute
+stays — it is what the source file specifies and the two must not diverge — but the comment now says it
+is currently a no-op rather than asserting something untrue.
 
 ---
 
-## CHANGE 2 — the publication record layout
+## 2. OG tags → `/og-image.png`
 
-`/journal/:slug` rebuilt. Existing design system only: monochrome tokens, Instrument Serif via
-`font-display`, Archivo body. Verified mechanically — **0 raw hex colours, 0 non-token colour
-utilities**; the only colour/font classes used are `bg-ink`, `bg-ink-hover`, `bg-line`, `bg-paper`,
-`bg-surface`, `border-line`, `text-faint`, `text-ink`, `text-muted`, `text-paper`, `font-display`.
+`index.html` lines 36 and 43. Confirmed in the built output:
 
-### Structure, in order
+```
+og:image"      content="https://atlas-research.org/og-image.png"
+twitter:image" content="https://atlas-research.org/og-image.png"
+```
 
-1. **Breadcrumb** — The Atlas Journal / article title. Current page is not a link, and truncates at
-   `18rem` so a long title does not wrap to three lines on a phone.
-2. **Status chips** — article type (omitted when blank), then track.
-3. **Title → Authors → Affiliation**, then the record: Authors, Affiliation, Article type, Field,
-   Publication date, Review date.
-4. **Action row** — Open PDF (or the disabled "Full text coming soon"), Copy citation, Copy link.
-5. **Review standing block** — the `statement` for the track.
-6. **Abstract** `#abstract`
-7. **Keywords** `#keywords`, as chips
-8. **Citation** `#citation`, bordered block with its own copy button
-9. **Publication details** `#details` — Full text, Review status, License, Conflict of interest
-10. **Editorial note** `#editorial-note`
-11. **Back to The Atlas Journal**
-12. **Right sidebar** — the record fields repeated, plus "On this page" anchors
-
-### The sidebar
-
-`grid lg:grid-cols-[1fr_18rem]` with `order-1 lg:order-2` on the aside, so it sits **above** the
-content on mobile and **right** of it on desktop, sticky at `lg:top-24`. The anchor list is built from
-the sections that actually exist, so a paper with no keywords and no editorial note gets three
-anchors, not five pointing at two dead ids. Headings carry `scroll-mt-24` so an anchor jump does not
-tuck the heading under the sticky nav.
-
-### Copy buttons
-
-`navigator.clipboard.writeText`, confirming "Copied" for 2s. Failure is **surfaced as "Copy failed"**
-rather than swallowed — `navigator.clipboard` is unavailable in a non-secure context and can be
-permission-denied, and a copy button that silently does nothing is worse than one that admits it. The
-timer is cleared on unmount and before replacement, so navigating away mid-confirmation cannot set
-state on an unmounted component. `aria-live="polite"` so the confirmation is announced.
-
-### Omit-when-blank
-
-Every optional field renders through `RecordRow` / `SidebarRow`, which **return `null` when the value
-is empty** — label included. Verified against the template: the sparse row reports
-`OMITTED (label+value hidden): affiliation, articleType, license, conflictOfInterest, editorialNote`
-and `keywords section rendered: false`. The full row omits nothing.
+This is the single highest-impact line in the change set: every social and search preview was serving
+the old mark *and* a tagline.
 
 ---
 
-## New Sheet columns
+## 3. Icons regenerated, filenames unchanged
 
-You named three. I added **six**, because your rules also required licence and conflict of interest to
-be Sheet-driven optional columns, and the Editorial Note section needs a source — writing that content
-in code would have meant authoring editorial and licence language, which the rules forbid.
+| File | Size | Was | Now |
+| --- | --- | --- | --- |
+| `favicon-16x16.png` | 16×16 | 179 B, white ground, old mark | 376 B, dark tile, new mark |
+| `favicon-32x32.png` | 32×32 | 239 B, white ground, old mark | 742 B, dark tile, new mark |
+| `icon-192.png` | 192×192 | 3001 B, white ground, old mark | 2951 B, dark tile, new mark |
+| `icon-512.png` | 512×512 | 13295 B, white ground, old mark | 9307 B, dark tile, new mark |
 
-| Column | Renders as |
-| --- | --- |
-| `Affiliation` | under the authors, in the record, in the sidebar |
-| `ArticleType` | chip at top, in the record, in the sidebar |
-| `Keywords` | Keywords section, pipe-separated → chips |
-| `License` | Publication details + sidebar, **verbatim** |
-| `ConflictOfInterest` | Publication details, **verbatim** |
-| `EditorialNote` | Editorial note section, **verbatim** |
+No references changed. **Treatment is now the dark tile** — white mark on `#0E0E10` — matching the
+`favicon.svg`, `favicon.ico` and `apple-touch-icon.png` you supplied. They were white-ground before,
+which is precisely why the icon set visibly disagreed with itself in the audit.
 
-`EditorialNote` is my inference rather than your instruction — flagging it as the one column you did
-not name.
+`public/favicon-32.png` deleted — the near-duplicate that was never wired up.
 
-All six are optional and parsed with `cleanOrNull`, so `N/A` and `TBD` become absent rather than
-printing as content. **No wording for the last three exists anywhere in the code.** Blank means the
-field is absent, full stop; there is no fallback text to invent a licence Atlas never granted.
+### The 16px favicon needed a different padding, and I changed it
 
-**Full header row, 16 columns:**
+First pass used the authored tile padding (`translate(207) scale(0.61)` — 20% margin each side) at every
+size. **At 16px that renders as a grey smudge, not an A.** I looked at it zoomed rather than assuming it
+was fine: the ink came out ~8px across, and a serif letterform with a hairline nib does not survive
+that.
+
+So the generator now uses **two paddings**, and says why:
+
+- **16 and 32px** — artwork at 94% of canvas. Ink 13.1px and 26.2px tall. The A is a clean silhouette
+  at 16px; the nib is gone, which is unavoidable and correct at that size.
+- **192 and 512px** — authored tile padding kept, because `icon-512` is declared `maskable` in the
+  webmanifest and Android masks it to a circle. Ink diagonal is 0.724 of the canvas, inside the 0.8
+  safe circle. Cropping the mark there would be worse than a slightly smaller mark.
+
+### A generator now exists: `scripts/generate-icons.mjs`
+
+I added it rather than hand-producing five files, because the audit's core finding was that these
+assets had *drifted* — and hand-generation is what let them drift. It reads the path from
+`public/atlas-mark.svg` at run time, so nothing restates the geometry.
+
+It deliberately does **not** overwrite `favicon.svg`, `favicon.ico`, `apple-touch-icon.png`,
+`og-image.png` or the `public/atlas-*` files. Those are authored artwork; a generator quietly replacing
+designed files with mechanically composed ones is a trap.
+
+**`sharp` is not added to `package.json`.** The other scripts in `scripts/` run under plain node with
+nothing installed, and this one is needed only when the mark changes. Rather than commit a ~10MB native
+binary for that, the script detects its absence and prints the install line — verified working:
 
 ```
-Published,Slug,Title,Authors,Track,Field,Abstract,FullTextUrl,PublishedAt,ReviewedAt,Affiliation,ArticleType,Keywords,License,ConflictOfInterest,EditorialNote
+sharp is not installed. It is intentionally not a project dependency —
+see the header of this file. To run this script:
+
+  npm i -D sharp && node scripts/generate-icons.mjs && npm un sharp
 ```
 
-Added to the schema, `scripts/generate-sheet-template.mjs`, and
-`notes/managing-publications.md` (new §6 "The publication record fields", new §7 "The citation";
-subsequent sections renumbered to §15).
+Flagging this as a judgement call: if you would rather have it as a devDependency so the script just
+runs, that is a one-line change.
 
 ---
 
-## Citation
+## 4. `og.svg` regenerated; `og.png` deleted
 
-Generated, never stored. No column for it.
+`public/og.svg` rebuilt from the new mark. **Tagline kept verbatim:** "Student research groups in any
+field." Light ground retained — only the geometry changed, not the treatment.
 
-```
-Authors (Year). Title. The Atlas Journal. Retrieved from <canonical URL>
-```
+I also fixed the composition while in there: the mark is now positioned by its **ink box** rather than
+its viewBox (it carries ~7% transparent padding, so viewBox alignment left it short of the 96px
+margin), and centred vertically on the **text block** rather than the canvas, which was leaving it 17px
+low and visibly out of step with the wordmark. Both are derived in the generator, not magic numbers.
 
-Real output from the live Sheet's article:
+**`og.png` was redundant and is deleted.** Same role and same dimensions as `og-image.png`
+(1200×630); it carried the old mark. Confirmed zero code references before deleting — the only hits
+were `README.md:71`, which item 7 rewrites, and the previous audit report, which this file replaces.
 
-```
-Hamaad Mahmood (2026). The Political Disinformation Epidemic: How Algorithms and Cable News Drive US
-Polarization. The Atlas Journal. Retrieved from
-https://atlas-research.org/journal/the-political-disinformation-epidemic-how-algorithms-and-cable-news-drive-us-pol
-```
+### One inconsistency this leaves, by your instruction
 
-The **year comes from `PublishedAt`, not `ReviewedAt`** — confirmed on the template's reviewed row,
-which has `publishedAt 2026-09-01` and `reviewedAt 2026-08-20` and cites `(2026)` from the former.
-That is the convention every citation style follows: the review date is a fact about the article's
-history, not its date of record.
+`og.svg` now has the tagline and a light ground. `og-image.png` — the file actually served — has **no
+tagline** and a dark ground. So the vector and the shipped raster do not match, and `og.svg` is a
+source for nothing.
 
-The URL uses `SITE_ORIGIN` from `src/lib/seo.ts`, so it is the apex host and stays correct if the
-canonical host changes again.
-
-**No article ID, no DOI, no ISSN, no impact factor, no invented licence terms.** Nothing was added
-that would imply a registration Atlas does not hold.
+That is the same *class* of problem the audit found, so I am not going to quietly leave it implied: you
+asked for the tagline kept, so I kept it. If the intent was for `og.svg` to be the editable source of
+`og-image.png`, it needs the tagline dropped and the ground darkened, and then `og-image.png` should be
+regenerated from it. Say which and I will align them.
 
 ---
 
-## Backward compatibility — checked, because it would have been easy to break
+## 5. `public/brand/` deleted
 
-**The live Sheet still has only 10 columns.** The new code expects 16. Run against the real live CSV:
+All six files. Confirmed no code references first. These were exports of the retired logo —
+`brand/atlas-logo.svg` still contained the old `M30 8 L104 8…` paths.
 
-```
-live sheet header cells: 10
-missing new columns: Affiliation, ArticleType, Keywords, License, ConflictOfInterest, EditorialNote
-rows parsed: 1  (must still be 1)
-  track peer-reviewed | displays "Published 2026-03-09"
-  new fields all absent: true
-  chip shown: "Peer reviewed"
-```
-
-Missing columns read as empty via `headerReader` → `null` → omitted. **The live article keeps working
-with no Sheet change**, just without the new fields. Add the six columns when you want them.
-
-That existing warning is still outstanding and unrelated to this work:
-
-```
-[publications] row 2: ReviewedAt "27 April 2026" is not a valid YYYY-MM-DD date
-```
-
-The three Sheet fixes from last time still apply — `ReviewedAt` → `2026-04-27`, set an explicit
-`Slug`, and break the abstract into paragraphs.
+**If you uploaded any of these to LinkedIn, that profile still shows the old mark.** Deleting the
+files does not fix the upload. The replacements are `atlas-profile-1080.png` (square) and
+`atlas-lockup-2400-transparent.png` (banner), both already in `public/`.
 
 ---
 
-## Checks
+## 6. `.DS_Store` removed and blocked at the build
+
+Deleted `public/.DS_Store` (14 KB). Deleting alone is not a fix — Finder recreates it the moment anyone
+opens the folder, and Vite offers no ignore list for `publicDir`.
+
+So `vite.config.ts` gains a small `closeBundle` plugin that strips `.DS_Store` from `dist/` after every
+build. **Verified by planting one in `public/` and rebuilding: it does not reach `dist/`.**
+
+Worth noting why this went unseen: `.DS_Store` is in `.gitignore`, so `git status` never mentioned it —
+but `.gitignore` has no bearing on whether Vite copies a file.
+
+---
+
+## 7. Stale documentation corrected
+
+**`index.html`** — the comment claimed every icon is "the SAME two paths rendered at a different size".
+Now states that `public/atlas-mark.svg` is the vector source, that the component copies it verbatim,
+that the icons are generated from it, that the treatment is the dark tile, and names the generator.
+
+**`README.md`** — the "two fixed paths on a `0 0 170 160` viewBox" and "all four need regenerating"
+claims are replaced with: the source file, the one-path geometry, the 24px legibility floor, the
+three-step change procedure, and an explicit list of what the generator will *not* touch.
+
+---
+
+## Files kept, as instructed
+
+Every `public/atlas-*` file is untouched and still present, unreferenced by code, as source assets for
+social profiles:
+
+```
+atlas-mark.svg                          atlas-lockup-horizontal.svg
+atlas-mark-tile.svg                     atlas-lockup-horizontal-white.svg
+atlas-mark-1000-transparent.png         atlas-lockup-2400-transparent.png
+atlas-clean-mark-white.png              atlas-lockup-white-2400-transparent.png
+atlas-profile-1080.png
+```
+
+`atlas-mark.svg` is now load-bearing — the component and the generator both read from it, so it is no
+longer merely a source asset.
+
+Note `favicon.svg` is still byte-identical to `atlas-mark-tile.svg`. I left the duplication: the audit
+flagged it, you did not ask for it resolved, and one of the two is a live reference.
+
+---
+
+## Verification
 
 ```
 npx tsc --noEmit   clean, no errors
-npx vite build     ✓ built in 737ms
-                   dist/index.html                   5.19 kB │ gzip:   1.97 kB
+npx vite build     ✓ built in 697ms
+                   dist/index.html                   5.62 kB │ gzip:   2.15 kB
                    dist/assets/index-C_Hba8Vt.css   26.91 kB │ gzip:   6.11 kB
-                   dist/assets/index-kQbDCK77.js   356.72 kB │ gzip: 110.98 kB
+                   dist/assets/index-9GWe1aLO.js   358.81 kB │ gzip: 112.12 kB
 ```
 
-Also verified by executing the real parser: `REVIEW_STATUS` contains no "external" on either track;
-the 16-column template parses with the sparse row omitting five fields and the full row omitting none;
-citations generate correctly for both tracks.
+All nine head references resolve in `dist/`. `og.png`, `favicon-32.png` and `brand/` are absent from
+the build. `.DS_Store` stripped.
 
-`SHOW_WORKING_PAPERS` untouched at `false`.
+31 files changed, +577/−261.
 
 ## Not verified
 
-The rendered page. I cannot drive a browser, so the layout — sidebar collapsing above content at the
-`lg` breakpoint, sticky behaviour, anchor scrolling, and the copy-button confirmation — is verified by
-type-check, build, and construction rather than by looking at it. **Worth loading
-`/journal/<slug>` and checking on both a wide window and a phone width before merging.**
+The page in a real browser. Everything above is type-check, build, and pixel inspection of
+component-exact renders — I cannot drive a browser. **Worth loading the site and glancing at the nav and
+footer**, since 24px is now the legibility floor rather than comfortably above it, and a browser's SVG
+rasteriser is not identical to libvips at that size.
 
-Note that with the live Sheet as it stands the page will show a fairly sparse record: no article type
-chip, no keywords, no licence, no conflict statement, no editorial note, and "Published" rather than
-"Reviewed". That is correct behaviour for blank cells, not a layout fault — fill the columns in to see
-the full record.
+Also unverified: how the new `og-image.png` looks in a live crawler. Google and LinkedIn may have the
+old `og.png` cached against its URL; that URL now 404s, so a re-scrape is worth forcing.
