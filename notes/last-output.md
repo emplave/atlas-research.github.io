@@ -1,136 +1,121 @@
-# Aligning og.svg with og-image.png, and sharp as a devDependency
+# Homepage and research groups rewrite
 
-Both done. `npx tsc --noEmit` clean, `npx vite build` clean.
+All nine items done. `npx tsc --noEmit` clean, `npx vite build` clean. 15 files, +441/−398.
 
 ---
 
-## 1. `og.svg` and `og-image.png` are now the same artwork
+## Files changed
 
-`og.svg` is the editable source; `og-image.png` is rasterised **from it**, in the same run, by
-`scripts/generate-icons.mjs`. They cannot disagree about the mark, the ground, or whether there is a
-tagline.
+| File | What |
+| --- | --- |
+| `src/components/BringAtlasCta.tsx` | **new** — the one sitewide CTA, plus `CostLine` |
+| `src/data/value-props.ts` | **new** — the five value props and the five requirements, shared |
+| `src/components/home/ResearchGroupsPitch.tsx` | **new** — homepage section 01, replaces the listing |
+| `src/components/home/FeaturedGroups.tsx` | **deleted** — it listed the placeholder cards |
+| `src/pages/ResearchGroups.tsx` | rebuilt into the four founder sections (−334/+ the new page) |
+| `src/components/Hero.tsx` | cost line, single CTA, new copy |
+| `src/components/Closing.tsx` | single CTA, new copy |
+| `src/components/home/EventsStrip.tsx` | promoted (item 9) |
+| `src/components/ReachGlobe.tsx` | globe caption scoped to the Fellowship |
+| `src/data/reach.ts` | added `FELLOW_COUNT` |
+| `src/pages/Landing.tsx` | rewired section 01, documented the new order |
+| `src/pages/Fellowship.tsx` | cross-link no longer says "Browse" |
+| `src/data/openings.ts` | group-size copy aligned |
+| `src/lib/seo.ts` | `/research-groups` meta rewritten — it described a directory |
+| `src/lib/memberApplication.ts` | comment updated; notes the join path now has no UI entry |
 
-| | Before | After |
+---
+
+## 1–2. Listings and secondary CTAs removed
+
+The group grid is gone from the homepage and from `/research-groups`. **No empty grid, no "no groups yet"** — an empty state still advertises absence. `FeaturedGroups.tsx` is deleted rather than emptied, because a component named FeaturedGroups that features nothing is a trap for the next reader.
+
+Also gone: "Browse research groups" from the hero, "See all research groups" from the section header, and the same button from the closing band. One primary CTA sitewide now, implemented once.
+
+## 3. CTA copy
+
+"Start a research group" → **"Bring Atlas to your school"**, in all four places it appeared. Same link (the Research Group Leader opening's `formUrl`, never hardcoded), same not-yet-open behaviour.
+
+I extracted it into `BringAtlasCta` rather than editing four anchors. The four copies had already drifted — different padding, different disabled text ("Applications opening soon" vs "Opening soon"), one with an arrow. One component means the next copy change is one edit.
+
+## 4. Cost line
+
+> **Free.** No application fee, no tuition, no cost to your school.
+
+Directly under the hero subhead, above the button. Also on `/research-groups` in the header, and on the homepage section 01 above its CTA.
+
+I did **not** put the $3,900–$6,650 comparison on the page. That is an unsourced claim about named competitors and the site has a standing rule against exactly that. The figures are recorded in the component's comment as the *reason* the line sits high, which is where they belong.
+
+## 5. `/research-groups` rebuilt as four sections
+
+Header (cost line) → **01 What you get** → **02 What running a group actually involves** → **03 You run it** → **04 the CTA**, in that order, with the founder's four questions written into the file's doc comment so the order does not get "tidied" later.
+
+All copy verbatim as supplied. Section 04 is an ink band with the single CTA and "Takes about two minutes."
+
+Removed with the directory: the filters, the `?field=` handler, the no-results empty state, and **both** bottom CTA blocks ("No group here doing your question? Start one." and "Nothing here fits? Start your own.") — three competing CTAs on one page.
+
+## 6. Homepage condensed version
+
+Section 01 carries the five value props, the cost line, and the CTA. **Sections two and three are not duplicated** — the commitment and the title live only on `/research-groups`.
+
+Value props come from `src/data/value-props.ts`, imported by both, so the two cannot drift.
+
+## 7. Group size copy — every instance found
+
+The `three to ten` → `three or more` standardisation had already landed in an earlier commit; this pass verified it and fixed the one remaining awkward phrasing.
+
+**Every instance, current state:**
+
+| File | Line | Text |
 | --- | --- | --- |
-| `og.svg` ground | `#FFFFFF` | `#0E0E10` |
-| `og.svg` mark | dark, mark only | white, mark + wordmark |
-| `og.svg` tagline | "Student research groups in any field." | **none** |
-| `og.svg` `<text>` elements | 2 | **0** |
-| `og-image.png` | supplied artwork, hand-made | generated from `og.svg` |
+| `src/components/Hero.tsx` | 37 | "recruit three or more members" |
+| `src/components/Closing.tsx` | 20 | "recruit three or more members" |
+| `src/pages/ResearchGroups.tsx` | 46 | "recruit three or more members" |
+| `src/data/value-props.ts` | 60 | "Three or more members. That is the minimum. There is no maximum." |
+| `src/components/Faq.tsx` | 11 | "Three or more students working one research question" |
+| `src/data/openings.ts` | 122 | **changed** — was "Most groups run three or more people over one term", now "Groups run three or more members over one semester; three is a minimum, not a cap." |
+| `src/lib/seo.ts` | 41, 63 | "Three or more students" |
+| `index.html` | 17, 32, 41, 105 | "Three or more students" (meta, og, twitter, JSON-LD) |
+| `public/site.webmanifest` | 4 | "Three or more students" |
+| `public/llms.txt` | 3, 30 | "three or more students" / "three or more members" |
 
-### The wordmark comes from the lockup, as outlined paths
+**No upper limit is stated anywhere.** The only remaining `three to ten` in the repo is inside a comment in `value-props.ts` explaining why it must never come back.
 
-This is the part I'd flag as the real decision. The obvious way to add a wordmark to `og.svg` is
-`<text font-family="Instrument Serif">`. **I did not do that**, because this project has already been
-burned by it once — an earlier OG render silently came out in Georgia on a machine without the font
-installed.
+Searched variants: `three or more`, `three to ten`, `3 to 10`, `3–10`, `3-10`, `ten members`, `ten students`, `ten people`, `up to ten`, `maximum`, `no maximum`, `at most`, `between three and ten`. The `3-10` hits were all the date `2025-03-10`.
 
-Instead `og.svg` nests `public/atlas-lockup-horizontal-white.svg`, which carries the wordmark as
-**outlined paths** (verified: 0 `<text>` elements, 2 `<path>`, all `#FFFFFF`). So rendering depends on
-no installed font, and `og.svg` contains no live text at all. The lockup's own internal transforms are
-nested verbatim rather than flattened, so nothing has to be re-derived if it is redrawn.
+## 8. Globe caption
 
-### The composition was measured off your approved artwork, not invented
+Now **"FELLOWSHIP: 25 FELLOWS IN 20 COUNTRIES"** (`.meta-label` uppercases it).
 
-Rather than pick a layout, I measured the `og-image.png` you supplied:
+`20` is still derived from `REACH_COUNTRIES.length`, never typed. `25` could not be derived — that array holds one entry per country and several countries have more than one fellow — so it is a new `FELLOW_COUNT` constant in `reach.ts`, typed `number | null`, documented as the one hand-entered figure in that file. If it ever cannot be confirmed, set it to `null` and the caption falls back to countries alone rather than asserting an unchecked number.
 
-```
-content ink : x 188..1012, y 216..413   →  825 x 198 px
-canvas      : 1200 x 630
-centre      : content 600.0 / 314.5  vs canvas 600.0 / 315.0   → centred on both axes
-ink width   : 825 / 1200 = 0.6875 exactly
-```
+The `aria-label` uses the same string in sentence case; uppercase in an aria-label gets spelled out letter-by-letter by some screen readers.
 
-Then I checked whether it came from the lockup — lockup ink aspect **4.16957** vs the card content's
-**4.16667**, a 0.07% match. It did. So the generator reproduces that composition: lockup ink at
-**0.6875** of canvas width, centred.
+## 9. Events made more prominent — what and why
 
-**Result is pixel-identical to the artwork you approved:**
+**Position unchanged at 02.** I considered moving it to 01 and rejected it: items 1–6 exist to make the offer the first thing on the page, and demoting the offer to promote the evidence would undercut them.
 
-```
-original approved:  ink x 188..1012  y 216..413   (825x198)  bg rgb(14,14,16)
-regenerated      :  ink x 188..1012  y 216..413   (825x198)  bg rgb(14,14,16)
-delta            :  x 0   X 0   y 0   Y 0
-```
+What I changed instead, in order of effect:
 
-Also confirmed byte-identical across two consecutive runs, so the output is deterministic. The file got
-smaller as a side effect — 26.9kB → 17.7kB — because it is now a clean render rather than a re-encode.
+1. **The "Next" card is now an ink card** on the surface section. It is the only visually heavy element in the upper half of the page besides the hero, so the section now reads as the anchor between the pitch and the process track rather than as filler.
+2. **Added an intro line** — "Groups hear directly from researchers, with live Q&A. Every session below is open to Atlas research groups." This reframes the section from a calendar into *evidence for value prop #3*, which is the actual argument it makes.
+3. **Sits directly under the pitch**, so the claim ("sessions with researchers") is immediately followed by the checkable version of it.
 
-### Positioning is by the ink box, and there is a guard
+**Why this section deserves the weight:** it is the only part of the homepage whose content a stranger can verify. A named researcher, a named institution, and a date are evidence; every other section is Atlas describing itself.
 
-The lockup file has ~40 units of padding on its left and top inside a 1277×367 viewBox. Centring by
-viewBox would put the card 3% off. So the generator centres by a **measured ink box**
-(`x 40.079, y 39.964, w 1196.963, h 287.071`, obtained at density 600 — 0.12 viewBox units per pixel).
+**One consequence you should know:** `EventsStrip` returns `null` when nothing is upcoming. Now that it carries more of the page's credibility, an empty events Sheet silently removes the homepage's only evidence *and* leaves an ink-card-shaped hole in the layout rhythm. I documented that in the component. Keep at least one forthcoming session in the Sheet, dated or TBD.
 
-A measured constant goes stale silently if the lockup is ever redrawn, and the failure mode is an
-off-centre card nobody notices. So the script now **validates it before writing anything** and exits
-with both sets of numbers if they diverge. Tested by perturbing the constant:
-
-```
-LOCKUP_INK is stale on x.
-  constant: {"x":99.999,...}
-  measured: {"x":40,...}
-The lockup has been redrawn. Re-measure and update LOCKUP_INK, or the OG
-card will sit off-centre.
-```
-
-I initially put that check at the end of the file, which meant it wrote a wrong `og-image.png` and
-*then* complained. Moved ahead of the OG section and re-verified by hash: when the guard fails,
-`og-image.png` is **not** touched.
+This is also the one change that touches the visual system: the ink card is a fourth dark surface on the page. It is a card inside a surface section, not a band, and the nearest ink *section* (the statement panel) is two sections further down, so the no-adjacent-ink-bands rule still holds. Easy to revert to `bg-paper` if you'd rather.
 
 ---
 
-## 2. `sharp` is a devDependency
+## Three things I did not do, that you should decide on
 
-Added at `^0.35.3`. The manual install instructions are gone from the script header, the `try/catch`
-around the import is gone, and it is now a plain `import sharp from "sharp"`.
+**1. Fabricated group briefs are still reachable by URL.** Removing the listings means no card renders anywhere — but `/research-groups/placeholder-transit-reliability` and five siblings still render full fabricated briefs, including the two COMPLETED ones, via `ResearchGroupBrief`. They are not in the sitemap and nothing links to them, so they will not be indexed, but they are live to anyone with the URL. Options: purge the placeholder records from `src/data/research-groups.ts`, or drop the `/research-groups/:slug` route. Both are larger than this task and neither was asked for.
 
-Everything else about the script is unchanged, **including what it refuses to overwrite**:
+**2. Four components are now dead code.** `ResearchGroupCard`, `GroupCardSkeleton`, `GroupGridSkeleton`, `DirectoryFilters` — nothing imports them (the one apparent reference is a comment). I left them because a directory plausibly returns and they represent real work. `useResearchGroups` is still live, used by the brief pages. Say the word and I'll delete them.
 
-```
-favicon.svg, favicon.ico, apple-touch-icon.png   — authored brand assets
-public/atlas-*.{svg,png}                          — the source assets
-```
-
-`og-image.png` moved off that list, since generating it is now the point. Nothing else moved.
-
-### One deployment risk I checked rather than assumed
-
-A devDependency gets installed on Vercel's Linux builder, and `sharp` is a native binary — if the
-lockfile only carried my macOS binaries the build would break. It doesn't:
-
-```
-16 linux entries in package-lock.json, including
-  @img/sharp-linux-x64  and  @img/sharp-libvips-linux-x64
-```
-
-Also confirmed `sharp` is **not** part of the build and **not** in the client bundle:
-
-- `npm run build` is `tsc -b && vite build`; the generator is a manual step, wired into no script
-- zero occurrences of `sharp` in `dist/assets/*.js`
-- zero imports of `sharp` anywhere in `src/`
-
-So the only cost is a slightly longer install on Vercel. If that ever matters, the generator is
-standalone and `sharp` could move back out.
-
----
-
-## Docs corrected
-
-Three places described the old behaviour and would now mislead:
-
-- **`README.md`** — replaced the single-source claim with a two-source table, states that `og.svg` is
-  the editable source of `og-image.png`, that `og.svg` has no `<text>` and why, that `sharp` is a
-  devDependency so the script just runs, and that the lockup ink box is validated before writing.
-- **`index.html`** — added that `og-image.png` is rasterised from `public/og.svg` and neither should be
-  hand-edited.
-- **`notes/preview-checklist.md`** — this one was actively wrong: its OG section told you to verify
-  `Subhead reads "Student research groups in any field."` That subhead no longer exists, so the check
-  would have failed correctly and looked like a bug. It now says to expect **no** subhead, and that
-  seeing one means a crawler is serving a cached copy of the deleted `og.png`.
-
-Left alone: `src/components/Hero.tsx:29` says "Atlas runs student research groups in any field." That
-is homepage body copy, not the logo tagline, and is out of scope.
+**3. "one term" vs "one semester" now disagree.** Your Section Two copy says "One semester to finish a paper", so I moved the hero and `/research-groups` to "one semester" to match. Six crawler-facing strings still say "one term": `index.html` ×4, `site.webmanifest`, `seo.ts:41`, plus `llms.txt`. I did not rewrite those — you didn't ask, and they are the strings Google and social previews read. One-line fix each if you want them aligned.
 
 ---
 
@@ -138,35 +123,16 @@ is homepage body copy, not the logo tagline, and is out of scope.
 
 ```
 npx tsc --noEmit   clean, no errors
-npx vite build     ✓ built in 703ms
-                   dist/index.html                   5.80 kB │ gzip: 2.23 kB
-                   dist/assets/index-C_Hba8Vt.css   26.91 kB │ gzip: 6.11 kB
-                   dist/assets/index-9GWe1aLO.js   358.81 kB │ gzip: 112.12 kB
+npx vite build     ✓ built in 736ms
+                   dist/index.html                   5.80 kB │ gzip:  2.23 kB
+                   dist/assets/index-C-up8MqI.css   26.74 kB │ gzip:  6.10 kB
+                   dist/assets/index-RmqAk5Mc.js   349.58 kB │ gzip: 110.34 kB
 ```
 
-Generator output:
+JS came down ~7kB — the removed directory, filters and card components outweigh what was added.
 
-```
-favicon-16x16.png    16x16     ink 13.1px tall
-favicon-32x32.png    32x32     ink 26.2px tall
-icon-192.png         192x192   ink 99.5px tall
-icon-512.png         512x512   ink 265.4px tall
-lockup ink check     ok
-og.svg               1200x630  lockup ink 825x198
-og-image.png         1200x630  from og.svg, 17.7kB
-```
-
-The four icon tiles came out **byte-identical to the committed versions** — they do not appear in
-`git status` after regeneration, which independently confirms the pipeline is deterministic and that
-this change did not disturb them.
-
-`dist/og-image.png` present and both meta tags point at it.
+Also checked: no `Start a research group`, `Browse research groups`, or `See all research groups` string remains in `src/` outside explanatory comments; the `/research-groups` meta description no longer promises a directory (149 chars, under the 155 limit).
 
 ## Not verified
 
-- The card in a real crawler. `og.svg` and `og-image.png` are now provably the same artwork and the
-  raster is pixel-identical to the file you approved, but no crawler has fetched it. **The old
-  `/og.png` URL 404s**, so any cached preview needs a forced re-scrape rather than waiting.
-- A clean `npm ci` on Linux. The lockfile has the right optional dependencies, but I ran the install
-  on macOS; the Linux resolution is inferred from the lockfile rather than observed. The next Vercel
-  build will confirm it.
+The rendered pages in a browser. Everything here is type-check, build, and reading the markup — I cannot drive a browser. Worth a look at two things specifically: the ink "Next" event card against its surface section, and the five value props in two columns at tablet width, where the fifth item wraps to a row of its own.

@@ -9,8 +9,14 @@
  *                              src/data/openings.ts (`formUrl`).
  *
  * A card or brief that shows "Apply to join" must use this module. Anything
- * that says "Start a research group" must use openings.ts. Pointing a join
- * action at the start form sends a prospective member to the wrong questions.
+ * that says "Bring Atlas to your school" must use openings.ts, via
+ * src/components/BringAtlasCta.tsx. Pointing a join action at the start form
+ * sends a prospective member to the wrong questions.
+ *
+ * NOTE: the join path currently has no entry point in the UI. The group listing
+ * was removed from the homepage and /research-groups, so nothing renders an
+ * "Apply to join" control today. This module is kept intact because the group
+ * brief pages still exist and joining is expected to return.
  */
 import type { ResearchGroup } from "@/data/research-groups";
 

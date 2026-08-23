@@ -50,10 +50,25 @@ export const REACH_COUNTRIES: ReachCountry[] = [
 ];
 
 /**
- * The only number that may be shown alongside the globe. Derived, never
- * written by hand, so it cannot drift from the list above.
+ * Country count. Derived, never written by hand, so it cannot drift from the
+ * list above.
  */
 export const REACH_COUNT = REACH_COUNTRIES.length;
+
+/**
+ * Number of fellows in the cohort these countries represent.
+ *
+ * HAND-ENTERED, and the only number in this file that is. It cannot be derived,
+ * because the array above holds one entry per country and several countries have
+ * more than one fellow — so REACH_COUNTRIES.length is a country count and says
+ * nothing about headcount.
+ *
+ * That makes it the one value here that can silently go stale. Update it when
+ * the cohort changes, and only to a figure that has been confirmed. If it ever
+ * cannot be confirmed, set it to null and the caption drops back to countries
+ * alone rather than asserting a number nobody checked.
+ */
+export const FELLOW_COUNT: number | null = 25;
 
 /** Marker tuples in the shape cobe expects: [lat, lng]. */
 export function reachMarkers(): [number, number][] {

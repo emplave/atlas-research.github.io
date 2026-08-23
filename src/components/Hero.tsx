@@ -1,5 +1,4 @@
-import { Link } from "react-router-dom";
-import { findOpening, isFormPending } from "@/data/openings";
+import { BringAtlasCta, CostLine } from "./BringAtlasCta";
 import { ReachGlobe } from "./ReachGlobe";
 
 /**
@@ -13,13 +12,18 @@ import { ReachGlobe } from "./ReachGlobe";
  * No entrance animation — the globe's rotation is the only motion, and the
  * headline is never delayed.
  *
+ * ONE CTA. The secondary "Browse research groups" button is gone: there is no
+ * group listing to browse, so it offered a reader a path that dead-ends. A lone
+ * primary button also reads as a decision rather than a menu.
+ *
+ * THE COST LINE SITS DIRECTLY UNDER THE SUBHEAD, above the button, because free
+ * is the strongest fact on the page and comparable programmes in this category
+ * charge thousands. Do not move it below the fold or fold it into the FAQ.
+ *
  * The fellowship is deliberately absent. Nothing on the homepage links to the
  * application.
  */
 export function Hero() {
-  const opening = findOpening("chapter-leader");
-  const formPending = !opening || isFormPending(opening);
-
   return (
     <section id="top" className="bg-paper border-b border-line">
       <div className="mx-auto max-w-6xl px-6 pt-16 pb-14 md:pt-20 md:pb-16">
@@ -31,34 +35,13 @@ export function Hero() {
 
             <p className="mt-8 max-w-xl type-body text-muted">
               You pick the question, recruit three or more members, and finish a
-              paper in one term.
+              paper in one semester.
             </p>
 
-            <div className="mt-10 flex flex-col sm:flex-row gap-3">
-              {formPending ? (
-                <span
-                  aria-disabled="true"
-                  className="rounded-control border border-line bg-surface px-6 py-3 text-[15px] text-muted text-center cursor-not-allowed"
-                >
-                  Applications opening soon
-                </span>
-              ) : (
-                <a
-                  href={opening.formUrl as string}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="rounded-control bg-ink text-paper px-6 py-3 text-[15px] text-center hover:bg-ink-hover transition-colors"
-                >
-                  Start a research group
-                </a>
-              )}
+            <CostLine className="mt-5 max-w-xl" />
 
-              <Link
-                to="/research-groups"
-                className="rounded-control border border-line bg-paper text-ink px-6 py-3 text-[15px] text-center hover:bg-ink hover:text-paper transition-colors"
-              >
-                Browse research groups
-              </Link>
+            <div className="mt-10">
+              <BringAtlasCta />
             </div>
           </div>
 

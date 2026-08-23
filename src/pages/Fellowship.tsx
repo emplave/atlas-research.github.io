@@ -228,12 +228,9 @@ export function Fellowship() {
           </p>
           <p className="mt-5 max-w-2xl text-[15px] text-muted leading-relaxed">
             The Fellowship is a separate programme from Atlas research groups.
-            Starting a research group is open now. A student may do both.{" "}
-            <Link
-              to="/research-groups"
-              className="link"
-            >
-              Browse research groups
+            Bringing Atlas to your school is open now. A student may do both.{" "}
+            <Link to="/research-groups" className="link">
+              See how research groups work
             </Link>
             .
           </p>

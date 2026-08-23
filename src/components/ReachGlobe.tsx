@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import createGlobe from "cobe";
-import { REACH_COUNT, reachMarkers } from "@/data/reach";
+import { FELLOW_COUNT, REACH_COUNT, reachMarkers } from "@/data/reach";
 
 /**
  * The reach globe. Renders ONLY from src/data/reach.ts — every marker is a
@@ -16,7 +16,22 @@ import { REACH_COUNT, reachMarkers } from "@/data/reach";
  * Under prefers-reduced-motion the globe still draws — frozen at an opening
  * angle that shows the widest spread of markers. A static render is the
  * accessible outcome, not a blank space.
+ *
+ * THE CAPTION LEADS WITH "FELLOWSHIP" ON PURPOSE. It used to read "Fellows in 20
+ * countries" while sitting in a hero about research groups, so the number read as
+ * the research group footprint — a far larger claim than the truth, made by
+ * placement rather than by words. Naming the programme first scopes it.
  */
+/**
+ * Scoped to the Fellowship, and degrades rather than inventing a headcount:
+ * FELLOW_COUNT is the one hand-entered figure in reach.ts, so if it is ever
+ * unset this falls back to the derived country count alone.
+ */
+const CAPTION =
+  FELLOW_COUNT === null
+    ? `Fellowship: ${REACH_COUNT} countries`
+    : `Fellowship: ${FELLOW_COUNT} fellows in ${REACH_COUNT} countries`;
+
 export function ReachGlobe({ className }: { className?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [reduceMotion, setReduceMotion] = useState(false);
@@ -96,12 +111,10 @@ export function ReachGlobe({ className }: { className?: string }) {
           className="h-full w-full opacity-0 transition-opacity duration-700"
           style={{ contain: "layout paint size" }}
           role="img"
-          aria-label={`Globe showing fellows in ${REACH_COUNT} countries`}
+          aria-label={CAPTION}
         />
       </div>
-      <p className="mt-3 text-center meta-label text-muted">
-        Fellows in {REACH_COUNT} countries
-      </p>
+      <p className="mt-3 text-center meta-label text-muted">{CAPTION}</p>
     </div>
   );
 }
