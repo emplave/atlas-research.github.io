@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { formatEventWhen, undatedEvents, upcomingEvents } from "@/data/events";
+import { forthcomingEvents, formatEventWhen } from "@/data/events";
 import { useEvents } from "@/lib/useEvents";
 import { Section } from "./Section";
 
@@ -27,9 +27,10 @@ import { Section } from "./Section";
  */
 export function EventsStrip() {
   const { events: all } = useEvents();
-  // Dated events first, then undated, so "next" is always a real date when one
-  // exists. An undated event is still forthcoming and belongs in this strip.
-  const events = [...upcomingEvents(all), ...undatedEvents(all)].slice(0, 3);
+  // forthcomingEvents applies the site-wide order — dated soonest-first, then
+  // undated — so "Next" is always a real date when one exists. See the rule in
+  // src/data/events.ts; do not re-concatenate these lists here.
+  const events = forthcomingEvents(all).slice(0, 3);
   if (events.length === 0) return null;
 
   const [next, ...later] = events;

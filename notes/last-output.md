@@ -1,144 +1,135 @@
-# `lesson` event kind, and audience-gated registration
+# Event ordering fix
 
-Both done. `npx tsc --noEmit` clean, `npx vite build` clean.
+Found it. **One of the two views was wrong; the other was already correct.**
+`npx tsc --noEmit` clean, `npx vite build` clean.
 
 ---
 
-# ITEM 1 — `lesson` added, and the row now loads
+## Current order, before the fix
 
-Two-line change plus three documentation updates:
+### `/events` — WRONG. This is the bug you saw.
 
-| File | Change |
-| --- | --- |
-| `src/data/events.ts` | `"lesson"` added to the `EventKind` union |
-| `src/lib/eventsSource.ts` | `"lesson"` added to `KINDS` |
-| `src/lib/eventsSource.ts` | the documented column list at the top of the file |
-| `notes/managing-events.md` | the allowed-values list operators actually read |
-
-**The allow-list is kept.** I added a note on the union saying why in so many words, so the next person does not "simplify" it away: without it `webinarr` publishes silently and is found by noticing it on the live site. Adding a kind is deliberately cheap — two lines, no styling, no per-kind copy — so the list restricts typos rather than vocabulary.
-
-## Verified from the live Sheet
+Sections rendered in this order:
 
 ```
-loadEvents(): 3 events
-  stanford-webinar-pope     kind=webinar  date=null        audience="Research groups"
-  stanford-webinar-levine   kind=webinar  date=null        audience="Research groups"
-  berkeley-lesson-fuller    kind=lesson   date=2026-08-25  audience="Fellows"   tz=PDT
-
-upcoming: berkeley-lesson-fuller
-undated : stanford-webinar-levine, stanford-webinar-pope
-
-homepage EventsStrip would render (max 3):
-  NEXT berkeley-lesson-fuller  Tue, Aug 25, 2026 · 21:00:00–21:45:00 PDT
-       stanford-webinar-levine  Date to be announced
-       stanford-webinar-pope    Date to be announced
-
-berkeley-lesson-fuller present     : true
-  in EventsStrip                   : true
-  in /events Upcoming              : true
+1. "Date to be announced"   ← undated, FIRST
+2. "Upcoming"               ← dated
+3. "Past sessions"
 ```
 
-It is not merely present — it is the **NEXT** event, so it takes the large ink card on the homepage. `PDT` renders as expected, confirming it never needed code support.
+So with the live Sheet:
 
-## One cosmetic thing in that row
+```
+1. Date to be announced
+     stanford-webinar-levine    Date to be announced
+     stanford-webinar-pope      Date to be announced
+2. Upcoming
+     berkeley-lesson-fuller     Tue, Aug 25, 2026        ← a confirmed date, below two unscheduled sessions
+```
 
-The time renders as **`21:00:00–21:45:00 PDT`** — with seconds. `Time` and `EndTime` are free text displayed verbatim, and the cells hold `21:00:00` / `21:45:00`. The other rows are undated so this never showed before.
+### Homepage `EventsStrip` — already correct
 
-Two ways to fix, and I did neither because you did not ask: change the cells to `9:00 PM` / `9:45 PM` (no deploy), or strip a trailing `:00` in `formatEventWhen`. I would change the cells — the field is free text precisely so you control the format, and a 24-hour clock with seconds is a different decision from a formatting bug.
+```
+const events = [...upcomingEvents(all), ...undatedEvents(all)].slice(0, 3);
+```
 
----
+Dated concatenated before undated, so `berkeley-lesson-fuller` was already the "Next" card. This view never had the bug.
 
-# ITEM 2 — Audience surfaced, registration gated
+## Cause
 
-## The exact rule
+**Not the sorts.** All three selectors in `src/data/events.ts` were and are correct:
 
-In `src/data/events.ts`, `isAudienceRestricted(event)`:
-
-1. **Audience blank → NOT restricted.** No restriction was stated, so none is invented. This is what every event did before, so blank cells behave exactly as they used to.
-2. **Contains an open-access signal → NOT restricted.** Signals, matched as lowercased substrings: `public`, `anyone`, `everyone`, `all welcome`, `open to all`.
-3. **Anything else → RESTRICTED.**
-
-So: closed by default once the cell says anything, open only on an explicit signal. Erring closed is the safe direction — calling an open event restricted disappoints one reader; showing a live Register button on a Fellows-only session hands a stranger a form or a meeting link they cannot use.
-
-**`open` alone is deliberately not a signal.** "Open to research groups" contains it and is not open access, so matching a bare `open` would invert the rule on precisely the values where it matters.
-
-## What the rule catches, across every value that exists or is plausible
-
-| Audience value | Verdict | Control label |
+| Selector | Sort | Correct? |
 | --- | --- | --- |
-| *(blank / null)* | open | — |
-| **`Fellows`** ← live | **RESTRICTED** | `Fellows only` |
-| **`Research groups`** ← live ×2 | **RESTRICTED** | `Research groups only` |
-| `Research group leads and members` ← in template | RESTRICTED | `Research group leads and members only` |
-| `Groups with data already collected` ← in template | RESTRICTED | `Groups with data already collected only` |
-| `FELLOWS` | RESTRICTED | `FELLOWS only` |
-| `Open to the public` | open | — |
-| `Public` | open | — |
-| `Anyone` | open | — |
-| `Everyone welcome` | open | — |
-| `All welcome` | open | — |
-| `Open to all` | open | — |
-| `Students and the public` | open | — |
-| `Open to research groups` | RESTRICTED | `Open to research groups only` |
+| `upcomingEvents` | `a.date.localeCompare(b.date)` — ascending, soonest first | yes |
+| `undatedEvents` | by title, since there is no date | yes |
+| `pastEvents` | `b.date.localeCompare(a.date)` — most recent first | yes |
 
-**All three live events are restricted**, so there is currently no live Register button anywhere on the site. That follows from the rule, but decide whether you want it: if the Stanford webinars are meant to be publicly registerable, the Audience cell needs an open-access signal — e.g. `Research groups and the public`, which the rule reads as open.
+**The cause was the section order in the JSX of `src/pages/Events.tsx`**, and it was deliberate rather than accidental. The line above it read:
 
-None of the three currently has a `RegistrationUrl`, so before this change they all showed `Details coming soon`. They now show `Research groups only` / `Fellows only`, which is strictly more informative.
+```
+{/* Undated first: an event without a date is still forthcoming. */}
+```
 
-## Three things about the rule worth your judgement
+That reasoning is half right and leads to the wrong conclusion. An undated event *is* forthcoming — but it cannot be acted on, so it must not outrank one that can. A reader scanning this page is looking for something to attend; putting "we haven't scheduled these yet" above "this is on 25 August" buries the only actionable item.
 
-1. **Long cells make long labels.** `Groups with data already collected only` is a sentence on a button. The label is built from the cell (`${audience} only`) rather than a lookup table, so a new value needs no code — but the cost is no length control. A mapping table would be worse: it would silently mislabel anything not in it.
-2. **`Open to research groups only`** reads awkwardly — the verdict is right, the wording doubles up.
-3. Both of the above are arguments for a short controlled column, which is your call. If you add one, the cleanest shape is a separate `AudienceScope` column with two or three values (`open`, `research groups`, `fellows`), keeping free-text `Audience` for display. Then `isAudienceRestricted` reads the scope column and this substring heuristic goes away entirely.
+The page's own doc comment also asserted the wrong order in writing — *"Three sections, in this order: undated, upcoming, past"* — so the file documented the bug as intended behaviour, which is why it survived.
 
-## Where it now shows and what it gates
+**Root cause of the divergence:** the two views each built the order independently, one by concatenating arrays and one by sequencing JSX. Nothing stated the rule, so nothing caught that they disagreed.
 
-| View | Audience shown | Registration control |
-| --- | --- | --- |
-| Homepage `EventsStrip` — Next card | **yes**, beside the date | none (unchanged — this strip has no CTA) |
-| Homepage `EventsStrip` — small cards | **yes**, beside the date | none |
-| `/events` list | **yes**, in the meta row beside kind and date | **gated** |
-| `/events/:slug` | yes, as "Who it is for" (unchanged) | **gated**, and the **meeting link is suppressed too** |
+## The fix
 
-Reuses the existing `isRegistrationPending` disabled pattern — same `aria-disabled="true"`, same border, muted text, `cursor-not-allowed`.
+**1. Section order swapped in `src/pages/Events.tsx`** — now `Upcoming` → `Date to be announced` → `Past sessions`. The misleading comment is replaced with one that states the rule and why dated wins, and the file's doc comment is corrected.
 
-### Precedence, and one decision beyond the literal ask
+**2. The rule is now stated once**, in `src/data/events.ts`, as the authority both views point at:
 
-`restricted` is checked **before** `registrationPending` and before any live link, so a closed session that carries a `RegistrationUrl` shows the closed label instead of the button rather than both.
+```
+1. dated upcoming, soonest first
+2. undated ("to be announced")
+3. past, most recent first
+```
 
-I also suppressed the **`Meeting link`** button on restricted events, on the detail page. You asked me to gate the registration control; the join link is the same problem and worse — it is a working meeting URL with no form in front of it, so leaving it while disabling Register would have gated the polite door and left the side entrance open. Flagging it as my call rather than your instruction; it is one `!restricted &&` to revert.
+**3. Added `forthcomingEvents(events)`** — returns `[...upcomingEvents, ...undatedEvents]` in that order. The homepage strip now calls it instead of concatenating by hand.
 
----
+That last part is the actual regression fix. The strip was right by luck of how someone typed a spread; now the ordering lives in one function, so a view cannot get it wrong by concatenating in the wrong sequence. `/events` still renders three separate sections rather than one flat list, because each needs its own heading and note — but it follows the same stated rule, and the comment says so.
+
+## After the fix, against the live Sheet
+
+```
+HOMEPAGE EventsStrip (forthcomingEvents, first 3):
+  NEXT DATED    berkeley-lesson-fuller     Tue, Aug 25, 2026 · 9:00 PM–9:45 PM PDT
+       UNDATED  stanford-webinar-levine    Date to be announced
+       UNDATED  stanford-webinar-pope      Date to be announced
+
+/events sections, in render order:
+  1. Upcoming
+       DATED    berkeley-lesson-fuller     Tue, Aug 25, 2026 · 9:00 PM–9:45 PM PDT
+  2. Date to be announced
+       UNDATED  stanford-webinar-levine    Date to be announced
+       UNDATED  stanford-webinar-pope      Date to be announced
+  (Past sessions: omitted, empty)
+
+INVARIANT dated-before-undated: HOLDS
+INVARIANT upcoming ascending  : HOLDS
+```
+
+### Proved with more than one dated event
+
+The live Sheet has only one dated event, so "soonest first" is not actually exercised by it. I ran the selectors against a deliberately shuffled set mixing near-future, far-future, undated and past:
+
+```
+input order: undated-zebra, far-2027, past-2025, near-2026-09, undated-apple, soonest-2026-08
+
+forthcomingEvents():
+  1. DATED    soonest-2026-08  2026-08-25
+  2. DATED    near-2026-09     2026-09-02
+  3. DATED    far-2027         2027-01-15
+  4. UNDATED  undated-apple    -
+  5. UNDATED  undated-zebra    -
+
+pastEvents():
+     past-2025  2025-05-01
+
+dated all before undated       : HOLDS
+dated ascending                : HOLDS
+past excluded from forthcoming : HOLDS
+undated sorted by title        : Apple session < Zebra session
+```
 
 ## Files changed
 
 ```
-M  src/data/events.ts              EventKind + isAudienceRestricted + audienceOnlyLabel
-M  src/lib/eventsSource.ts         KINDS + documented column list
-M  src/pages/Events.tsx            audience in the meta row, CTA gated
-M  src/pages/EventDetail.tsx       CTA gated, meeting link suppressed
-M  src/components/home/EventsStrip.tsx   audience on the next card and small cards
-M  notes/managing-events.md        allowed kinds
+M  src/data/events.ts                    ordering rule documented; forthcomingEvents() added
+M  src/pages/Events.tsx                  section order swapped; comment and doc comment corrected
+M  src/components/home/EventsStrip.tsx   now uses forthcomingEvents() instead of hand-concatenating
 ```
 
-## Verification
+## Two things worth noting
 
-```
-npx tsc --noEmit   clean, no errors
-npx vite build     ✓ built in 715ms
-                   dist/index.html                   5.82 kB │ gzip:  2.23 kB
-                   dist/assets/index-jOLiBSi9.css   26.19 kB │ gzip:  5.99 kB
-                   dist/assets/index-Bw0G4gGb.js   336.72 kB │ gzip: 106.24 kB
-```
+**The time now formats correctly.** It rendered `21:00:00–21:45:00 PDT` when I last reported; it now reads `9:00 PM–9:45 PM PDT`. You changed the Sheet cells — that resolves the cosmetic issue I flagged, and no code change was needed.
 
-Per-event control resolution, run against the live Sheet:
-
-```
-stanford-webinar-pope     restricted=true   -> DISABLED "Research groups only"   meeting link: suppressed
-stanford-webinar-levine   restricted=true   -> DISABLED "Research groups only"   meeting link: suppressed
-berkeley-lesson-fuller    restricted=true   -> DISABLED "Fellows only"           meeting link: suppressed
-```
+**`Past sessions` was already in the right place** and is untouched. The bug was only the relative order of the two forthcoming sections.
 
 ## Not verified
 
-The rendered pages. Two worth a look: the audience chip on the homepage's ink Next card, where it uses `text-paper/70` against the dark ground rather than the light-ground `text-ink` the small cards use; and the `/events` meta row at phone width, which now carries three items (kind, date, audience) and wraps.
+The rendered pages. The ordering is confirmed at the data layer for both views and the section sequence is now literal JSX order, but I have not loaded `/events` in a browser to see the two headings stacked.

@@ -211,6 +211,24 @@ export function pastEvents(
 }
 
 /**
+ * THE SITE-WIDE ORDERING RULE FOR FORTHCOMING EVENTS.
+ *
+ *   1. dated upcoming, soonest first
+ *   2. undated ("to be announced")
+ *   3. past, most recent first
+ *
+ * DATED BEFORE UNDATED, always. A reader scanning for what to attend needs the
+ * thing that has a date on it; an event with no date cannot be acted on, so it
+ * cannot outrank one that can. /events had this inverted — its "Date to be
+ * announced" section rendered above "Upcoming", pushing a confirmed session
+ * below two unscheduled ones.
+ *
+ * Every view must follow this. The homepage strip gets it from
+ * forthcomingEvents() below; /events renders the same order as separate
+ * sections, because each needs its own heading and note.
+ */
+
+/**
  * Undated events, in their own group.
  *
  * Sorted by title, since there is no date to sort by and source order in a
@@ -220,6 +238,21 @@ export function undatedEvents(events: AtlasEvent[]): AtlasEvent[] {
   return events
     .filter((e) => !hasDate(e) && e.status !== "cancelled")
     .sort((a, b) => a.title.localeCompare(b.title));
+}
+
+/**
+ * Everything still to come, in the site-wide order: dated soonest-first, then
+ * undated.
+ *
+ * One function so a view cannot get the order wrong by concatenating in the
+ * wrong sequence — which is exactly how /events and the homepage strip came to
+ * disagree.
+ */
+export function forthcomingEvents(
+  events: AtlasEvent[],
+  now: Date = new Date()
+): AtlasEvent[] {
+  return [...upcomingEvents(events, now), ...undatedEvents(events)];
 }
 
 export function cancelledEvents(events: AtlasEvent[]): AtlasEvent[] {

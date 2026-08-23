@@ -15,8 +15,9 @@ import { useEvents } from "@/lib/useEvents";
 /**
  * Events.
  *
- * Three sections, in this order: undated, upcoming, past. Any empty section is
- * omitted entirely rather than rendering an empty heading.
+ * Three sections, in this order: upcoming (dated, soonest first), undated, past.
+ * That is the site-wide ordering rule — see src/data/events.ts. Any empty section
+ * is omitted entirely rather than rendering an empty heading.
  *
  * Past events stay visible on purpose — a dated record of sessions that actually
  * happened is a credibility signal, and deleting them would leave the page
@@ -55,17 +56,23 @@ export function Events() {
         </section>
       ) : (
         <>
-          {/* Undated first: an event without a date is still forthcoming. */}
+          {/*
+            DATED FIRST, then undated, then past — the site-wide order stated in
+            src/data/events.ts. This was inverted: the "to be announced" section
+            rendered above "Upcoming", so a confirmed dated session sat below two
+            unscheduled ones. An event with no date cannot be acted on, so it
+            must not outrank one that can.
+          */}
+          {upcoming.length > 0 && (
+            <EventSection title="Upcoming" events={upcoming} />
+          )}
+
           {undated.length > 0 && (
             <EventSection
               title={DATE_TBD_LABEL}
               note="These are being scheduled. Dates are announced here first."
               events={undated}
             />
-          )}
-
-          {upcoming.length > 0 && (
-            <EventSection title="Upcoming" events={upcoming} />
           )}
 
           {nothingScheduled && (
