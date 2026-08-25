@@ -78,6 +78,8 @@ const FIELDS: readonly Field[] = [
 ];
 
 const STATUSES: readonly Status[] = [
+  "Pending",
+  "Forming",
   "Recruiting",
   "Full",
   "In Progress",
@@ -85,7 +87,50 @@ const STATUSES: readonly Status[] = [
   "Archived",
 ];
 
-const SETTINGS: readonly Setting[] = ["school", "community", "hybrid", "online"];
+/**
+ * Resolve a Status cell, case-insensitively.
+ *
+ * The Sheet is typed by hand, so "pending" and "Pending" both have to work. The
+ * canonical capitalisation from the union is what gets stored and displayed, so
+ * the chip never shows whatever casing someone happened to use.
+ */
+function toStatus(raw: string): Status | null {
+  const v = raw.trim().toLowerCase();
+  return STATUSES.find((s) => s.toLowerCase() === v) ?? null;
+}
+
+/**
+ * Setting phrasings the Sheet actually contains, mapped to the union.
+ *
+ * The union is four lowercase tokens; the Sheet holds sentences — "At a school",
+ * "In a community", "Fully online", "Hybrid". Every row with a phrasing was being
+ * skipped on this check alone, which is four of the six real groups. The Sheet's
+ * wording is better for a human filling it in, so the code accepts both rather
+ * than making operators type tokens.
+ *
+ * Matched on the phrase with articles and spaces stripped, so "at a school",
+ * "At School" and "school" all land on the same value.
+ */
+const SETTING_ALIASES: Record<string, Setting> = {
+  school: "school",
+  atschool: "school",
+  ataschool: "school",
+  schoolbased: "school",
+  community: "community",
+  incommunity: "community",
+  inacommunity: "community",
+  communitybased: "community",
+  hybrid: "hybrid",
+  online: "online",
+  fullyonline: "online",
+  entirelyonline: "online",
+  remote: "online",
+};
+
+function toSetting(raw: string): Setting | null {
+  const key = raw.trim().toLowerCase().replace(/[^a-z]/g, "");
+  return SETTING_ALIASES[key] ?? null;
+}
 
 const OUTPUT_TYPES: readonly OutputType[] = [
   "Policy brief",
@@ -103,9 +148,13 @@ const REVIEW_STATUSES: readonly ReviewStatus[] = [
   "published",
 ];
 
-/** A research group plus the Sheet-only fields the type does not carry yet. */
+/**
+ * A research group as the Sheet supplies it.
+ *
+ * memberApplicationUrl is narrowed from optional to definitely-present-or-null,
+ * because every Sheet row resolves it one way or the other.
+ */
 export type SheetResearchGroup = ResearchGroup & {
-  /** From MemberApplicationUrl. Null when blank. Reserved for Phase 13. */
   memberApplicationUrl: string | null;
 };
 
@@ -141,14 +190,14 @@ export function rowsToGroups(rows: string[][]): SheetResearchGroup[] {
       continue;
     }
 
-    const status = at("Status") as Status;
-    if (!STATUSES.includes(status)) {
+    const status = toStatus(at("Status"));
+    if (!status) {
       warn(`${label} skipped: Status "${at("Status")}" is not a known status`);
       continue;
     }
 
-    const setting = at("Setting").toLowerCase() as Setting;
-    if (!SETTINGS.includes(setting)) {
+    const setting = toSetting(at("Setting"));
+    if (!setting) {
       warn(`${label} skipped: Setting "${at("Setting")}" is not a known setting`);
       continue;
     }
@@ -213,6 +262,14 @@ export function rowsToGroups(rows: string[][]): SheetResearchGroup[] {
       reviewStatus,
       image: imageSrc && imageAlt ? { src: imageSrc, alt: imageAlt } : null,
       memberApplicationUrl: at("MemberApplicationUrl") || null,
+      /*
+       * RecruitingOpen — exactly "yes" opens applications. Compared trimmed and
+       * lowercased, the same rule isPublished() uses for the Published column,
+       * so "Yes" and "YES" work and everything else (including blank, "no",
+       * "TRUE", "pending") reads as closed. Defaulting to closed is the safe
+       * direction: a missing column must not open every group's form.
+       */
+      recruitingOpen: at("RecruitingOpen").trim().toLowerCase() === "yes",
     });
   }
 

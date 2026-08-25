@@ -3,9 +3,9 @@ import { BringAtlasCta } from "./BringAtlasCta";
 /**
  * Section 8 — closing CTA. INK FULL-BLEED.
  *
- * The second and final ink band on the page. One button, no secondary link: the
- * "Browse research groups" companion is gone with the directory, and a closing
- * band is the last place to offer a reader an alternative to the action.
+ * The second and final ink band on the page. One button, no secondary link: a
+ * closing band is the last place to offer a reader an alternative to the action,
+ * and the group listing they would be sent to is already far above them.
  *
  * The homepage carries no path to the fellowship application.
  */

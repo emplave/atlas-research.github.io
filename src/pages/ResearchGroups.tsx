@@ -1,6 +1,10 @@
 import { BringAtlasCta, CostLine } from "@/components/BringAtlasCta";
 import { ValuePropList } from "@/components/ValuePropList";
 import { REQUIREMENTS } from "@/data/value-props";
+import { isVisibleByDefault } from "@/data/research-groups";
+import { useResearchGroups } from "@/lib/useResearchGroups";
+import { GroupGridSkeleton } from "@/components/research-groups/GroupCardSkeleton";
+import { ResearchGroupCard } from "@/components/research-groups/ResearchGroupCard";
 
 /**
  * /research-groups — A FOUNDER-FACING PAGE.
@@ -23,14 +27,42 @@ import { REQUIREMENTS } from "@/data/value-props";
  * the value asks for sacrifice before offering anything; putting the CTA earlier
  * asks for a decision before the reader has the facts.
  *
- * NO GROUP LISTING, and no empty state standing in for one. There is no
- * directory, no filters, no "no groups yet" — an empty grid advertises absence,
- * and joining an existing group is not currently a path Atlas offers.
+ * THE LISTING SITS ABOVE ALL FOUR, so a visitor meets real groups before being
+ * asked to start one. It was removed when every group on the site was a
+ * fabricated placeholder and is back now that real groups exist. Proof, then
+ * pitch — reversing that asks someone to commit before showing them anything.
+ *
+ * NO FILTERS. Six groups do not need filtering, and DirectoryFilters is still in
+ * git history (at 81dc692) for when they do.
+ *
+ * NO EMPTY STATE. When nothing is published the listing section is omitted
+ * entirely and the page reads as the founder page it was — an empty grid or a
+ * "none yet" line advertises absence. That is the live state today: all six real
+ * rows have Published set to "no".
+ *
+ * ONE PRIMARY CTA. The listing carries no "browse" or "see all" action of its
+ * own; the only button on the page is "Lead an Atlas research group".
  *
  * The value props and requirements are imported, not written here: the homepage
  * renders the same five props from src/data/value-props.ts.
  */
 export function ResearchGroups() {
+  const { groups, loading } = useResearchGroups();
+
+  /*
+   * Newest first, archived excluded by the same rule the homepage uses. Sorted on
+   * startedAt, which the Sheet currently holds as US M/D/YYYY rather than ISO —
+   * so this is a string sort on a non-sortable format and the order is
+   * arbitrary until those cells are ISO. Flagged rather than papered over with a
+   * date parser that would guess at ambiguous values.
+   */
+  const listed = groups
+    .filter(isVisibleByDefault)
+    .slice()
+    .sort((a, b) => b.startedAt.localeCompare(a.startedAt));
+
+  const showListing = loading || listed.length > 0;
+
   return (
     <div className="bg-paper">
       {/* ---------------------------------------------------------------- */}
@@ -50,6 +82,34 @@ export function ResearchGroups() {
           <CostLine className="mt-5 max-w-2xl" />
         </div>
       </section>
+
+      {/* ---------------------------------------------------------------- */}
+      {/* THE LISTING — real groups, before the pitch to start one.         */}
+      {/* Omitted entirely when nothing is published.                       */}
+      {/* ---------------------------------------------------------------- */}
+      {showListing && (
+        <section className="border-b border-line">
+          <div className="mx-auto max-w-6xl px-6 py-14 md:py-18">
+            <h2 className="type-section font-display">Groups running now.</h2>
+            <p className="mt-5 max-w-2xl type-body text-muted">
+              Every published Atlas research group. Groups taking new members
+              show an apply link.
+            </p>
+
+            {loading ? (
+              <div className="mt-10">
+                <GroupGridSkeleton />
+              </div>
+            ) : (
+              <div className="mt-10 grid items-start gap-5 md:grid-cols-2 lg:grid-cols-3">
+                {listed.map((group) => (
+                  <ResearchGroupCard key={group.slug} group={group} />
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+      )}
 
       {/* ---------------------------------------------------------------- */}
       {/* 1 — Is this real? What you get.                                   */}

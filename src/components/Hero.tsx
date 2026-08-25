@@ -12,9 +12,10 @@ import { ReachGlobe } from "./ReachGlobe";
  * No entrance animation — the globe's rotation is the only motion, and the
  * headline is never delayed.
  *
- * ONE CTA. The secondary "Browse research groups" button is gone: there is no
- * group listing to browse, so it offered a reader a path that dead-ends. A lone
- * primary button also reads as a decision rather than a menu.
+ * ONE CTA. The secondary "Browse research groups" button stays gone even now
+ * that the listing is back — the listing is the very next section, so a button
+ * to reach it competed with the primary action to scroll past it. A lone primary
+ * button also reads as a decision rather than a menu.
  *
  * THE COST LINE SITS DIRECTLY UNDER THE SUBHEAD, above the button, because free
  * is the strongest fact on the page and comparable programmes in this category

@@ -18,10 +18,12 @@ import { cn } from "@/lib/utils";
  * and contradicted the page's own "no school approval required" line. "Lead"
  * carries the ownership without naming a venue.
  *
- * There is deliberately NO SECONDARY CTA anywhere beside this. Joining an
- * existing group is not currently a path — there is no group listing to browse —
- * so a "browse groups" button next to this one sent readers to a page that could
- * not act on their intent.
+ * There is deliberately NO SECONDARY CTA anywhere beside this. The group listing
+ * is back on both the homepage and /research-groups, but it needs no button: it
+ * is already on the page the reader is looking at, so a "browse groups" control
+ * beside this one would point at content a few hundred pixels away while
+ * competing with the only action that matters. Applying to a specific group is
+ * its own per-card action, gated on that group's RecruitingOpen cell.
  *
  * The link is always read from the Principal Researcher opening, never
  * hardcoded, so closing the form closes every entry point at once. When the form

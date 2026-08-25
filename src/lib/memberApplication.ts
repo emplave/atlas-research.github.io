@@ -13,10 +13,15 @@
  * src/components/BringAtlasCta.tsx. Pointing a join action at the start form
  * sends a prospective member to the wrong questions.
  *
- * NOTE: the join path currently has no entry point in the UI. The group listing
- * was removed from the homepage and /research-groups, so nothing renders an
- * "Apply to join" control today. This module is kept intact because the group
- * brief pages still exist and joining is expected to return.
+ * THE PREFILL FALLBACK IS NOW UNREACHABLE from every gated call site, and that
+ * is deliberate. canApply() requires a non-empty MemberApplicationUrl, and both
+ * the card and the brief gate their button on canApply() — so this function only
+ * ever runs with an override present and always returns it.
+ *
+ * The fallback stays as defence, but do NOT call this function ungated. Without
+ * canApply() in front of it, a group whose MemberApplicationUrl cell is empty
+ * gets a live button pointing at a generic form its lead never set up, which is
+ * the exact failure the gating exists to prevent.
  */
 import type { ResearchGroup } from "@/data/research-groups";
 

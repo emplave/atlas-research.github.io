@@ -39,6 +39,8 @@ export type Field =
  *                   reachable only when a user explicitly filters for it.
  */
 export type Status =
+  | "Pending"
+  | "Forming"
   | "Recruiting"
   | "Full"
   | "In Progress"
@@ -103,12 +105,24 @@ export type ResearchGroup = {
   /** 16:9 card image, or null to render the typographic fallback. */
   image: GroupImage | null;
   /**
-   * Per-group override for the join form, from the Sheet's
-   * MemberApplicationUrl column. When absent or null, the shared member
-   * application is used, prefilled with this group's title. See
-   * src/lib/memberApplication.ts.
+   * The group's own join form, from the Sheet's MemberApplicationUrl column.
+   *
+   * REQUIRED FOR AN APPLY BUTTON. There is no generic fallback: if this is null
+   * no button renders, even when recruitingOpen is true. A shared prefilled form
+   * used to stand in here, which meant an empty cell still produced a live
+   * button pointing somewhere the operator had not chosen.
    */
   memberApplicationUrl?: string | null;
+  /**
+   * From the Sheet's RecruitingOpen column — exactly "yes" opens applications.
+   *
+   * SEPARATE FROM `status` ON PURPOSE. Status is the lifecycle ("Forming",
+   * "In Progress"); this is a switch the lead controls. A group can be
+   * mid-project and still taking members, or Recruiting on paper with the form
+   * closed while the lead catches up. Deriving one from the other, which is what
+   * canApply() used to do, made both wrong.
+   */
+  recruitingOpen: boolean;
 };
 
 /**
@@ -206,9 +220,34 @@ export function isVisibleByDefault(group: ResearchGroup): boolean {
   return !HIDDEN_BY_DEFAULT.includes(group.status);
 }
 
-/** True when a group should render an Apply action. Recruiting only. */
+/**
+ * True when a group should render an Apply action.
+ *
+ * BOTH CONDITIONS, and neither is `status`:
+ *   1. recruitingOpen — the Sheet's RecruitingOpen cell is exactly "yes"
+ *   2. a non-empty MemberApplicationUrl to send the applicant to
+ *
+ * The second is what stops a dead link. RecruitingOpen can be "yes" while the
+ * form URL is still blank, and the honest render for that is no button at all —
+ * not a button pointing at a generic form the lead never set up. Use
+ * isRecruitingWithoutForm() to find those rows.
+ *
+ * A group with no button still appears in the listing with everything else. The
+ * apply action is the only thing gated.
+ */
 export function canApply(group: ResearchGroup): boolean {
-  return group.status === "Recruiting";
+  return group.recruitingOpen && Boolean(group.memberApplicationUrl?.trim());
+}
+
+/**
+ * A misconfiguration: recruiting is open but there is no form to point at.
+ *
+ * Exists so the condition is reportable rather than merely invisible. The card
+ * renders no button either way, but this is the difference between "the lead
+ * closed applications" and "the lead forgot to paste a URL".
+ */
+export function isRecruitingWithoutForm(group: ResearchGroup): boolean {
+  return group.recruitingOpen && !group.memberApplicationUrl?.trim();
 }
 
 /**
