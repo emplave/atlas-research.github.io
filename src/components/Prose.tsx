@@ -23,6 +23,13 @@ export function Prose({
         "[&_p]:font-sans [&_p]:text-[17px] [&_p]:leading-[1.75] [&_p]:mt-5 [&_p]:text-ink/90",
         "[&_p:first-child]:mt-0",
         "[&_h2]:font-display [&_h2]:text-[26px] [&_h2]:text-ink [&_h2]:mt-12 [&_h2]:mb-4",
+        /*
+         * A leading h2 has nothing above it to separate from, so mt-12 was 48px
+         * of dead space at the top of every brief and every journal article. The
+         * same reset already existed for paragraphs; this is the missing half of
+         * that rule, not a new idea.
+         */
+        "[&_h2:first-child]:mt-0",
         "[&_h3]:font-display [&_h3]:text-[21px] [&_h3]:text-ink [&_h3]:mt-9 [&_h3]:mb-3",
         "[&_ul]:mt-5 [&_ul]:space-y-2.5",
         "[&_li]:font-sans [&_li]:text-[17px] [&_li]:leading-[1.7] [&_li]:text-ink/90",

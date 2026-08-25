@@ -20,9 +20,22 @@
  * support" became "Feedback while you work". Do not revert them to noun phrases
  * naming an Atlas asset.
  *
- * "LESSONS FROM RESEARCHERS", never "sessions with researchers". Deliberate and
- * sitewide — see the sweep note in notes/last-output.md. The Fellowship's "guest
- * sessions" is separate, approved phrasing and is not covered by this.
+ * "LESSONS FROM RESEARCHERS", never "sessions with researchers".
+ *
+ * TWO WORDS FOR ONE ACTIVITY, AND THAT IS DELIBERATE. Do not harmonise them:
+ *
+ *   "lessons"       — the STUDENT-FACING word. What a group receives. Used here,
+ *                     on the homepage, and in llms.txt.
+ *   "guest session" — the RESEARCHER- AND PARTNER-FACING register. Used when
+ *                     inviting a researcher to teach or describing that
+ *                     contribution to an institution: /get-involved's "Run a
+ *                     guest session", /partners, and the matching seo.ts
+ *                     descriptions. "Run a lesson" is the wrong register to put
+ *                     in front of university faculty.
+ *
+ * A sweep that renames one to the other in both directions will read as a
+ * correction and is not. The Fellowship's "guest sessions" is a third case:
+ * separate, approved phrasing on its own page, also not covered by this.
  *
  * CLAIMS IN HERE ARE LOAD-BEARING. Named journals are described by what they
  * are, and named universities as places researchers come FROM — never as

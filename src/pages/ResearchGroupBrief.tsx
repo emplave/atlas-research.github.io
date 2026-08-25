@@ -139,10 +139,74 @@ function titleSizeClass(title: string): string {
   );
 }
 
+/**
+ * The six detail pairs, shared by the sidebar and the horizontal band.
+ *
+ * One definition so the two layouts cannot end up listing different fields. The
+ * wrapping <dl> differs between them — vertical stack in the card, grid in the
+ * band — which is why only the rows live here.
+ */
+function GroupDetailRows({
+  group,
+  where,
+}: {
+  group: ResearchGroup;
+  where: string;
+}) {
+  return (
+    <>
+      <Detail label="Lead">{group.leadName}</Detail>
+      <Detail label="Members">{group.memberCount}</Detail>
+      <Detail label="Setting">{where}</Detail>
+      <Detail label="Output">{group.outputType}</Detail>
+      <Detail label="Started">{formatDate(group.startedAt)}</Detail>
+      <Detail label="Review status">
+        <span className="block text-muted">{REVIEW_LABEL[group.reviewStatus]}</span>
+      </Detail>
+    </>
+  );
+}
+
+/** The apply button and its one line of expectation-setting. */
+function ApplyAction({ group }: { group: ResearchGroup }) {
+  return (
+    <>
+      <a
+        href={memberApplicationUrl(group)}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="block text-center rounded-control bg-ink text-paper px-4 py-2.5 text-sm hover:bg-ink-hover transition-colors"
+      >
+        Apply to join
+      </a>
+      {/*
+        What happens next, stated plainly. No response time is promised — leads
+        are students, and a deadline nobody owns becomes a broken promise.
+      */}
+      <p className="mt-3 text-xs text-muted leading-relaxed">
+        This group's lead reviews applications and decides who joins.
+      </p>
+    </>
+  );
+}
+
 function Brief({ group }: { group: ResearchGroup }) {
   const applyable = canApply(group);
 
   const where = settingLine(group, SETTING_LABEL_LONG);
+
+  /*
+   * How many of the three prose sections have content. Two or more keeps the
+   * sidebar; one or zero drops to a single column with the details beneath.
+   * Derived from the same conditions the sections themselves render on, so the
+   * layout cannot disagree with what is on the page.
+   */
+  const sectionCount = [
+    Boolean(group.abstract),
+    group.methods.length > 0,
+    group.milestones.length > 0,
+  ].filter(Boolean).length;
+  const twoColumn = sectionCount >= 2;
 
   return (
     <article className="bg-paper">
@@ -178,17 +242,29 @@ function Brief({ group }: { group: ResearchGroup }) {
         </div>
       </header>
 
-      <div className="mx-auto max-w-4xl px-6 py-12 grid lg:grid-cols-[1fr_260px] gap-12 lg:gap-16 items-start">
-        {/*
-          EVERY SECTION IS GATED ON ITS OWN FIELD. A heading with nothing under it
-          reads as a broken page, not as "not decided yet" — and Methods and
-          Milestones are empty on every group in the Sheet today, so both bare
-          headings showed on every brief.
+      {/*
+        ONE COLUMN OR TWO, decided by how many sections have content.
 
-          Abstract is gated too, even though the parser skips a row with a blank
-          one and it therefore cannot be empty here. The guard costs nothing and
-          means making the field optional later cannot reintroduce the bug.
-        */}
+        WHY. Methods and Milestones are empty on every group in the Sheet, so the
+        left column holds the abstract alone — 155-184px of prose beside a
+        386-523px details card, which reads as a column that failed to load rather
+        than as editorial space. A group that fills those fields in gets three
+        sections and does not have the problem, so the two-column layout is kept
+        for that case rather than removed.
+
+        EVERY SECTION IS GATED ON ITS OWN FIELD. A heading with nothing under it
+        reads as broken, not as "not decided yet". Abstract is gated too, even
+        though the parser skips a row with a blank one so it cannot be empty here —
+        the guard costs nothing and means making the field optional later cannot
+        reintroduce the bug.
+      */}
+      <div
+        className={cn(
+          "mx-auto max-w-4xl px-6 py-12",
+          twoColumn &&
+            "grid lg:grid-cols-[1fr_260px] gap-12 lg:gap-16 items-start"
+        )}
+      >
         <Prose>
           {group.abstract && (
             <>
@@ -220,42 +296,39 @@ function Brief({ group }: { group: ResearchGroup }) {
           )}
         </Prose>
 
-        <aside className="lg:sticky lg:top-24 rounded-card border border-line bg-surface p-6">
-          <h2 className="meta-label">Group details</h2>
-          <dl className="mt-4 space-y-4 text-[15px]">
-            <Detail label="Lead">{group.leadName}</Detail>
-            <Detail label="Members">{group.memberCount}</Detail>
-            <Detail label="Setting">{where}</Detail>
-            <Detail label="Output">{group.outputType}</Detail>
-            <Detail label="Started">{formatDate(group.startedAt)}</Detail>
-            <Detail label="Review status">
-              <span className="block text-muted">
-                {REVIEW_LABEL[group.reviewStatus]}
-              </span>
-            </Detail>
-          </dl>
-
-          {applyable && (
-            <div className="mt-6 pt-5 border-t border-line">
-              <a
-                href={memberApplicationUrl(group)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block text-center rounded-control bg-ink text-paper px-4 py-2.5 text-sm hover:bg-ink-hover transition-colors"
-              >
-                Apply to join
-              </a>
-              {/*
-                What happens next, stated plainly. No response time is
-                promised — leads are students, and a deadline nobody owns
-                becomes a broken promise.
-              */}
-              <p className="mt-3 text-xs text-muted leading-relaxed">
-                This group's lead reviews applications and decides who joins.
-              </p>
-            </div>
-          )}
-        </aside>
+        {twoColumn ? (
+          <aside className="lg:sticky lg:top-24 rounded-card border border-line bg-surface p-6">
+            <h2 className="meta-label">Group details</h2>
+            <dl className="mt-4 space-y-4 text-[15px]">
+              <GroupDetailRows group={group} where={where} />
+            </dl>
+            {applyable && (
+              <div className="mt-6 pt-5 border-t border-line">
+                <ApplyAction group={group} />
+              </div>
+            )}
+          </aside>
+        ) : (
+          /*
+            SINGLE COLUMN: the details become a horizontal band under the
+            abstract instead of a card beside it. Six short label/value pairs read
+            fine as a row — two up at sm, three up at md — and the band is full
+            width, so the apply button below it spans the measure rather than a
+            260px gutter. It is larger and more central than the sidebar version,
+            not smaller.
+          */
+          <div className="mt-14 border-t border-line pt-8">
+            <h2 className="meta-label">Group details</h2>
+            <dl className="mt-5 grid gap-x-10 gap-y-5 sm:grid-cols-2 md:grid-cols-3 text-[15px]">
+              <GroupDetailRows group={group} where={where} />
+            </dl>
+            {applyable && (
+              <div className="mt-8 pt-6 border-t border-line max-w-md">
+                <ApplyAction group={group} />
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="border-t border-line">

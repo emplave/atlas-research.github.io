@@ -14,13 +14,19 @@ import { ResearchGroupCard } from "@/components/research-groups/ResearchGroupCar
  * answers "what exists" for someone browsing. Nobody browses this page. The
  * people who reach it are deciding whether to run a group themselves.
  *
- * A founder moves through four questions IN THIS ORDER, and the sections below
+ * A founder moves through these questions IN THIS ORDER, and the sections below
  * are those questions:
  *
- *   1. Is this real?        → What you get
- *   2. How hard is it?      → What running a group actually involves
- *   3. What do I get?       → You run it   (the title, the ownership)
- *   4. What is step one?    → One CTA
+ *   1. Is this real? What do I get?  → the value props
+ *   2. How hard is it?               → What running a group actually involves
+ *   3. What is step one?             → One CTA
+ *
+ * THERE WAS A FOURTH, "You run it.", and it is deleted. The first value prop is
+ * "You lead it." — "You are the Principal Researcher. You choose the question,
+ * pick your members, and run the meetings." That section said the same thing in
+ * the same order, and said it SECOND, so the page repeated itself. The prop
+ * supersedes it and lands the point earlier, where status-before-features does
+ * the work.
  *
  * The old page answered only question one, and answered it with a grid of
  * placeholder group cards. Do not reorder these. Putting the commitment before
@@ -70,9 +76,12 @@ export function ResearchGroups() {
       <section className="border-b border-line">
         <div className="mx-auto max-w-6xl px-6 pt-16 md:pt-24 pb-12">
           <p className="meta-label">Research groups</p>
-          <h1 className="type-hero font-display max-w-3xl">
-            Lead an Atlas research group.
-          </h1>
+          {/*
+            The page title NAMES the page; the ask lives in the section 01
+            heading, which reads "Lead a research group." Both used to say the
+            same sentence, two sections apart.
+          */}
+          <h1 className="type-hero font-display max-w-3xl">Research groups.</h1>
           <p className="mt-8 max-w-2xl type-body text-muted">
             You pick the question, recruit three or more members, and finish a
             paper in one semester. At a school, in a community, or entirely
@@ -90,14 +99,17 @@ export function ResearchGroups() {
         <section className="border-b border-line">
           <div className="mx-auto max-w-6xl px-6 py-14 md:py-18">
             {/*
-              "Research groups", not "Groups running now" — none of them are
-              running yet. Every one is Forming with a single member, so a heading
-              claiming activity was the wrong claim about all six. The subhead
-              states what the list is and what the marker means, and asserts
-              nothing about progress.
+              NO HEADING HERE. It read "Research groups." — which is now the page
+              h1, directly above this section, so the two were the same sentence
+              twice in a row. The h1 names the page and this is the page's first
+              content, so it needs no second label.
+
+              The line below is kept: it says what the list is and what the marker
+              means, and asserts nothing about progress. Any heading added back
+              here must avoid claiming activity — every group is Forming with one
+              member, which is why "Groups running now" was wrong before.
             */}
-            <h2 className="type-section font-display">Research groups.</h2>
-            <p className="mt-5 max-w-2xl type-body text-muted">
+            <p className="max-w-2xl type-body text-muted">
               Every published Atlas research group. Groups taking new members are
               marked.
             </p>
@@ -157,28 +169,11 @@ export function ResearchGroups() {
       </section>
 
       {/* ---------------------------------------------------------------- */}
-      {/* 3 — What do I get called? The ownership.                          */}
-      {/* ---------------------------------------------------------------- */}
-      <section className="border-b border-line">
-        <div className="mx-auto max-w-6xl px-6 py-14 md:py-18">
-          <p className="meta-label">03</p>
-          <h2 className="type-section font-display mt-3">You run it.</h2>
-          <p className="mt-7 max-w-3xl type-body text-muted">
-            You are your group's{" "}
-            <span className="text-ink">Principal Researcher</span>. You choose
-            the research question, recruit your members, and run the meetings.
-            Atlas provides the curriculum, the mentors, and the publication
-            pathway. The group is yours.
-          </p>
-        </div>
-      </section>
-
-      {/* ---------------------------------------------------------------- */}
-      {/* 4 — Step one. Ink band, one CTA, nothing competing with it.        */}
+      {/* 3 — Step one. Ink band, one CTA, nothing competing with it.        */}
       {/* ---------------------------------------------------------------- */}
       <section className="on-ink bg-ink">
         <div className="mx-auto max-w-3xl px-6 py-16 md:py-20 text-center">
-          <p className="meta-label">04</p>
+          <p className="meta-label">03</p>
           <h2 className="type-section font-display mt-3">
             Start with the application.
           </h2>
