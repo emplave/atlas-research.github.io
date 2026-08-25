@@ -55,11 +55,19 @@ export const VALUE_PROPS: ValueProp[] = [
  * anywhere else — the site said "three to ten" for months, which turned a floor
  * into a cap and told a founder with twelve interested classmates to turn two
  * away.
+ *
+ * "ABOUT A SEMESTER", NOT "ONE SEMESTER". No Atlas group has finished a paper
+ * yet, so a hard number is a promise nobody can check. Do not tighten this back
+ * to a specific figure until there are completed groups to measure.
+ *
+ * THREE LINES, DOWN FROM FIVE. The five were one fact each, which read as sparse
+ * at desktop width — a column of short statements with more rule than text. The
+ * merged pairs belong together anyway: the time commitment and the timeline are
+ * one question, and "no gatekeeping" and "any question" are both answers to
+ * "what will you not make me do".
  */
 export const REQUIREMENTS: string[] = [
-  "Three or more members. That is the minimum. There is no maximum.",
-  "Two to four hours a week, depending on how fast you want to move.",
-  "One semester to finish a paper. Groups that want to keep going, keep going.",
-  "No faculty advisor, no school approval, no dues. Your group can be based at a school, in a community, or run entirely online.",
-  "You pick the question. Any field.",
+  "Three or more members. There is no maximum.",
+  "Two to four hours a week. About a semester to finish a paper.",
+  "No faculty advisor, no school approval, no dues. You pick the question, in any field.",
 ];

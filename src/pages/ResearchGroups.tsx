@@ -1,7 +1,7 @@
 import { BringAtlasCta, CostLine } from "@/components/BringAtlasCta";
 import { ValuePropList } from "@/components/ValuePropList";
 import { REQUIREMENTS } from "@/data/value-props";
-import { isVisibleByDefault } from "@/data/research-groups";
+import { isVisibleByDefault, sortForListing } from "@/data/research-groups";
 import { useResearchGroups } from "@/lib/useResearchGroups";
 import { GroupGridSkeleton } from "@/components/research-groups/GroupCardSkeleton";
 import { ResearchGroupCard } from "@/components/research-groups/ResearchGroupCard";
@@ -37,8 +37,8 @@ import { ResearchGroupCard } from "@/components/research-groups/ResearchGroupCar
  *
  * NO EMPTY STATE. When nothing is published the listing section is omitted
  * entirely and the page reads as the founder page it was — an empty grid or a
- * "none yet" line advertises absence. That is the live state today: all six real
- * rows have Published set to "no".
+ * "none yet" line advertises absence. All six rows are published now, so that
+ * path is currently unused.
  *
  * ONE PRIMARY CTA. The listing carries no "browse" or "see all" action of its
  * own; the only button on the page is "Lead an Atlas research group".
@@ -50,16 +50,15 @@ export function ResearchGroups() {
   const { groups, loading } = useResearchGroups();
 
   /*
-   * Newest first, archived excluded by the same rule the homepage uses. Sorted on
-   * startedAt, which the Sheet currently holds as US M/D/YYYY rather than ISO —
-   * so this is a string sort on a non-sortable format and the order is
-   * arbitrary until those cells are ISO. Flagged rather than papered over with a
-   * date parser that would guess at ambiguous values.
+   * Groups taking members first, newest first within each half. Archived
+   * excluded by the same rule the homepage uses.
+   *
+   * The order comes from sortForListing, which reads canApply — the same
+   * predicate as the marker and the button — so a card marked "Taking members"
+   * can never sort below one that is not. See src/data/research-groups.ts,
+   * including the note on why the secondary date sort is currently arbitrary.
    */
-  const listed = groups
-    .filter(isVisibleByDefault)
-    .slice()
-    .sort((a, b) => b.startedAt.localeCompare(a.startedAt));
+  const listed = sortForListing(groups.filter(isVisibleByDefault));
 
   const showListing = loading || listed.length > 0;
 
@@ -92,10 +91,10 @@ export function ResearchGroups() {
           <div className="mx-auto max-w-6xl px-6 py-14 md:py-18">
             {/*
               "Research groups", not "Groups running now" — none of them are
-              running yet. Every one is Pending with a single member, so a
-              heading claiming activity was the wrong claim about all six. The
-              subhead states what the list is and what the marker means, and
-              asserts nothing about progress.
+              running yet. Every one is Forming with a single member, so a heading
+              claiming activity was the wrong claim about all six. The subhead
+              states what the list is and what the marker means, and asserts
+              nothing about progress.
             */}
             <h2 className="type-section font-display">Research groups.</h2>
             <p className="mt-5 max-w-2xl type-body text-muted">

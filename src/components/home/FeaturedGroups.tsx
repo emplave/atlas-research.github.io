@@ -1,4 +1,4 @@
-import { isVisibleByDefault } from "@/data/research-groups";
+import { isVisibleByDefault, sortForListing } from "@/data/research-groups";
 import { useResearchGroups } from "@/lib/useResearchGroups";
 import { GroupCardSkeleton } from "@/components/research-groups/GroupCardSkeleton";
 import { ResearchGroupCard } from "@/components/research-groups/ResearchGroupCard";
@@ -20,7 +20,9 @@ import { Section } from "./Section";
  * it competed with the one primary CTA. Section 02 below carries the offer.
  *
  * Archived groups are excluded by the same isVisibleByDefault() rule the
- * listing uses, so a dissolved group can never be featured.
+ * listing uses, so a dissolved group can never be featured. Ordering comes from
+ * the same sortForListing() too, so the two pages cannot disagree about which
+ * groups lead.
  *
  * TITLED "Groups on Atlas", NOT "Research groups". Section 01 immediately below
  * is already titled "Research groups", and this section sits directly above it —
@@ -45,11 +47,13 @@ import { Section } from "./Section";
 export function FeaturedGroups() {
   const { groups, loading } = useResearchGroups();
 
-  const featured = groups
-    .filter(isVisibleByDefault)
-    .slice()
-    .sort((a, b) => b.startedAt.localeCompare(a.startedAt))
-    .slice(0, 6);
+  /*
+   * Same order as /research-groups: taking members first, newest first within
+   * each half, from the shared sortForListing. That matters more here than there
+   * because of the slice — with only six shown, recruiting-first means a group
+   * someone can actually join is never the one cut from the list.
+   */
+  const featured = sortForListing(groups.filter(isVisibleByDefault)).slice(0, 6);
 
   if (!loading && featured.length === 0) return null;
 

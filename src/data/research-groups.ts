@@ -245,6 +245,36 @@ export function canApply(group: ResearchGroup): boolean {
 }
 
 /**
+ * Listing order: groups taking new members first, newest first within each half.
+ *
+ * ONE FUNCTION, BOTH LISTINGS. The homepage strip and /research-groups each had
+ * their own inline `.sort(...)`, which is how two views of the same data drift.
+ * More importantly the recruiting-first rule reads canApply — THE SAME PREDICATE
+ * the "Taking members" marker and the "Apply to join" button use — so the order
+ * can never disagree with the marker. A card marked as taking members cannot sort
+ * below one that is not.
+ *
+ * The secondary sort is the previous behaviour, unchanged: startedAt descending.
+ *
+ * THAT SECONDARY SORT IS CURRENTLY ARBITRARY, and not because of this function.
+ * The Sheet holds StartedAt as US M/D/YYYY ("9/1/2026") rather than ISO, so this
+ * is a string comparison on a format that does not sort — "11/1/2026" lands
+ * before "8/10/2026". Fixing it means changing those cells to 2026-09-01 form; a
+ * parser here would have to guess between US and international convention on an
+ * ambiguous value, which is worse than a Sheet edit. The recruiting split above
+ * it works regardless.
+ *
+ * Returns a new array. Callers must not rely on the input being reordered.
+ */
+export function sortForListing(groups: ResearchGroup[]): ResearchGroup[] {
+  return groups.slice().sort((a, b) => {
+    const byRecruiting = Number(canApply(b)) - Number(canApply(a));
+    if (byRecruiting !== 0) return byRecruiting;
+    return b.startedAt.localeCompare(a.startedAt);
+  });
+}
+
+/**
  * FALLBACK DATA — DELIBERATELY EMPTY.
  *
  * This array held six invented groups, used to exercise the directory UI. They
