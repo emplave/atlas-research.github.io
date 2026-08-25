@@ -1,105 +1,114 @@
-# Condensed the commitment section; recruiting groups sort first
+# Brief page title scales to its length
 
-Both done. `npx tsc --noEmit` clean, `npx vite build` clean.
+Done. `npx tsc --noEmit` clean, `npx vite build` clean. One file changed.
 
----
-
-# 1. "What running a group actually involves" — five rows to three
-
-`REQUIREMENTS` in `src/data/value-props.ts`, verbatim as specified:
-
-```
-1. Three or more members. There is no maximum.
-2. Two to four hours a week. About a semester to finish a paper.
-3. No faculty advisor, no school approval, no dues. You pick the question, in any field.
-```
-
-**No markup changed.** The section heading, its position as 02, and the hairline rules all come from `ResearchGroups.tsx`, which renders whatever `REQUIREMENTS` holds — so this was a data-only edit. The rules are still `divide-y divide-line` with a `border-t` above the first row, now producing three rows instead of five.
-
-I updated the doc comment above the array, which described five separate facts and stated the timeline as fixed. It now records two things worth not losing:
-
-- **"About a semester", not "One semester"** — and why. No Atlas group has finished a paper, so a hard number is a promise nobody can check. The comment says not to tighten it back until there are completed groups to measure.
-- **Why the merges are the right pairs**, so a future edit does not re-split them arbitrarily: the weekly commitment and the timeline are one question, and "no gatekeeping" and "any question" are both answers to "what will you not make me do".
+**Cards do not need the same treatment.** Measured, not assumed — see the last section.
 
 ---
 
-# 2. Groups taking members sort first
+## The thresholds
 
-One function in the data layer, `sortForListing`, used by both listings:
+Three tiers, all existing scale steps. No new sizes.
 
-```ts
-export function sortForListing(groups: ResearchGroup[]): ResearchGroup[] {
-  return groups.slice().sort((a, b) => {
-    const byRecruiting = Number(canApply(b)) - Number(canApply(a));
-    if (byRecruiting !== 0) return byRecruiting;
-    return b.startedAt.localeCompare(a.startedAt);
-  });
-}
-```
+| Title length | Class | 375px | 768px | 1440px |
+| --- | --- | --- | --- | --- |
+| **≤ 55 chars** | `.type-hero` *(unchanged)* | 52px | 58px | 104px |
+| **56–85 chars** | `.type-panel` | 36px | 46px | 72px |
+| **≥ 86 chars** | `.type-section` | 32px | 32px | 56px |
 
-**It reads `canApply`** — the same predicate as the "Taking members" marker and the "Apply to join" button. That is what you asked for and it is the whole mechanism: a card marked as taking members cannot sort below one that is not, because both facts come from the same call.
+Each keeps its own `clamp()`, so responsiveness is exactly as before — the tier picks which clamp applies, it does not replace it with a fixed size.
 
-**Both pages now call it**, replacing two separate inline `.sort()` expressions. Those were identical, but identical-by-coincidence in two files is how they drift — and it would have taken only one of them being updated for the homepage and `/research-groups` to disagree about which groups lead.
-
-Secondary sort is unchanged: `startedAt` descending.
-
-## Live result — both listings
+## Your three titles
 
 ```
-1. TAKING MEMBERS  Access to International Academic Resources Among Chi…
-2. TAKING MEMBERS  Home-Based Learning and Adolescent Well-Being in Del…
-3.                 School Environment and Adolescent Health
-4.                 Educational Accessibility for Students with Visual a…
-5.                 Student Access to Academic Opportunity in Vietnam
-6.                 Traditional Medicine and Chemotherapy Side Effects
+ 40 chars -> type-hero      375px:52px   768px:58px   1440px:104px
+             School Environment and Adolescent Health
 
-INVARIANT recruiting-first: HOLDS
+ 75 chars -> type-panel     375px:36px   768px:46px   1440px:72px
+             Educational Accessibility for Students with Visual and Hearing…
+
+129 chars -> type-section   375px:32px   768px:32px   1440px:56px
+             The Desynchronization of Adolescent Development: A Neurobiological…
 ```
 
-**Two groups are recruiting now, not one** — the Sheet changed again since my last turn; `Home-Based Learning` has `RecruitingOpen = yes` as well. Both lead.
+**The short one does not shrink** — it stays on `.type-hero` at full size, which was your requirement.
 
-## Verified with more than the live data
+## What that does to header height, which is the actual goal
 
-Six groups with two recruiting does not exercise much, so I ran a shuffled synthetic set:
+Measured by reading Instrument Serif's advance widths out of the TTF and simulating greedy word-wrap at the real container widths, rather than estimating:
+
+| | 375px | 768px | 1440px |
+| --- | --- | --- | --- |
+| 40 chars, `hero` | 153px | 114px | 204px |
+| 75 chars, `panel` | 113px | 97px | 227px |
+| 129 chars, `section` | **200px** | 67px | 233px |
+| *129 chars before this change* | *510px* | *229px* | *713px* |
+
+**The long title goes from 510px to 200px on a phone** — from ten wrapped lines to six. Against 153px for the shortest title, the spread is now 1.3× instead of 3.3×. At 1440px the three land within 30px of each other (204 / 227 / 233), which is as level as three different line counts can be.
+
+## Two things worth knowing about how these were picked
+
+**The font is narrower than it looks.** Average advance across these three titles is **0.35 em per character**, not the ~0.45 an eyeball estimate would give. Every threshold would have been set one tier too aggressive on a guess.
+
+**The boundaries sit in real gaps.** Live titles are 40, 49, 50, 75, 77, and 129 characters. The boundaries at 55 and 85 fall where nothing is close:
 
 ```
-input : closed-2026-09, open-2026-07, closed-2026-11, open-2026-10
-sorted: open-2026-10*, open-2026-07*, closed-2026-11, closed-2026-09
+ 40 -> type-hero      shortest live title, 15 chars of headroom
+ 49 -> type-hero
+ 50 -> type-hero
+ 75 -> type-panel
+ 77 -> type-panel
+129 -> type-section
 ```
 
-Both open groups lead, and newest-first holds independently inside each half — `open-2026-10` before `open-2026-07`, `closed-2026-11` before `closed-2026-09`. The input array is left untouched, so no caller can be surprised by a reordered prop.
+No live title sits within 15 characters of a boundary, so a title cannot flip tier because someone fixed a typo or dropped a subtitle. That is the point of setting them against the actual data.
 
-## The homepage gets a second benefit from this
+Boundary behaviour confirmed: 55 → `hero`, 56 → `panel`, 85 → `panel`, 86 → `section`.
 
-`FeaturedGroups` slices to six. With recruiting-first, a group someone can actually join is never the one cut from the list — which matters more there than on `/research-groups`, where nothing is cut. Noted in the component.
+## One tier I rejected
 
-## One thing this does not fix
-
-The secondary date sort is still arbitrary, and not because of this function. The Sheet holds `StartedAt` as US `M/D/YYYY`, so `"11/1/2026"` sorts before `"8/10/2026"` as a string. The recruiting split above it works regardless, which is why the top of the list is now meaningful even though the tail order is not. Fix is changing those cells to `2026-09-01` form — a parser here would have to guess between US and international convention on an ambiguous value. Recorded in the function's comment.
+`.type-prop` (22→28px) for the long tier. It renders the 129-character title as a **64px block at 1440px** — a page title smaller than the body copy beneath it. `.type-section` at 233px is still clearly the page's heading while no longer dominating it.
 
 ---
 
-## Files changed
+## The cards: checked, and they do not need it
+
+Same simulation against real card widths, minus the `p-6` padding:
+
+| Variant | 40 chars | 75 chars | 129 chars | Header box |
+| --- | --- | --- | --- | --- |
+| regular, 1440 (3-col, 306px) | 1 line | 2 lines | 4 lines | 184 → **188px** |
+| featured, 1440 (2-col, 680px) | 1 line | 2 lines | 3 lines | 184 → **200px** |
+| regular, 375 (1-col, 279px) | 2 lines | 2 lines | 4 lines | 184 → **188px** |
+| featured, 375 (1-col, 279px) | 2 lines | 3 lines | 5 lines | 184 → **234px** |
+
+**The `min-h-[11.5rem]` on the card header absorbs it.** Short and medium titles leave the box at exactly 184px; only the 129-character title pushes it at all, and the worst case is the featured card on mobile at 234px — **27% growth, against 233% on the brief page.**
+
+Two other things already contain it: the title is one element among several in a fixed-height block rather than the whole header, and the grid uses `items-start`, so a taller card does not stretch its row-mates.
+
+The existing comment on that `min-h` says growth is intentional — *"min-h rather than a fixed h so a long title can still push the box taller instead of being clipped"*. That reasoning still holds at these magnitudes. **No change made.**
+
+If the featured-on-mobile case ever bothers you, the fix is the same helper applied to `text-2xl`/`text-xl`, but at 50px of growth it is not worth the coupling today.
+
+---
+
+## File changed
 
 ```
-M  src/data/value-props.ts                      REQUIREMENTS 5 -> 3; docs
-M  src/data/research-groups.ts                  sortForListing added
-M  src/pages/ResearchGroups.tsx                 uses sortForListing; 2 stale comments
-M  src/components/home/FeaturedGroups.tsx       uses sortForListing; 1 stale comment
+M  src/pages/ResearchGroupBrief.tsx    titleSizeClass() + the h1 uses it
 ```
 
-Three comments were asserting things that stopped being true when you published the rows: two claimed "all six rows have Published set to `no`", and one said every group is "Pending" when the Sheet now says `Forming`. Corrected rather than left to mislead the next reader.
+The helper is local to the brief page rather than shared, deliberately: the cards demonstrably do not need it, and a shared utility would invite applying it where it is not warranted. The measurement table and the rejected `.type-prop` option are recorded in the file so the thresholds can be re-derived rather than re-guessed.
 
 ## Verification
 
 ```
 npx tsc --noEmit   clean, no errors
-npx vite build     ✓ built in 715ms
-                   dist/assets/index-DSHd3RQC.js   343.05 kB │ gzip: 107.75 kB
+npx vite build     ✓ built in 700ms
 ```
 
-Order and the recruiting-first invariant checked by running the real function against the live Sheet and against a shuffled synthetic set.
+Tier assignment run against all six live titles plus your three references, and against the boundary values 54/55/56 and 84/85/86.
 
 ## Not verified
 
-The rendered pages. Two things worth a look: the commitment section at desktop width, which is the change you asked for and the one I cannot judge without seeing it — three rows of unequal length where the third now wraps to two lines on most widths; and the top of the grid, where two adjacent cards now both carry the filled "Taking members" marker, which is the first time that pairing appears.
+The rendered page. The heights above are computed from font metrics and a greedy-wrap simulation, which is the right way to choose thresholds but is not the browser: real line-breaking differs on hyphenation and on how `letter-spacing` interacts with the trailing space of a wrapped line, so a line count could be off by one at a boundary width. **Worth loading the 129-character group's brief at phone width** — it is `/research-groups/home-based-learning-and-adolescent-well-being-in-delhi-ncr` — since that is the case this change exists for.

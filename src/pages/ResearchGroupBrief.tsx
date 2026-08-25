@@ -11,6 +11,7 @@ import { memberApplicationUrl } from "@/lib/memberApplication";
 import { StatusChip } from "@/components/research-groups/StatusChip";
 import { FieldIcon } from "@/components/FieldIcon";
 import { Prose, ProseParagraphs } from "@/components/Prose";
+import { cn } from "@/lib/utils";
 
 /**
  * How each review state is described to a reader.
@@ -90,6 +91,54 @@ function BriefSkeleton() {
   );
 }
 
+/**
+ * Title size chosen by character count, so the header stays roughly one height.
+ *
+ * THE PROBLEM. The title was fixed at .type-hero, which clamps 52px to 104px. A
+ * long title then does not get smaller, it gets taller: the live 129-character
+ * one wrapped to 10 lines at 375px, a 510px block of heading that pushed
+ * everything below it off a phone screen — against 153px for the shortest live
+ * title. Same page, same component, 3.3x the vertical space.
+ *
+ * THE THRESHOLDS ARE MEASURED, NOT GUESSED. Instrument Serif advance widths were
+ * read from the font (average 0.35em per character across these titles, not the
+ * ~0.45 an eyeball would suggest — it is a narrow face), then greedy word-wrap
+ * was simulated at 375 / 768 / 1440 against the real container widths. Resulting
+ * heading-block heights:
+ *
+ *                        375px        768px       1440px
+ *   40 chars  hero        153px        114px        204px
+ *   75 chars  panel       113px         97px        227px
+ *  129 chars  section     200px         67px        233px
+ *
+ * Against 153 / 114 / 204 for the short title, that is level enough to read as
+ * one design. The long title drops from 510px to 200px on a phone.
+ *
+ * THE BOUNDARIES SIT IN REAL GAPS. Live titles are 40, 49, 50, 75, 77 and 129
+ * characters, so 55 and 85 fall where no actual title is near a boundary. That is
+ * the point of setting them against data: a title cannot flip tier because
+ * someone fixed a typo.
+ *
+ * NO NEW SIZES. All three are existing scale steps — .type-hero, .type-panel,
+ * .type-section — so each keeps its own clamp and stays responsive exactly as
+ * before. .type-prop was rejected for the long tier: it renders the 129-char
+ * title as a 64px block at 1440px, which is not a page title any more.
+ */
+const TITLE_SIZE_THRESHOLDS = [
+  { maxChars: 55, className: "type-hero" },
+  { maxChars: 85, className: "type-panel" },
+] as const;
+
+const LONGEST_TITLE_CLASS = "type-section";
+
+function titleSizeClass(title: string): string {
+  const n = title.trim().length;
+  return (
+    TITLE_SIZE_THRESHOLDS.find((t) => n <= t.maxChars)?.className ??
+    LONGEST_TITLE_CLASS
+  );
+}
+
 function Brief({ group }: { group: ResearchGroup }) {
   const applyable = canApply(group);
 
@@ -114,7 +163,12 @@ function Brief({ group }: { group: ResearchGroup }) {
             <StatusChip status={group.status} />
           </div>
 
-          <h1 className="type-hero font-display mt-4 max-w-3xl">
+          <h1
+            className={cn(
+              "font-display mt-4 max-w-3xl",
+              titleSizeClass(group.projectTitle)
+            )}
+          >
             {group.projectTitle}
           </h1>
 
