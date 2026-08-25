@@ -1,160 +1,123 @@
-# Value props replaced; "sessions" → "lessons"
+# Brief page: empty sections hidden, cell whitespace normalised
 
-Done. `npx tsc --noEmit` clean, `npx vite build` clean.
+Both done. `npx tsc --noEmit` clean, `npx vite build` clean.
 
-**Two heading collisions found. One is sharp and needs your decision** — the new first prop duplicates an existing section almost verbatim. Details at the end.
-
----
-
-## The props, as specified
-
-Heading and subhead now live in the shared component too, so all three pieces come from `src/data/value-props.ts`:
-
-```
-Lead a research group.
-
-We walk you from question to publication. You pick a question you care about,
-recruit three or more people, and run the group. At a school, in a community, or
-entirely online.
-
-1. You lead it.
-2. We walk you through it.
-3. Lessons from researchers.
-4. Feedback while you work.
-5. A publication pathway.
-```
-
-The reasoning you gave is recorded in the file so it does not get reverted — status before features, why the two titles now lead with what the reader does, why "Work with peers" is gone, and that "lessons" is deliberate and sitewide.
-
-## Both parents had to give up their own headings
-
-The heading could not simply be added — each page already had one in that slot, and adding a second would have stacked two headings:
-
-| Page | Removed | Why |
-| --- | --- | --- |
-| Homepage §01 | `Section title="Research groups"` **and** its intro paragraph | The title sat directly above the new heading. The intro — "Lead a research group at a school, in a community, or entirely online. Here is what you get." — said almost exactly what the new subhead says. |
-| `/research-groups` §01 | `<h2>What you get.</h2>` | Directly above the new heading, describing the same block. |
-
-The homepage's `01` numeral still renders in the spine, now beside the component's own heading rather than a `Section` title.
-
-## Cost line, CTA, prices
-
-- Cost line **unchanged**: "No application fee, no tuition, no cost to anyone."
-- CTA **unchanged**: "Lead an Atlas research group"
-- **No competitor prices added.** The only `$3,900–$6,650` in the repo is inside a code comment in `BringAtlasCta.tsx` that exists to explain why the cost line sits high, and states the site does not name them. It predates this change and is not rendered.
+**The column imbalance you asked about is real, and I have not shipped a layout change for it.** Numbers and recommendation in the third section.
 
 ---
 
-## "sessions" → "lessons": every instance, and what happened to each
+## 1. Empty sections hidden
 
-### Changed — 7 places
+Every section is now gated on its own field. Before: **12 bare headings across the six briefs** — Methods and Milestones are empty on all of them, so every page showed two headings with nothing under them.
 
-| File | Line | Change |
-| --- | --- | --- |
-| `src/data/value-props.ts` | prop 3 | "Sessions with researchers." → **"Lessons from researchers."** |
-| `public/llms.txt` | 3 | "guest sessions with university researchers" → "lessons from university researchers" |
-| `public/llms.txt` | 22 | "webinars, workshops, and guest sessions with university researchers" → "…and lessons with university researchers" |
-| `public/llms.txt` | 66 | "sessions with university researchers" → "lessons from university researchers" |
-| `src/components/home/EventsStrip.tsx` | 18 | comment naming the prop → "Lessons from researchers" |
-| `src/components/home/FeaturedGroups.tsx` | 39 | same |
-| `src/pages/Landing.tsx` | 39 | same |
+```
+student-access-to-academic-opportunity-in-vi   1 section: Abstract
+educational-accessibility-visual-and-hearing   1 section: Abstract
+school-environment-and-adolescent-health       1 section: Abstract
+home-based-learning-and-adolescent-well-bein   1 section: Abstract   [sidebar +apply]
+traditional-medicine-and-chemotherapy-side-e   1 section: Abstract
+international-academic-resources-chinese-stu   1 section: Abstract   [sidebar +apply]
 
-The last three are comments that referenced the prop *by its old title*. Left alone they would have pointed at a string that no longer exists.
+bare headings before: 12
+bare headings now   : 0
+```
 
-### Left alone — and the reasons, since you asked me to judge
+**Abstract is gated too**, even though the parser skips any row with a blank one so it cannot currently be empty. The guard costs nothing and means making that field optional later cannot quietly reintroduce the bug.
 
-**The Fellowship's "guest sessions" — locked phrasing.** `src/components/Outcomes.tsx:24-25` and `src/pages/Fellowship.tsx:249`. `Outcomes.tsx` says at the top *"What fellows actually get. Used on the Fellowship page"*, and the section beneath it carries this comment:
+### Other optional fields rendered as their own section: none
 
-> *"The named-institutions line belongs here and nowhere else: this is the page where guest sessions are discussed. **Exact approved phrasing — do not append 'and more'.**"*
+I checked the rest of the page rather than assuming. The sidebar's six rows are all fields the parser either requires (`leadName`, `outputType`, `startedAt`) or defaults (`reviewStatus` → `"none"`), and `memberCount` falls back to `0`. `settingLine()` already drops blank and placeholder segments. The apply block is gated on `canApply`. So Abstract, Methods and Milestones were the only three.
 
-That is a different programme with approved wording. I did not touch it. Recorded the carve-out in `value-props.ts` so the two do not get "harmonised" later by someone who only sees one.
+## 2. Whitespace normalised at parse
 
-**The event taxonomy — `"guest session"` and `"info session"` are Sheet-validated enum values.** `src/data/events.ts:28,32` and `src/lib/eventsSource.ts:75,79`. These are `EventKind` members that live rows are matched against; renaming them would skip every event using them. `"lesson"` was added as a kind last week precisely so you can use that word in the Sheet without breaking the old ones.
+`normalizeCell()` added to `src/lib/csv.ts` and wired into `headerReader`, which is the one place **every** source reads a cell — so groups, events and publications all get it. It previously did `.trim()` only, which caught the outer edges and nothing inside.
 
-**The `/events` page's generic "sessions"** — `Events.tsx:46,82,90,91`, `EventDetail.tsx`, `seo.ts:68`. There, "session" means *any calendar item*: webinars, workshops, deadlines, info sessions. "No sessions are scheduled right now" is not about researcher lessons.
+Five steps, in order:
 
-**Browser/cache "session"** — `groupsSource.ts`, `publicationsSource.ts`, `eventsSource.ts`. Unrelated meaning.
+```
+1. CRLF and lone CR      -> LF          (Sheets emits all three)
+2. runs of spaces/tabs   -> one space   WITHIN a line only
+3. trim each line                       (removes indentation on wrapped lines)
+4. three or more newlines -> exactly two
+5. trim the whole value
+```
 
-**`openings.ts:215,219`** — "Sessions need scheduling", "Handle session logistics". The Logistics role's operational duties, covering all event types.
+**Step 2 is where this could have gone badly wrong.** Abstracts are authored with a blank line between paragraphs and `Prose` splits on `/\n\s*\n/`. The obvious implementation — `.replace(/\s+/g, " ")` — collapses those blank lines into single spaces and silently turns every multi-paragraph abstract into one wall of text. `[^\S\n]+` matches whitespace *except* newlines, which is the whole trick.
 
-**`llms.txt:20`** — "session-by-session research frameworks". Means per-meeting cadence, not researcher lessons.
+Verified against that specific risk:
 
-### One judgement call I did not make for you
+```
+"Para one text.\n\nPara two text."        -> "Para one text.\n\nPara two text."   (survives)
+"Para one  text.\n\n\n   Para two text. " -> "Para one text.\n\nPara two text."   (cleaned, still 2 paras)
+  -> ProseParagraphs yields 2 paragraphs
+"discovering and accessing  academic"     -> "discovering and accessing academic"
+"a\t\tb"                                  -> "a b"
+"First line\n   second line indented"     -> "First line\nsecond line indented"
+"line one\r\nline two" / "\r"             -> "line one\nline two"
+```
 
-**The researcher-facing side still says "guest session":**
+Against the live Sheet, all six abstracts now report clean, and the specific double space is gone:
 
-- `src/pages/GetInvolved.tsx:35,37,38` — "Run a guest session", "Offer a guest session", and the mailto subject
-- `src/pages/Partners.tsx:185` and `src/lib/seo.ts:83` — "researchers who run guest sessions"
+```
+before: "…from discovering and accessing  academic opportunities…"
+after : "…from discovering and accessing academic opportunities…"
+```
 
-These describe the *same activity* from the speaker's and partner's side, so a strict sitewide sweep would change them. I did not, for two reasons: "guest session" is the professional register a researcher expects to be invited into — "run a lesson" reads oddly addressed to a Stanford faculty member — and one of them is an email subject line that changes what lands in your inbox.
-
-Your instruction was that the word applies sitewide, so this may well be wrong. **Say the word and it is five strings.** I would rather flag it than quietly change how you are addressed by researchers.
+Note the leading space you saw was already being removed — `headerReader` has always trimmed cell edges. The double space mid-sentence was the part nothing handled.
 
 ---
 
-## Heading collisions
+## 3. The column imbalance — reporting, not shipping
 
-### Homepage — resolved
+You were right to ask. With the empty sections gone, the left column holds one short section against a tall card.
 
-```
-h1        Atlas runs student research groups in any field.
-h2        Groups on Atlas                 (listing)
-h2 [01]   Lead a research group.          NEW
-h2 [02]   Upcoming events
-```
+Measured, using Archivo advance widths from the font and the real grid arithmetic (`max-w-4xl` 896 − `px-6` 48 = 848; grid `[1fr_260px]` with `gap-16` → left column **524px**):
 
-No collision. Removing the old `Section title="Research groups"` fixed the adjacency that adding the heading would otherwise have created.
-
-### `/research-groups` — two problems
-
-```
-1. h1        Lead an Atlas research group.        (page title)
-2. h2        Research groups.                     (listing)
-3. h2 [01]   Lead a research group.               NEW
-4. h2 [02]   What running a group actually involves.
-5. h2 [03]   You run it.
-6. h2 [04]   Start with the application.
-```
-
-**Collision A — the page title and §01 are near-identical.** "Lead an Atlas research group." then "Lead a research group." They are not adjacent — the whole listing section sits between them — but a reader scrolling passes the same sentence twice. The h1 was specified earlier; the §01 heading is specified now. **Changing the h1 is the cleaner fix**, since §01's heading is the one you just wrote, but I did not touch a title you set deliberately in an earlier turn.
-
-**Collision B — the new first prop duplicates §03 almost word for word.** This is the sharp one:
-
-| | |
+| | Height |
 | --- | --- |
-| **prop 1** | **"You lead it."** — You are the Principal Researcher. You choose the question, pick your members, and run the meetings. It is your group, not a class you sit in. |
-| **§03** | **"You run it."** — You are your group's Principal Researcher. You choose the research question, recruit your members, and run the meetings. Atlas provides the curriculum, the mentors, and the publication pathway. The group is yours. |
+| Left column, 82-char abstract | **155px** (h2 95 + 2 lines 60) |
+| Left column, 199-char abstract | **184px** (h2 95 + 3 lines 89) |
+| Sidebar, 6 detail rows | **386px** |
+| Sidebar, 6 rows + apply block | **523px** |
 
-Same claim, same structure, near-identical sentences, twice on one page — and §03 comes second, so it reads as a page that forgot it had already said this.
+**The sidebar is 2.1× to 3.4× taller than the content it sits beside.** On the two recruiting groups that is 184px of prose against a 523px card — roughly 340px of empty space below the abstract, with a sticky card alongside it. It does not read as a spacious editorial page; it reads as a page where the left half failed to load.
 
-**I left §03 in place**, because you explicitly asked me to keep those four founder sections in an earlier turn and removing one is not what you asked for here. But prop 1 now supersedes it: it says the same thing, earlier, where "status before features" actually does the work.
+### One contributing defect I found while measuring
 
-**My recommendation: delete §03 from `/research-groups`.** That also fixes the numbering cleanly — 01 value props, 02 commitment, 03 CTA. One word from you and it is done.
+`Prose` sets `[&_h2]:mt-12` with **no `:first-child` reset**, although it has exactly that for paragraphs (`[&_p:first-child]:mt-0`). So "Abstract" — now the first and only element in the column — starts **48px down from nothing**. That is 31% of the 155px column height spent on a top margin that has no preceding content to separate from. It was always there; with three sections it was invisible.
+
+### What I would do
+
+**Two changes, in this order:**
+
+1. **Add `[&_h2:first-child]:mt-0` to `Prose`.** Unambiguous cleanup — it matches the rule already there for `p`, removes 48px of dead space at the top of every brief and every journal article, and is a one-line change. I would ship this on its own.
+
+2. **Collapse to a single column when the left side has only one section.** Render the abstract full-width at the `68ch` measure, and lay the group details out as a horizontal band beneath it rather than a 260px card beside it. A short page wants a short layout, not a two-column grid with one column empty. The details are six short label/value pairs — they read fine as a row of three or a two-by-three grid, and the apply button sits under them at full width where it is more prominent than it is now.
+
+I did not do either, because you asked me to report rather than ship and (2) restructures a page layout you have not seen. **Say which and I will do it.**
+
+The cheaper alternative — moving `oneLine` into the left column as a lead paragraph — would add only 2–4 lines (it is 119–224 chars) and still leaves the column half the sidebar's height, so it treats the symptom.
+
+Worth noting the imbalance is temporary in one sense: a group that fills in Methods and Milestones gets three sections and the problem disappears. But every group is `Forming` today, and you said the one-section page is the common case for that status, so this is the layout most visitors will see.
 
 ---
 
 ## Files changed
 
 ```
-M  src/data/value-props.ts                      heading, subhead, five props, doc rewrite
-M  src/components/ValuePropList.tsx             renders heading + subhead
-M  src/components/home/ResearchGroupsPitch.tsx  dropped its title and intro
-M  src/pages/ResearchGroups.tsx                 dropped "What you get."
-M  src/components/home/EventsStrip.tsx          comment
-M  src/components/home/FeaturedGroups.tsx       comment
-M  src/pages/Landing.tsx                        comment
-M  public/llms.txt                              three researcher-lesson mentions
+M  src/lib/csv.ts                       normalizeCell(), wired into headerReader
+M  src/pages/ResearchGroupBrief.tsx     all three sections gated on their field
 ```
 
 ## Verification
 
 ```
 npx tsc --noEmit   clean, no errors
-npx vite build     ✓ built in 715ms
+npx vite build     ✓ built in 726ms
 ```
 
-I broke `ResearchGroupsPitch` mid-edit by putting a JSX comment outside the single root element; `tsc` caught it immediately and the file was rewritten rather than patched.
+Normalisation tested against ten inputs including the paragraph-destroying case, then against all six live abstracts. Section gating confirmed per group through the live source.
 
 ## Not verified
 
-The rendered pages. Two things worth looking at: the `01` numeral in the homepage spine now sits beside a component-supplied `h2` rather than a `Section` title, so check the vertical alignment holds at `lg`; and the new subhead is three sentences at `max-w-3xl`, longer than anything that slot has carried before.
+The rendered page. The heights above come from font metrics and the grid arithmetic, which is the right way to judge the imbalance but is not the browser — line counts can differ by one at a given width. The conclusion does not depend on that precision: a 2.1× to 3.4× ratio is not a rounding question. **Worth loading one brief at desktop width** to confirm the empty space reads the way the numbers say it does before you pick between the two options above.

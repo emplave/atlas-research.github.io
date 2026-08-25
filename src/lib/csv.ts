@@ -96,8 +96,48 @@ export function headerReader(header: string[]) {
   const names = header.map((h) => h.trim());
   return (row: string[], name: string): string => {
     const i = names.indexOf(name);
-    return i >= 0 && i < row.length ? row[i].trim() : "";
+    return i >= 0 && i < row.length ? normalizeCell(row[i]) : "";
   };
+}
+
+/**
+ * Tidy the whitespace in one cell, without destroying paragraph structure.
+ *
+ * Spreadsheet cells are typed by people, so they arrive with stray spaces: a
+ * leading space before the first word, a double space mid-sentence where someone
+ * edited, a trailing space before the closing quote. One live abstract had a
+ * double space in it, which renders as a visible gap in justified prose.
+ *
+ * Applied in headerReader, so EVERY source — groups, events, publications — gets
+ * it from one place. Previously this only did `.trim()`, which caught the outer
+ * edges and nothing inside.
+ *
+ * PARAGRAPH BREAKS SURVIVE, and that is the whole difficulty. Abstracts are
+ * authored as plain text with a BLANK LINE between paragraphs, and Prose splits
+ * on /\n\s*\n/ to render them. A naive `.replace(/\s+/g, " ")` would collapse
+ * those blank lines into single spaces and silently turn every multi-paragraph
+ * abstract into one wall of text. So:
+ *
+ *   1. CRLF and lone CR to LF, since Sheets emits all three
+ *   2. runs of spaces and tabs to one space — WITHIN a line only
+ *   3. trim each line, which removes indentation on wrapped paragraphs
+ *   4. three or more newlines to exactly two, so an extra blank line between
+ *      paragraphs does not become an extra empty paragraph
+ *   5. trim the whole value
+ *
+ * Safe for every column, not just prose: URLs and dates hold no internal
+ * whitespace, and pipe-separated lists are re-trimmed per entry by pipeList
+ * anyway.
+ */
+export function normalizeCell(raw: string): string {
+  return raw
+    .replace(/\r\n?/g, "\n")
+    .replace(/[^\S\n]+/g, " ")
+    .split("\n")
+    .map((line) => line.trim())
+    .join("\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
 }
 
 /** URL-safe slug from arbitrary text. */

@@ -179,23 +179,45 @@ function Brief({ group }: { group: ResearchGroup }) {
       </header>
 
       <div className="mx-auto max-w-4xl px-6 py-12 grid lg:grid-cols-[1fr_260px] gap-12 lg:gap-16 items-start">
+        {/*
+          EVERY SECTION IS GATED ON ITS OWN FIELD. A heading with nothing under it
+          reads as a broken page, not as "not decided yet" — and Methods and
+          Milestones are empty on every group in the Sheet today, so both bare
+          headings showed on every brief.
+
+          Abstract is gated too, even though the parser skips a row with a blank
+          one and it therefore cannot be empty here. The guard costs nothing and
+          means making the field optional later cannot reintroduce the bug.
+        */}
         <Prose>
-          <h2>Abstract</h2>
-          <ProseParagraphs text={group.abstract} />
+          {group.abstract && (
+            <>
+              <h2>Abstract</h2>
+              <ProseParagraphs text={group.abstract} />
+            </>
+          )}
 
-          <h2>Methods</h2>
-          <ul>
-            {group.methods.map((m) => (
-              <li key={m}>{m}</li>
-            ))}
-          </ul>
+          {group.methods.length > 0 && (
+            <>
+              <h2>Methods</h2>
+              <ul>
+                {group.methods.map((m) => (
+                  <li key={m}>{m}</li>
+                ))}
+              </ul>
+            </>
+          )}
 
-          <h2>Milestones</h2>
-          <ul>
-            {group.milestones.map((m) => (
-              <li key={m}>{m}</li>
-            ))}
-          </ul>
+          {group.milestones.length > 0 && (
+            <>
+              <h2>Milestones</h2>
+              <ul>
+                {group.milestones.map((m) => (
+                  <li key={m}>{m}</li>
+                ))}
+              </ul>
+            </>
+          )}
         </Prose>
 
         <aside className="lg:sticky lg:top-24 rounded-card border border-line bg-surface p-6">
