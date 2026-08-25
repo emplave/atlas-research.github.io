@@ -15,7 +15,7 @@ import { Section } from "./Section";
  * this is the only section on the homepage whose content is checkable. A named
  * researcher, a named institution and a date are evidence; every other section
  * is Atlas describing itself. It sits directly under the research groups pitch
- * so it reads as the proof of that section's "sessions with researchers" claim
+ * so it reads as the proof of that section's "Lessons from researchers" claim
  * rather than as a calendar.
  *
  * Made heavier three ways: an intro line that frames it as evidence, ink tone on

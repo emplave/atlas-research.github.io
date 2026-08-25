@@ -36,7 +36,7 @@ import { HatchDivider } from "@/components/visuals/HatchDivider";
  * Events come second, and are the most prominent section after the offer,
  * because a named speaker with an affiliation and a date is stronger evidence
  * than any claim the site can make about itself — and because they are the proof
- * of section 01's "sessions with researchers" line. Everything above the process
+ * of section 01's "Lessons from researchers" line. Everything above the process
  * track is therefore claim, then evidence for that claim.
  *
  * The numbered spine runs 01-06 across the six pillars. The statement panel,

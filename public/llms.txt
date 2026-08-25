@@ -1,6 +1,6 @@
 # Atlas Research Institute
 
-> Atlas Research Institute supports student research groups worldwide. A research group is three or more students working one research question, run by a student lead, at a school, in a community setting, hybrid, or fully online. Groups work in any of eight fields. Atlas provides onboarding, research frameworks, mentor feedback at set checkpoints, guest sessions with university researchers, and a route to submit completed work for review. Free.
+> Atlas Research Institute supports student research groups worldwide. A research group is three or more students working one research question, run by a student lead, at a school, in a community setting, hybrid, or fully online. Groups work in any of eight fields. Atlas provides onboarding, research frameworks, mentor feedback at set checkpoints, lessons from university researchers, and a route to submit completed work for review. Free.
 
 Atlas Research Institute is a nonprofit. Its primary programme is a network of
 student-led research groups. It also runs a separate, selective four-week summer
@@ -19,7 +19,7 @@ specialise in a single subject area.
   and sustainability
 - Provides onboarding for new groups and session-by-session research frameworks
 - Provides mentor guidance and written feedback at set checkpoints
-- Runs webinars, workshops, and guest sessions with university researchers
+- Runs webinars, workshops, and lessons with university researchers
 - Reviews weekly logs and research milestones so a stalled project is caught early
 - Refers groups to specialised mentorship where a project needs expertise Atlas
   does not hold in-house
@@ -63,7 +63,7 @@ A separate programme from research groups: a selective four-week summer cohort,
 free and remote. The current cohort is underway, so applications are closed. The
 waitlist is open and next cohort dates are announced to the waitlist first.
 Fellows receive research methodology training, structured mentor feedback, guest
-sessions with university researchers, a completed literature review or policy
+lessons from university researchers, a completed literature review or policy
 brief, and eligibility to submit completed work for review. A student may both
 join a research group and apply to the fellowship.
 

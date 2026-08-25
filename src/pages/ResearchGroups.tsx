@@ -123,9 +123,11 @@ export function ResearchGroups() {
       <section className="border-b border-line">
         <div className="mx-auto max-w-6xl px-6 py-14 md:py-18">
           <p className="meta-label">01</p>
-          <h2 className="type-section font-display mt-3">What you get.</h2>
-
-          <ValuePropList className="mt-10" />
+          {/*
+            "What you get." is gone — ValuePropList carries its own heading now.
+            Two headings in a row said the same thing.
+          */}
+          <ValuePropList className="mt-3" />
         </div>
       </section>
 

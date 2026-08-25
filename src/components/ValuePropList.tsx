@@ -1,8 +1,18 @@
-import { VALUE_PROPS } from "@/data/value-props";
+import {
+  VALUE_PROPS,
+  VALUE_PROPS_HEADING,
+  VALUE_PROPS_SUBHEAD,
+} from "@/data/value-props";
 import { cn } from "@/lib/utils";
 
 /**
- * The five value props, rendered as a hairline-ruled ledger.
+ * The value props — heading, subhead, and five hairline-ruled rows.
+ *
+ * IT OWNS ITS HEADING NOW. The heading and intro used to live in each parent: the
+ * homepage section titled itself "Research groups" with its own intro paragraph,
+ * and /research-groups titled the section "What you get." That is three strings
+ * describing one thing across two files, which is the same duplication the props
+ * themselves were extracted to end.
  *
  * ONE COMPONENT, BOTH PAGES. The homepage and /research-groups each had their own
  * copy of this markup — same data, two renderings, already diverging on gap and
@@ -57,18 +67,25 @@ export function ValuePropList({
   void numbered;
 
   return (
-    <ul className={cn("border-b border-line", className)}>
-      {VALUE_PROPS.map((prop) => (
-        <li
-          key={prop.title}
-          className="border-t border-line py-7 md:py-8 grid gap-x-10 gap-y-2 md:grid-cols-[minmax(0,17rem)_minmax(0,1fr)] md:items-baseline"
-        >
-          <h3 className="type-prop font-display text-ink">{prop.title}</h3>
-          <p className="max-w-2xl text-[15px] text-muted leading-relaxed">
-            {prop.body}
-          </p>
-        </li>
-      ))}
-    </ul>
+    <div className={className}>
+      <h2 className="type-section font-display">{VALUE_PROPS_HEADING}</h2>
+      <p className="mt-5 max-w-3xl type-body text-muted">
+        {VALUE_PROPS_SUBHEAD}
+      </p>
+
+      <ul className="mt-10 border-b border-line">
+        {VALUE_PROPS.map((prop) => (
+          <li
+            key={prop.title}
+            className="border-t border-line py-7 md:py-8 grid gap-x-10 gap-y-2 md:grid-cols-[minmax(0,17rem)_minmax(0,1fr)] md:items-baseline"
+          >
+            <h3 className="type-prop font-display text-ink">{prop.title}</h3>
+            <p className="max-w-2xl text-[15px] text-muted leading-relaxed">
+              {prop.body}
+            </p>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }

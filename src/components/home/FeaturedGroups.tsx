@@ -36,7 +36,7 @@ import { Section } from "./Section";
  * published, and a numbered section that can vanish leaves the spine starting at
  * 02 with no 01 above it. It is also not a seventh pillar — it is evidence for
  * section 01, the research groups offer, the same way the events strip is
- * evidence for the "sessions with researchers" line.
+ * evidence for the "Lessons from researchers" line.
  *
  * RENDERS NOTHING when there are no published groups — no empty grid and no
  * "none yet" copy. That is the live state today: all six real rows have

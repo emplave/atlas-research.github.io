@@ -1,114 +1,160 @@
-# Brief page title scales to its length
+# Value props replaced; "sessions" → "lessons"
 
-Done. `npx tsc --noEmit` clean, `npx vite build` clean. One file changed.
+Done. `npx tsc --noEmit` clean, `npx vite build` clean.
 
-**Cards do not need the same treatment.** Measured, not assumed — see the last section.
-
----
-
-## The thresholds
-
-Three tiers, all existing scale steps. No new sizes.
-
-| Title length | Class | 375px | 768px | 1440px |
-| --- | --- | --- | --- | --- |
-| **≤ 55 chars** | `.type-hero` *(unchanged)* | 52px | 58px | 104px |
-| **56–85 chars** | `.type-panel` | 36px | 46px | 72px |
-| **≥ 86 chars** | `.type-section` | 32px | 32px | 56px |
-
-Each keeps its own `clamp()`, so responsiveness is exactly as before — the tier picks which clamp applies, it does not replace it with a fixed size.
-
-## Your three titles
-
-```
- 40 chars -> type-hero      375px:52px   768px:58px   1440px:104px
-             School Environment and Adolescent Health
-
- 75 chars -> type-panel     375px:36px   768px:46px   1440px:72px
-             Educational Accessibility for Students with Visual and Hearing…
-
-129 chars -> type-section   375px:32px   768px:32px   1440px:56px
-             The Desynchronization of Adolescent Development: A Neurobiological…
-```
-
-**The short one does not shrink** — it stays on `.type-hero` at full size, which was your requirement.
-
-## What that does to header height, which is the actual goal
-
-Measured by reading Instrument Serif's advance widths out of the TTF and simulating greedy word-wrap at the real container widths, rather than estimating:
-
-| | 375px | 768px | 1440px |
-| --- | --- | --- | --- |
-| 40 chars, `hero` | 153px | 114px | 204px |
-| 75 chars, `panel` | 113px | 97px | 227px |
-| 129 chars, `section` | **200px** | 67px | 233px |
-| *129 chars before this change* | *510px* | *229px* | *713px* |
-
-**The long title goes from 510px to 200px on a phone** — from ten wrapped lines to six. Against 153px for the shortest title, the spread is now 1.3× instead of 3.3×. At 1440px the three land within 30px of each other (204 / 227 / 233), which is as level as three different line counts can be.
-
-## Two things worth knowing about how these were picked
-
-**The font is narrower than it looks.** Average advance across these three titles is **0.35 em per character**, not the ~0.45 an eyeball estimate would give. Every threshold would have been set one tier too aggressive on a guess.
-
-**The boundaries sit in real gaps.** Live titles are 40, 49, 50, 75, 77, and 129 characters. The boundaries at 55 and 85 fall where nothing is close:
-
-```
- 40 -> type-hero      shortest live title, 15 chars of headroom
- 49 -> type-hero
- 50 -> type-hero
- 75 -> type-panel
- 77 -> type-panel
-129 -> type-section
-```
-
-No live title sits within 15 characters of a boundary, so a title cannot flip tier because someone fixed a typo or dropped a subtitle. That is the point of setting them against the actual data.
-
-Boundary behaviour confirmed: 55 → `hero`, 56 → `panel`, 85 → `panel`, 86 → `section`.
-
-## One tier I rejected
-
-`.type-prop` (22→28px) for the long tier. It renders the 129-character title as a **64px block at 1440px** — a page title smaller than the body copy beneath it. `.type-section` at 233px is still clearly the page's heading while no longer dominating it.
+**Two heading collisions found. One is sharp and needs your decision** — the new first prop duplicates an existing section almost verbatim. Details at the end.
 
 ---
 
-## The cards: checked, and they do not need it
+## The props, as specified
 
-Same simulation against real card widths, minus the `p-6` padding:
+Heading and subhead now live in the shared component too, so all three pieces come from `src/data/value-props.ts`:
 
-| Variant | 40 chars | 75 chars | 129 chars | Header box |
-| --- | --- | --- | --- | --- |
-| regular, 1440 (3-col, 306px) | 1 line | 2 lines | 4 lines | 184 → **188px** |
-| featured, 1440 (2-col, 680px) | 1 line | 2 lines | 3 lines | 184 → **200px** |
-| regular, 375 (1-col, 279px) | 2 lines | 2 lines | 4 lines | 184 → **188px** |
-| featured, 375 (1-col, 279px) | 2 lines | 3 lines | 5 lines | 184 → **234px** |
+```
+Lead a research group.
 
-**The `min-h-[11.5rem]` on the card header absorbs it.** Short and medium titles leave the box at exactly 184px; only the 129-character title pushes it at all, and the worst case is the featured card on mobile at 234px — **27% growth, against 233% on the brief page.**
+We walk you from question to publication. You pick a question you care about,
+recruit three or more people, and run the group. At a school, in a community, or
+entirely online.
 
-Two other things already contain it: the title is one element among several in a fixed-height block rather than the whole header, and the grid uses `items-start`, so a taller card does not stretch its row-mates.
+1. You lead it.
+2. We walk you through it.
+3. Lessons from researchers.
+4. Feedback while you work.
+5. A publication pathway.
+```
 
-The existing comment on that `min-h` says growth is intentional — *"min-h rather than a fixed h so a long title can still push the box taller instead of being clipped"*. That reasoning still holds at these magnitudes. **No change made.**
+The reasoning you gave is recorded in the file so it does not get reverted — status before features, why the two titles now lead with what the reader does, why "Work with peers" is gone, and that "lessons" is deliberate and sitewide.
 
-If the featured-on-mobile case ever bothers you, the fix is the same helper applied to `text-2xl`/`text-xl`, but at 50px of growth it is not worth the coupling today.
+## Both parents had to give up their own headings
+
+The heading could not simply be added — each page already had one in that slot, and adding a second would have stacked two headings:
+
+| Page | Removed | Why |
+| --- | --- | --- |
+| Homepage §01 | `Section title="Research groups"` **and** its intro paragraph | The title sat directly above the new heading. The intro — "Lead a research group at a school, in a community, or entirely online. Here is what you get." — said almost exactly what the new subhead says. |
+| `/research-groups` §01 | `<h2>What you get.</h2>` | Directly above the new heading, describing the same block. |
+
+The homepage's `01` numeral still renders in the spine, now beside the component's own heading rather than a `Section` title.
+
+## Cost line, CTA, prices
+
+- Cost line **unchanged**: "No application fee, no tuition, no cost to anyone."
+- CTA **unchanged**: "Lead an Atlas research group"
+- **No competitor prices added.** The only `$3,900–$6,650` in the repo is inside a code comment in `BringAtlasCta.tsx` that exists to explain why the cost line sits high, and states the site does not name them. It predates this change and is not rendered.
 
 ---
 
-## File changed
+## "sessions" → "lessons": every instance, and what happened to each
+
+### Changed — 7 places
+
+| File | Line | Change |
+| --- | --- | --- |
+| `src/data/value-props.ts` | prop 3 | "Sessions with researchers." → **"Lessons from researchers."** |
+| `public/llms.txt` | 3 | "guest sessions with university researchers" → "lessons from university researchers" |
+| `public/llms.txt` | 22 | "webinars, workshops, and guest sessions with university researchers" → "…and lessons with university researchers" |
+| `public/llms.txt` | 66 | "sessions with university researchers" → "lessons from university researchers" |
+| `src/components/home/EventsStrip.tsx` | 18 | comment naming the prop → "Lessons from researchers" |
+| `src/components/home/FeaturedGroups.tsx` | 39 | same |
+| `src/pages/Landing.tsx` | 39 | same |
+
+The last three are comments that referenced the prop *by its old title*. Left alone they would have pointed at a string that no longer exists.
+
+### Left alone — and the reasons, since you asked me to judge
+
+**The Fellowship's "guest sessions" — locked phrasing.** `src/components/Outcomes.tsx:24-25` and `src/pages/Fellowship.tsx:249`. `Outcomes.tsx` says at the top *"What fellows actually get. Used on the Fellowship page"*, and the section beneath it carries this comment:
+
+> *"The named-institutions line belongs here and nowhere else: this is the page where guest sessions are discussed. **Exact approved phrasing — do not append 'and more'.**"*
+
+That is a different programme with approved wording. I did not touch it. Recorded the carve-out in `value-props.ts` so the two do not get "harmonised" later by someone who only sees one.
+
+**The event taxonomy — `"guest session"` and `"info session"` are Sheet-validated enum values.** `src/data/events.ts:28,32` and `src/lib/eventsSource.ts:75,79`. These are `EventKind` members that live rows are matched against; renaming them would skip every event using them. `"lesson"` was added as a kind last week precisely so you can use that word in the Sheet without breaking the old ones.
+
+**The `/events` page's generic "sessions"** — `Events.tsx:46,82,90,91`, `EventDetail.tsx`, `seo.ts:68`. There, "session" means *any calendar item*: webinars, workshops, deadlines, info sessions. "No sessions are scheduled right now" is not about researcher lessons.
+
+**Browser/cache "session"** — `groupsSource.ts`, `publicationsSource.ts`, `eventsSource.ts`. Unrelated meaning.
+
+**`openings.ts:215,219`** — "Sessions need scheduling", "Handle session logistics". The Logistics role's operational duties, covering all event types.
+
+**`llms.txt:20`** — "session-by-session research frameworks". Means per-meeting cadence, not researcher lessons.
+
+### One judgement call I did not make for you
+
+**The researcher-facing side still says "guest session":**
+
+- `src/pages/GetInvolved.tsx:35,37,38` — "Run a guest session", "Offer a guest session", and the mailto subject
+- `src/pages/Partners.tsx:185` and `src/lib/seo.ts:83` — "researchers who run guest sessions"
+
+These describe the *same activity* from the speaker's and partner's side, so a strict sitewide sweep would change them. I did not, for two reasons: "guest session" is the professional register a researcher expects to be invited into — "run a lesson" reads oddly addressed to a Stanford faculty member — and one of them is an email subject line that changes what lands in your inbox.
+
+Your instruction was that the word applies sitewide, so this may well be wrong. **Say the word and it is five strings.** I would rather flag it than quietly change how you are addressed by researchers.
+
+---
+
+## Heading collisions
+
+### Homepage — resolved
 
 ```
-M  src/pages/ResearchGroupBrief.tsx    titleSizeClass() + the h1 uses it
+h1        Atlas runs student research groups in any field.
+h2        Groups on Atlas                 (listing)
+h2 [01]   Lead a research group.          NEW
+h2 [02]   Upcoming events
 ```
 
-The helper is local to the brief page rather than shared, deliberately: the cards demonstrably do not need it, and a shared utility would invite applying it where it is not warranted. The measurement table and the rejected `.type-prop` option are recorded in the file so the thresholds can be re-derived rather than re-guessed.
+No collision. Removing the old `Section title="Research groups"` fixed the adjacency that adding the heading would otherwise have created.
+
+### `/research-groups` — two problems
+
+```
+1. h1        Lead an Atlas research group.        (page title)
+2. h2        Research groups.                     (listing)
+3. h2 [01]   Lead a research group.               NEW
+4. h2 [02]   What running a group actually involves.
+5. h2 [03]   You run it.
+6. h2 [04]   Start with the application.
+```
+
+**Collision A — the page title and §01 are near-identical.** "Lead an Atlas research group." then "Lead a research group." They are not adjacent — the whole listing section sits between them — but a reader scrolling passes the same sentence twice. The h1 was specified earlier; the §01 heading is specified now. **Changing the h1 is the cleaner fix**, since §01's heading is the one you just wrote, but I did not touch a title you set deliberately in an earlier turn.
+
+**Collision B — the new first prop duplicates §03 almost word for word.** This is the sharp one:
+
+| | |
+| --- | --- |
+| **prop 1** | **"You lead it."** — You are the Principal Researcher. You choose the question, pick your members, and run the meetings. It is your group, not a class you sit in. |
+| **§03** | **"You run it."** — You are your group's Principal Researcher. You choose the research question, recruit your members, and run the meetings. Atlas provides the curriculum, the mentors, and the publication pathway. The group is yours. |
+
+Same claim, same structure, near-identical sentences, twice on one page — and §03 comes second, so it reads as a page that forgot it had already said this.
+
+**I left §03 in place**, because you explicitly asked me to keep those four founder sections in an earlier turn and removing one is not what you asked for here. But prop 1 now supersedes it: it says the same thing, earlier, where "status before features" actually does the work.
+
+**My recommendation: delete §03 from `/research-groups`.** That also fixes the numbering cleanly — 01 value props, 02 commitment, 03 CTA. One word from you and it is done.
+
+---
+
+## Files changed
+
+```
+M  src/data/value-props.ts                      heading, subhead, five props, doc rewrite
+M  src/components/ValuePropList.tsx             renders heading + subhead
+M  src/components/home/ResearchGroupsPitch.tsx  dropped its title and intro
+M  src/pages/ResearchGroups.tsx                 dropped "What you get."
+M  src/components/home/EventsStrip.tsx          comment
+M  src/components/home/FeaturedGroups.tsx       comment
+M  src/pages/Landing.tsx                        comment
+M  public/llms.txt                              three researcher-lesson mentions
+```
 
 ## Verification
 
 ```
 npx tsc --noEmit   clean, no errors
-npx vite build     ✓ built in 700ms
+npx vite build     ✓ built in 715ms
 ```
 
-Tier assignment run against all six live titles plus your three references, and against the boundary values 54/55/56 and 84/85/86.
+I broke `ResearchGroupsPitch` mid-edit by putting a JSX comment outside the single root element; `tsc` caught it immediately and the file was rewritten rather than patched.
 
 ## Not verified
 
-The rendered page. The heights above are computed from font metrics and a greedy-wrap simulation, which is the right way to choose thresholds but is not the browser: real line-breaking differs on hyphenation and on how `letter-spacing` interacts with the trailing space of a wrapped line, so a line count could be off by one at a boundary width. **Worth loading the 129-character group's brief at phone width** — it is `/research-groups/home-based-learning-and-adolescent-well-being-in-delhi-ncr` — since that is the case this change exists for.
+The rendered pages. Two things worth looking at: the `01` numeral in the homepage spine now sits beside a component-supplied `h2` rather than a `Section` title, so check the vertical alignment holds at `lg`; and the new subhead is three sentences at `max-w-3xl`, longer than anything that slot has carried before.

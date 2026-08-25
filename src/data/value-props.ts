@@ -5,10 +5,24 @@
  * going to be written twice, and two copies of a value proposition drift: the
  * homepage keeps an old claim while the page it links to makes a newer one.
  *
- * ORDER IS DELIBERATE and answers a founder's questions in sequence — the
- * curriculum first because "can I actually do this" is the blocker, publication
- * second because it is the payoff, then the support that makes it survivable.
- * Do not reorder to put the most impressive item first.
+ * ORDER IS DELIBERATE. "You lead it" is first because STATUS COMES BEFORE
+ * FEATURES: the reader is deciding whether they get to be someone, not which
+ * services they receive. Then the curriculum, because "can I actually do this"
+ * is the next blocker. Then the teaching and the feedback that make it
+ * survivable, and publication last as the payoff. Do not reorder to put the most
+ * impressive item first.
+ *
+ * FIVE, NOT SIX. "Work with peers" was removed: it repeated "recruit three or
+ * more people" from the subhead, and six props is more than a reader finishes.
+ *
+ * TITLES LEAD WITH WHAT THE READER DOES, not what Atlas owns. "A research
+ * framework and curriculum" became "We walk you through it"; "Mentor and TA
+ * support" became "Feedback while you work". Do not revert them to noun phrases
+ * naming an Atlas asset.
+ *
+ * "LESSONS FROM RESEARCHERS", never "sessions with researchers". Deliberate and
+ * sitewide — see the sweep note in notes/last-output.md. The Fellowship's "guest
+ * sessions" is separate, approved phrasing and is not covered by this.
  *
  * CLAIMS IN HERE ARE LOAD-BEARING. Named journals are described by what they
  * are, and named universities as places researchers come FROM — never as
@@ -20,26 +34,38 @@ export type ValueProp = {
   body: string;
 };
 
+/**
+ * The heading and subhead that sit above the props.
+ *
+ * SHARED, like the props themselves. They used to live in each parent — the
+ * homepage section had its own title and intro, /research-groups had "What you
+ * get." — which meant three strings describing one thing in two files.
+ */
+export const VALUE_PROPS_HEADING = "Lead a research group.";
+
+export const VALUE_PROPS_SUBHEAD =
+  "We walk you from question to publication. You pick a question you care about, recruit three or more people, and run the group. At a school, in a community, or entirely online.";
+
 export const VALUE_PROPS: ValueProp[] = [
   {
-    title: "A research framework and curriculum.",
-    body: "Question formulation, scoping, method selection, analysis, write-up. You are not figuring out how to do research alone.",
+    title: "You lead it.",
+    body: "You are the Principal Researcher. You choose the question, pick your members, and run the meetings. It is your group, not a class you sit in.",
+  },
+  {
+    title: "We walk you through it.",
+    body: "Question formulation, scoping, method selection, analysis, write-up. Five stages, with the curriculum and a mentor for each one. Nobody expects you to already know how to do this.",
+  },
+  {
+    title: "Lessons from researchers.",
+    body: "Groups learn from researchers at Stanford, UC Berkeley, and USC on research methods, with live Q&A.",
+  },
+  {
+    title: "Feedback while you work.",
+    body: "Mentors and TAs read your drafts and answer questions in chat while the work is in progress, not just at checkpoints.",
   },
   {
     title: "A publication pathway.",
     body: "Groups submit to our partner journals, which are peer-reviewed and indexed in EBSCO and Google Scholar, and to the Atlas journal.",
-  },
-  {
-    title: "Sessions with researchers.",
-    body: "Groups hear from researchers at Stanford, UC Berkeley, and USC on research methods, with live Q&A.",
-  },
-  {
-    title: "Mentor and TA support.",
-    body: "Direct access to mentors and TAs in chat while the work is in progress.",
-  },
-  {
-    title: "Work with peers.",
-    body: "Research groups are teams. You work alongside other students on the same question, not alone on a project no one else sees.",
   },
 ];
 

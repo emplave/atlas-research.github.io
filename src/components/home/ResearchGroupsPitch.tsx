@@ -3,36 +3,27 @@ import { ValuePropList } from "@/components/ValuePropList";
 import { Section } from "./Section";
 
 /**
- * Section 01 — research groups, as an offer rather than a gallery.
- *
- * REPLACES FeaturedGroups, which listed group cards. The cards were the two
- * placeholder records, and a homepage whose first section is a grid of
- * fabricated COMPLETED projects is worse than one that makes a plain claim. The
- * listing is gone from here and from /research-groups, with no empty grid and no
- * "no groups yet" message — an empty state still advertises absence.
+ * Section 01 — research groups, as an offer.
  *
  * WHAT THIS SECTION HAS TO DO: a homepage visitor is deciding whether to read
- * further, so this carries the five value props, the cost, and the one CTA, and
- * nothing else. The commitment ("what it takes") and the title ("you run it")
- * live only on /research-groups — repeating them here would put the whole
- * founder argument above the fold and leave that page as a duplicate.
+ * further, so it carries the value props, the cost, and the one CTA, and nothing
+ * else. The commitment ("what running a group involves") and the ownership
+ * section live only on /research-groups — repeating them here would put the whole
+ * founder argument above the fold and leave that page a duplicate.
  *
- * Value props come from src/data/value-props.ts, shared with that page, so the
- * two cannot drift.
+ * NO Section title and NO intro paragraph. ValuePropList supplies both now.
+ * Leaving the old "Research groups" title in place put two headings back to back,
+ * and the old intro — "Lead a research group at a school, in a community, or
+ * entirely online" — said almost exactly what the new shared subhead says. The 01
+ * numeral still renders in the spine, alongside the component's own heading.
+ *
+ * Heading, subhead and props all come from src/data/value-props.ts, shared with
+ * /research-groups, so the two pages cannot drift.
  */
 export function ResearchGroupsPitch() {
   return (
-    <Section number="01" title="Research groups" tone="paper">
-      <p className="mt-6 max-w-2xl type-body text-muted">
-        Lead a research group at a school, in a community, or entirely online.
-        Here is what you get.
-      </p>
-
-      {/*
-        Shared with /research-groups — see src/components/ValuePropList.tsx for
-        why this is a ruled ledger rather than the two-column grid it was.
-      */}
-      <ValuePropList className="mt-9" />
+    <Section number="01" tone="paper">
+      <ValuePropList />
 
       <div className="mt-10">
         <CostLine />
