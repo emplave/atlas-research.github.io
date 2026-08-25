@@ -37,6 +37,36 @@ function inkForField(field: Field): string {
 }
 
 /**
+ * "Taking members" — the scannable signal that a group is open.
+ *
+ * WHY IT EXISTS. The only indication used to be the apply link at the bottom of
+ * the card, which is invisible when scanning a grid of six: the eye reads
+ * headers, not footers. This puts the fact where the status already is.
+ *
+ * DRIVEN BY canApply, THE SAME PREDICATE AS THE BUTTON. That is the point of
+ * passing a boolean in rather than recomputing it here — the marker and the
+ * action cannot disagree, so a card can never say "taking members" and offer no
+ * way to apply, or vice versa.
+ *
+ * Same shape as StatusChip and monochrome, but INVERTED — filled ink on paper,
+ * filled paper on ink — because it is the one thing on the card a reader is
+ * scanning for. Every status chip is an outline, so the fill reads as a
+ * different kind of thing rather than as a louder status.
+ */
+function TakingMembers({ onInk = false }: { onInk?: boolean }) {
+  return (
+    <span
+      className={cn(
+        "inline-flex shrink-0 items-center rounded-full px-2.5 py-1 meta-label",
+        onInk ? "bg-paper !text-ink" : "bg-ink !text-paper"
+      )}
+    >
+      Taking members
+    </span>
+  );
+}
+
+/**
  * Directory card for one research group.
  *
  * The header block is the card's main surface, not dead space. With no image
@@ -44,10 +74,18 @@ function inkForField(field: Field): string {
  * status chip. When a real image exists the image takes the block and the
  * title moves below it.
  *
- * The Apply action is gated on canApply() — Recruiting only — and points at the
- * MEMBER application, prefilled with this group's title. It must never point at
- * the start-a-group form; those are different questions for different people.
- * See src/lib/memberApplication.ts.
+ * TWO THINGS COME FROM canApply(), and only from it: the "Taking members" marker
+ * in the header and the "Apply to join" button in the footer. Both read the same
+ * predicate so they cannot contradict each other — a card that advertises intake
+ * always offers a way in.
+ *
+ * canApply() is now RecruitingOpen alone. The link itself always exists, because
+ * memberApplicationUrl() generates one from the project title when the Sheet's
+ * override column is empty, which is every group today.
+ *
+ * The action points at the MEMBER application. It must never point at the
+ * start-a-group form; those are different questions for different people. See
+ * src/lib/memberApplication.ts.
  */
 export function ResearchGroupCard({
   group,
@@ -97,7 +135,11 @@ export function ResearchGroupCard({
               size={featured ? 28 : 24}
               className="text-paper/80 shrink-0"
             />
-            <StatusChip status={group.status} onInk />
+            {/* flex-wrap so a long status and the marker do not overflow. */}
+            <div className="flex flex-wrap items-center justify-end gap-2">
+              {applyable && <TakingMembers onInk />}
+              <StatusChip status={group.status} onInk />
+            </div>
           </div>
 
           <h3
@@ -125,7 +167,10 @@ export function ResearchGroupCard({
                 size={24}
                 className="text-ink shrink-0"
               />
-              <StatusChip status={group.status} />
+              <div className="flex flex-wrap items-center justify-end gap-2">
+                {applyable && <TakingMembers />}
+                <StatusChip status={group.status} />
+              </div>
             </div>
             <h3
               className={cn(

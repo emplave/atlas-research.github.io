@@ -22,6 +22,13 @@ import { Section } from "./Section";
  * Archived groups are excluded by the same isVisibleByDefault() rule the
  * listing uses, so a dissolved group can never be featured.
  *
+ * TITLED "Groups on Atlas", NOT "Research groups". Section 01 immediately below
+ * is already titled "Research groups", and this section sits directly above it —
+ * so sharing the noun would put the same heading on screen twice in a row, the
+ * same duplication that was just removed from /get-involved. It also must not say
+ * "running" or "active": every group is Pending with one member. "Groups on
+ * Atlas" is true of all six and claims nothing about progress.
+ *
  * DELIBERATELY UNNUMBERED. It sits above section 01 without taking a spine
  * numeral, for one hard reason: this section RENDERS NOTHING when no groups are
  * published, and a numbered section that can vanish leaves the spine starting at
@@ -49,7 +56,7 @@ export function FeaturedGroups() {
   const [lead, ...rest] = featured;
 
   return (
-    <Section title="Groups running now" tone="paper">
+    <Section title="Groups on Atlas" tone="paper">
       {/*
         items-start so a card sizes to its own content. Without it the grid
         stretches every card in a row to the tallest one, which is what padded

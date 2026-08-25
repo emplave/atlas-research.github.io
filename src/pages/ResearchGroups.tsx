@@ -90,10 +90,17 @@ export function ResearchGroups() {
       {showListing && (
         <section className="border-b border-line">
           <div className="mx-auto max-w-6xl px-6 py-14 md:py-18">
-            <h2 className="type-section font-display">Groups running now.</h2>
+            {/*
+              "Research groups", not "Groups running now" — none of them are
+              running yet. Every one is Pending with a single member, so a
+              heading claiming activity was the wrong claim about all six. The
+              subhead states what the list is and what the marker means, and
+              asserts nothing about progress.
+            */}
+            <h2 className="type-section font-display">Research groups.</h2>
             <p className="mt-5 max-w-2xl type-body text-muted">
-              Every published Atlas research group. Groups taking new members
-              show an apply link.
+              Every published Atlas research group. Groups taking new members are
+              marked.
             </p>
 
             {loading ? (

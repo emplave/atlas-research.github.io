@@ -221,33 +221,27 @@ export function isVisibleByDefault(group: ResearchGroup): boolean {
 }
 
 /**
- * True when a group should render an Apply action.
+ * True when a group is taking new members.
  *
- * BOTH CONDITIONS, and neither is `status`:
- *   1. recruitingOpen — the Sheet's RecruitingOpen cell is exactly "yes"
- *   2. a non-empty MemberApplicationUrl to send the applicant to
+ * ONE CONDITION: the Sheet's RecruitingOpen cell is exactly "yes". Not `status` —
+ * a group can be Forming and taking members, or Recruiting on paper with intake
+ * paused, so deriving one from the other made both wrong.
  *
- * The second is what stops a dead link. RecruitingOpen can be "yes" while the
- * form URL is still blank, and the honest render for that is no button at all —
- * not a button pointing at a generic form the lead never set up. Use
- * isRecruitingWithoutForm() to find those rows.
+ * It used to also require a non-empty MemberApplicationUrl, to avoid rendering a
+ * button with nowhere to send anyone. That condition is gone because the premise
+ * is: memberApplicationUrl() now generates a prefilled link for every group from
+ * its title, so a URL always exists and the Sheet column is only an override.
+ * isRecruitingWithoutForm() went with it — the state it described can no longer
+ * occur.
  *
- * A group with no button still appears in the listing with everything else. The
- * apply action is the only thing gated.
+ * THIS IS THE SINGLE SOURCE FOR BOTH THE MARKER AND THE BUTTON. The card's
+ * "Taking members" marker and its "Apply to join" action both read this, so a
+ * group can never advertise one without the other.
+ *
+ * A group not taking members still appears in the listing with everything else.
  */
 export function canApply(group: ResearchGroup): boolean {
-  return group.recruitingOpen && Boolean(group.memberApplicationUrl?.trim());
-}
-
-/**
- * A misconfiguration: recruiting is open but there is no form to point at.
- *
- * Exists so the condition is reportable rather than merely invisible. The card
- * renders no button either way, but this is the difference between "the lead
- * closed applications" and "the lead forgot to paste a URL".
- */
-export function isRecruitingWithoutForm(group: ResearchGroup): boolean {
-  return group.recruitingOpen && !group.memberApplicationUrl?.trim();
+  return group.recruitingOpen;
 }
 
 /**

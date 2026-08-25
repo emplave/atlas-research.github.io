@@ -13,15 +13,14 @@
  * src/components/BringAtlasCta.tsx. Pointing a join action at the start form
  * sends a prospective member to the wrong questions.
  *
- * THE PREFILL FALLBACK IS NOW UNREACHABLE from every gated call site, and that
- * is deliberate. canApply() requires a non-empty MemberApplicationUrl, and both
- * the card and the brief gate their button on canApply() — so this function only
- * ever runs with an override present and always returns it.
+ * EVERY GROUP HAS A LINK, generated from its project title. The Sheet's
+ * MemberApplicationUrl column is an override, not the source — a lead who runs
+ * their own form pastes it there and it wins; everyone else gets the shared form
+ * prefilled with their group's name, with no cell to fill in and nothing to
+ * forget.
  *
- * The fallback stays as defence, but do NOT call this function ungated. Without
- * canApply() in front of it, a group whose MemberApplicationUrl cell is empty
- * gets a live button pointing at a generic form its lead never set up, which is
- * the exact failure the gating exists to prevent.
+ * That is why canApply() no longer checks for a URL: there is always one, so the
+ * only question left is whether RecruitingOpen is "yes".
  */
 import type { ResearchGroup } from "@/data/research-groups";
 
@@ -45,13 +44,25 @@ import type { ResearchGroup } from "@/data/research-groups";
 export const MEMBER_APPLICATION_ENTRY_ID = "244092308";
 
 /**
- * Prefill base URL, ending in `=` so the encoded group title appends directly.
+ * The form's own URL, with no prefill parameter on it.
  *
- * Contains MEMBER_APPLICATION_ENTRY_ID as the `entry.` parameter. If you change
- * one, change the other.
+ * SPLIT FROM THE ENTRY ID ON PURPOSE. This used to be one string with
+ * `&entry.244092308=` baked into the end and a comment warning that if you
+ * changed one you had to change the other. That is a drift hazard with a note
+ * attached instead of a fix: the ID appeared twice and nothing enforced that the
+ * two copies matched. The full URL is now composed from these two constants, so
+ * there is one place to edit and they cannot disagree.
  */
-export const MEMBER_APPLICATION_BASE_URL =
-  "https://docs.google.com/forms/d/e/1FAIpQLSd7FD4MfbTBcTwdCqGsFvqPGfYheNQ3CY_p519S7k0B63xyNQ/viewform?usp=pp_url&entry.244092308=";
+export const MEMBER_APPLICATION_FORM_URL =
+  "https://docs.google.com/forms/d/e/1FAIpQLSd7FD4MfbTBcTwdCqGsFvqPGfYheNQ3CY_p519S7k0B63xyNQ/viewform?usp=pp_url";
+
+/**
+ * Prefill base, composed rather than written out.
+ *
+ * Ends in `=` so an encoded title appends directly. The form URL already carries
+ * `?usp=pp_url`, so the entry parameter joins with `&`.
+ */
+export const MEMBER_APPLICATION_BASE_URL = `${MEMBER_APPLICATION_FORM_URL}&entry.${MEMBER_APPLICATION_ENTRY_ID}=`;
 
 /**
  * The minimum a group needs to produce a join URL.
@@ -65,15 +76,16 @@ export type MemberApplicationTarget = Pick<ResearchGroup, "projectTitle"> & {
 };
 
 /**
- * Where "Apply to join" should point for a given group.
+ * Where "Apply to join" points for a given group. Never null.
  *
- * Returns the group's own `memberApplicationUrl` when the Sheet supplies one,
- * so a lead can run their own form without a code change. Otherwise returns
- * the shared form prefilled with the group's title.
+ * The Sheet's `memberApplicationUrl` wins when a lead has set one, so they can
+ * run their own form without a code change. Otherwise the shared form, prefilled
+ * with the group's title — which is the path every group takes today, since all
+ * six rows leave that cell empty.
  *
- * `encodeURIComponent` is required, not optional: project titles contain
- * spaces, colons, and ampersands, and a raw `&` would terminate the query
- * parameter and drop the rest of the title.
+ * `encodeURIComponent` is required, not optional: project titles contain spaces,
+ * colons, and ampersands, and a raw `&` would terminate the query parameter and
+ * silently drop the rest of the title.
  */
 export function memberApplicationUrl(group: MemberApplicationTarget): string {
   const override = group.memberApplicationUrl?.trim();
