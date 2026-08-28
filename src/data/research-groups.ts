@@ -282,7 +282,7 @@ export function sortForListing(groups: ResearchGroup[]): ResearchGroup[] {
 /**
  * THE HOMEPAGE ORDER: recruiting first, then the biggest groups, then the newest.
  *
- * Separate from sortForListing because the homepage SLICES. Only six cards
+ * Separate from sortForListing because the homepage SLICES. Only five cards
  * survive, so the order decides what a reader never sees, and the two questions
  * are different: the listing is showing everything and only has to decide what
  * leads, while this has to decide what makes the cut.
@@ -296,9 +296,12 @@ export function sortForListing(groups: ResearchGroup[]): ResearchGroup[] {
  *      six-member group is a stronger card than a one-member group.
  *   3. startedAt descending — the tiebreak, matching the listing.
  *
- * The startedAt caveat above applies here too: the Sheet's US date format does
- * not string-sort. It is the last key of three, so it decides less here than it
- * does in the listing.
+ * ON THE startedAt CAVEAT ABOVE: it does not currently bite. sortForListing's
+ * note warns that a US M/D/YYYY cell would not string-sort, and that warning
+ * stands as a warning — but the Sheet's StartedAt column is in fact ISO
+ * ("2026-09-01") in every published row today, so the comparison is correct as
+ * written. Verified against the live CSV. It is also the last key of three here,
+ * so it decides less than it does in the listing.
  *
  * Returns a new array.
  */
