@@ -1,154 +1,135 @@
-# Brief page layout; /research-groups restructure
+# Homepage groups grid + the semester copy fix
 
-All five done. `npx tsc --noEmit` clean, `npx vite build` clean.
-
-Item 4 created a new heading collision that I resolved rather than shipped — see the note under it.
+Commit `671f1f4` on `main`, pushed. Build (`tsc -b && vite build`) passes.
 
 ---
 
-# AREA 1 — the brief page
+## 1. Homepage "Groups on Atlas" section
 
-## 1. `[&_h2:first-child]:mt-0`
+### Cap of 6 — already in place, not a change
 
-Added to `Prose`, beside the `[&_p:first-child]:mt-0` it was missing its other half of. Removes **48px** of dead top margin from every research group brief and every journal article. On a one-section brief that was 31% of the column height spent separating a heading from nothing.
+The section was **not** unlimited. `FeaturedGroups.tsx` already ended its
+selection with `.slice(0, 6)`, committed before this task. Nothing needed doing
+and nothing was changed about the count. I left the cap at 6 and documented why
+6 specifically: the lead card spans two columns of a three-column row, so six
+cards fill exactly two rows with no ragged gap.
 
-## 2. Single column when there is only one section
+### Sort — changed
 
-The layout now switches on how many of the three prose sections have content:
+Previously the homepage called the shared `sortForListing()`, which sorts on two
+keys: `recruitingOpen` first, then `startedAt` descending. No member-count key.
 
-```
-sectionCount >= 2  ->  two columns, sidebar card    (unchanged)
-sectionCount <= 1  ->  single column, details band
-```
+Added `sortForFeatured()` to `src/data/research-groups.ts` and pointed the
+homepage at it:
 
-Derived from the **same conditions the sections themselves render on**, so the layout cannot disagree with what is actually on the page.
+1. `canApply` (the `RecruitingOpen === "yes"` predicate) — open groups first
+2. `memberCount` descending
+3. `startedAt` descending
 
-Live state — all six are single-column today, and a group that fills in Methods gets the sidebar back automatically:
+`sortForListing()` is untouched and `/research-groups` still calls it, so the
+index page ordering is byte-for-byte what it was.
 
-```
-student-access-to-academic-opportunity-in-vi   sections=1  single column  apply=no
-educational-accessibility-visual-and-hearing   sections=1  single column  apply=no
-school-environment-and-adolescent-health       sections=1  single column  apply=no
-home-based-learning-and-adolescent-well-bein   sections=1  single column  apply=yes
-traditional-medicine-and-chemotherapy-side-e   sections=1  single column  apply=no
-international-academic-resources-chinese-stu   sections=1  single column  apply=yes
-```
+The two functions were deliberately one function before — the doc comment said
+so — because two views of the same data drift. I split them anyway because the
+homepage slices and the index does not, which makes them different questions:
+the index decides what leads, the homepage decides what a reader never sees.
+Both functions now carry a note pointing at the other, and specifically flagging
+that the recruiting split is the part that must never diverge while the
+tiebreaks below it may.
 
-I extracted `GroupDetailRows` and `ApplyAction` so both layouts render the same six fields and the same button from one definition. Only the wrapping `<dl>` differs — vertical stack in the card, grid in the band — which is the actual difference between them.
+**One caveat you should know about, pre-existing and not introduced here:** the
+`startedAt` tiebreak is currently arbitrary. The Sheet holds StartedAt as US
+`M/D/YYYY` ("9/1/2026") rather than ISO, and the comparison is a string compare,
+so "11/1/2026" sorts before "8/10/2026". This was already documented in
+`sortForListing`. It matters *less* in the new function — it is the third key of
+three rather than the second of two — but it is still wrong. The fix is editing
+those Sheet cells to `2026-09-01` form; a parser in code would have to guess
+between US and international convention on an ambiguous value.
 
-### What it looks like at each width
+### "See all research groups" link — added
 
-Measured with Archivo advance widths and the real container arithmetic (`max-w-4xl` 896 − `px-6` 48; `Prose` caps at 68ch = 662px):
+A plain underlined text link below the grid, using the existing `.link` utility
+class, pointing at `/research-groups`.
 
-| | Desktop 1440 | Tablet 768 | Phone 375 |
-| --- | --- | --- | --- |
-| Content width | 848px | 720px | 327px |
-| Reading measure | 662px *(68ch cap)* | 662px *(cap)* | 327px |
-| Abstract | 3 lines, **136px** | 3 lines, **136px** | 5 lines, **196px** |
-| Details band | 3-up, 2 rows, **130px** | 3-up, 2 rows, **130px** | 1-up, 6 rows, **362px** |
-| Apply block | 141px | 141px | 141px |
-| **Total** | **463px** | **463px** | **755px** |
+Deliberate choices, all documented in the file:
 
-**Desktop and tablet are identical** because the 68ch cap binds at both — the measure never widens past 662px, so the abstract sets the same three lines either way. The band goes 3-up at `md` and above, 2-up at `sm`, and stacks below that.
+- **Text, not a button.** A second button would read as a second offer against
+  the hero CTA and section 01's CTA.
+- **Below the grid, not in the `Section` `action` slot.** The action slot renders
+  on the heading line, where the eye lands first. Under the grid it is reached
+  only after a reader runs out of cards.
+- **Hidden while loading**, so it does not appear under a grid of skeletons and
+  offer to show "all" of nothing.
 
-Nothing sits beside the column now, so there is no empty half. Compare the previous state: 155–184px of prose next to a 386–523px card, a 2.1–3.4× mismatch.
-
-**Phone is the one to look at.** 755px total, of which the details band is 362px — six stacked label/value pairs. That is taller than the old sidebar, but it is *below* the content rather than beside it, so it reads as a continuation instead of a gap. If it feels long I would go 2-up from the smallest breakpoint rather than stacking, which halves it to ~190px.
-
-### The apply button is more prominent, not less
-
-| | Before | After |
-| --- | --- | --- |
-| Container | 260px sidebar card | full-width band |
-| Button width | 260 − 48 padding = **212px** | capped at `max-w-md` = **448px** |
-| Position | right gutter | in the reading column |
-
-**2.1× wider**, and in the column the reader is actually looking at rather than off to the side. Same text size, same padding, same ink fill — only the width and position changed, both upward. It also now sits under a rule below the details, so it closes the page rather than floating in a card.
-
-`max-w-md` rather than truly full width, deliberately: a 662px-wide button reads as a banner, not a button.
+The primary CTA is unchanged everywhere.
 
 ---
 
-# AREA 2 — /research-groups
+## 2. The "semester" sweep
 
-## 3. Section 03 deleted, remaining sections renumbered
+`grep -rn -i semester` over the repo (excluding `node_modules` and `.git`)
+found **13 hits across 8 files**. All 13 are fixed.
 
-`"You run it."` is gone. Numbering now runs:
+| File | Line | Was | Now |
+|---|---|---|---|
+| `src/components/Hero.tsx` | 39 | "…and finish a paper in one semester." | "…and finish a paper." |
+| `src/pages/ResearchGroups.tsx` | 87 | "…finish a paper in one semester. At a school…" | "…finish a paper. At a school…" |
+| `src/components/Closing.tsx` | 17 | "Lead an Atlas research group this semester." | "Lead an Atlas research group." |
+| `src/data/value-props.ts` | 110 | "Two to four hours a week. About a semester to finish a paper." | "Two to four hours a week. Groups run for as long as the work requires." |
+| `src/data/value-props.ts` | 98 | Comment mandating "ABOUT A SEMESTER", NOT "ONE SEMESTER" | Rewritten to forbid any fixed length |
+| `src/data/openings.ts` | 129 | "Groups run three or more members over one semester; three is a minimum, not a cap." | "Groups run with three or more members; three is a minimum, not a cap." |
+| `src/lib/seo.ts` | 41 | `SITE_DESCRIPTION`: "…one research question, one semester. Free…" | "…one research question. Free…" |
+| `src/lib/seo.ts` | 63 | `/research-groups` description, same clause | same removal |
+| `index.html` | 17, 32, 41, 105 | meta description, OG, Twitter, JSON-LD — all the same string | same removal ×4 |
+| `public/site.webmanifest` | 4 | same string | same removal |
 
-```
-01  the value props        (heading: "Lead a research group.")
-02  What running a group actually involves.
-03  Start with the application.   (ink band, the CTA)
-```
+Three notes on the judgement calls:
 
-Confirmed three numbered sections, `01`/`02`/`03`, and the only remaining occurrence of `"You run it."` in the file is the doc comment recording the deletion and why — so the reasoning survives without the duplication.
+**The `value-props.ts` comment was a rule, not prose.** It read: *"ABOUT A
+SEMESTER", NOT "ONE SEMESTER". No Atlas group has finished a paper yet, so a hard
+number is a promise nobody can check.* That comment would have re-created the
+problem the next time someone edited the line — it forbade only the tight
+version. It now says no length belongs there at all: not a semester, not a hedged
+semester, not a range of weeks.
 
-## 4. h1 → "Research groups."
+**The requirements line lost its second fact, not just a word.** "Two to four
+hours a week. About a semester to finish a paper." was deliberately two facts
+merged into one bullet — the file comment says the weekly cost and the timeline
+are one question. Rather than leave a half-bullet I replaced the timeline with
+your own framing: "Groups run for as long as the work requires."
 
-The page title names the page; the ask lives in the section 01 heading.
+**The four `index.html` hits are one string in four places** — `<meta
+name="description">`, `og:description`, `twitter:description`, and the JSON-LD
+`description` — which duplicate `SITE_DESCRIPTION` in `seo.ts`. All five copies
+are now identical again. The new description is 124 characters, comfortably
+under the 155 the file's own comment requires.
 
-### This created a new collision, which I fixed
-
-The listing section's heading was **already** `"Research groups."` — set two turns ago. Changing the h1 to the same string put the identical sentence twice in a row, separated only by the header block. That is worse than the problem item 4 was solving.
-
-**I removed the listing's heading.** The h1 names the page, the listing is the page's first content, so it needs no second label. Its intro line is kept — "Every published Atlas research group. Groups taking new members are marked." — because that carries what the marker means, which no other line says.
-
-Same principle already applied to `RoleGroup` on `/get-involved`: suppress the heading rather than invent a second name for one thing. I left a comment noting that any heading added back here must avoid claiming activity, since "Groups running now" was wrong for exactly that reason.
-
-Final sequence, no duplicates:
-
-```
-1. h1      Research groups.
-2. (listing: no heading, intro line only)
-3. h2 [01] Lead a research group.
-4. h2 [02] What running a group actually involves.
-5. h2 [03] Start with the application.
-```
-
-## 5. "guest session" left alone, and why is now recorded
-
-Untouched, verified still in place:
-
-```
-src/pages/GetInvolved.tsx:35   "Run a guest session"
-src/pages/GetInvolved.tsx:37   "Offer a guest session"
-src/pages/Partners.tsx:260     placeholder "…or a guest session"
-src/lib/seo.ts:68              /events description
-src/lib/seo.ts:83              /partners description
-```
-
-The distinction is recorded in `src/data/value-props.ts`, immediately above the props, where "lessons" is defined:
-
-> **TWO WORDS FOR ONE ACTIVITY, AND THAT IS DELIBERATE. Do not harmonise them:**
-> - **"lessons"** — the STUDENT-FACING word. What a group receives.
-> - **"guest session"** — the RESEARCHER- AND PARTNER-FACING register. Used when inviting a researcher to teach or describing that contribution to an institution. *"Run a lesson" is the wrong register to put in front of university faculty.*
->
-> A sweep that renames one to the other in both directions will read as a correction and is not.
-
-It also notes the Fellowship's "guest sessions" as a third case — separate approved phrasing on its own page.
+I also grepped for adjacent fixed-term phrasing that would survive a
+"semester"-only sweep — `one term`, `per term`, `academic year`, `N weeks`,
+`few months`. **No hits.** `public/llms.txt` was clean too.
 
 ---
 
-## Files changed
+## Two things I want to flag
 
-```
-M  src/components/Prose.tsx              h2:first-child reset
-M  src/data/value-props.ts               the lessons / guest session distinction
-M  src/pages/ResearchGroupBrief.tsx      one-or-two column; GroupDetailRows + ApplyAction extracted
-M  src/pages/ResearchGroups.tsx          section 03 deleted, renumbered, h1, listing heading removed
-```
+**1. `Closing.tsx` now duplicates its own button.** The heading reads "Lead an
+Atlas research group." and the button directly beneath it reads "Lead an Atlas
+research group". Removing "this semester" is what caused this — it was the only
+thing distinguishing them. I made the minimal edit you asked for rather than
+rewriting the heading, because picking new closing-band copy is a call for you,
+not a mechanical consequence of dropping the term. Worth a second look. The
+comment style in this repo is emphatic that a heading should not restate the
+control below it.
 
-## Verification
+**2. `src/data/openings.ts` has `updatedAt: "2026-08-17"` on the Principal
+Researcher opening,** whose `description` I edited. I did not bump it — I do not
+know whether that field is meant to track copy edits or substantive changes to
+the role, and it may be rendered.
 
-```
-npx tsc --noEmit   clean, no errors
-npx vite build     ✓ built in 732ms
-```
+## Out of scope, untouched
 
-Layout switching checked against all six live groups; heading uniqueness checked by comparing the h1, the shared `VALUE_PROPS_HEADING`, and both remaining section headings as a set.
-
-## Not verified
-
-The rendered pages, and here that matters more than usual because this change is mostly layout. The heights come from font metrics and container arithmetic, not the browser — real line-breaking can differ by a line, and the details band's row heights assume the `Review status` value stays on one line at each width, which it does at 3-up but is the thing most likely to wrap.
-
-Two specific things to look at: the **details band at phone width**, where six stacked pairs make it the tallest element on the page and 2-up may be better; and the **48px that came off the top of the abstract**, which also affects every journal article — worth one glance at `/journal/<slug>` to confirm it tightened rather than crowded.
+- `/research-groups` ordering and group count — unchanged, still `sortForListing`
+  over the full unsliced list.
+- The primary CTA — unchanged in copy, link, styling, and placement.
+- `public/atlas-linkedin-cover-4200x700.png` — untracked in your working tree
+  before I started, unrelated to this work, left uncommitted.
