@@ -95,9 +95,13 @@ export const VALUE_PROPS: ValueProp[] = [
  * into a cap and told a founder with twelve interested classmates to turn two
  * away.
  *
- * "ABOUT A SEMESTER", NOT "ONE SEMESTER". No Atlas group has finished a paper
- * yet, so a hard number is a promise nobody can check. Do not tighten this back
- * to a specific figure until there are completed groups to measure.
+ * NO FIXED TERM, IN EITHER DIRECTION. This line used to end "About a semester to
+ * finish a paper", and before that "one semester" — the softening was an attempt
+ * to fix the wrong half. A group runs for as long as the work requires. It is not
+ * a course, it has no end date, and nothing about it is scheduled against an
+ * academic calendar, so no length belongs here: not a semester, not a hedged
+ * semester, not a range of weeks. Say the weekly cost, which is real and which a
+ * founder can check themselves against, and stop.
  *
  * THREE LINES, DOWN FROM FIVE. The five were one fact each, which read as sparse
  * at desktop width — a column of short statements with more rule than text. The
@@ -107,6 +111,6 @@ export const VALUE_PROPS: ValueProp[] = [
  */
 export const REQUIREMENTS: string[] = [
   "Three or more members. There is no maximum.",
-  "Two to four hours a week. About a semester to finish a paper.",
+  "Two to four hours a week. Groups run for as long as the work requires.",
   "No faculty advisor, no school approval, no dues. You pick the question, in any field.",
 ];

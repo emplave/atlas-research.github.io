@@ -14,7 +14,7 @@ export function Closing() {
     <section id="start" className="on-ink bg-ink">
       <div className="mx-auto max-w-3xl px-6 py-16 md:py-20 text-center">
         <h2 className="type-section font-display">
-          Lead an Atlas research group this semester.
+          Lead an Atlas research group.
         </h2>
         <p className="mt-5 text-lg text-paper/75 leading-relaxed">
           Pick a question, recruit three or more members, and submit the finished

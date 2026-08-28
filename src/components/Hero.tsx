@@ -36,7 +36,7 @@ export function Hero() {
 
             <p className="mt-8 max-w-xl type-body text-muted">
               You pick the question, recruit three or more members, and finish a
-              paper in one semester.
+              paper.
             </p>
 
             <CostLine className="mt-5 max-w-xl" />

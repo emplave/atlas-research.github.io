@@ -126,7 +126,7 @@ export const OPENINGS: Opening[] = [
     oneLine:
       "Run a research group at a school, in a community, or online.",
     description:
-      "You pick the question and recruit the members. Atlas gives you the structure, a mentor to check your work, and somewhere to submit it at the end. Groups run three or more members over one semester; three is a minimum, not a cap. You are responsible for whether it finishes.",
+      "You pick the question and recruit the members. Atlas gives you the structure, a mentor to check your work, and somewhere to submit it at the end. Groups run with three or more members; three is a minimum, not a cap. You are responsible for whether it finishes.",
     responsibilities: [
       "Recruit your members and pick your question",
       "Run the meetings and keep the log current",

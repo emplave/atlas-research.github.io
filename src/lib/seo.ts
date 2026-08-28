@@ -38,7 +38,7 @@ export const SITE_NAME = "Atlas Research Institute";
  * the secondary programme and its applications are closed.
  */
 export const SITE_DESCRIPTION =
-  "Atlas runs student research groups in eight fields. Three or more students, one research question, one semester. Free, and open worldwide.";
+  "Atlas runs student research groups in eight fields. Three or more students, one research question. Free, and open worldwide.";
 
 export type RouteSeo = {
   /** Rendered as "<title> | Atlas Research Institute". Omit for the home page. */
@@ -60,7 +60,7 @@ export const ROUTE_SEO: Record<string, RouteSeo> = {
   "/research-groups": {
     title: "Research Groups",
     description:
-      "Lead an Atlas research group. Three or more students, one research question, one semester. Free, at a school, in a community, or entirely online.",
+      "Lead an Atlas research group. Three or more students, one research question. Free, at a school, in a community, or entirely online.",
   },
   "/events": {
     title: "Events",

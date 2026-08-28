@@ -245,16 +245,15 @@ export function canApply(group: ResearchGroup): boolean {
 }
 
 /**
- * Listing order: groups taking new members first, newest first within each half.
+ * THE /research-groups LISTING ORDER: groups taking new members first, newest
+ * first within each half.
  *
- * ONE FUNCTION, BOTH LISTINGS. The homepage strip and /research-groups each had
- * their own inline `.sort(...)`, which is how two views of the same data drift.
- * More importantly the recruiting-first rule reads canApply — THE SAME PREDICATE
- * the "Taking members" marker and the "Apply to join" button use — so the order
- * can never disagree with the marker. A card marked as taking members cannot sort
- * below one that is not.
+ * The recruiting-first rule reads canApply — THE SAME PREDICATE the "Taking
+ * members" marker and the "Apply to join" button use — so the order can never
+ * disagree with the marker. A card marked as taking members cannot sort below
+ * one that is not.
  *
- * The secondary sort is the previous behaviour, unchanged: startedAt descending.
+ * The secondary sort is startedAt descending.
  *
  * THAT SECONDARY SORT IS CURRENTLY ARBITRARY, and not because of this function.
  * The Sheet holds StartedAt as US M/D/YYYY ("9/1/2026") rather than ISO, so this
@@ -264,12 +263,51 @@ export function canApply(group: ResearchGroup): boolean {
  * ambiguous value, which is worse than a Sheet edit. The recruiting split above
  * it works regardless.
  *
+ * THE HOMEPAGE NO LONGER USES THIS. It sorts with sortForFeatured below, which
+ * adds member count as a middle key. The two functions were one for exactly the
+ * reason you would expect — two views of the same data drift — so if you change
+ * the recruiting split here, change it there too. The split itself is the part
+ * that must never diverge; the tiebreaks below it are allowed to.
+ *
  * Returns a new array. Callers must not rely on the input being reordered.
  */
 export function sortForListing(groups: ResearchGroup[]): ResearchGroup[] {
   return groups.slice().sort((a, b) => {
     const byRecruiting = Number(canApply(b)) - Number(canApply(a));
     if (byRecruiting !== 0) return byRecruiting;
+    return b.startedAt.localeCompare(a.startedAt);
+  });
+}
+
+/**
+ * THE HOMEPAGE ORDER: recruiting first, then the biggest groups, then the newest.
+ *
+ * Separate from sortForListing because the homepage SLICES. Only six cards
+ * survive, so the order decides what a reader never sees, and the two questions
+ * are different: the listing is showing everything and only has to decide what
+ * leads, while this has to decide what makes the cut.
+ *
+ * The keys, in order:
+ *
+ *   1. canApply — a group someone can actually join is never the one cut. Same
+ *      predicate as the marker and the button, exactly as in sortForListing.
+ *   2. memberCount descending — of the groups that are open, the ones that have
+ *      pulled people in are the better evidence that any of this is real. A
+ *      six-member group is a stronger card than a one-member group.
+ *   3. startedAt descending — the tiebreak, matching the listing.
+ *
+ * The startedAt caveat above applies here too: the Sheet's US date format does
+ * not string-sort. It is the last key of three, so it decides less here than it
+ * does in the listing.
+ *
+ * Returns a new array.
+ */
+export function sortForFeatured(groups: ResearchGroup[]): ResearchGroup[] {
+  return groups.slice().sort((a, b) => {
+    const byRecruiting = Number(canApply(b)) - Number(canApply(a));
+    if (byRecruiting !== 0) return byRecruiting;
+    const byMembers = b.memberCount - a.memberCount;
+    if (byMembers !== 0) return byMembers;
     return b.startedAt.localeCompare(a.startedAt);
   });
 }

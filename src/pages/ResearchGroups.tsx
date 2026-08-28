@@ -84,8 +84,7 @@ export function ResearchGroups() {
           <h1 className="type-hero font-display max-w-3xl">Research groups.</h1>
           <p className="mt-8 max-w-2xl type-body text-muted">
             You pick the question, recruit three or more members, and finish a
-            paper in one semester. At a school, in a community, or entirely
-            online.
+            paper. At a school, in a community, or entirely online.
           </p>
           <CostLine className="mt-5 max-w-2xl" />
         </div>

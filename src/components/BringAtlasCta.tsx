@@ -18,12 +18,19 @@ import { cn } from "@/lib/utils";
  * and contradicted the page's own "no school approval required" line. "Lead"
  * carries the ownership without naming a venue.
  *
- * There is deliberately NO SECONDARY CTA anywhere beside this. The group listing
- * is back on both the homepage and /research-groups, but it needs no button: it
- * is already on the page the reader is looking at, so a "browse groups" control
- * beside this one would point at content a few hundred pixels away while
- * competing with the only action that matters. Applying to a specific group is
- * its own per-card action, gated on that group's RecruitingOpen cell.
+ * There is deliberately NO SECONDARY BUTTON anywhere beside this. The group
+ * listing is on both the homepage and /research-groups, and neither needs one:
+ * the groups are already on the page the reader is looking at, so a "browse
+ * groups" control beside this one would point at content a few hundred pixels
+ * away while competing with the only action that matters.
+ *
+ * THE ONE EXCEPTION IS A PLAIN TEXT LINK, and only where content is actually
+ * withheld: the homepage grid caps at six, so "See all research groups" sits
+ * under it as an underlined text link. It is not a button, it is not in a
+ * heading slot, and it exists because six of N is a real omission rather than a
+ * duplicate view. /research-groups shows everything and therefore still has no
+ * such link. Applying to a specific group is its own per-card action, gated on
+ * that group's RecruitingOpen cell.
  *
  * The link is always read from the Principal Researcher opening, never
  * hardcoded, so closing the form closes every entry point at once. When the form
