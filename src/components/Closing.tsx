@@ -18,6 +18,13 @@ import { BringAtlasCta } from "./BringAtlasCta";
  * an Atlas research group" is what pressing it does. Do not harmonise them, and
  * do not restore a heading that begins "Lead".
  *
+ * THE SUBHEAD PICKS UP WHERE THE HEADING STOPS. It used to open "Pick a question,
+ * recruit three or more members…", which was correct while the heading was about
+ * leading a group and became a stutter the moment the heading took the question
+ * for itself. Between them the three steps are still all there — question,
+ * members, submission — each said once. If the heading ever changes again, check
+ * that this line still starts at the step the heading left off at.
+ *
  * The homepage carries no path to the fellowship application.
  */
 export function Closing() {
@@ -28,8 +35,8 @@ export function Closing() {
           Pick a question you actually care about.
         </h2>
         <p className="mt-5 text-lg text-paper/75 leading-relaxed">
-          Pick a question, recruit three or more members, and submit the finished
-          paper for review. Free.
+          Recruit three or more members and submit the finished paper for review.
+          Free.
         </p>
 
         <div className="mt-9">
